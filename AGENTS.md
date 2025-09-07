@@ -24,3 +24,11 @@
 - Never delete or overwrite files outside the listed `OUTPUT_FORMAT`.
 - Never drop production tables or schemas.
 - All secrets must go in `.env`, not in code.
+
+- ## Git Commit & Push Rules
+- All generated files must be committed directly to the `codex` branch.
+- Do not commit to `main` branch under any circumstances.
+- Always include the TASK_ID in the commit message, formatted as: "[TASK_ID] <short description> via codex".
+- Always push commits to GitHub immediately so changes are visible in the remote repo.
+- Never leave files only in a local sandbox.
+
