@@ -1,0 +1,116 @@
+{
+  "executionPlan": {
+    "projectName": "Vibeflow",
+    "phase": "Phase 1 – Foundation & API Connectivity",
+    "tasks": [
+      {
+        "taskId": "S1.1.1",
+        "action": "Define PostgreSQL schema for Tasks table",
+        "context": "Create database schema to store Vibeflow tasks and metadata.",
+        "prompt": "Define Prisma schema with a 'Task' model including taskId, action, status, dependencies, and timestamps.",
+        "techStack": {
+          "platformStack": ["Supabase (Free Tier)"],
+          "codeStack": ["Prisma 5.x", "PostgreSQL 14+"]
+        },
+        "dependencies": ["S0.1.1"],
+        "requiredFiles": ["prisma/schema.prisma"],
+        "deliverables": ["prisma/schema.prisma"],
+        "tests": ["Run prisma validate", "Confirm schema compiles"],
+        "status": "planned",
+        "confidenceScore": "96%",
+        "completedBy": null,
+        "chatUrl": null
+      },
+      {
+        "taskId": "S1.1.2",
+        "action": "Run migration and generate Prisma client",
+        "context": "Apply the database schema and make it accessible in the codebase.",
+        "prompt": "Run `npx prisma migrate dev --name init` and `npx prisma generate`.",
+        "techStack": {
+          "platformStack": ["Supabase"],
+          "codeStack": ["Prisma 5.x", "PostgreSQL 14+"]
+        },
+        "dependencies": ["S1.1.1"],
+        "requiredFiles": [".prisma/client/"],
+        "deliverables": ["Generated Prisma client"],
+        "tests": ["Confirm migration runs", "Use Prisma client in a simple script"],
+        "status": "planned",
+        "confidenceScore": "97%",
+        "completedBy": null,
+        "chatUrl": null
+      },
+      {
+        "taskId": "S1.2.1",
+        "action": "Implement LLM Adapter service to route prompts",
+        "context": "Create a service that routes task prompts to different LLM platforms.",
+        "prompt": "Implement adapter pattern to support multiple LLMs. Expose `sendPrompt(taskId, prompt, platform)` function.",
+        "techStack": {
+          "platformStack": ["Supabase", "LiteLLM"],
+          "codeStack": ["TypeScript (Node.js 20.x)", "Express 5.x"]
+        },
+        "dependencies": ["S1.1.2", "S0.1.4"],
+        "requiredFiles": ["src/services/llmAdapter.ts"],
+        "deliverables": ["src/services/llmAdapter.ts"],
+        "tests": ["Mock API call to OpenAI adapter", "Verify response handling"],
+        "status": "planned",
+        "confidenceScore": "95%",
+        "completedBy": null,
+        "chatUrl": null
+      },
+      {
+        "taskId": "S1.2.2",
+        "action": "Secure API key handling for LLM services",
+        "context": "Ensure secrets are injected properly without leaking to logs or client.",
+        "prompt": "Implement configuration service to pull keys from GitHub secrets or env vars.",
+        "techStack": {
+          "platformStack": ["GitHub Actions"],
+          "codeStack": ["TypeScript (Node.js 20.x)"]
+        },
+        "dependencies": ["S1.2.1"],
+        "requiredFiles": ["src/config/secrets.ts"],
+        "deliverables": ["src/config/secrets.ts"],
+        "tests": ["Confirm keys load securely", "No keys exposed in logs"],
+        "status": "planned",
+        "confidenceScore": "96%",
+        "completedBy": null,
+        "chatUrl": null
+      },
+      {
+        "taskId": "S1.3.1",
+        "action": "Initialize frontend with React + Vite + TypeScript",
+        "context": "Scaffold frontend for Vibeflow dashboard.",
+        "prompt": "Use Vite to initialize a React + TypeScript project with TailwindCSS configured.",
+        "techStack": {
+          "platformStack": [],
+          "codeStack": ["React 18.x", "Vite 5.x", "TypeScript 5.x", "TailwindCSS 3.x"]
+        },
+        "dependencies": ["S0.1.1"],
+        "requiredFiles": ["src/main.tsx", "src/index.css"],
+        "deliverables": ["Scaffolded React app"],
+        "tests": ["Run `npm run dev`", "Confirm app loads"],
+        "status": "planned",
+        "confidenceScore": "97%",
+        "completedBy": null,
+        "chatUrl": null
+      },
+      {
+        "taskId": "S1.3.2",
+        "action": "Connect frontend to backend API",
+        "context": "Enable the React app to fetch data from backend services.",
+        "prompt": "Implement API client in frontend and test retrieval of tasks from backend.",
+        "techStack": {
+          "platformStack": [],
+          "codeStack": ["React 18.x", "TypeScript 5.x"]
+        },
+        "dependencies": ["S1.2.1", "S1.3.1"],
+        "requiredFiles": ["src/api/client.ts"],
+        "deliverables": ["src/api/client.ts"],
+        "tests": ["Run dev server", "Confirm tasks render from API"],
+        "status": "planned",
+        "confidenceScore": "96%",
+        "completedBy": null,
+        "chatUrl": null
+      }
+    ]
+  }
+}
