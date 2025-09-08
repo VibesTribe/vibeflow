@@ -5,8 +5,8 @@ module.exports = {
   clearMocks: true,
   passWithNoTests: true,
 
-  // ✅ Only look in folders that exist right now
-  roots: ['<rootDir>/tests', '<rootDir>/__tests__'],
+  // ✅ Only look in the folder that exists right now
+  roots: ['<rootDir>/__tests__'],
 
   testMatch: [
     '**/__tests__/**/*.(test|spec).[jt]s',
@@ -19,3 +19,4 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest'
   }
 };
+
