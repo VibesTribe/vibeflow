@@ -4,10 +4,18 @@ module.exports = {
   testEnvironment: 'node',
   clearMocks: true,
   passWithNoTests: true,
-  roots: ['<rootDir>/src', '<rootDir>/tests', '<rootDir>/__tests__'],
+
+  // ✅ Only look in folders that exist right now
+  roots: ['<rootDir>/tests', '<rootDir>/__tests__'],
+
   testMatch: [
-    '**/__tests__/**/*.test.ts',
-    '**/?(*.)+(spec|test).ts'
+    '**/__tests__/**/*.(test|spec).[jt]s',
+    '**/?(*.)+(spec|test).[jt]s'
   ],
-  moduleFileExtensions: ['ts', 'js', 'json']
+
+  moduleFileExtensions: ['ts', 'js', 'json'],
+
+  transform: {
+    '^.+\\.ts$': 'ts-jest'
+  }
 };
