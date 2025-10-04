@@ -1,0 +1,84 @@
+# Research Agent & Model/Platform Registry — Spec v1
+
+## Purpose
+Continuously discover and normalize model/platform capabilities (context windows, rate limits, pricing, modalities, features, deprecations), so routing and budgets stay accurate without code changes.
+
+## Cadence
+- **Daily** light scan (diff new/changed entries).  
+- **Weekly** deep scan + validation.  
+- Manual trigger via Admin API.
+
+## Data Outputs
+### 1) `registry.models`
+Normalized record per `platform:model`.
+```json
+{
+  "platform": "openai|anthropic|google|bedrock|local|...",
+  "model": "gpt-4.1",
+  "max_context_tokens": 128000,
+  "rate_limit_rps": 3,
+  "cost_per_1k_tokens": 0.0025,
+  "supports_tools": true,
+  "supports_vision": true,
+  "supports_audio": false,
+  "deprecation_after": null,
+  "refresh_period_sec": 60,
+  "tags": ["deterministic_ok","code","ts"],
+  "source_url": "https://...",
+  "fetched_at": "2025-10-04T00:00:00Z"
+}
+```
+
+### 2) Capability Vectors
+Upsert per agent ID (pgvector). Fields mirror PRD §2.5 with policy flags and resource info.  
+**Trigger:** after registry upsert, recompute embedding from the model spec text.
+
+### 3) Model Scorecard Rolling Windows
+`success_rate_7d/30d`, `p50/p95 latency`, `avg_cost`, `error_mix` (rate-limit vs validation vs other).
+
+### 4) RoutingPolicy Diff
+Computed suggestions with rationale — e.g., "lower weight on X this week (p95↑, failures↑)".
+
+## Pipeline
+1. **Collect**: scrape docs/changelogs/APIs; read internal deltas from RunMetrics.
+2. **Parse**: normalize to `registry.models` schema.
+3. **Validate**: min/max sanity checks; detect breaking changes (e.g., ctx shrink).
+4. **Diff**: compare vs last snapshot; produce human‑readable changelog.
+5. **Apply**: update registry, vectors, and scorecards.
+6. **Stage & Rollout**: Orchestrator hot‑reloads eligibility filters; optional 24h **shadow routing** before fully enabling.
+
+## APIs
+- `POST /admin/registry/reload` (body: {scope: "light|deep"})
+- `GET  /registry/models?platform=...`
+- `GET  /registry/diff?since=ISO8601`
+
+## Safety & Governance
+- Signed provenance for each change; audit trail (who, when, source).
+- Guardrails: do not auto‑enable models flagged `experimental` unless allow‑listed.
+- Budget guard: if price spikes detected, temporarily down‑weight in routing until reviewed.
+
+## Integration Points
+- **Orchestrator**: eligibility filters (policy flags, ctx, rate limits), optimization weights.
+- **Analyst**: consumes RunMetrics to update Scorecards; feeds back into vectors.
+- **Dashboard**: banner + page for registry diff; per‑model drill‑down.
+
+## Onboarding New Models — Roster Flow
+1) Research Agent detects candidate and writes registry row in `staged` status.  
+2) Analyst kicks off a small **evaluation suite** (tiny tasks) to get initial Scorecard.  
+3) Generate **Capability Vector**; mark `eligible=false` until eval passes.  
+4) Orchestrator can A/B **shadow route** ≤10% of eligible tasks.  
+5) If success rate & cost targets are met, set `eligible=true`, publish to roster.
+
+## Failure Modes & Handling
+- **Rate‑limit spikes** → raise backoff, open circuit breaker; reroute.  
+- **Ctx mismatch** (vendor misreports) → Supervisor detects truncation → quarantine model and flag.
+- **Cost drift** → apply temporary penalty weight; notify admin.
+
+## Storage Choices
+- Postgres for tables; **pgvector** for embeddings.
+- Memory adapters: Supabase as default; Cipher as optional under the same interface.
+
+## Metrics
+- Mean time from discovery → eligible roster.  
+- Shadow vs production success delta.  
+- Registry freshness age.
