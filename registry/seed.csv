@@ -1,0 +1,5 @@
+platform,model,max_context_tokens,rate_limit_rps,cost_per_1k_tokens,supports_tools,supports_vision,supports_audio,deprecation_after,refresh_period_sec,tags,source_url,fetched_at
+openai,gpt-4.1,128000,3,0.0025,true,true,false,,60,"deterministic_ok;code;json",https://example.com/openai/gpt-4-1,2025-10-04T00:00:00Z
+anthropic,claude-3.7-sonnet,200000,2,0.0030,true,true,false,,60,"reasoning;long_context",https://example.com/anthropic/claude-3-7-sonnet,2025-10-04T00:00:00Z
+google,gemini-2.0-pro,100000,4,0.0020,true,true,true,,45,"multimodal;tools",https://example.com/google/gemini-2-0-pro,2025-10-04T00:00:00Z
+local,lama-3-70b-instruct,32000,10,0.0002,true,false,false,,0,"self_hosted;cheap",https://example.com/local/llama-3-70b,2025-10-04T00:00:00Z
