@@ -1,0 +1,28 @@
+name: Promote: testing → approved
+on:
+  push:
+    branches: [ testing ]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create/Update PR to approved
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Promote: testing → approved"
+          base: approved
+          branch: testing
+          body: "Automated promotion from testing."
+          labels: promotion
+      - name: Enable PR auto-merge (squash)
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
