@@ -1,4 +1,5 @@
 # Vibeflow Docs
+**Docs live here →** [./docs/](./docs/)
 
 Start here → **[PRD](../vibeflow_prd_strategic_technical_addendum.md)**
 
