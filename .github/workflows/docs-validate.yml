@@ -1,25 +1,36 @@
 name: Docs Validate
+
 on:
   push:
     branches: [ docs, main ]
   pull_request:
     branches: [ docs, main ]
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm i -g ajv-cli markdown-link-check
-      - name: Validate JSON Schemas
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install validators
+        run: npm i -g ajv-cli markdown-link-check
+
+      - name: Validate JSON Schemas (Draft 2020-12)
         run: |
-          ajv compile -s docs/contracts/plan.schema.json
-          ajv compile -s docs/contracts/task_contract.schema.json
-          ajv compile -s docs/contracts/run_metric.schema.json
-          ajv compile -s docs/contracts/model_scorecard.schema.json
-          ajv compile -s docs/contracts/registry_model.schema.json
-          ajv compile -s docs/contracts/capability_vector.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/plan.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/task_contract.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/run_metric.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/model_scorecard.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/registry_model.schema.json
+          ajv compile --spec=draft2020 -s docs/contracts/capability_vector.schema.json
+
       - name: Check Markdown Links
         run: |
           find docs -name "*.md" -print0 | xargs -0 -I{} markdown-link-check -q {}
