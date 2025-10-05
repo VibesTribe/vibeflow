@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/plan-v1.json",
+  "type": "object",
+  "required": [
+    "context_snapshot_id",
+    "slices",
+    "echo_check"
+  ],
+  "properties": {
+    "context_snapshot_id": {
+      "type": "string"
+    },
+    "slices": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "echo_check": {
+      "type": "string"
+    }
+  }
+}

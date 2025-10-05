@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/registry-model-v1.json",
+  "type": "object",
+  "required": [
+    "platform",
+    "model",
+    "max_context_tokens",
+    "rate_limit_rps",
+    "cost_per_1k_tokens"
+  ],
+  "properties": {
+    "platform": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "max_context_tokens": {
+      "type": "integer"
+    },
+    "rate_limit_rps": {
+      "type": "number"
+    },
+    "cost_per_1k_tokens": {
+      "type": "number"
+    }
+  }
+}
