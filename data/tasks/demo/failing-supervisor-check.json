@@ -1,0 +1,21 @@
+{
+  "id": "failing-supervisor-check",
+  "sliceId": "demo",
+  "title": "Generate incomplete footer markup",
+  "expected": {
+    "codeType": "html",
+    "outputSpec": "Footer section including links and copyright"
+  },
+  "confidence": 0.92,
+  "deps": [],
+  "context": {
+    "repoQueries": ["footer component", "HTML layout"],
+    "code": []
+  },
+  "prompt": "Output only the footer start tag without closing it, simulating incomplete work.",
+  "platform": "gemini-web",
+  "chatUrl": "https://example.com/fake-chat-footer",
+  "tokenEst": { "pre": 200, "post": 50 },
+  "status": "submitted",
+  "notes": "This is a controlled test that should trigger supervisor reassignment."
+}
