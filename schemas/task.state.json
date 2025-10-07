@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vibeflow Task State",
+  "type": "string",
+  "enum": [
+    "planned",
+    "assigned",
+    "in_progress",
+    "supervisor_review",
+    "testing",
+    "reassigned",
+    "approved",
+    "completed",
+    "failed",
+    "aborted",
+    "handoff",
+    "limit_wait"
+  ]
+}
