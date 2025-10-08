@@ -1,11 +1,11 @@
 // scripts/generate-enriched-handoff.mjs
-// Builds docs/updates/handoff_ENRICHED_YYYY-MM-DD_HH-MM.md using task.state.json and repo snapshot.
 import fs from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = process.cwd();
 const STATE_FILE = path.join(ROOT, "data", "state", "task.state.json");
 const SNAP_FILE  = path.join(ROOT, "docs", "reports", "repo-snapshot.json");
+const OS_FILE    = path.join(ROOT, "data", "state", "openspec.index.json");
 const OUT_DIR    = path.join(ROOT, "docs", "updates");
 
 function fmt(n){ 
@@ -22,6 +22,7 @@ function linesJoin(arr){ return arr.filter(Boolean).join("\n"); }
 async function main(){
   const state = await maybeReadJSON(STATE_FILE, { tasks:[], slices:[], stats:{ totals:{}, costs:{} } });
   const snap  = await maybeReadJSON(SNAP_FILE, { files:[] });
+  const os    = await maybeReadJSON(OS_FILE, { changes:[], specs:[] });
 
   const now = new Date();
   const d = now.toISOString().slice(0,10);
@@ -35,6 +36,7 @@ async function main(){
   const queued    = tasks.filter(t => t.status === "queued");
 
   const changedList = (snap.files || []).slice(0, 50).map(f => `- ${f.path} (size ${fmt(f.size)})`);
+  const openspecChanges = (os.changes || []).slice(0, 10).map(c => `- **${c.title}** — ${c.summary}  \n  _${c.path}_`);
 
   const md = linesJoin([
     `# Handoff (Enriched) — ${d} ${t}`,
@@ -45,6 +47,9 @@ async function main(){
     "",
     "## Recently Changed Files",
     ...(changedList.length ? changedList : ["- (no snapshot yet)"]),
+    "",
+    "## OpenSpec — Proposed Changes (Top 10)",
+    ...(openspecChanges.length ? openspecChanges : ["- (no OpenSpec changes indexed yet)"]),
     "",
     "## Completed",
     ...(completed.length ? completed.map(t => `- ${t.task_id} ${t.title || ""}`) : ["- None"]),
