@@ -2,8 +2,9 @@ name: Status Pulse (Enriched Handoff)
 
 on:
   push:
+    branches: [ main ]
   schedule:
-    - cron: "0 */2 * * *"
+    - cron: "0 */2 * * *"   # every 2 hours
   workflow_dispatch: {}
 
 jobs:
@@ -12,68 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Node
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+      # These scripts avoid shell interpolation issues with backticks/${}
       - name: Generate repo snapshot (paths + hashes)
-        run: |
-          node -e "
-          const fs=require('fs'),p=require('path');
-          const IGNORE=new Set(['.git','node_modules','dist','build','.next','.cache','.DS_Store']);
-          async function* walk(d){for(const e of await fs.promises.readdir(d,{withFileTypes:true})){if(IGNORE.has(e.name))continue;const f=p.join(d,e.name);if(e.isDirectory())yield*walk(f);else yield f}}
-          (async()=>{
-            const out={timestamp:new Date().toISOString(), files:[]};
-            for await(const f of walk(process.cwd())){
-              const s=await fs.promises.stat(f);
-              out.files.push({path:p.relative(process.cwd(),f), size:s.size, mtime:s.mtimeMs|0});
-            }
-            await fs.promises.mkdir('docs/reports',{recursive:true});
-            await fs.promises.writeFile('docs/reports/repo-snapshot.json', JSON.stringify(out,null,2));
-          })().catch(e=>{console.error(e);process.exit(1);})
-          "
+        run: node scripts/generate-repo-snapshot.mjs
 
       - name: Generate enriched handoff
-        run: |
-          node -e "
-          const fs=require('fs'),p=require('path');
-          function maybe(pth, fallback){try{return JSON.parse(fs.readFileSync(pth,'utf8'))}catch{return fallback}}
-          const state=maybe('data/state/task.state.json',{tasks:[],slices:[],stats:{totals:{},costs:{}}});
-          const snap=maybe('docs/reports/repo-snapshot.json',{files:[]});
-          const date=new Date(); const d=date.toISOString().slice(0,10); const t=date.toISOString().slice(11,16).replace(':','-');
-          const outPath=p.join('docs','updates',`handoff_ENRICHED_${d}_${t}.md`);
-          fs.mkdirSync(p.dirname(outPath),{recursive:true});
-          const tasks=state.tasks||[];
-          function fmt(n){return new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(n||0)}
-          const md=[
-            `# Handoff (Enriched) — ${d} ${t}`,
-            '',
-            `## Totals`,
-            `- Tasks: ${fmt(state?.stats?.totals?.tasks)}  Done: ${fmt(state?.stats?.totals?.completed)}  Running: ${fmt(state?.stats?.totals?.running)}  Queued: ${fmt(state?.stats?.totals?.queued)}`,
-            `- ROI: ${fmt(state?.stats?.costs?.roi_percent)}% (CF $ ${fmt(state?.stats?.costs?.counterfactual_api_cost_usd)} vs VF $ ${fmt(state?.stats?.costs?.vibeflow_cost_usd)}; savings $ ${fmt(state?.stats?.costs?.savings_usd)})`,
-            '',
-            `## Recently Changed Files`,
-            ...(snap.files||[]).slice(0,50).map(f=>`- ${f.path} (size ${f.size})`),
-            '',
-            `## Completed`,
-            ...(tasks.filter(t=>t.status==='done').map(t=>`- ${t.task_id} ${t.title||''}`) || ['- None']),
-            '',
-            `## In Progress`,
-            ...(tasks.filter(t=>t.status==='running').map(t=>`- ${t.task_id} ${t.title||''}`) || ['- None']),
-            '',
-            `## Queued`,
-            ...(tasks.filter(t=>t.status==='queued').map(t=>`- ${t.task_id} ${t.title||''}`) || ['- None']),
-            ''
-          ].join('\n');
-          fs.writeFileSync(outPath, md);
-          console.log('Wrote', outPath);
-          "
+        run: node scripts/generate-enriched-handoff.mjs
 
-      - name: Commit handoff
+      - name: Commit handoff + snapshot
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/updates/handoff_ENRICHED_*.md docs/reports/repo-snapshot.json
           git commit -m "chore: enriched handoff" || echo "No changes"
           git push
+
