@@ -1,345 +1,365 @@
 {
-  "timestamp": "2025-10-08T22:20:50.504Z",
+  "timestamp": "2025-10-08T23:26:23.780Z",
   "files": [
     {
       "path": "AGENTS.md",
       "size": 1092,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "LICENSE",
       "size": 1,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "README.md",
       "size": 99,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "README.txt",
       "size": 954,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "README_ALERTS.md",
       "size": 572,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "README_MODEL_PANEL.md",
       "size": 925,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "README_STATUS.md",
       "size": 1125,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "config/alerts.providers.json",
       "size": 658,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "config/secrets-registry.example.json",
       "size": 122,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "data/secrets-registry.json",
       "size": 58,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "data/state/task.state.json",
       "size": 351,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "data/tasks/demo/failing-supervisor-check.json",
       "size": 674,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "data/tasks/demo/ui-sanity-check.json",
       "size": 663,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "data/tasks/slices/bootstrap_slice.json",
       "size": 1395,
-      "mtime": 1759962046825
+      "mtime": 1759965981193
     },
     {
       "path": "docs/arch/vibeflow_agent_logic_overview.md",
       "size": 4388,
-      "mtime": 1759962046826
+      "mtime": 1759965981193
     },
     {
       "path": "docs/integrations/openmemory.md",
       "size": 724,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
+    },
+    {
+      "path": "docs/openspec/README.md",
+      "size": 341,
+      "mtime": 1759965981194
     },
     {
       "path": "docs/process/NBE-01.md",
       "size": 726,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
+    },
+    {
+      "path": "docs/reports/repo-snapshot.json",
+      "size": 7407,
+      "mtime": 1759965981194
     },
     {
       "path": "docs/specs/error_taxonomy.md",
       "size": 274,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "docs/specs/prompt_packet.md",
       "size": 474,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "docs/specs/reassignment_policy.md",
       "size": 1225,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "docs/specs/roi_calculator.md",
       "size": 2415,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "docs/ui/task_chips_usage.md",
       "size": 522,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-08_22-20.md",
+      "size": 2396,
+      "mtime": 1759965981194
     },
     {
       "path": "docs/updates/handoff_TEMPLATE.md",
       "size": 242,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "jest.config.js",
       "size": 350,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "manifest.json",
       "size": 82,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "package.json",
       "size": 379,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/contracts/task_contract.schema.json",
       "size": 1911,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/model.status.json",
       "size": 1001,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/policies/routing_policy.schema.json",
       "size": 1188,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/task.state.json",
       "size": 337,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/telemetry/cost_ledger.schema.json",
       "size": 1340,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/telemetry/run_metric.schema.json",
       "size": 1093,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "schemas/telemetry/task_assignment_history.schema.json",
       "size": 1416,
-      "mtime": 1759962046826
+      "mtime": 1759965981194
     },
     {
       "path": "scripts/bootstrap-supabase.mjs",
       "size": 84,
-      "mtime": 1759962046826
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/event-bridge.mjs",
       "size": 1227,
-      "mtime": 1759962046826
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/generate-enriched-handoff.mjs",
-      "size": 2764,
-      "mtime": 1759962046826
+      "size": 3083,
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/generate-handoff.mjs",
       "size": 3040,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
+    },
+    {
+      "path": "scripts/generate-openspec-digest.mjs",
+      "size": 2877,
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/generate-repo-snapshot.mjs",
       "size": 1218,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/notify-brevo.mjs",
       "size": 3659,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/orchestrator/handoff-handler.mjs",
       "size": 1660,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/orchestrator/limit-ledger.mjs",
       "size": 1861,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/orchestrator/reassign-log.mjs",
       "size": 1294,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/plan-apply.mjs",
       "size": 1887,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/propose-next-plan.mjs",
       "size": 1619,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/safe-apply.mjs",
       "size": 2571,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/update-model-status.mjs",
       "size": 1882,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/validate-secrets.mjs",
       "size": 1577,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "scripts/visual/visual-run.mjs",
       "size": 1094,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/adapters/assignmentHistory.ts",
       "size": 1734,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/adapters/memory/OpenMemoryAdapter.ts",
       "size": 1330,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/adapters/roi.ts",
       "size": 1267,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/adapters/visual/browserUse.ts",
       "size": 494,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/adapters/visual/devtoolsMCP.ts",
       "size": 505,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/agents/watcher-agent.mjs",
       "size": 2718,
-      "mtime": 1759962046827
+      "mtime": 1759965981195
     },
     {
       "path": "src/components/dashboard/ModelStatusPanel.tsx",
       "size": 3340,
-      "mtime": 1759962046827
+      "mtime": 1759965981196
     },
     {
       "path": "src/components/dashboard/TaskChips.tsx",
       "size": 1464,
-      "mtime": 1759962046827
+      "mtime": 1759965981196
     },
     {
       "path": "src/dashboard/ModelAnalyticsView.tsx",
       "size": 92,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/dashboard/ProjectProgress.tsx",
       "size": 82,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/mock/modelStatusData.ts",
       "size": 816,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/orchestrator/recordAssignment.ts",
       "size": 1094,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/pages/dashboard/ModelDashboardPage.tsx",
       "size": 447,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/state/deriveTaskStats.ts",
       "size": 2479,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/types/ModelStatus.ts",
       "size": 346,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/types/telemetry.ts",
       "size": 1476,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/utils/events.ts",
       "size": 694,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "src/utils/notify.ts",
       "size": 395,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "supabase/tasks-events.sql",
       "size": 765,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     },
     {
       "path": "tsconfig.json",
       "size": 379,
-      "mtime": 1759962046828
+      "mtime": 1759965981196
     }
   ]
 }
