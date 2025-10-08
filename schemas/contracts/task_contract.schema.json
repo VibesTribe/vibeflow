@@ -1,0 +1,100 @@
+{
+  "$id": "contracts/task_contract.schema.json",
+  "type": "object",
+  "required": [
+    "task_id",
+    "title",
+    "task_type",
+    "domain_tag",
+    "review_policy",
+    "output_schema",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "task_type": {
+      "enum": [
+        "code",
+        "config",
+        "test",
+        "mcp",
+        "ci",
+        "analysis",
+        "design"
+      ]
+    },
+    "domain_tag": {
+      "type": "string"
+    },
+    "review_policy": {
+      "enum": [
+        "auto",
+        "visual_agent",
+        "human",
+        "merge_gate"
+      ],
+      "description": "If task is visual/UI, human review is REQUIRED even after tests pass."
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget_usd": {
+          "type": "number"
+        },
+        "max_tokens": {
+          "type": "integer"
+        },
+        "latency_slo_ms": {
+          "type": "integer"
+        }
+      }
+    },
+    "cost_estimates": {
+      "type": "object",
+      "properties": {
+        "est_tokens_prompt": {
+          "type": "integer"
+        },
+        "est_tokens_output": {
+          "type": "integer"
+        },
+        "counterfactual_api_cost_usd": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "prompt_packet": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "output_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

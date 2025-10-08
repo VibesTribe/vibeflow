@@ -1,0 +1,59 @@
+{
+  "$id": "policies/routing_policy.schema.json",
+  "type": "object",
+  "required": [
+    "weights",
+    "eligibility"
+  ],
+  "properties": {
+    "eligibility": {
+      "type": "object",
+      "properties": {
+        "policy_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_context_tokens": {
+          "type": "integer"
+        },
+        "budget_ceiling_usd": {
+          "type": "number"
+        },
+        "circuit_breakers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "weights": {
+      "type": "object",
+      "properties": {
+        "w1_cosine": {
+          "type": "number"
+        },
+        "w2_resource_gap": {
+          "type": "number"
+        },
+        "w3_expected_cost": {
+          "type": "number"
+        },
+        "w4_historical_success": {
+          "type": "number"
+        },
+        "w5_expected_roi_gain": {
+          "type": "number"
+        },
+        "w6_continuity_bonus": {
+          "type": "number"
+        },
+        "w7_reassignment_penalty": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

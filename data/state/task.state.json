@@ -1,0 +1,20 @@
+{
+  "generated_at": "2025-10-08T00:00:00Z",
+  "tasks": [],
+  "slices": [],
+  "stats": {
+    "totals": {
+      "tasks": 0,
+      "completed": 0,
+      "failed": 0,
+      "running": 0,
+      "queued": 0
+    },
+    "costs": {
+      "vibeflow_cost_usd": 0,
+      "counterfactual_api_cost_usd": 0,
+      "savings_usd": 0,
+      "roi_percent": 0
+    }
+  }
+}

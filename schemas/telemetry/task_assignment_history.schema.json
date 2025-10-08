@@ -1,0 +1,68 @@
+{
+  "$id": "telemetry/task_assignment_history.schema.json",
+  "type": "object",
+  "required": [
+    "task_id",
+    "events"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "timestamp",
+          "action"
+        ],
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action": {
+            "enum": [
+              "assigned",
+              "reassigned",
+              "retry",
+              "completed",
+              "failed"
+            ]
+          },
+          "platform": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "external_chat_url": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "est_tokens_prompt": {
+            "type": "integer"
+          },
+          "est_tokens_output": {
+            "type": "integer"
+          },
+          "counterfactual_api_cost_usd": {
+            "type": "number"
+          },
+          "vibeflow_cost_usd": {
+            "type": "number"
+          },
+          "attempt_idx": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
