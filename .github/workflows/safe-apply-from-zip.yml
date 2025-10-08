@@ -27,7 +27,7 @@ jobs:
           unzip -o __inbox__/bundle.zip -d .
           test -f manifest.json || (echo "manifest.json missing" && exit 1)
 
-      - name: Node
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
