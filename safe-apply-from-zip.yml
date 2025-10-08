@@ -1,0 +1,54 @@
+name: Safe Apply from ZIP (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      zip_url:
+        description: "Public ZIP URL containing __candidates__/ + manifest.json"
+        required: true
+      apply:
+        description: "Actually apply? (true|false)"
+        required: true
+        default: "false"
+
+jobs:
+  safe-apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download ZIP
+        run: |
+          mkdir -p __inbox__
+          curl -L "${{ inputs.zip_url }}" -o __inbox__/bundle.zip
+
+      - name: Unzip candidates + manifest
+        run: |
+          unzip -o __inbox__/bundle.zip -d .
+          test -f manifest.json || (echo "manifest.json missing" && exit 1)
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dry run (plan)
+        run: node scripts/plan-apply.mjs
+
+      - name: Validate secrets
+        run: |
+          test -f config/secrets-registry.json || cp config/secrets-registry.example.json config/secrets-registry.json
+          node scripts/validate-secrets.mjs
+
+      - name: Apply (with backups)
+        if: ${{ inputs.apply == 'true' }}
+        run: node scripts/safe-apply.mjs
+
+      - name: Commit changes
+        if: ${{ inputs.apply == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: safe-apply from ZIP (manual)" || echo "No changes"
+          git push
