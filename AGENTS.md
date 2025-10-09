@@ -1,26 +1,21 @@
-# Vibeflow Codex Agent Guide
+# AGENTS — Vibeflow Rules (All Backends)
 
-## Project Structure
-- Backend: Node.js 20.x + TypeScript, src/ folder
-- Frontend: React 18 + Vite + TailwindCSS, frontend/ folder
-- Database: Supabase (Postgres-compatible), migrations in supabase/migrations
-- Scripts: Utility scripts in scripts/
-- Audit Logs: Stored in Supabase table `audit_log`
-- Git: Branches are `draft/*`, `ready/*`, `main` (protected)
+## Ground rules
+- PR-only; never push to main.
+- No-Blind-Edits (NBE-01): keep diffs minimal; preserve exports/APIs; never guess paths.
+- Secrets: only use names listed in `secrets-registry.json`. Don’t invent env names.
+- OpenSpec: edit `openspec/changes/**` only. Promotion to `openspec/specs/**` happens via the promotion workflow.
 
-## Workflow
-1. Receive a task in JSON format.
-2. Create or update files exactly as listed in `OUTPUT_FORMAT`.
-3. Run tests (`npm test`) and migrations (`supabase migration up`).
-4. If all tests pass, commit to `draft/<TASK_ID>` with message `[TASK_ID] <short description> via codex`.
-5. DO NOT push to `main`. Only human approval merges to `main`.
+## Required steps for any change
+1) If it’s a spec change, create/update `openspec/changes/<slug>.md` (title, rationale, acceptance criteria, touched components).
+2) After code/spec edits, let CI regenerate:
+   - `node scripts/generate-openspec-digest.mjs`
+   - `node scripts/generate-enriched-handoff.mjs`
+3) Commit message:
+   - `docs(openspec): ...` for spec docs
+   - `chore(agent): ...` for code touch
+4) Open a PR; pass Supervisor/Visual/Test gates.
 
-## Testing Rules
-- Every code task must have matching Jest unit tests.
-- UI changes must have Playwright tests (placeholder for now).
-- Security checks (`npm audit`) must run in CI.
-
-## Safety
-- Never delete or overwrite files outside the listed `OUTPUT_FORMAT`.
-- Never drop production tables or schemas.
-- All secrets must go in `.env`, not in code.
+## Execution backends
+- **VSCode Codex (no API key):** run task packets locally; open PR.
+- **OpenCode / Copilot:** run inside GitHub; open PR.
