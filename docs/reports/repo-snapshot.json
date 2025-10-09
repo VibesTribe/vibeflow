@@ -1,490 +1,500 @@
 {
-  "timestamp": "2025-10-09T06:15:12.837Z",
+  "timestamp": "2025-10-09T08:13:32.575Z",
   "files": [
     {
       "path": "AGENTS.md",
       "size": 985,
-      "mtime": 1759990509753
+      "mtime": 1759997609840
     },
     {
       "path": "LICENSE",
       "size": 1,
-      "mtime": 1759990509753
+      "mtime": 1759997609840
     },
     {
       "path": "README.md",
       "size": 99,
-      "mtime": 1759990509753
+      "mtime": 1759997609840
     },
     {
       "path": "README.txt",
       "size": 954,
-      "mtime": 1759990509753
+      "mtime": 1759997609840
     },
     {
       "path": "README_ALERTS.md",
       "size": 572,
-      "mtime": 1759990509753
+      "mtime": 1759997609840
     },
     {
       "path": "README_HANOFF_SNIPPET.md",
       "size": 458,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "README_MODEL_PANEL.md",
       "size": 925,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "README_STATUS.md",
       "size": 1125,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "config/alerts.providers.json",
       "size": 658,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "config/secrets-registry.example.json",
       "size": 122,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/secrets-registry.json",
       "size": 58,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/state/openspec.index.json",
       "size": 77,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/state/task.state.json",
       "size": 351,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/taskpackets/S2.1.json",
       "size": 880,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/tasks/demo/failing-supervisor-check.json",
       "size": 674,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/tasks/demo/ui-sanity-check.json",
       "size": 663,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "data/tasks/slices/bootstrap_slice.json",
       "size": 1395,
-      "mtime": 1759990509753
+      "mtime": 1759997609841
     },
     {
       "path": "docs/arch/overview.md",
       "size": 494,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/arch/vibeflow_agent_logic_overview.md",
       "size": 4388,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/integrations/openmemory.md",
       "size": 724,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/mcp/tools/OpenSpecWriter.tool.json",
       "size": 970,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/mcp/tools/VisualChecklist.tool.json",
       "size": 747,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/openspec/README.md",
       "size": 341,
-      "mtime": 1759990509754
+      "mtime": 1759997609841
     },
     {
       "path": "docs/policies/review_policy.md",
       "size": 278,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/process/NBE-01.md",
       "size": 726,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/reports/repo-snapshot.json",
-      "size": 10725,
-      "mtime": 1759990509754
+      "size": 10854,
+      "mtime": 1759997609842
     },
     {
       "path": "docs/specs/error_taxonomy.md",
       "size": 274,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/specs/prompt_packet.md",
       "size": 474,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/specs/reassignment_policy.md",
       "size": 1225,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/specs/roi_calculator.md",
       "size": 2415,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/ui/task_chips_usage.md",
       "size": 522,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/ANTI_DRIFT_CHANGELOG.md",
       "size": 289,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/OPEN_SPEC_DIGEST.md",
       "size": 83,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_22-20.md",
       "size": 2396,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-26.md",
       "size": 2481,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-31.md",
       "size": 2499,
-      "mtime": 1759990509754
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-32.md",
       "size": 2499,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_00-43.md",
       "size": 2543,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_01-58.md",
       "size": 2543,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_02-54.md",
       "size": 2564,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-06.md",
       "size": 2564,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-23.md",
       "size": 2605,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-24.md",
       "size": 2611,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-26.md",
       "size": 2631,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-11.md",
       "size": 2627,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-32.md",
       "size": 2627,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-59.md",
       "size": 2632,
-      "mtime": 1759990509755
+      "mtime": 1759997609842
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-15.md",
+      "size": 2671,
+      "mtime": 1759997609842
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-40.md",
+      "size": 2671,
+      "mtime": 1759997609843
     },
     {
       "path": "docs/updates/handoff_TEMPLATE.md",
       "size": 242,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "jest.config.js",
       "size": 350,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "manifest.json",
       "size": 82,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "package.json",
       "size": 379,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/contracts/task_contract.schema.json",
       "size": 1911,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/model.status.json",
       "size": 1001,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/policies/routing_policy.schema.json",
       "size": 1188,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/task.state.json",
       "size": 337,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/telemetry/cost_ledger.schema.json",
       "size": 1340,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/telemetry/run_metric.schema.json",
       "size": 1093,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "schemas/telemetry/task_assignment_history.schema.json",
       "size": 1416,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/bootstrap-supabase.mjs",
       "size": 84,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/event-bridge.mjs",
       "size": 1227,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/generate-enriched-handoff.mjs",
       "size": 3083,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/generate-handoff-index.mjs",
       "size": 915,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/generate-handoff.mjs",
       "size": 3040,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/generate-openspec-digest.mjs",
       "size": 2877,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/generate-repo-snapshot.mjs",
       "size": 1218,
-      "mtime": 1759990509755
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/notify-brevo.mjs",
       "size": 3659,
-      "mtime": 1759990509756
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/orchestrator/handoff-handler.mjs",
       "size": 1660,
-      "mtime": 1759990509756
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/orchestrator/limit-ledger.mjs",
       "size": 1861,
-      "mtime": 1759990509756
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/orchestrator/reassign-log.mjs",
       "size": 1294,
-      "mtime": 1759990509756
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/plan-apply.mjs",
       "size": 1887,
-      "mtime": 1759990509756
+      "mtime": 1759997609843
     },
     {
       "path": "scripts/propose-next-plan.mjs",
       "size": 1619,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "scripts/safe-apply.mjs",
       "size": 2571,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "scripts/toolsCli.mjs",
       "size": 1408,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "scripts/update-model-status.mjs",
       "size": 1882,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "scripts/validate-secrets.mjs",
       "size": 1577,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "scripts/visual/visual-run.mjs",
       "size": 1142,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/assignmentHistory.ts",
       "size": 1734,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/memory/OpenMemoryAdapter.ts",
       "size": 1330,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/roi.ts",
       "size": 1267,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/tools/ToolRunner.ts",
       "size": 2102,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/visual/browserUse.ts",
       "size": 494,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/adapters/visual/devtoolsMCP.ts",
       "size": 505,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/agents/watcher-agent.mjs",
       "size": 2718,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/components/dashboard/ModelStatusPanel.tsx",
       "size": 3340,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/components/dashboard/TaskChips.tsx",
       "size": 1464,
-      "mtime": 1759990509756
+      "mtime": 1759997609844
     },
     {
       "path": "src/dashboard/ModelAnalyticsView.tsx",
       "size": 92,
-      "mtime": 1759990509757
+      "mtime": 1759997609844
     },
     {
       "path": "src/dashboard/ProjectProgress.tsx",
       "size": 82,
-      "mtime": 1759990509757
+      "mtime": 1759997609844
     },
     {
       "path": "src/mock/modelStatusData.ts",
       "size": 816,
-      "mtime": 1759990509757
+      "mtime": 1759997609844
     },
     {
       "path": "src/orchestrator/recordAssignment.ts",
       "size": 1094,
-      "mtime": 1759990509757
+      "mtime": 1759997609844
     },
     {
       "path": "src/pages/dashboard/ModelDashboardPage.tsx",
       "size": 447,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "src/state/deriveTaskStats.ts",
       "size": 2479,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "src/types/ModelStatus.ts",
       "size": 346,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "src/types/telemetry.ts",
       "size": 1476,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "src/utils/events.ts",
       "size": 694,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "src/utils/notify.ts",
       "size": 395,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "supabase/tasks-events.sql",
       "size": 765,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     },
     {
       "path": "tsconfig.json",
       "size": 379,
-      "mtime": 1759990509757
+      "mtime": 1759997609845
     }
   ]
 }
