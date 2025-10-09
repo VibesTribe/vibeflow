@@ -1,0 +1,28 @@
+name: Pages — Sync Dashboard Assets
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'data/state/**'
+      - 'docs/reports/repo-snapshot.json'
+      - 'scripts/sync-dashboard-assets.mjs'
+  schedule:
+    - cron: '5 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/sync-dashboard-assets.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/state/*.json || true
+          git commit -m 'chore(pages): sync dashboard assets' || echo 'No changes'
+          git push
