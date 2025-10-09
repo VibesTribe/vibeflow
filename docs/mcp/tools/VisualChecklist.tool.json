@@ -1,0 +1,43 @@
+{
+  "name": "VisualChecklist@v1",
+  "description": "Create/update a per-task visual checklist doc",
+  "input": {
+    "type": "object",
+    "required": [
+      "task_id",
+      "items"
+    ],
+    "properties": {
+      "task_id": {
+        "type": "string",
+        "maxLength": 40
+      },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 50
+      }
+    },
+    "additionalProperties": false
+  },
+  "output": {
+    "type": "object",
+    "required": [
+      "path",
+      "updated"
+    ],
+    "properties": {
+      "path": {
+        "type": "string"
+      },
+      "updated": {
+        "type": "boolean"
+      }
+    }
+  },
+  "allowlistPaths": [
+    "docs/visual/checklists/"
+  ]
+}
