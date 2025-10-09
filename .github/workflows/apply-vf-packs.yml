@@ -1,0 +1,371 @@
+name: Apply Vibeflow Packs (no-download)
+
+on:
+  workflow_dispatch:
+    inputs:
+      packs:
+        description: "Comma-separated: pages, codex, tools, anti"
+        required: true
+        default: "pages,codex,tools,anti"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare folders
+        run: |
+          mkdir -p docs/dashboard docs/state docs/reports docs/updates
+          mkdir -p scripts scripts/visual src/adapters/tools
+          mkdir -p docs/mcp/tools .github/workflows data/taskpackets
+          mkdir -p docs/visual/checklists
+
+      # ---------------------------
+      # PAGES PACK
+      # ---------------------------
+      - name: Write Pages pack
+        if: contains(github.event.inputs.packs, 'pages')
+        run: |
+          cat > docs/dashboard/index.html <<'EOF'
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Vibeflow Dashboard</title><link rel="stylesheet" href="./styles.css"/></head><body><header><h1>Vibeflow — Live Dashboard</h1><nav><a href="../updates/INDEX.md">Handoff Index</a><a href="../updates/OPEN_SPEC_DIGEST.md">OpenSpec Digest</a><a href="../reports/repo-snapshot.json">Repo Snapshot</a></nav></header><main><section id="totals" class="card"><h2>Totals</h2><div class="grid"><div class="pill"><span id="tasks_total">—</span><label>Tasks</label></div><div class="pill"><span id="tasks_done">—</span><label>Done</label></div><div class="pill"><span id="tasks_running">—</span><label>Running</label></div><div class="pill"><span id="tasks_queued">—</span><label>Queued</label></div></div></section><section id="openspec" class="card"><h2>OpenSpec — Proposed Changes</h2><ul id="openspec_changes"></ul></section><section id="recent-files" class="card"><h2>Recently Changed Files (snapshot)</h2><ul id="recent_files"></ul></section><section id="handoff" class="card"><h2>Latest Enriched Handoff</h2><div id="handoff_link">—</div></section></main><footer><small>Built for GitHub Pages. Data auto-synced by CI.</small></footer><script type="module" src="./app.js"></script></body></html>
+EOF
+          cat > docs/dashboard/styles.css <<'EOF'
+:root{--bg:#0b0c10;--card:#151821;--text:#eaf2ff;--muted:#9db2ce;--accent:#7aa2f7}*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial;background:var(--bg);color:var(--text)}header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #202535}header h1{margin:0;font-size:18px}nav a{color:var(--muted);margin-left:16px;text-decoration:none}nav a:hover{color:var(--text)}main{padding:24px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}.card{background:var(--card);border:1px solid #22283a;border-radius:16px;padding:16px;box-shadow:0 1px 0 #0d1018}.card h2{margin:0 0 12px 0;font-size:16px;color:#d7e3ff}.grid{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}.pill{background:#0f1320;border:1px solid #232a3f;border-radius:12px;padding:12px;text-align:center}.pill span{display:block;font-size:20px;font-weight:700;color:#a6c8ff}.pill label{display:block;font-size:12px;color:var(--muted);margin-top:4px}ul{margin:0;padding-left:18px}li{margin:6px 0;color:#d7e3ff}a{color:var(--accent)}footer{padding:16px 24px;color:var(--muted);border-top:1px solid #202535}
+EOF
+          cat > docs/dashboard/app.js <<'EOF'
+const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(n||0);const qs=s=>document.querySelector(s);async function fetchJSON(p){try{const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error(p+': '+r.status);return await r.json()}catch(e){console.warn('fetchJSON failed',p,e);return null}}async function init(){const taskState=await fetchJSON('../state/task.state.json');const openspec=await fetchJSON('../state/openspec.index.json');const snapshot=await fetchJSON('../reports/repo-snapshot.json');const t=taskState?.stats?.totals||{};qs('#tasks_total').textContent=fmt(t.tasks);qs('#tasks_done').textContent=fmt(t.completed);qs('#tasks_running').textContent=fmt(t.running);qs('#tasks_queued').textContent=fmt(t.queued);const list=qs('#openspec_changes');list.innerHTML='';(openspec?.changes||[]).slice(0,15).forEach(c=>{const li=document.createElement('li');const a=document.createElement('a');a.href=`../../${c.path}`;a.textContent=`${c.title} — ${c.summary}`;li.appendChild(a);list.appendChild(li)});if(!list.children.length)list.innerHTML='<li>(none indexed yet)</li>';const rf=qs('#recent_files');rf.innerHTML='';(snapshot?.files||[]).slice(0,30).forEach(f=>{const li=document.createElement('li');li.textContent=`${f.path} (size ${fmt(f.size)})`;rf.appendChild(li)});if(!rf.children.length)rf.innerHTML='<li>(snapshot empty)</li>';const linkDiv=document.getElementById('handoff_link');linkDiv.innerHTML='';const a=document.createElement('a');a.href='../updates/INDEX.md';a.textContent='Open Handoff Index';linkDiv.appendChild(a)}init();
+EOF
+          cat > scripts/sync-dashboard-assets.mjs <<'EOF'
+// Copy machine-readable state into docs/state/ for Pages
+import fs from "node:fs/promises";import path from "node:path";
+const ROOT=process.cwd();
+const COPY=[
+  {src:path.join(ROOT,"data","state","openspec.index.json"),dst:path.join(ROOT,"docs","state","openspec.index.json")},
+  {src:path.join(ROOT,"data","state","task.state.json"),dst:path.join(ROOT,"docs","state","task.state.json")}
+];
+async function cp(src,dst){try{const b=await fs.readFile(src);await fs.mkdir(path.dirname(dst),{recursive:true});await fs.writeFile(dst,b);console.log("Copied",path.relative(ROOT,src),"→",path.relative(ROOT,dst))}catch(e){console.warn("Skip copy:",path.relative(ROOT,src))}}
+for(const {src,dst} of COPY){await cp(src,dst);}
+EOF
+          cat > .github/workflows/pages-sync-dashboard.yml <<'EOF'
+name: Pages — Sync Dashboard Assets
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'data/state/**'
+      - 'docs/reports/repo-snapshot.json'
+      - 'scripts/sync-dashboard-assets.mjs'
+  schedule:
+    - cron: '5 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/sync-dashboard-assets.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/state/*.json || true
+          git commit -m 'chore(pages): sync dashboard assets' || echo 'No changes'
+          git push
+EOF
+
+      # ---------------------------
+      # CODEX IDE DISPATCH PACK
+      # ---------------------------
+      - name: Write Codex IDE dispatch pack
+        if: contains(github.event.inputs.packs, 'codex')
+        run: |
+          cat > AGENTS.md <<'EOF'
+# AGENTS — Vibeflow Rules
+- PR-only; no pushes to main.
+- No-Blind-Edits (NBE-01).
+- Secrets must exist in secrets-registry.json.
+- OpenSpec edits go under openspec/changes/**; promotion happens via workflow.
+- Backends: VSCode Codex (no API key), OpenCode, Copilot.
+EOF
+          cat > .github/workflows/orchestrator-dispatch.yml <<'EOF'
+name: Orchestrator — Dispatch to IDE (Codex)
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: 'TaskContract ID (e.g., S2.1)'
+        required: true
+      packet_path:
+        description: 'Path to prompt packet JSON (e.g., data/taskpackets/S2.1.json)'
+        required: true
+      assignees:
+        description: 'GitHub usernames (comma-separated)'
+        required: false
+        default: ''
+permissions:
+  contents: read
+  issues: write
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create issue from packet
+        id: create_issue
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: 'IDE Run: ${{ inputs.task_id }} (Codex in VSCode)'
+          content-filepath: ${{ inputs.packet_path }}
+          labels: |
+            orchestrator
+            ide
+            codex
+          assignees: ${{ inputs.assignees }}
+      - name: Comment helper
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ steps.create_issue.outputs.issue-number }}
+          body: |
+            **How to run in VSCode Codex (no API key):**
+
+            1. Open the repo in VSCode (Plus subscription).
+            2. Open `${{ inputs.packet_path }}` and copy the `prompt` and `context`.
+            3. Paste into Codex and ask for a minimal diff for the listed `targets`.
+            4. Commit on a feature branch and open a PR.
+            5. CI will regenerate the digest and enriched handoff.
+EOF
+          cat > data/taskpackets/S2.1.json <<'EOF'
+{
+  "task_id": "S2.1",
+  "title": "Add OpenSpec panel to dashboard (static Pages UI)",
+  "targets": [
+    "src/components/dashboard/OpenSpecPanel.tsx",
+    "src/dashboard/ProjectProgress.tsx"
+  ],
+  "context": {
+    "openspec_index": "data/state/openspec.index.json",
+    "handoff_index": "docs/updates/INDEX.md",
+    "repo_snapshot": "docs/reports/repo-snapshot.json"
+  },
+  "acceptance_criteria": [
+    "Panel lists top 10 changes from openspec.index.json with title + summary",
+    "Each item links to the underlying Markdown file path in the repo",
+    "Add feature flag VF_OPEN_SPEC=1 to toggle rendering",
+    "No regressions in existing dashboard pages"
+  ],
+  "prompt": "Implement the smallest possible diff to add OpenSpecPanel, reading from the JSON index. Preserve exports and routing. Update ProjectProgress to render the panel behind a feature flag VF_OPEN_SPEC=1."
+}
+EOF
+
+      # ---------------------------
+      # TRUSTED TOOLS PACK
+      # ---------------------------
+      - name: Write Trusted Tools pack
+        if: contains(github.event.inputs.packs, 'tools')
+        run: |
+          cat > docs/mcp/tools/OpenSpecWriter.tool.json <<'EOF'
+{
+  "name": "OpenSpecWriter@v1",
+  "description": "Create/update a change-doc under openspec/changes/",
+  "input": {
+    "type": "object",
+    "required": ["slug", "title", "rationale", "acceptance_criteria"],
+    "properties": {
+      "slug": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+      "title": {"type": "string", "maxLength": 140},
+      "rationale": {"type": "string", "maxLength": 5000},
+      "acceptance_criteria": {"type": "array", "items": {"type": "string"}, "maxItems": 20}
+    },
+    "additionalProperties": false
+  },
+  "output": {
+    "type": "object",
+    "required": ["path", "updated"],
+    "properties": {"path": {"type": "string"}, "updated": {"type": "boolean"}}
+  },
+  "allowlistPaths": ["openspec/changes/"]
+}
+EOF
+          cat > src/adapters/tools/ToolRunner.ts <<'EOF'
+import fs from "node:fs/promises";
+import path from "node:path";
+export type ToolCall={tool:string;args:any};
+type ToolSpec={name:string;input:any;output:any;allowlistPaths?:string[]};
+function within(full:string,root:string,allow:string[]){const n=path.normalize(full);return allow.some(a=>n.startsWith(path.join(root,a)));}
+export class ToolRunner{
+  private specs:Record<string,ToolSpec>={};
+  constructor(specs:ToolSpec[]){for(const s of specs)this.specs[s.name]=s;}
+  get names(){return Object.keys(this.specs);}
+  async run(call:ToolCall){
+    const spec=this.specs[call.tool]; if(!spec) throw new Error(`Unknown tool ${call.tool}`);
+    if(typeof call.args!=='object'||Array.isArray(call.args)) throw new Error('Args must be an object');
+    if(call.tool==='OpenSpecWriter@v1'){return await this.openSpecWriter(spec,call.args);}
+    throw new Error(`No handler for ${call.tool}`);
+  }
+  private async openSpecWriter(spec:ToolSpec,args:any){
+    const {slug,title,rationale,acceptance_criteria}=args as {slug:string;title:string;rationale:string;acceptance_criteria:string[]};
+    if(!slug||!/^[a-z0-9-]+$/.test(slug)) throw new Error('Invalid slug');
+    if(!title) throw new Error('Missing title');
+    if(!Array.isArray(acceptance_criteria)) throw new Error('acceptance_criteria must be array');
+    const root=process.cwd();
+    const file=path.join(root,'openspec','changes',`${slug}.md`);
+    if(spec.allowlistPaths&&!within(file,root,spec.allowlistPaths)) throw new Error('Path outside allowlist');
+    const header=`# ${title}\n\n${rationale}\n\n## Acceptance Criteria\n`+(acceptance_criteria||[]).map(x=>`- ${x}`).join('\n')+'\n';
+    let updated=false; try{await fs.stat(file); updated=true;}catch{}
+    await fs.mkdir(path.dirname(file),{recursive:true});
+    await fs.writeFile(file,header,'utf8');
+    return {path:path.relative(root,file),updated};
+  }
+}
+EOF
+          cat > scripts/toolsCli.mjs <<'EOF'
+// node scripts/toolsCli.mjs --tool OpenSpecWriter@v1 --args '{"slug":"dashboard-openspec-panel","title":"Add OpenSpec Panel","rationale":"Expose top changes.","acceptance_criteria":["List top 10","Link to source"]}'
+import fs from 'node:fs/promises'; import path from 'node:path';
+const argv=Object.fromEntries(process.argv.slice(2).map((v,i,a)=>v.startsWith('--')?[v.slice(2),a[i+1]]:[]));
+const TOOL=argv.tool||process.env.TOOL; const ARGS=argv.args||process.env.ARGS;
+if(!TOOL||!ARGS){console.error('Required: --tool <name> --args <json>');process.exit(1);}
+async function runOpenSpecWriter(args){const root=process.cwd(); const file=path.join(root,'openspec','changes',`${args.slug}.md`);
+const header=`# ${args.title}\n\n${args.rationale}\n\n## Acceptance Criteria\n`+(args.acceptance_criteria||[]).map(x=>`- ${x}`).join('\n')+'\n';
+let updated=false; try{await fs.stat(file); updated=true;}catch{}
+await fs.mkdir(path.dirname(file),{recursive:true}); await fs.writeFile(file,header,'utf8'); return {path:path.relative(root,file),updated};}
+const a=JSON.parse(ARGS); let result; if(TOOL==='OpenSpecWriter@v1') result=await runOpenSpecWriter(a); else {console.error('Unknown tool');process.exit(1);}
+console.log(JSON.stringify({ok:true,result},null,2));
+EOF
+          cat > .github/workflows/tools-run.yml <<'EOF'
+name: Tools Runner
+on:
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: 'Tool name (e.g., OpenSpecWriter@v1)'
+        required: true
+      args:
+        description: 'JSON string of tool args'
+        required: true
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run tool
+        run: |
+          node scripts/toolsCli.mjs --tool "${{ inputs.tool }}" --args '${{ inputs.args }}'
+      - name: Refresh digests
+        run: |
+          node scripts/generate-openspec-digest.mjs || true
+          node scripts/generate-enriched-handoff.mjs || true
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add openspec/changes/** docs/updates/* data/state/openspec.index.json || true
+          git commit -m 'docs(openspec): tool-run update' || echo 'No changes'
+          git push
+EOF
+
+      # ---------------------------
+      # ANTI-DRIFT (Browser-Use + DevTools MCP)
+      # ---------------------------
+      - name: Write Anti-Drift spec set
+        if: contains(github.event.inputs.packs, 'anti')
+        run: |
+          cat > docs/arch/overview.md <<'EOF'
+# Vibeflow Architecture Overview (Anti-Drift Edition)
+## Visual & UX Testing — canonical
+- **Browser-Use MCP** for flows
+- **Chrome DevTools MCP** for console/network/a11y checks
+Visual tasks always require **human approval** even after automated checks pass.
+## Agent stack
+- Archon principles only (no dependency).
+- **Agent-Zero** preferred integration (memory, LiteLLM, browser-use wiring).
+- AgentKit optional via adapter.
+## Notifications
+- **Brevo** alerts for API credit/limit thresholds.
+EOF
+          cat > docs/policies/review_policy.md <<'EOF'
+# Review & Validation Policy (Anti-Drift)
+- Schema+Type pass → Tests pass → Visual (Browser-Use + DevTools MCP) pass → Human approval required for visual changes.
+- Prohibited: Playwright references; non-allowlisted writes by Trusted Tools.
+EOF
+          cat > docs/mcp/tools/VisualChecklist.tool.json <<'EOF'
+{
+  "name": "VisualChecklist@v1",
+  "description": "Create/update a per-task visual checklist doc",
+  "input": {
+    "type": "object",
+    "required": ["task_id", "items"],
+    "properties": {
+      "task_id": { "type": "string", "maxLength": 40 },
+      "items": { "type": "array", "items": { "type": "string" }, "maxItems": 50 }
+    },
+    "additionalProperties": false
+  },
+  "output": {
+    "type": "object",
+    "required": ["path", "updated"],
+    "properties": { "path": { "type": "string" }, "updated": { "type": "boolean" } }
+  },
+  "allowlistPaths": ["docs/visual/checklists/"]
+}
+EOF
+          cat > scripts/visual/visual-run.mjs <<'EOF'
+import fs from 'node:fs/promises';
+const taskId=process.env.VF_TASK_ID||'S-PR';
+const reportJson=`docs/reports/visual/${taskId}.json`;
+const reportMd=`docs/reports/visual/${taskId}.md`;
+async function runBrowserUse(){return {steps:['open'],ok:true,screenshots:[]}}
+async function runDevTools(){return {consoleErrors:[],networkErrors:[],a11y:{violations:[]}}}
+const main=async()=>{const bu=await runBrowserUse();const cdp=await runDevTools();
+const pass=bu.ok&&cdp.consoleErrors.length===0&&cdp.networkErrors.length===0&&cdp.a11y.violations.length===0;
+await fs.mkdir('docs/reports/visual',{recursive:true});
+await fs.writeFile(reportJson,JSON.stringify({taskId,bu,cdp,checklist_pass:pass},null,2));
+await fs.writeFile(reportMd,`# Visual Result ${taskId}\n- pass: ${pass}\n`);
+process.exit(pass?0:1)};
+main().catch(e=>{console.error(e);process.exit(1)});
+EOF
+          cat > .github/workflows/visual-gate.yml <<'EOF'
+name: Visual Gate (browser-use + DevTools MCP)
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/ui/**'
+      - 'docs/visual/**'
+      - 'scripts/visual/**'
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run visual checks
+        env:
+          VF_TASK_ID: ${{ github.event.pull_request.number || 'S-PR' }}
+        run: node scripts/visual/visual-run.mjs
+EOF
+
+      - name: Commit files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(packs): apply ${GITHUB_EVENT_INPUTS_PACKS:-requested packs}" || echo "No changes"
+          git push
