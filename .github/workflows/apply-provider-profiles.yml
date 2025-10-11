@@ -1,0 +1,189 @@
+name: Apply Provider Profiles (OpenCode, KAT, GLM46, OpenRouter, Codex, Gemini)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare folders
+        run: |
+          mkdir -p config/opencode
+          mkdir -p docs/integrations
+          mkdir -p scripts/providers
+
+      - name: Write config/providers.json
+        run: |
+          cat > config/providers.json <<'EOF'
+{
+  "opencode_kat": {
+    "kind": "terminal",
+    "model": "kat-coder",
+    "notes": "OpenCode configured to use KAT-Coder via StreamLake (endpoint+key required).",
+    "env": ["KAT_ENDPOINT", "KAT_API_KEY"],
+    "cost": "free/varies",
+    "recommended": true
+  },
+  "opencode_glm46": {
+    "kind": "terminal",
+    "model": "glm-4.6",
+    "notes": "GLM 4.6 Coding plan (you paid $3/mo).",
+    "env": [],
+    "cost": 3
+  },
+  "opencode_openrouter": {
+    "kind": "terminal",
+    "model": "openrouter:open-inference-free",
+    "notes": "Use OpenRouter 'Open Inference' free models when available.",
+    "env": ["OPENROUTER_API_KEY"],
+    "cost": 0
+  },
+  "codex": {
+    "kind": "ide",
+    "model": "chatgpt-plus",
+    "notes": "VS Code Codex; uses your ChatGPT Plus sign-in.",
+    "env": [],
+    "cost": "account"
+  },
+  "gemini_cli": {
+    "kind": "terminal",
+    "model": "gemini-2.5-pro",
+    "notes": "Gemini CLI; generous free tier; no dashboard keys needed.",
+    "env": ["GEMINI_API_KEY?"],
+    "cost": 0
+  }
+}
+EOF
+
+      - name: Write config/opencode/profiles.json
+        run: |
+          cat > config/opencode/profiles.json <<'EOF'
+{
+  "kat": {
+    "name": "KAT-Coder via StreamLake",
+    "env_required": ["KAT_ENDPOINT", "KAT_API_KEY"],
+    "command": "opencode --provider http --endpoint \"$KAT_ENDPOINT\" --api-key \"$KAT_API_KEY\""
+  },
+  "glm46": {
+    "name": "GLM-4.6 Coding Plan",
+    "env_required": [],
+    "command": "opencode --model glm-4.6"
+  },
+  "openrouter": {
+    "name": "OpenRouter Open Inference",
+    "env_required": ["OPENROUTER_API_KEY"],
+    "command": "opencode --provider openrouter --api-key \"$OPENROUTER_API_KEY\""
+  }
+}
+EOF
+
+      - name: Write scripts/providers/run-packet-locally.mjs
+        run: |
+          cat > scripts/providers/run-packet-locally.mjs <<'EOF'
+// Usage:
+//   node scripts/providers/run-packet-locally.mjs data/taskpackets/S2.1.json
+// Prints copy/paste blocks for OpenCode (KAT/GLM/OpenRouter), Codex, and Gemini CLI.
+
+import fs from "node:fs/promises";
+
+const [,, pktPath] = process.argv;
+if (!pktPath) {
+  console.error("Usage: node scripts/providers/run-packet-locally.mjs <packet.json>");
+  process.exit(1);
+}
+
+const pkt = JSON.parse(await fs.readFile(pktPath, "utf8"));
+const { task_id, title, targets = [], context = {}, prompt, acceptance_criteria = [] } = pkt;
+
+function mdBlock(label, body) {
+  return `\n### ${label}\n\`\`\`\n${body.trim()}\n\`\`\`\n`;
+}
+
+function packetText() {
+  const ctx = JSON.stringify(context, null, 2);
+  const acc = acceptance_criteria.map(a => `- ${a}`).join("\n");
+  return `Task: ${task_id} — ${title}
+
+Targets:
+${targets.map(t => `- ${t}`).join("\n")}
+
+Context:
+${ctx}
+
+Acceptance Criteria:
+${acc}
+
+Prompt:
+${prompt}
+`;
+}
+
+const base = packetText();
+
+const opencodeKAT = `
+# OpenCode + KAT-Coder (requires KAT_ENDPOINT + KAT_API_KEY in your shell)
+opencode --provider http --endpoint "$KAT_ENDPOINT" --api-key "$KAT_API_KEY"
+
+# Paste this task packet to the model:
+${base}
+`;
+
+const opencodeGLM = `
+# OpenCode + GLM-4.6 (your $3/mo plan)
+opencode --model glm-4.6
+
+# Paste this task packet to the model:
+${base}
+`;
+
+const opencodeOR = `
+# OpenCode + OpenRouter Open Inference (set OPENROUTER_API_KEY)
+opencode --provider openrouter --api-key "$OPENROUTER_API_KEY"
+
+# Paste this task packet to the model:
+${base}
+`;
+
+const codexVSCode = `
+# VSCode Codex (signed in with ChatGPT Plus)
+# 1) Open repo in VSCode
+# 2) Open the packet file: ${pktPath}
+# 3) Copy "Prompt" + "Context" into Codex and request the smallest diff for the listed targets
+# 4) Commit on a feature branch and open a PR
+${base}
+`;
+
+const geminiCLI = `
+# Gemini CLI (if installed; free tier applies)
+gemini shell
+
+# Paste this task packet to the model:
+${base}
+`;
+
+console.log(mdBlock("OpenCode — KAT-Coder", opencodeKAT));
+console.log(mdBlock("OpenCode — GLM-4.6", opencodeGLM));
+console.log(mdBlock("OpenCode — OpenRouter", opencodeOR));
+console.log(mdBlock("VSCode Codex", codexVSCode));
+console.log(mdBlock("Gemini CLI", geminiCLI));
+EOF
+
+      - name: Write docs/integrations/opencode.md
+        run: |
+          cat > docs/integrations/opencode.md <<'EOF'
+# OpenCode Integration (KAT-Coder, GLM-4.6, OpenRouter)
+
+## Profiles
+- **KAT-Coder**: requires `KAT_ENDPOINT`, `KAT_API_KEY` in your shell.
+- **GLM-4.6**: uses your $3/mo coding plan (no key).
+- **OpenRouter (Open Inference)**: requires `OPENROUTER_API_KEY`.
+
+## Run a Packet
+1) Pick a packet, e.g., `data/taskpackets/S2.1.json`
+2) Generate client-ready blocks:
