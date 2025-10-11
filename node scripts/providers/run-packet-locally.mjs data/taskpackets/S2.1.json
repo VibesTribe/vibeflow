@@ -1,0 +1,15 @@
+3) Choose your client block (KAT/GLM/OpenRouter), run OpenCode, paste the packet, produce the minimal diff, commit on a branch, open a PR.
+4) CI records events → Supabase → dashboard shows timeline & costs.
+
+## Environment Variables
+- `KAT_ENDPOINT` (e.g., StreamLake endpoint), `KAT_API_KEY`
+- `OPENROUTER_API_KEY` (optional if you use their free tier)
+EOF
+
+   - name: Commit files
+     run: |
+       git config user.name "github-actions[bot]"
+       git config user.email "github-actions[bot]@users.noreply.github.com"
+       git add config/** scripts/providers/** docs/integrations/opencode.md
+       git commit -m "chore(providers): add OpenCode+KAT/GLM46/OpenRouter profiles and packet helper"
+       git push
