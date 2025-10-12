@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/idea.status.schema.json",
+  "title": "IdeaStatus",
+  "type": "object",
+  "required": ["idea_id", "stage", "history"],
+  "properties": {
+    "idea_id": { "type": "string" },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "idea_submitted",
+        "research_completed",
+        "analyst_approved",
+        "prd_approved",
+        "plan_generated",
+        "supervisor_ready",
+        "orchestration_started"
+      ]
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "timestamp"],
+        "properties": {
+          "stage": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

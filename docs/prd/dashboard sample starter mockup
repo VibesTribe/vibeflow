@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vibeflow – Execution Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --completed:#4CAF50;
+      --in-progress:#2196F3;
+      --planned-independent:#800080;
+      --planned-dependent:#4B0082;
+      --card-bg:#ffffff;
+      --page-bg:#f8f9fa;
+      --text:#333;
+      --muted:#666;
+      --shadow:0 2px 8px rgba(0,0,0,0.08);
+      --radius:10px;
+      --bar-track:#e9ecef;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page-bg);font-family:Arial,Helvetica,sans-serif;color:var(--text);}    
+
+    /* Layout */
+    .app { display:flex; min-height:100vh; }
+    .sidebar {
+      width:56px; background:#2c3e50; color:#fff; flex-shrink:0;
+      transition:width .25s ease; position:relative;
+      box-shadow: var(--shadow);
+    }
+    .sidebar.expanded{ width:260px; }
+    .sidebar-toggle{ padding:12px; text-align:right; cursor:pointer;}
+    .sidebar .chev{ color:#fff; }
+    .side-items{ padding:8px; }
+    .side-item{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px; color:#ecf0f1; border-radius:8px;
+      cursor:pointer; transition:background .15s ease;
+    }
+    .side-item:hover{ background:#34495e; }
+    .side-text{ opacity:0; white-space:nowrap; transition:opacity .2s ease; }
+    .sidebar.expanded .side-text{ opacity:1; }
+
+    .content { flex:1; display:flex; flex-direction:column; min-width:0; }
+
+    /* Header */
+    .project-header{
+      position:sticky; top:0; z-index:5; background:var(--page-bg);
+      padding:18px 18px 10px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .project-title{ display:flex; align-items:baseline; gap:12px; }
+    .project-title h1{ margin:0; font-size:20px; }
+    .project-desc{ color:var(--muted); margin-top:6px; }
+
+    .progress {
+      background:var(--bar-track); height:18px; border-radius:999px; overflow:hidden;
+      margin-top:12px;
+    }
+    .progress-fill{
+      height:100%; width:0%; background:linear-gradient(90deg,#2ecc71,var(--completed));
+      color:#fff; font-size:12px; line-height:18px; text-align:center;
+      min-width: 24px; /* ensures small % still visible */
+      transition: width .35s ease;
+    }
+
+    /* Phases */
+    .phases { padding:18px; }
+    .phase {
+      background:var(--card-bg); border-radius:var(--radius); box-shadow:var(--shadow);
+      margin-bottom:14px; overflow:hidden;
+    }
+    .phase-head{
+      padding:14px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+      background: #fff;
+    }
+    .phase-name{ font-weight:700; }
+    .phase-prog{ flex:0 0 280px; display:flex; align-items:center; gap:10px; }
+    .phase-bar{ flex:1; height:10px; background:var(--bar-track); border-radius:999px; overflow:hidden; }
+    .phase-fill{ height:100%; background:var(--in-progress); width:0%; min-width: 12px; transition: width .3s ease; }
+    .phase-body{ display:none; padding:10px 14px 14px; }
+
+    /* Tasks / Subtasks */
+    .task {
+      background:#fff; border-radius:8px; box-shadow:var(--shadow);
+      padding:12px; margin:8px 0;
+      border-left:4px solid transparent; transition: transform .12s ease;
+    }
+    .task:hover{ transform:translateX(2px); }
+
+    .task-header { display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+    .task-title { font-weight:600; }
+    .task-meta { color:var(--muted); font-size:12px; }
+    .task-details { display:none; margin-top:10px; font-size:14px; }
+    .task-row { margin:4px 0; }
+    .pill { font-size:12px; padding:2px 8px; border-radius:999px; background:#eef2f7; color:#334; margin-left:8px; }
+
+    /* Status coloring */
+    .status-completed { border-left-color: var(--completed); background: rgba(76,175,80,0.08); }
+    .status-in-progress { border-left-color: var(--in-progress); background: rgba(33,150,243,0.08); }
+    .status-planned-independent { border-left-color: var(--planned-independent); background: rgba(128,0,128,0.08); }
+    .status-planned-dependent { border-left-color: var(--planned-dependent); background: rgba(75,0,130,0.08); }
+
+    /* Actions */
+    .actions { display:flex; gap:8px; align-items:center; }
+    .btn{
+      border:1px solid #ccc; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer;
+    }
+    .btn:hover{ background:#f3f4f6; }
+
+    /* Modal */
+    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; z-index:50; }
+    .modal{
+      position:fixed; inset:auto; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:min(720px,92vw); background:#fff; border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,0.25);
+      display:none; z-index:51;
+    }
+    .modal-head{ padding:14px 16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; }
+    .modal-title{ font-weight:700; }
+    .modal-body{ padding:14px 16px; }
+    .modal-footer{ padding:12px 16px; border-top:1px solid #eee; display:flex; justify-content:flex-end; gap:8px; }
+    textarea.prompt-edit{
+      width:100%; min-height:140px; resize:vertical; font-family:inherit; font-size:14px; padding:10px;
+      border:1px solid #ddd; border-radius:8px; background:#fcfcfc;
+    }
+    .link { color:#1666c5; text-decoration:none; }
+    .link:hover{text-decoration:underline}
+
+    /* Header legend */
+    .legend{ display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+    .legend-item{ display:flex; align-items:center; gap:6px; color:#555; font-size:12px; }
+    .legend-swatch{ width:12px; height:12px; border-radius:3px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-chevron-right chev"></i>
+      </div>
+      <div class="side-items">
+        <div class="side-item" onclick="openFolder()">
+          <i class="fa-solid fa-folder-open" style="width:18px;"></i>
+          <div class="side-text">Open Folder</div>
+        </div>
+        <div class="side-item" onclick="openRepo()">
+          <i class="fa-brands fa-github" style="width:18px;"></i>
+          <div class="side-text">GitHub Repo</div>
+        </div>
+        <div class="side-item" onclick="uploadFiles()">
+          <i class="fa-solid fa-upload" style="width:18px;"></i>
+          <div class="side-text">Upload Files</div>
+        </div>
+        <div class="side-item" onclick="refreshData()">
+          <i class="fa-solid fa-rotate" style="width:18px;"></i>
+          <div class="side-text">Refresh</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+      <!-- Project header -->
+      <section class="project-header">
+        <div class="project-title">
+          <h1 id="projectName">Vibeflow</h1>
+          <span class="pill" title="schema">Modular Phases</span>
+        </div>
+        <div id="projectDesc" class="project-desc">
+          AI-assisted execution planner with atomic tasks, prompt editing, and strict roll-up progress.
+        </div>
+        <div class="progress" title="Overall progress">
+          <div id="overallFill" class="progress-fill">0%</div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><span class="legend-swatch" style="background:var(--completed)"></span>Completed</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:var(--in-progress)"></span>In Progress</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:var(--planned-independent)"></span>Planned (Independent)</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:var(--planned-dependent)"></span>Planned (Dependent)</div>
+        </div>
+      </section>
+
+      <section class="phases" id="phases"></section>
+    </main>
+  </div>
+
+  <!-- Prompt Edit Modal -->
+  <div class="overlay" id="overlay"></div>
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Edit Prompt</div>
+      <button class="btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <label for="promptArea" style="display:block; font-weight:600; margin-bottom:6px;">Prompt</label>
+      <textarea id="promptArea" class="prompt-edit"></textarea>
+
+      <div id="editHint" style="color:#777; font-size:12px; margin-top:8px;">
+        Keep it minimal and explicit (TS vs JS, versions). Changes here are local to this page for now.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn" style="background:#2c7be5;color:#fff;border-color:#2c7be5" onclick="savePrompt()">Save</button>
+    </div>
+  </div>
+
+  <script>
+    // ---- CONFIG: GitHub raw URLs for Phase JSONs ----
+    const PHASE_URLS = [
+      "https://raw.githubusercontent.com/VibesTribe/vibeflow/codex/phase0_env_ci.json",
+      "https://raw.githubusercontent.com/VibesTribe/vibeflow/codex/phase1_foundation.json"
+    ];
+
+    // In-memory plan
+    let project = {
+      name: "Vibeflow",
+      description: "AI-assisted execution planner with atomic tasks, prompt editing, and strict roll-up progress.",
+      phases: [] // { name, tasks: [...] }
+    };
+
+    // Modal edit state
+    let editRef = null; // { phaseIndex, path: array indices to task/subtask }
+
+    // Sidebar
+    function toggleSidebar(){
+      const sb = document.getElementById('sidebar');
+      sb.classList.toggle('expanded');
+      const icon = sb.querySelector('.chev');
+      if(sb.classList.contains('expanded')){
+        icon.classList.replace('fa-chevron-right','fa-chevron-left');
+      } else {
+        icon.classList.replace('fa-chevron-left','fa-chevron-right');
+      }
+    }
+    function openFolder(){ toast("Open-folder UI placeholder."); }
+    function openRepo(){ window.open("https://github.com/VibesTribe/vibeflow/tree/codex","_blank"); }
+    function uploadFiles(){
+      const input=document.createElement('input'); input.type='file'; input.multiple=true; input.onchange=()=>toast("Files selected (demo).");
+      input.click();
+    }
+    function refreshData(){ loadAllPhases(); }
+
+    function toast(msg){
+      alert(msg); // minimal placeholder; you can replace with your previous toast UI
+    }
+
+    // ---- Loading & Render ----
+    async function loadAllPhases(){
+      try{
+        const results = await Promise.all(PHASE_URLS.map(u => fetch(u).then(r => r.json())));
+        // Convert the two JSONs into modular phases
+        project.phases = results.map((json, idx) => ({
+          name: json.executionPlan.phase || `Phase ${idx+1}`,
+          tasks: (json.executionPlan.tasks || []).map(t => normalizeTask(t))
+        }));
+
+        // Roll-up + render
+        renderProject();
+      }catch(e){
+        console.error(e);
+        toast("Failed to load phase JSON. Check GitHub or network.");
+      }
+    }
+
+    function normalizeTask(t){
+      // ensure presence of fields and attach computed statusKey (for color)
+      const status = (t.status || "planned").toLowerCase();
+      const deps = t.dependencies || [];
+      const hasDeps = Array.isArray(deps) && deps.length>0;
+
+      let statusKey = "planned-independent";
+      if(status === "completed") statusKey = "completed";
+      else if(status === "in progress" || status === "in-progress") statusKey = "in-progress";
+      else {
+        statusKey = hasDeps ? "planned-dependent" : "planned-independent";
+      }
+
+      const subtasks = (t.subtasks || []).map(st => normalizeTask(st));
+      return {
+        ...t,
+        status,
+        statusKey,
+        dependencies: deps,
+        subtasks
+      };
+    }
+
+    function renderProject(){
+      // Compute global progress from all leaf tasks
+      const allLeaf = flattenAllLeafTasks(project.phases);
+      const completed = allLeaf.filter(x => x.status === "completed").length;
+      const total = allLeaf.length || 1;
+      const pct = Math.round(100*completed/total);
+      setProgress("overallFill", pct);
+
+      const phasesEl = document.getElementById("phases");
+      phasesEl.innerHTML = "";
+      project.phases.forEach((ph, i) => phasesEl.appendChild(renderPhase(ph, i)));
+    }
+
+    function flattenAllLeafTasks(phases){
+      const list = [];
+      phases.forEach(ph => {
+        ph.tasks.forEach(t => collectLeaf(t, list));
+      });
+      return list;
+    }
+    function collectLeaf(task, list){
+      if(!task.subtasks || task.subtasks.length===0){
+        list.push(task);
+      } else {
+        task.subtasks.forEach(st => collectLeaf(st, list));
+      }
+    }
+
+    function setProgress(id, pct){
+      const el = document.getElementById(id);
+      el.style.width = pct+"%";
+      el.textContent = pct+"%";
+    }
+
+    function renderPhase(phase, phaseIndex){
+      // compute phase progress by leaf tasks inside this phase
+      const leaves = [];
+      phase.tasks.forEach(t => collectLeaf(t, leaves));
+      const total = leaves.length || 1;
+      const completed = leaves.filter(x => x.status === "completed").length;
+      const pct = Math.round(100*completed/total);
+
+      const wrap = document.createElement("div");
+      wrap.className = "phase";
+
+      const head = document.createElement("div");
+      head.className = "phase-head";
+      head.innerHTML = `
+        <div class="phase-name"><i class="fa-solid fa-box-open" style="color:#999;margin-right:8px"></i>${phase.name}</div>
+        <div class="phase-prog">
+          <div class="phase-bar"><div class="phase-fill" style="width:${pct}%"></div></div>
+          <div class="phase-num" style="min-width:42px; text-align:right; color:#555">${pct}%</div>
+        </div>
+      `;
+      const body = document.createElement("div");
+      body.className = "phase-body";
+
+      head.addEventListener("click", ()=>{
+        const open = body.style.display === "block";
+        body.style.display = open ? "none" : "block";
+      });
+
+      // tasks
+      phase.tasks.forEach((t, idx) => body.appendChild(renderTask(t, phaseIndex, [idx])));
+
+      wrap.appendChild(head);
+      wrap.appendChild(body);
+      return wrap;
+    }
+
+    function renderTask(task, phaseIndex, path){
+      const card = document.createElement("div");
+      card.className = "task " + classForStatus(task.statusKey);
+
+      const header = document.createElement("div");
+      header.className = "task-header";
+      header.innerHTML = `
+        <div>
+          <div class="task-title">${task.taskId} – ${task.action}</div>
+          <div class="task-meta">
+            Status: <b>${prettyStatus(task.statusKey)}</b>
+            ${task.confidenceScore ? `<span class="pill" title="confidence">${task.confidenceScore}</span>` : ""}
+          </div>
+        </div>
+        <div class="actions">
+          <!-- expand handled by clicking anywhere on header except buttons -->
+          <button class="btn" title="Toggle details"><i class="fa-solid fa-angle-down"></i></button>
+        </div>
+      `;
+
+      const details = document.createElement("div");
+      details.className = "task-details";
+      details.innerHTML = `
+        <div class="task-row"><b>Context:</b> ${task.context || "-"}</div>
+        <div class="task-row"><b>Prompt:</b> <span id="${domIdForPrompt(phaseIndex,path)}">${escapeHtml(task.prompt || "")}</span></div>
+        <div class="task-row"><b>Tech Stack:</b> ${formatTech(task.techStack)}</div>
+        <div class="task-row"><b>Dependencies:</b> ${task.dependencies?.length ? task.dependencies.join(", ") : "None"}</div>
+        <div class="task-row"><b>Deliverables:</b> ${task.deliverables?.length ? task.deliverables.join(", ") : "-"}</div>
+        <div class="task-row"><b>Tests:</b> ${task.tests?.length ? task.tests.join("; ") : "-"}</div>
+        <div class="task-row"><b>Completed By:</b> ${formatCompletedBy(task.completedBy)}</div>
+        ${task.chatUrl ? `<div class="task-row"><b>Chat:</b> <a class="link" target="_blank" href="${task.chatUrl}">${task.chatUrl}</a></div>` : ""}
+        <div class="task-row" style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn" onclick="openEditPrompt(${phaseIndex}, '${path.join('.')}', event)" title="Edit prompt">
+            <i class="fa-solid fa-pencil"></i> Edit Prompt
+          </button>
+          <button class="btn" onclick="copyTaskPacket(${phaseIndex}, '${path.join('.')}', event)" title="Copy LLM Task Packet">
+            <i class="fa-regular fa-copy"></i> Copy Packet
+          </button>
+        </div>
+      `;
+
+      header.addEventListener("click", (e)=>{
+        if(e.target.closest('.btn')) return; // ignore clicks on buttons
+        details.style.display = details.style.display === "block" ? "none" : "block";
+      });
+
+      card.appendChild(header);
+      card.appendChild(details);
+
+      // render subtasks
+      if(task.subtasks && task.subtasks.length){
+        task.subtasks.forEach((st, i) => {
+          const subEl = renderTask(st, phaseIndex, path.concat(i));
+          subEl.style.marginLeft = "14px";
+          card.appendChild(subEl);
+        });
+      }
+      return card;
+    }
+
+    function classForStatus(key){
+      switch(key){
+        case "completed": return "status-completed";
+        case "in-progress": return "status-in-progress";
+        case "planned-dependent": return "status-planned-dependent";
+        default: return "status-planned-independent";
+      }
+    }
+    function prettyStatus(key){
+      return key.replace("-", " ").replace("-", " ");
+    }
+
+    function formatTech(tech){
+      if(!tech) return "-";
+      // support both old {platformStack, codeStack} and simple strings
+      if(typeof tech === "string") return tech;
+      if(tech.platformStack || tech.codeStack){
+        const ps = tech.platformStack?.length ? tech.platformStack.join(", ") : "-";
+        const cs = tech.codeStack?.length ? tech.codeStack.join(", ") : "-";
+        return `Platform: ${ps}; Code: ${cs}`;
+      }
+      return JSON.stringify(tech);
+    }
+
+    function formatCompletedBy(cb){
+      if(!cb) return "Unassigned";
+      if(typeof cb === "string") return cb;
+      if(cb.type === "ai") return `AI – ${cb.platform || "platform"} ${cb.model ? "(" + cb.model + ")" : ""}`.trim();
+      if(cb.type === "human") return `Human – ${cb.name || "unknown"}${cb.role ? " ("+cb.role+")":""}`;
+      if(cb.type === "org") return `Org – ${cb.name || "unknown"}`;
+      return "Unassigned";
+    }
+
+    function domIdForPrompt(phaseIndex, pathArr){
+      // e.g., prompt-P0-0.2.1
+      return `prompt-P${phaseIndex}-${pathArr.join('.')}`;
+    }
+
+    function escapeHtml(str){
+      return (str || "").replace(/[&<>"']/g, s => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;','\'':'&#39;'
+      }[s]));
+    }
+
+    // ---- Prompt Editing ----
+    function openEditPrompt(phaseIndex, pathStr, evt){
+      evt.stopPropagation();
+      const task = getTaskByPath(phaseIndex, pathStr.split('.').map(n=>parseInt(n,10)));
+      editRef = { phaseIndex, path: pathStr.split('.').map(n=>parseInt(n,10)) };
+
+      document.getElementById("modalTitle").textContent = `Edit Prompt – ${task.taskId}`;
+      document.getElementById("promptArea").value = task.prompt || "";
+      showModal(true);
+    }
+    function savePrompt(){
+      if(!editRef) return closeModal();
+      const task = getTaskByPath(editRef.phaseIndex, editRef.path);
+      task.prompt = document.getElementById("promptArea").value || "";
+      // Update DOM
+      const id = domIdForPrompt(editRef.phaseIndex, editRef.path);
+      const span = document.getElementById(id);
+      if(span) span.innerHTML = escapeHtml(task.prompt);
+      closeModal();
+    }
+    function getTaskByPath(phaseIndex, path){
+      let node = project.phases[phaseIndex].tasks[path[0]];
+      for(let i=1;i<path.length;i++){
+        node = node.subtasks[path[i]];
+      }
+      return node;
+    }
+    function showModal(open){
+      document.getElementById("overlay").style.display = open ? "block":"none";
+      document.getElementById("modal").style.display = open ? "block":"none";
+    }
+    function closeModal(){ showModal(false); editRef=null; }
+
+    // ---- Copy Task Packet (LLM-ready) ----
+    function copyTaskPacket(phaseIndex, pathStr, evt){
+      evt.stopPropagation();
+      const task = getTaskByPath(phaseIndex, pathStr.split('.').map(n=>parseInt(n,10)));
+
+      // Determine platform/code stacks (accept both schemas)
+      let platformStack = "-", codeStack = "-";
+      if(typeof task.techStack === "string"){
+        codeStack = task.techStack;
+      } else if(task.techStack){
+        platformStack = task.techStack.platformStack?.join(", ") || "-";
+        codeStack = task.techStack.codeStack?.join(", ") || "-";
+      }
+
+      // Build minimal, explicit, LLM-agnostic packet
+      const packet =
+`SYSTEM
+You are a senior implementation agent. Follow the specification precisely.
+- Change only the files listed under DELIVERABLES.
+- Return full file contents for each changed file (no diffs) unless specified otherwise.
+- Never commit or invent secrets or API keys.
+
+USER
+TASK_PACKET:
+  TASK_ID: ${task.taskId}
+  TITLE: ${task.action}
+  WHY/CONTEXT: ${task.context || "-"}
+  PLATFORM_STACK: ${platformStack}
+  CODE_STACK: ${codeStack}
+  DEPENDENCIES: ${task.dependencies?.length ? task.dependencies.join(", ") : "None"}
+  ACCEPTANCE_CRITERIA: ${task.tests?.length ? task.tests.join("; ") : "-"}
+  OUTPUT_RULES:
+    - Create/update ONLY the paths listed in DELIVERABLES.
+    - For each file, output:
+      <FILE path="relative/path.ext">
+      \`\`\`
+      ...full file content...
+      \`\`\`
+      </FILE>
+  DELIVERABLES:
+    ${task.deliverables?.length ? task.deliverables.map(d=>`- ${d}`).join("\n    ") : "-"}
+  INSTRUCTIONS:
+    ${task.prompt || "-"}
+
+END_TASK_PACKET
+`;
+      navigator.clipboard.writeText(packet).then(()=>toast("Task Packet copied."), ()=>toast("Copy failed—select text manually."));
+    }
+
+    // ---- Init ----
+    loadAllPhases();
+  </script>
+</body>
+</html>

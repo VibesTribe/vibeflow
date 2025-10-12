@@ -1,0 +1,236 @@
+{
+  "context_snapshot_id": "fc1f29263477538fa2cfddacad54a7b65625a06f0da141c112eb363c344d12f6",
+  "echo_check": "Deliver S0 repo snapshot + digest + pages sync so dashboard reflects latest repo state.",
+  "open_questions": [],
+  "slices": [
+    {
+      "slice_id": "S0",
+      "name": "Shared Context Backbone",
+      "goal": "Ensure every agent reads the same repo snapshot, OpenSpec digest, and synced state.",
+      "tasks": [
+        {
+          "task_id": "S0.1",
+          "task_type": "code",
+          "domain_tag": "infra",
+          "contract": {
+            "task_id": "S0.1",
+            "title": "Wire Repo Snapshot Writer",
+            "context_snapshot_id": "fc1f29263477538fa2cfddacad54a7b65625a06f0da141c112eb363c344d12f6",
+            "parent_task_id": null,
+            "task_type": "code",
+            "domain_tag": "infra",
+            "stage": "planned",
+            "review_policy": "auto",
+            "constraints": {
+              "budget_usd": 0.25,
+              "max_tokens": 6000,
+              "latency_slo_ms": 60000,
+              "model_behavior_required": {
+                "topic_affinity": "Emit docs/reports/repo-snapshot.json with git metadata for downstream agents.",
+                "policy_flags": [
+                  "PII_FREE"
+                ],
+                "max_token_context": 32000
+              }
+            },
+            "inputs": {
+              "artifacts": [],
+              "env": [],
+              "dependencies": []
+            },
+            "acceptance_criteria": [
+              "npm run context:snapshot succeeds",
+              "docs/reports/repo-snapshot.json includes git metadata and file list",
+              "Unit tests cover happy path + ignored directories"
+            ],
+            "output_schema": {
+              "files": [
+                {
+                  "path": "scripts/context/write-repo-snapshot.mjs",
+                  "type": "text"
+                }
+              ],
+              "format": "text"
+            },
+            "model_preferences": {
+              "temperature": 0,
+              "top_p": 0.1
+            },
+            "validation_checkpoints": [
+              {
+                "name": "unit-tests",
+                "tool": "npm test"
+              },
+              {
+                "name": "manual-run",
+                "tool": "npm run context:snapshot"
+              }
+            ],
+            "metadata": {
+              "confidence": 0.97,
+              "deliverable_language": "JavaScript",
+              "deliverable_version": "ES2020",
+              "requires_chat_url": false
+            }
+          },
+          "confidence": 0.97,
+          "depends_on": [],
+          "notes": ""
+        },
+        {
+          "task_id": "S0.2",
+          "task_type": "code",
+          "domain_tag": "infra",
+          "contract": {
+            "task_id": "S0.2",
+            "title": "Generate OpenSpec Digest",
+            "context_snapshot_id": "fc1f29263477538fa2cfddacad54a7b65625a06f0da141c112eb363c344d12f6",
+            "parent_task_id": null,
+            "task_type": "code",
+            "domain_tag": "infra",
+            "stage": "planned",
+            "review_policy": "auto",
+            "constraints": {
+              "budget_usd": 0.2,
+              "max_tokens": 6000,
+              "latency_slo_ms": 60000,
+              "model_behavior_required": {
+                "topic_affinity": "Scan openspec/changes and produce docs/updates/OPEN_SPEC_DIGEST.md + JSON index.",
+                "policy_flags": [
+                  "PII_FREE"
+                ],
+                "max_token_context": 32000
+              }
+            },
+            "inputs": {
+              "artifacts": [
+                "data/state/openspec.index.json"
+              ],
+              "env": [],
+              "dependencies": [
+                "S0.1"
+              ]
+            },
+            "acceptance_criteria": [
+              "npm run context:openspec succeeds",
+              "Digest lists latest entries sorted by updated_at",
+              "Unit tests verify empty folder handling"
+            ],
+            "output_schema": {
+              "files": [
+                {
+                  "path": "scripts/context/generate-openspec-digest.mjs",
+                  "type": "text"
+                }
+              ],
+              "format": "text"
+            },
+            "model_preferences": {
+              "temperature": 0,
+              "top_p": 0.1
+            },
+            "validation_checkpoints": [
+              {
+                "name": "unit-tests",
+                "tool": "npm test"
+              },
+              {
+                "name": "manual-run",
+                "tool": "npm run context:openspec"
+              }
+            ],
+            "metadata": {
+              "confidence": 0.97,
+              "deliverable_language": "JavaScript",
+              "deliverable_version": "ES2020",
+              "requires_chat_url": false
+            }
+          },
+          "confidence": 0.97,
+          "depends_on": [
+            "S0.1"
+          ],
+          "notes": ""
+        },
+        {
+          "task_id": "S0.3",
+          "task_type": "code",
+          "domain_tag": "infra",
+          "contract": {
+            "task_id": "S0.3",
+            "title": "Sync Dashboard State",
+            "context_snapshot_id": "fc1f29263477538fa2cfddacad54a7b65625a06f0da141c112eb363c344d12f6",
+            "parent_task_id": null,
+            "task_type": "code",
+            "domain_tag": "infra",
+            "stage": "planned",
+            "review_policy": "auto",
+            "constraints": {
+              "budget_usd": 0.15,
+              "max_tokens": 4000,
+              "latency_slo_ms": 60000,
+              "model_behavior_required": {
+                "topic_affinity": "node file sync utilities",
+                "policy_flags": [
+                  "PII_FREE",
+                  "DETERMINISTIC_REQUIRED"
+                ],
+                "max_token_context": 6000
+              }
+            },
+            "inputs": {
+              "artifacts": [
+                "data/state/openspec.index.json"
+              ],
+              "env": [],
+              "dependencies": [
+                "S0.1",
+                "S0.2"
+              ]
+            },
+            "acceptance_criteria": [
+              "npm run pages:sync completes",
+              "docs/state mirrors data/state structure",
+              "No stale files remain after sync"
+            ],
+            "output_schema": {
+              "files": [
+                {
+                  "path": "scripts/pages/sync-dashboard-state.mjs",
+                  "type": "text"
+                }
+              ],
+              "format": "text"
+            },
+            "model_preferences": {
+              "temperature": 0,
+              "top_p": 0.1
+            },
+            "validation_checkpoints": [
+              {
+                "name": "unit-tests",
+                "tool": "npm test"
+              },
+              {
+                "name": "manual-run",
+                "tool": "npm run pages:sync"
+              }
+            ],
+            "metadata": {
+              "confidence": 0.96,
+              "deliverable_language": "JavaScript",
+              "deliverable_version": "ES2020",
+              "requires_chat_url": true
+            }
+          },
+          "confidence": 0.96,
+          "depends_on": [
+            "S0.1",
+            "S0.2"
+          ],
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}

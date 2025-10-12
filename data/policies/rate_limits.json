@@ -1,0 +1,108 @@
+﻿{
+  "platforms": [
+    {
+      "id": "chatgpt:web",
+      "category": "web_session",
+      "mode": "enforce",
+      "window_hours": 24,
+      "max_assignments": 40,
+      "notes": "ChatGPT free web studio"
+    },
+    {
+      "id": "claude:web",
+      "category": "web_session",
+      "mode": "enforce",
+      "window_hours": 24,
+      "max_assignments": 25,
+      "notes": "Claude free playground"
+    },
+    {
+      "id": "gemini:web",
+      "category": "web_session",
+      "mode": "enforce",
+      "window_hours": 24,
+      "max_assignments": 15,
+      "notes": "Gemini web studio (shared usage with other projects)"
+    },
+    {
+      "id": "deepseek:web",
+      "category": "web_session",
+      "mode": "enforce",
+      "window_hours": 24,
+      "max_assignments": 40,
+      "notes": "DeepSeek web playground"
+    },
+    {
+      "id": "opencode:web",
+      "category": "web_session",
+      "mode": "enforce",
+      "window_hours": 24,
+      "max_assignments": 30,
+      "notes": "OpenCode GLM-4-6 browser studio"
+    },
+    {
+      "id": "openrouter:deepseek-r1",
+      "category": "free_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 120,
+      "notes": "OpenRouter DeepSeek (service key available)"
+    },
+    {
+      "id": "openrouter:gemini-flash-1.5",
+      "category": "free_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 120
+    },
+    {
+      "id": "openrouter:qwen-max",
+      "category": "free_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 120
+    },
+    {
+      "id": "openrouter:openinference",
+      "category": "free_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 150,
+      "notes": "OpenRouter openinference free models"
+    },
+    {
+      "id": "kat-coder:api",
+      "category": "free_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 60,
+      "notes": "KAT coder free API key"
+    },
+    {
+      "id": "gemini:api",
+      "category": "paid_api",
+      "mode": "monitor",
+      "window_hours": 24,
+      "max_assignments": 40,
+      "notes": "Gemini API (shared usage, limit conservatively)"
+    },
+    {
+      "id": "codex:cli",
+      "category": "cli",
+      "mode": "monitor",
+      "window_hours": 24
+    },
+    {
+      "id": "roo:cli",
+      "category": "cli",
+      "mode": "monitor",
+      "window_hours": 24
+    },
+    {
+      "id": "kilo:cli",
+      "category": "cli",
+      "mode": "monitor",
+      "window_hours": 24
+    }
+  ]
+}

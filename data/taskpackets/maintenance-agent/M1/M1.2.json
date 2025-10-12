@@ -1,0 +1,57 @@
+{
+  "task_id": "M1.2",
+  "title": "Schedule Registry Refresh",
+  "purpose": "Automate periodic syncing of data/registry/*.json into docs/state snapshots with audit trails.",
+  "confidence": 0.95,
+  "context": {
+    "goal": "Stand up automated drift detection and registry refreshers so orchestrator stays healthy.",
+    "snapshot_path": "docs/reports/repo-snapshot.json",
+    "notes": [
+      "Must call drift checker before syncing to avoid overwriting divergent plans."
+    ]
+  },
+  "dependencies": [
+    "task:M1.1"
+  ],
+  "deliverables": [
+    "scripts/maintenance/run-registry-refresh.mjs",
+    "docs/state/maintenance/registry-refresh.log.json"
+  ],
+  "output_format": {
+    "language": "JavaScript",
+    "version": "ES2020",
+    "format": "text",
+    "files": [
+      "scripts/maintenance/run-registry-refresh.mjs",
+      "docs/state/maintenance/registry-refresh.log.json"
+    ]
+  },
+  "instructions": [
+    "Call the drift checker and abort if mismatches are found.",
+    "Copy data/registry/models.json + tools.json into docs/state/registry with timestamping.",
+    "Append runs to docs/state/maintenance/registry-refresh.log.json with cost + duration metadata."
+  ],
+  "acceptance_criteria": [
+    "npm run maintenance:registry-refresh generates timestamped copies",
+    "Log file records run metadata with success/failure status",
+    "Supervisor gate can read the log to confirm refresh cadence"
+  ],
+  "review_policy": "auto",
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    },
+    {
+      "name": "manual-run",
+      "tool": "npm run maintenance:registry-refresh"
+    }
+  ],
+  "execution": {
+    "platform": "openai:gpt-4.1-mini",
+    "model": "openai:gpt-4.1-mini",
+    "budget_usd": 0.45,
+    "max_tokens": 7500,
+    "latency_slo_ms": 60000
+  }
+}

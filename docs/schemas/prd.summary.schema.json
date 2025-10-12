@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/prd.summary.schema.json",
+  "title": "PRDSummary",
+  "type": "object",
+  "required": [
+    "idea_id",
+    "version",
+    "approved",
+    "tech_stack",
+    "features",
+    "acceptance",
+    "architecture",
+    "vibeflow_constraints",
+    "artifacts",
+    "registries",
+    "model_policies",
+    "philosophy"
+  ],
+  "properties": {
+    "idea_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "approved": {
+      "type": "boolean"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "tech_stack": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "layer",
+          "choice",
+          "rationale"
+        ],
+        "properties": {
+          "layer": {
+            "type": "string"
+          },
+          "choice": {
+            "type": "string"
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "required": [
+        "core",
+        "gap",
+        "future"
+      ],
+      "properties": {
+        "core": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gap": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "future": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "architecture": {
+      "type": "object",
+      "required": [
+        "services",
+        "data_flows",
+        "observability"
+      ],
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data_flows": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observability": {
+          "type": "string"
+        }
+      }
+    },
+    "vibeflow_constraints": {
+      "type": "object",
+      "required": [
+        "registry",
+        "routing",
+        "testing",
+        "security"
+      ],
+      "properties": {
+        "registry": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "testing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "security": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status_flow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "required",
+        "supporting",
+        "validation_scripts"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supporting": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validation_scripts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "registries": {
+      "type": "object",
+      "required": [
+        "models",
+        "tools",
+        "routing"
+      ],
+      "properties": {
+        "models": {
+          "type": "string"
+        },
+        "tools": {
+          "type": "string"
+        },
+        "routing": {
+          "type": "string"
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "model_policies": {
+      "type": "object",
+      "required": [
+        "default_model",
+        "visual_platform",
+        "required_policy_flags",
+        "min_confidence",
+        "temperature",
+        "top_p",
+        "require_chat_url_when"
+      ],
+      "properties": {
+        "default_model": {
+          "type": "string"
+        },
+        "visual_platform": {
+          "type": "string"
+        },
+        "required_policy_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "top_p": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "require_chat_url_when": {
+          "type": "string"
+        }
+      }
+    },
+    "philosophy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

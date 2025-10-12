@@ -1,17 +1,36 @@
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": ["jest", "node"]
-  },
-  "include": ["src", "tests"],
-  "exclude": ["node_modules", "dist"]
+﻿{
+    "compilerOptions":  {
+                            "target":  "ES2020",
+                            "module":  "commonjs",
+                            "rootDir":  "./src",
+                            "outDir":  "./dist",
+                            "strict":  true,
+                            "esModuleInterop":  true,
+                            "forceConsistentCasingInFileNames":  true,
+                            "skipLibCheck":  true,
+                            "resolveJsonModule":  true,
+                            "types":  [
+                                          "jest",
+                                          "node"
+                                      ],
+                            "allowImportingTsExtensions":  true,
+                            "paths":  {
+                                          "orchestrator/*":  [
+                                                                 "src/orchestrator/*"
+                                                             ],
+                                          "supervisor/*":  [
+                                                               "src/supervisor/*"
+                                                           ]
+                                      },
+                            "baseUrl":  "."
+                        },
+    "include":  [
+                    "src",
+                    "tests"
+                ],
+    "exclude":  [
+                    "node_modules",
+                    "dist"
+                ]
 }
 

@@ -1,0 +1,129 @@
+{
+  "idea_id": "maintenance-agent",
+  "version": "v0.1",
+  "approved": true,
+  "summary": "Automation to monitor repo drift, reroute tasks, and refresh registries without human babysitting.",
+  "tech_stack": [
+    {
+      "layer": "backend",
+      "choice": "Node.js",
+      "alternatives": [
+        "Supabase Functions"
+      ],
+      "rationale": "Per research recommended stack for backend"
+    },
+    {
+      "layer": "workflow",
+      "choice": "GitHub Actions",
+      "alternatives": [
+        "Temporal"
+      ],
+      "rationale": "Per research recommended stack for workflow"
+    }
+  ],
+  "features": {
+    "core": [
+      "Plan drift detector",
+      "Registry reconciliation"
+    ],
+    "gap": [
+      "Human override console"
+    ],
+    "future": [
+      "Cost anomaly alerts"
+    ]
+  },
+  "acceptance": [
+    "Planner slices stay within approved features: Plan drift detector, Registry reconciliation + Human override console",
+    "Confidence >= 0.95 on every task before supervisor approval",
+    "Supervisor gate validates plan.json against data/registry/models.json, data/registry/tools.json, and data/policies/routing.json"
+  ],
+  "created_at": "2025-10-10T12:00:00Z",
+  "approved_at": "2025-10-10T13:30:00Z",
+  "architecture": {
+    "services": [
+      "orchestrator",
+      "planner",
+      "supervisor",
+      "maintenance",
+      "dashboard"
+    ],
+    "data_flows": [
+      "research -> analyst -> prd",
+      "planner -> supervisor -> orchestrator -> agents",
+      "agents -> telemetry -> dashboard"
+    ],
+    "observability": "All agents emit run metrics to docs/state + Supabase dashboards"
+  },
+  "vibeflow_constraints": {
+    "registry": [
+      "Models locked to data/registry/models.json",
+      "Tools locked to data/registry/tools.json"
+    ],
+    "routing": [
+      "Delegations follow data/policies/routing.json",
+      "Visual tasks must leverage browser-use:devtools-mcp with human approval"
+    ],
+    "testing": [
+      "npm test must pass for every code task before promotion",
+      "Visual artifacts require Browser-Use checklist + human sign-off"
+    ],
+    "security": [
+      "Secrets live in data/tasks/secrets-registry.json only",
+      "Status promotion scripts enforce stage ordering before orchestration"
+    ],
+    "status_flow": [
+      "idea_submitted",
+      "research_completed",
+      "analyst_approved",
+      "prd_approved",
+      "plan_generated",
+      "supervisor_ready",
+      "orchestration_started"
+    ]
+  },
+  "artifacts": {
+    "required": [
+      "data/ideas/maintenance-agent/research.brief.json",
+      "data/ideas/maintenance-agent/analyst.review.json",
+      "data/ideas/maintenance-agent/prd.summary.json"
+    ],
+    "supporting": [
+      "data/taskpackets/maintenance-agent/**",
+      "docs/reports/ideas/maintenance-agent/plan.md",
+      "docs/reports/supervisor/maintenance-agent.json"
+    ],
+    "validation_scripts": [
+      "npm run ideas:validate -- maintenance-agent",
+      "npm run planner:dry-run -- maintenance-agent",
+      "npm run supervisor:gate -- maintenance-agent"
+    ]
+  },
+  "registries": {
+    "models": "data/registry/models.json",
+    "tools": "data/registry/tools.json",
+    "routing": "data/policies/routing.json",
+    "policies": [
+      "docs/policies/review_policy.md",
+      "docs/security/data_classification.md",
+      "docs/security/rbac.md"
+    ]
+  },
+  "model_policies": {
+    "default_model": "openai:gpt-4.1-mini",
+    "visual_platform": "browser-use:devtools-mcp",
+    "required_policy_flags": [
+      "PII_FREE"
+    ],
+    "min_confidence": 0.95,
+    "temperature": 0,
+    "top_p": 0.1,
+    "require_chat_url_when": "execution.platform contains 'opencode' or policy_flags include HUMAN_APPROVAL_REQUIRED"
+  },
+  "philosophy": [
+    "Guard the Research -> Analyst -> PRD -> Planner -> Supervisor -> Orchestrator chain with explicit gates.",
+    "Reject hallucinations: every downstream agent cross-checks artifacts against the PRD and registries.",
+    "Prefer deterministic runs with confidence >= 0.95 before handing work to orchestrated agents.",
+    "Surface telemetry for every stage so maintenance, dashboard, and audit tooling can trace decisions."
+  ]
+}

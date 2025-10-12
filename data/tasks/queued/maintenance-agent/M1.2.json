@@ -1,0 +1,46 @@
+{
+  "idea_id": "maintenance-agent",
+  "slice_id": "M1",
+  "task_id": "M1.2",
+  "assignment_type": "cli",
+  "platform": "openai:gpt-4.1-mini",
+  "model": "openai:gpt-4.1-mini",
+  "model_display": "OpenAI GPT-4.1 Mini",
+  "requires_chat_url": false,
+  "deliverables": [
+    "scripts/maintenance/run-registry-refresh.mjs",
+    "docs/state/maintenance/registry-refresh.log.json"
+  ],
+  "context": {
+    "goal": "Stand up automated drift detection and registry refreshers so orchestrator stays healthy.",
+    "snapshot_path": "docs/reports/repo-snapshot.json",
+    "notes": [
+      "Must call drift checker before syncing to avoid overwriting divergent plans."
+    ]
+  },
+  "instructions": [
+    "Call the drift checker and abort if mismatches are found.",
+    "Copy data/registry/models.json + tools.json into docs/state/registry with timestamping.",
+    "Append runs to docs/state/maintenance/registry-refresh.log.json with cost + duration metadata."
+  ],
+  "acceptance_criteria": [
+    "npm run maintenance:registry-refresh generates timestamped copies",
+    "Log file records run metadata with success/failure status",
+    "Supervisor gate can read the log to confirm refresh cadence"
+  ],
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    },
+    {
+      "name": "manual-run",
+      "tool": "npm run maintenance:registry-refresh"
+    }
+  ],
+  "notes": [
+    "Platform: OpenAI GPT-4.1 Mini",
+    "Carry out the task in your CLI/IDE environment (Codex, Roo, Kilo, etc.).",
+    "Commit work in the slice branch or attach a diff in your completion response."
+  ]
+}

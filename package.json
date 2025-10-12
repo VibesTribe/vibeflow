@@ -1,18 +1,48 @@
 {
-  "name": "vibeflow",
-  "version": "1.0.0",
-  "description": "Bootstrap slice with safe GitOps pipeline for Vibeflow",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.2.5",
-    "typescript": "^5.4.0"
-  }
+    "name": "vibeflow",
+    "version": "1.0.0",
+    "description": "Bootstrap slice with safe GitOps pipeline for Vibeflow",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest",
+        "context:snapshot": "node scripts/context/write-repo-snapshot.mjs",
+        "context:openspec": "node scripts/context/generate-openspec-digest.mjs",
+        "context:all": "npm run context:snapshot && npm run context:openspec",
+        "pages:sync": "node scripts/pages/sync-dashboard-state.mjs",
+        "tools:run": "node scripts/tools/dispatch-trusted-tool.mjs",
+        "telemetry:update": "node scripts/telemetry/update-state.mjs",
+        "guardrails:secrets": "node scripts/guardrails/validate-secrets.mjs",
+        "planner:generate": "node scripts/planner/generate-plan.cjs",
+        "ideas:validate": "node scripts/ideas/validate-artifacts.mjs",
+        "ideas:promote": "node scripts/ideas/promote-status.mjs",
+        "ideas:build-prd": "node scripts/ideas/build-prd.mjs",
+        "supervisor:gate": "node scripts/supervisor/gate-plan.cjs",
+        "orchestrator:ready": "node scripts/orchestrator/ready.cjs",
+        "orchestrator:assign": "node scripts/orchestrator/assign.cjs",
+        "task:claim": "node scripts/task-agent/claim.cjs",
+        "task:complete": "node scripts/task-agent/complete.cjs",
+        "telemetry:bootstrap": "node scripts/telemetry/bootstrap-supabase.mjs",
+        "test:claim": "node scripts/test-agent/claim.cjs",
+        "test:complete": "node scripts/test-agent/complete.cjs",
+        "maintenance:import-digest": "node scripts/maintenance/import-digest.cjs",
+        "maintenance:process": "node scripts/maintenance/process-inbox.cjs",
+        "maintenance:update-status": "node scripts/maintenance/update-status.cjs",
+        "maintenance:render-status": "node scripts/maintenance/render-status.cjs"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@types/jest": "^29.5.14",
+        "ajv": "^8.12.0",
+        "ajv-formats": "^2.1.1",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.2.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.0"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.45.1",
+        "pg": "^8.12.0"
+    }
 }

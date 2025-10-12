@@ -1,20 +1,166 @@
 {
-  "generated_at": "2025-10-08T00:00:00Z",
-  "tasks": [],
-  "slices": [],
+  "generated_at": "2025-10-11T22:31:16.174Z",
   "stats": {
     "totals": {
-      "tasks": 0,
-      "completed": 0,
+      "tasks": 6,
+      "completed": 1,
       "failed": 0,
-      "running": 0,
+      "running": 5,
       "queued": 0
     },
-    "costs": {
-      "vibeflow_cost_usd": 0,
-      "counterfactual_api_cost_usd": 0,
-      "savings_usd": 0,
-      "roi_percent": 0
+    "byPlatform": {
+      "vscode-codex": {
+        "attempts": 2,
+        "lastModel": "openai:gpt-4.1-mini"
+      },
+      "opencode-studio": {
+        "attempts": 1,
+        "lastModel": "opencode:glm-4-6-free"
+      },
+      "openai:gpt-4.1-mini": {
+        "attempts": 2,
+        "lastModel": "openai:gpt-4.1-mini"
+      }
     }
-  }
+  },
+  "tasks": [
+    {
+      "taskId": "S0.1",
+      "sliceId": "S0",
+      "attempts": 1,
+      "latestStatus": "assigned",
+      "lastUpdated": "2025-10-11T22:30:17.387Z",
+      "lastPlatform": "vscode-codex",
+      "lastModel": "openai:gpt-4.1-mini",
+      "history": [
+        {
+          "type": "assignment",
+          "status": "assigned",
+          "timestamp": "2025-10-11T22:30:17.387Z",
+          "platform": "vscode-codex",
+          "model": "openai:gpt-4.1-mini",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "taskId": "S0.2",
+      "sliceId": "S0",
+      "attempts": 1,
+      "latestStatus": "assigned",
+      "lastUpdated": "2025-10-11T22:30:17.392Z",
+      "lastPlatform": "vscode-codex",
+      "lastModel": "openai:gpt-4.1-mini",
+      "history": [
+        {
+          "type": "assignment",
+          "status": "assigned",
+          "timestamp": "2025-10-11T22:30:17.392Z",
+          "platform": "vscode-codex",
+          "model": "openai:gpt-4.1-mini",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "taskId": "S0.3",
+      "sliceId": "S0",
+      "attempts": 1,
+      "latestStatus": "assigned",
+      "lastUpdated": "2025-10-11T22:30:17.397Z",
+      "lastPlatform": "opencode-studio",
+      "lastModel": "opencode:glm-4-6-free",
+      "history": [
+        {
+          "type": "assignment",
+          "status": "assigned",
+          "timestamp": "2025-10-11T22:30:17.397Z",
+          "platform": "opencode-studio",
+          "model": "opencode:glm-4-6-free",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "taskId": "M1.1",
+      "sliceId": "M1",
+      "attempts": 1,
+      "latestStatus": "assigned",
+      "lastUpdated": "2025-10-11T22:30:27.419Z",
+      "lastPlatform": "openai:gpt-4.1-mini",
+      "lastModel": "openai:gpt-4.1-mini",
+      "history": [
+        {
+          "type": "assignment",
+          "status": "assigned",
+          "timestamp": "2025-10-11T22:30:27.419Z",
+          "platform": "openai:gpt-4.1-mini",
+          "model": "openai:gpt-4.1-mini",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "taskId": "M1.2",
+      "sliceId": "M1",
+      "attempts": 1,
+      "latestStatus": "assigned",
+      "lastUpdated": "2025-10-11T22:30:27.424Z",
+      "lastPlatform": "openai:gpt-4.1-mini",
+      "lastModel": "openai:gpt-4.1-mini",
+      "history": [
+        {
+          "type": "assignment",
+          "status": "assigned",
+          "timestamp": "2025-10-11T22:30:27.424Z",
+          "platform": "openai:gpt-4.1-mini",
+          "model": "openai:gpt-4.1-mini",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "taskId": "plan-gate",
+      "sliceId": "S0",
+      "attempts": 0,
+      "latestStatus": "validated",
+      "lastUpdated": "2025-10-11T22:02:26.636Z",
+      "lastPlatform": null,
+      "lastModel": null,
+      "history": [
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T21:31:24.496Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        },
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T21:33:52.264Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        },
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T22:01:59.766Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        },
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T22:02:26.636Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        }
+      ]
+    }
+  ]
 }

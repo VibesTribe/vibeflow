@@ -1,0 +1,44 @@
+{
+  "idea_id": "maintenance-agent",
+  "summary": "Automation to monitor repo drift, reroute tasks, and refresh registries without human babysitting.",
+  "market": {
+    "target_personas": ["platform engineers", "automation leads", "LLM ops"],
+    "market_size": "Estimated $180M spend in AI operations automation",
+    "growth_rate": "21% YoY for enterprise automation platforms",
+    "notes": "Teams want guardrailed automation that keeps LLM workflows healthy without paging humans." 
+  },
+  "competitors": [
+    {
+      "name": "Human-in-the-loop runbooks",
+      "summary": "Manual on-call rotations that patch issues as they arise.",
+      "strengths": ["Flexible for unknown incidents", "Institutional tribal knowledge"],
+      "gaps": ["Slow response", "High toil", "No telemetry loop"]
+    },
+    {
+      "name": "Self-hosted Cron monitors",
+      "summary": "Script collections that watch logs and send alerts.",
+      "strengths": ["Cheap", "Easy to extend"],
+      "gaps": ["No plan awareness", "Minimal audit trail"]
+    }
+  ],
+  "recommended_stack": [
+    { "layer": "backend", "technologies": ["Node.js", "Supabase Functions"] },
+    { "layer": "workflow", "technologies": ["GitHub Actions", "Temporal"] }
+  ],
+  "core_features": [
+    "Plan drift detector",
+    "Registry reconciliation",
+    "Automated reassignment triggers"
+  ],
+  "gap_features": [
+    "Human override console",
+    "Cost anomaly alerts"
+  ],
+  "recommendations": [
+    "Ship telemetry-first with replay logs",
+    "Keep rules declarative so supervisors can audit",
+    "Leverage existing registry JSONs before inventing new stores"
+  ],
+  "created_at": "2025-10-10T12:00:00Z",
+  "updated_at": "2025-10-10T12:00:00Z"
+}

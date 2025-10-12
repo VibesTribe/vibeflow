@@ -1,0 +1,27 @@
+{
+  "idea_id": "example-app",
+  "summary": "A community-driven playlist app that surfaces hyper-local music trends.",
+  "market": {
+    "target_personas": ["indie music fans", "local venues", "micro-influencers"],
+    "market_size": "Projected TAM $250M in niche audio discovery",
+    "growth_rate": "18% YoY for local audio discovery apps",
+    "notes": "Market favors low-cost viral loops; strong network effects"
+  },
+  "competitors": [
+    {
+      "name": "Spotify Blend",
+      "summary": "Collaborative playlists inside Spotify",
+      "strengths": ["Huge catalog", "frictionless sharing"],
+      "gaps": ["Limited local targeting", "Poor weekly retention for micro-communities"]
+    }
+  ],
+  "recommended_stack": [
+    { "layer": "frontend", "technologies": ["React Native"] },
+    { "layer": "backend", "technologies": ["Node.js", "Supabase"] }
+  ],
+  "core_features": ["Hyper-local feed", "Collaborative playlists", "Weekly spotlight"],
+  "gap_features": ["venue challenges", "creator tip jar"],
+  "recommendations": ["Lean MVP with viral hooks", "Gamify local contributions"],
+  "created_at": "2025-10-11T17:45:00Z",
+  "updated_at": "2025-10-11T17:45:00Z"
+}

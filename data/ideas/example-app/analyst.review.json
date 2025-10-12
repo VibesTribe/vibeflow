@@ -1,0 +1,13 @@
+{
+  "idea_id": "example-app",
+  "research_sha": "sha256:placeholder",
+  "verdict": "approve",
+  "rationale": "Market gap validated. Viral hooks feasible within budget.",
+  "approved_features": {
+    "core": ["Hyper-local feed", "Collaborative playlists"],
+    "gap": ["creator tip jar"]
+  },
+  "risks": ["Requires strong moderation tooling"],
+  "notes": ["Prioritize mobile-first flows"],
+  "reviewed_at": "2025-10-11T18:00:00Z"
+}

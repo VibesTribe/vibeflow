@@ -1,0 +1,48 @@
+{
+  "task_id": "M1.1",
+  "title": "Implement Plan Drift Scanner",
+  "purpose": "Detect differences between docs/reports/ideas/<id>/plan.md and live task packets.",
+  "confidence": 0.96,
+  "context": {
+    "goal": "Stand up automated drift detection and registry refreshers so orchestrator stays healthy.",
+    "snapshot_path": "docs/reports/repo-snapshot.json"
+  },
+  "dependencies": [],
+  "deliverables": [
+    "scripts/maintenance/run-plan-drift-check.mjs",
+    "docs/reports/ideas/maintenance-agent/drift-report.md"
+  ],
+  "output_format": {
+    "language": "JavaScript",
+    "version": "ES2020",
+    "format": "text",
+    "files": [
+      "scripts/maintenance/run-plan-drift-check.mjs",
+      "docs/reports/ideas/maintenance-agent/drift-report.md"
+    ]
+  },
+  "instructions": [
+    "Compare data/taskpackets/<idea> against docs/reports/ideas/<idea>/plan.md and emit a markdown diff report.",
+    "Highlight missing slices or task packets, include confidence scoring per mismatch.",
+    "Return the updated script using <FILE> fences."
+  ],
+  "acceptance_criteria": [
+    "npm run maintenance:drift-check exits 0 on aligned plans",
+    "Diff report renders key sections (slices, tasks, deliverables)",
+    "Unit tests cover aligned + drift scenarios"
+  ],
+  "review_policy": "auto",
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    }
+  ],
+  "execution": {
+    "platform": "openai:gpt-4.1-mini",
+    "model": "openai:gpt-4.1-mini",
+    "budget_usd": 0.35,
+    "max_tokens": 7000,
+    "latency_slo_ms": 60000
+  }
+}

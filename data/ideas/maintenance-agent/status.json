@@ -1,0 +1,31 @@
+{
+  "idea_id": "maintenance-agent",
+  "stage": "supervisor_ready",
+  "history": [
+    {
+      "stage": "idea_submitted",
+      "timestamp": "2025-10-09T09:00:00Z",
+      "notes": "Initial backlog intake"
+    },
+    {
+      "stage": "research_completed",
+      "timestamp": "2025-10-10T12:00:00Z"
+    },
+    {
+      "stage": "analyst_approved",
+      "timestamp": "2025-10-10T13:30:00Z"
+    },
+    {
+      "stage": "prd_approved",
+      "timestamp": "2025-10-10T13:45:00Z"
+    },
+    {
+      "stage": "plan_generated",
+      "timestamp": "2025-10-11T22:01:53.432Z"
+    },
+    {
+      "stage": "supervisor_ready",
+      "timestamp": "2025-10-11T22:01:59.768Z"
+    }
+  ]
+}

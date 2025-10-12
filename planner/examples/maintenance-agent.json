@@ -1,0 +1,104 @@
+{
+  "ideaId": "maintenance-agent",
+  "contextSnapshotPath": "docs/reports/repo-snapshot.json",
+  "slice": {
+    "id": "M1",
+    "name": "Maintenance Automation Bootstrap",
+    "goal": "Stand up automated drift detection and registry refreshers so orchestrator stays healthy.",
+    "echo_check": "Deliver maintenance automation slice with drift detector + registry sync tasks ready for orchestration.",
+    "tasks": [
+      {
+        "taskId": "M1.1",
+        "title": "Implement Plan Drift Scanner",
+        "purpose": "Detect differences between docs/reports/ideas/<id>/plan.md and live task packets.",
+        "taskType": "code",
+        "domainTag": "infra",
+        "deliverables": [
+          "scripts/maintenance/run-plan-drift-check.mjs",
+          "docs/reports/ideas/maintenance-agent/drift-report.md"
+        ],
+        "output": {
+          "language": "JavaScript",
+          "version": "ES2020",
+          "format": "text",
+          "files": [
+            "scripts/maintenance/run-plan-drift-check.mjs",
+            "docs/reports/ideas/maintenance-agent/drift-report.md"
+          ]
+        },
+        "instructions": [
+          "Compare data/taskpackets/<idea> against docs/reports/ideas/<idea>/plan.md and emit a markdown diff report.",
+          "Highlight missing slices or task packets, include confidence scoring per mismatch.",
+          "Return the updated script using <FILE> fences."
+        ],
+        "acceptanceCriteria": [
+          "npm run maintenance:drift-check exits 0 on aligned plans",
+          "Diff report renders key sections (slices, tasks, deliverables)",
+          "Unit tests cover aligned + drift scenarios"
+        ],
+        "reviewPolicy": "auto",
+        "validation": [
+          { "name": "unit-tests", "tool": "npm test" }
+        ],
+        "execution": {
+          "platform": "openai:gpt-4.1-mini",
+          "model": "openai:gpt-4.1-mini",
+          "budget_usd": 0.35,
+          "max_tokens": 7000,
+          "latency_slo_ms": 60000
+        },
+        "modelBehavior": {
+          "topic_affinity": "Plan and task packet diffing",
+          "policy_flags": ["PII_FREE"],
+          "max_token_context": 32000
+        },
+        "confidence": 0.96
+      },
+      {
+        "taskId": "M1.2",
+        "title": "Schedule Registry Refresh",
+        "purpose": "Automate periodic syncing of data/registry/*.json into docs/state snapshots with audit trails.",
+        "taskType": "code",
+        "domainTag": "infra",
+        "notes": "Must call drift checker before syncing to avoid overwriting divergent plans.",
+        "dependsOn": ["task:M1.1"],
+        "deliverables": [
+          "scripts/maintenance/run-registry-refresh.mjs",
+          "docs/state/maintenance/registry-refresh.log.json"
+        ],
+        "output": {
+          "language": "JavaScript",
+          "version": "ES2020",
+          "format": "text",
+          "files": [
+            "scripts/maintenance/run-registry-refresh.mjs",
+            "docs/state/maintenance/registry-refresh.log.json"
+          ]
+        },
+        "instructions": [
+          "Call the drift checker and abort if mismatches are found.",
+          "Copy data/registry/models.json + tools.json into docs/state/registry with timestamping.",
+          "Append runs to docs/state/maintenance/registry-refresh.log.json with cost + duration metadata."
+        ],
+        "acceptanceCriteria": [
+          "npm run maintenance:registry-refresh generates timestamped copies",
+          "Log file records run metadata with success/failure status",
+          "Supervisor gate can read the log to confirm refresh cadence"
+        ],
+        "reviewPolicy": "auto",
+        "validation": [
+          { "name": "unit-tests", "tool": "npm test" },
+          { "name": "manual-run", "tool": "npm run maintenance:registry-refresh" }
+        ],
+        "execution": {
+          "platform": "openai:gpt-4.1-mini",
+          "model": "openai:gpt-4.1-mini",
+          "budget_usd": 0.45,
+          "max_tokens": 7500,
+          "latency_slo_ms": 60000
+        },
+        "confidence": 0.95
+      }
+    ]
+  }
+}

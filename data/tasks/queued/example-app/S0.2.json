@@ -1,0 +1,43 @@
+{
+  "idea_id": "example-app",
+  "slice_id": "S0",
+  "task_id": "S0.2",
+  "assignment_type": "cli",
+  "platform": "vscode-codex",
+  "model": "openai:gpt-4.1-mini",
+  "model_display": "OpenAI GPT-4.1 Mini",
+  "requires_chat_url": false,
+  "deliverables": [
+    "scripts/context/generate-openspec-digest.mjs"
+  ],
+  "context": {
+    "goal": "Ensure every agent reads the same repo snapshot, OpenSpec digest, and synced state.",
+    "snapshot_path": "docs/reports/repo-snapshot.json"
+  },
+  "instructions": [
+    "Enumerate openspec/**/*.md recursively and collect title + summary + mtime.",
+    "Write docs/updates/OPEN_SPEC_DIGEST.md (table) and data/state/openspec.index.json.",
+    "Skip gracefully if openspec is empty; maintain deterministic ordering.",
+    "Return the updated script file inside <FILE> fences."
+  ],
+  "acceptance_criteria": [
+    "npm run context:openspec succeeds",
+    "Digest lists latest entries sorted by updated_at",
+    "Unit tests verify empty folder handling"
+  ],
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    },
+    {
+      "name": "manual-run",
+      "tool": "npm run context:openspec"
+    }
+  ],
+  "notes": [
+    "Platform: OpenAI GPT-4.1 Mini",
+    "Carry out the task in your CLI/IDE environment (Codex, Roo, Kilo, etc.).",
+    "Commit work in the slice branch or attach a diff in your completion response."
+  ]
+}
