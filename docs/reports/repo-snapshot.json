@@ -1,1880 +1,1890 @@
 {
-  "timestamp": "2025-10-13T06:16:31.098Z",
+  "timestamp": "2025-10-13T08:14:50.329Z",
   "files": [
     {
       "path": ".gitignore",
       "size": 49,
-      "mtime": 1760336187632
+      "mtime": 1760343282776
     },
     {
       "path": "AGENTS.md",
       "size": 6466,
-      "mtime": 1760336187632
+      "mtime": 1760343282776
     },
     {
       "path": "LICENSE",
       "size": 1,
-      "mtime": 1760336187632
+      "mtime": 1760343282776
     },
     {
       "path": "README.md",
       "size": 5748,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "README.txt",
       "size": 954,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "README_ALERTS.md",
       "size": 572,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "README_HANOFF_SNIPPET.md",
       "size": 458,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "README_MODEL_PANEL.md",
       "size": 925,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "README_STATUS.md",
       "size": 1125,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/assignmentLedger.test.ts",
       "size": 1370,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/completion.test.ts",
       "size": 9231,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/dispatcher.test.ts",
       "size": 6497,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/ideaStatus.test.ts",
       "size": 728,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/maintenance.test.ts",
       "size": 2349,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/memoryStore.test.ts",
       "size": 1065,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/orchestratorRuntime.test.ts",
       "size": 2684,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/planBuilder.test.ts",
       "size": 899,
-      "mtime": 1760336187632
+      "mtime": 1760343282777
     },
     {
       "path": "__tests__/rateLimiter.test.ts",
       "size": 2529,
-      "mtime": 1760336187632
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/registryLoader.test.ts",
       "size": 836,
-      "mtime": 1760336187632
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/sanity.test.js",
       "size": 99,
-      "mtime": 1760336187632
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/secretsRegistry.test.ts",
       "size": 1287,
-      "mtime": 1760336187632
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/snapshotLoader.test.ts",
       "size": 1265,
-      "mtime": 1760336187632
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/supervisorPlanGate.test.ts",
       "size": 5702,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/supervisorValidation.test.ts",
       "size": 1557,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/taskAgent.test.ts",
       "size": 4381,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/telemetryWriter.test.ts",
       "size": 3625,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "__tests__/testAgent.test.ts",
       "size": 5877,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "codex_test.md",
       "size": 37,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "config/alerts.providers.json",
       "size": 658,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "config/secrets-registry.example.json",
       "size": 122,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "dashboard/app.js",
       "size": 5129,
-      "mtime": 1760336187633
+      "mtime": 1760343282778
     },
     {
       "path": "dashboard/index.html",
       "size": 1554,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "dashboard/styles.css",
       "size": 1250,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/README.md",
       "size": 636,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/example-app/analyst.review.json",
       "size": 431,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/example-app/prd.summary.json",
       "size": 4028,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/example-app/research.brief.json",
       "size": 1168,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/example-app/status.json",
       "size": 656,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/maintenance-agent/analyst.review.json",
       "size": 597,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/maintenance-agent/prd.summary.json",
       "size": 4176,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/maintenance-agent/research.brief.json",
       "size": 1704,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/ideas/maintenance-agent/status.json",
       "size": 670,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/maintenance/README.md",
       "size": 264,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/maintenance/status.json",
       "size": 22,
-      "mtime": 1760336187633
+      "mtime": 1760343282779
     },
     {
       "path": "data/metrics/README.md",
       "size": 255,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/metrics/run_metrics.json",
       "size": 567,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/policies/rate_limits.json",
       "size": 2540,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/policies/routing.json",
       "size": 1257,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/registry/models.json",
       "size": 4834,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/registry/tools.json",
       "size": 910,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/secrets-registry.json",
       "size": 58,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/state/README.md",
       "size": 377,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/state/assignment.log.json",
       "size": 1883,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/state/openspec.index.json",
       "size": 287,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/state/supervisor.log.json",
       "size": 4974,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/state/task.state.json",
       "size": 4259,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/taskpackets/README.md",
       "size": 420,
-      "mtime": 1760336187633
+      "mtime": 1760343282780
     },
     {
       "path": "data/taskpackets/S2.1.json",
       "size": 880,
-      "mtime": 1760336187633
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/example-app/S0/S0.1.json",
       "size": 1530,
-      "mtime": 1760336187633
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/example-app/S0/S0.2.json",
       "size": 1569,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/example-app/S0/S0.3.json",
       "size": 1721,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/example-app/S0/plan.json",
       "size": 7506,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/maintenance-agent/M1/M1.1.json",
       "size": 1549,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/maintenance-agent/M1/M1.2.json",
       "size": 1796,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/taskpackets/maintenance-agent/M1/plan.json",
       "size": 5401,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/tasks/demo/failing-supervisor-check.json",
       "size": 674,
-      "mtime": 1760336187634
+      "mtime": 1760343282781
     },
     {
       "path": "data/tasks/demo/ui-sanity-check.json",
       "size": 663,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/queued/example-app/S0.1.json",
       "size": 1418,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/queued/example-app/S0.2.json",
       "size": 1385,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/queued/example-app/S0.3.json",
       "size": 1568,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/queued/maintenance-agent/M1.1.json",
       "size": 1369,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/queued/maintenance-agent/M1.2.json",
       "size": 1591,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/secrets-registry.json",
       "size": 425,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "data/tasks/slices/bootstrap_slice.json",
       "size": 1395,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "docs/README.md",
       "size": 1523,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "docs/agents/confidence.md",
       "size": 279,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "docs/agents/roles.md",
       "size": 738,
-      "mtime": 1760336187634
+      "mtime": 1760343282782
     },
     {
       "path": "docs/arch/overview.md",
       "size": 420,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/arch/vibeflow_agent_logic_overview.md",
       "size": 4388,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/capability_vector_embedding_recipe.md",
       "size": 625,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/ci/branch_flow.md",
       "size": 184,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/ci/job_matrix.md",
       "size": 170,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/README.md",
       "size": 184,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/capability_vector.schema.json",
       "size": 1230,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/model_scorecard.schema.json",
       "size": 459,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/plan.schema.json",
       "size": 548,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/registry_model.schema.json",
       "size": 557,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/run_metric.schema.json",
       "size": 566,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/contracts/task_contract.schema.json",
       "size": 726,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/examples/plan.sample.json",
       "size": 2888,
-      "mtime": 1760336187634
+      "mtime": 1760343282783
     },
     {
       "path": "docs/integrations/openmemory.md",
       "size": 724,
-      "mtime": 1760336187634
+      "mtime": 1760343282784
     },
     {
       "path": "docs/mcp/browser_use_checklist.md",
       "size": 261,
-      "mtime": 1760336187634
+      "mtime": 1760343282784
     },
     {
       "path": "docs/mcp/tool_contract.schema.json",
       "size": 534,
-      "mtime": 1760336187634
+      "mtime": 1760343282784
     },
     {
       "path": "docs/mcp/tools/OpenSpecWriter.tool.json",
       "size": 970,
-      "mtime": 1760336187634
+      "mtime": 1760343282784
     },
     {
       "path": "docs/mcp/tools/VisualChecklist.tool.json",
       "size": 747,
-      "mtime": 1760336187634
+      "mtime": 1760343282784
     },
     {
       "path": "docs/obs/telemetry.md",
       "size": 216,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/openspec/README.md",
       "size": 341,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/orchestrator_scoring_pseudocode_ts_ish_compact.md",
       "size": 1192,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/planning_prompt.md",
       "size": 834,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/policies/review_policy.md",
       "size": 350,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/prd/canonical.constraints.json",
       "size": 1648,
-      "mtime": 1760336187635
+      "mtime": 1760343282784
     },
     {
       "path": "docs/prd/dashboard sample starter mockup",
       "size": 22206,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/prd/vibeflow_prd_strategic_technical_addendum.md",
       "size": 11439,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/process/NBE-01.md",
       "size": 726,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/registry/seed.csv",
       "size": 752,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/reports/ideas/example-app/plan.md",
       "size": 1046,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/reports/ideas/maintenance-agent/plan.md",
       "size": 837,
-      "mtime": 1760336187635
+      "mtime": 1760343282785
     },
     {
       "path": "docs/reports/repo-snapshot.json",
-      "size": 43334,
-      "mtime": 1760336187635
+      "size": 43592,
+      "mtime": 1760343282786
     },
     {
       "path": "docs/reports/supervisor/example-app.json",
       "size": 2446,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/reports/supervisor/maintenance-agent.json",
       "size": 2014,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/routing_policy.md",
       "size": 619,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/schemas/analyst.review.schema.json",
       "size": 1018,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/schemas/idea.status.schema.json",
       "size": 902,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/schemas/prd.summary.schema.json",
       "size": 5365,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/schemas/research.brief.schema.json",
       "size": 1882,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/security/data_classification.md",
       "size": 158,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/security/rbac.md",
       "size": 128,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/slice_template.json",
       "size": 1500,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/specs/error_taxonomy.md",
       "size": 274,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/specs/prompt_packet.md",
       "size": 474,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/specs/reassignment_policy.md",
       "size": 1225,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/specs/roi_calculator.md",
       "size": 2415,
-      "mtime": 1760336187635
+      "mtime": 1760343282786
     },
     {
       "path": "docs/state/metrics/README.md",
       "size": 255,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/metrics/run_metrics.json",
       "size": 177,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/openspec.index.json",
       "size": 287,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/state/README.md",
       "size": 377,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/state/openspec.index.json",
       "size": 537,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/state/supervisor.log.json",
       "size": 2487,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/state/task.state.json",
       "size": 916,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/state/task.state.json",
       "size": 4259,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/supervisor_validation_checklist.md",
       "size": 614,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/ui/task_chips_usage.md",
       "size": 522,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/updates/ANTI_DRIFT_CHANGELOG.md",
       "size": 289,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/updates/OPEN_SPEC_DIGEST.md",
       "size": 213,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/updates/handoff_2025-10-07.md",
       "size": 5676,
-      "mtime": 1760336187636
+      "mtime": 1760343282787
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_22-20.md",
       "size": 2396,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-26.md",
       "size": 2481,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-31.md",
       "size": 2499,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-32.md",
       "size": 2499,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_00-43.md",
       "size": 2543,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_01-58.md",
       "size": 2543,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_02-54.md",
       "size": 2564,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-06.md",
       "size": 2564,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-23.md",
       "size": 2605,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-24.md",
       "size": 2611,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-26.md",
       "size": 2631,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-11.md",
       "size": 2627,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-32.md",
       "size": 2627,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-59.md",
       "size": 2632,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-15.md",
       "size": 2671,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-40.md",
       "size": 2671,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_08-13.md",
       "size": 2747,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_08-35.md",
       "size": 2747,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_10-11.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_10-32.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_12-18.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_12-56.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282788
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_14-09.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_14-30.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_16-13.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_16-37.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_18-13.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_18-38.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-10.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-18.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-30.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_22-08.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_22-26.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_23-58.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-09_23-59.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-01.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-04.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-43.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_01-59.md",
       "size": 2766,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_02-55.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_03-07.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_04-11.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282789
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_04-31.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_06-14.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_06-40.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_08-13.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_08-34.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_10-11.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_10-31.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_12-19.md",
       "size": 2719,
-      "mtime": 1760336187636
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_12-54.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_14-09.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_14-29.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_16-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_16-33.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_18-14.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_18-37.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_20-10.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_20-28.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_22-08.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282790
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-10_22-26.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_00-41.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_01-54.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_02-45.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_04-10.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_04-29.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_06-12.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_06-35.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_08-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_08-31.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_10-08.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_10-27.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_12-15.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_12-49.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_14-07.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_14-23.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_15-31.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-09.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-13.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-15.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-29.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_18-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_18-31.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_20-09.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_20-25.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_22-07.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-11_22-25.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_00-45.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_02-03.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_02-56.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282791
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_03-08.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_04-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_04-30.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_06-12.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_06-35.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_08-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_08-31.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_10-08.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_10-27.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_12-16.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_12-49.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_14-07.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_14-24.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_16-10.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_16-30.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_18-11.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_18-33.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_20-09.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_20-27.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_22-08.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-12_22-26.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_00-47.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_02-06.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_03-03.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_03-15.md",
       "size": 2719,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_04-12.md",
       "size": 2423,
-      "mtime": 1760336187637
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_ENRICHED_2025-10-13_04-33.md",
       "size": 2517,
-      "mtime": 1760336187638
+      "mtime": 1760343282792
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-13_06-16.md",
+      "size": 2517,
+      "mtime": 1760343282792
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-13_06-42.md",
+      "size": 2517,
+      "mtime": 1760343282792
     },
     {
       "path": "docs/updates/handoff_TEMPLATE.md",
       "size": 242,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "docs/ux/dashboard_spec.md",
       "size": 239,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "docs/visual/checklists/s2-visual-smoke.md",
       "size": 314,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "examples/openspec.example.json",
       "size": 434,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "examples/visual-checklist.example.json",
       "size": 449,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "jest.config.js",
       "size": 448,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "manifest.json",
       "size": 82,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "node scripts/providers/run-packet-locally.mjs data/taskpackets/S2.1.json",
       "size": 719,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "openspec/README.md",
       "size": 206,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "openspec/changes/example-openspec-test.md",
       "size": 318,
-      "mtime": 1760336187638
+      "mtime": 1760343282793
     },
     {
       "path": "package-lock.json",
       "size": 184194,
-      "mtime": 1760336187638
+      "mtime": 1760343282794
     },
     {
       "path": "package.json",
       "size": 2262,
-      "mtime": 1760336187638
+      "mtime": 1760343282794
     },
     {
       "path": "phase0_env_ci.json",
       "size": 3306,
-      "mtime": 1760336187638
+      "mtime": 1760343282794
     },
     {
       "path": "phase1_foundation.json",
       "size": 4760,
-      "mtime": 1760336187638
+      "mtime": 1760343282794
     },
     {
       "path": "planner/examples/maintenance-agent.json",
       "size": 4087,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "planner/examples/shared-context.json",
       "size": 12752,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/contracts/task_contract.schema.json",
       "size": 1911,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/model.status.json",
       "size": 1001,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/policies/routing_policy.schema.json",
       "size": 1188,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/task.state.json",
       "size": 337,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/telemetry/cost_ledger.schema.json",
       "size": 1340,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/telemetry/run_metric.schema.json",
       "size": 1093,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "schemas/telemetry/task_assignment_history.schema.json",
       "size": 1416,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "scripts/agent_pr_example.js",
       "size": 899,
-      "mtime": 1760336187639
+      "mtime": 1760343282794
     },
     {
       "path": "scripts/agent_pr_example.sh",
       "size": 917,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/bootstrap-supabase.mjs",
       "size": 84,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/codex_push.sh",
       "size": 388,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/context/generate-openspec-digest.mjs",
       "size": 3122,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/context/write-repo-snapshot.mjs",
       "size": 2728,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/event-bridge.mjs",
       "size": 1227,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/export-telemetry-to-json.mjs",
       "size": 2573,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/generate-enriched-handoff.mjs",
       "size": 3083,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/generate-handoff-index.mjs",
       "size": 915,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/generate-handoff.mjs",
       "size": 3040,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/generate-openspec-digest.mjs",
       "size": 2877,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/generate-repo-snapshot.mjs",
       "size": 1218,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/guardrails/validate-secrets.mjs",
       "size": 1314,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/ideas/build-prd.mjs",
       "size": 5184,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/ideas/promote-status.mjs",
       "size": 1711,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/ideas/validate-artifacts.mjs",
       "size": 2363,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/maintenance/import-digest.cjs",
       "size": 2144,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/maintenance/process-inbox.cjs",
       "size": 681,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/maintenance/render-status.cjs",
       "size": 2070,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/maintenance/update-status.cjs",
       "size": 1371,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/notify-brevo.mjs",
       "size": 3659,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/orchestrator/assign.cjs",
       "size": 1355,
-      "mtime": 1760336187639
+      "mtime": 1760343282795
     },
     {
       "path": "scripts/orchestrator/handoff-handler.mjs",
       "size": 1660,
-      "mtime": 1760336187639
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/orchestrator/limit-ledger.mjs",
       "size": 1861,
-      "mtime": 1760336187639
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/orchestrator/ready.cjs",
       "size": 747,
-      "mtime": 1760336187639
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/orchestrator/reassign-log.mjs",
       "size": 1294,
-      "mtime": 1760336187639
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/pages/sync-dashboard-state.mjs",
       "size": 1872,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/plan-apply.mjs",
       "size": 1887,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/planner/generate-plan.cjs",
       "size": 1630,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/propose-next-plan.mjs",
       "size": 1619,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/safe-apply.mjs",
       "size": 2571,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/supervisor/gate-plan.cjs",
       "size": 650,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/sync-dashboard-assets.mjs",
       "size": 734,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/task-agent/claim.cjs",
       "size": 3270,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/task-agent/complete.cjs",
       "size": 6309,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/telemetry/bootstrap-supabase.mjs",
       "size": 3439,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/telemetry/update-state.mjs",
       "size": 5642,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/test-agent/claim.cjs",
       "size": 3460,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/test-agent/complete.cjs",
       "size": 3719,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/tools/README.md",
       "size": 661,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/tools/dispatch-trusted-tool.mjs",
       "size": 4668,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/toolsCli.mjs",
       "size": 1408,
-      "mtime": 1760336187640
+      "mtime": 1760343282796
     },
     {
       "path": "scripts/update-model-status.mjs",
       "size": 1882,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "scripts/validate-secrets.mjs",
       "size": 1577,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "scripts/visual/checklists/S-EXAMPLE.md",
       "size": 161,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "scripts/visual/visual-run.mjs",
       "size": 1142,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/assignmentHistory.ts",
       "size": 1734,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/memory/OpenMemoryAdapter.ts",
       "size": 1330,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/roi.ts",
       "size": 1267,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/tools/ToolRunner.ts",
       "size": 2102,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/visual/browserUse.ts",
       "size": 494,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/adapters/visual/devtoolsMCP.ts",
       "size": 505,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/agents/watcher-agent.mjs",
       "size": 2718,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/components/dashboard/ModelStatusPanel.tsx",
       "size": 3340,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/components/dashboard/TaskChips.tsx",
       "size": 1464,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/config/paths.ts",
       "size": 893,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/config/rateLimits.ts",
       "size": 1298,
-      "mtime": 1760336187640
+      "mtime": 1760343282797
     },
     {
       "path": "src/config/registry.ts",
       "size": 2557,
-      "mtime": 1760336187641
+      "mtime": 1760343282797
     },
     {
       "path": "src/dashboard/ModelAnalyticsView.tsx",
       "size": 92,
-      "mtime": 1760336187641
+      "mtime": 1760343282797
     },
     {
       "path": "src/dashboard/ProjectProgress.tsx",
       "size": 82,
-      "mtime": 1760336187641
+      "mtime": 1760343282797
     },
     {
       "path": "src/guardrails/secretsRegistry.ts",
       "size": 1077,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/ideas/status.ts",
       "size": 2090,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/maintenance/index.ts",
       "size": 78,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/maintenance/ingest.ts",
       "size": 2778,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/maintenance/status.ts",
       "size": 3305,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/maintenance/types.ts",
       "size": 589,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/memory/memoryStore.ts",
       "size": 1181,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/memory/snapshotLoader.ts",
       "size": 1324,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/mock/modelStatusData.ts",
       "size": 816,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/notifications/brevo.ts",
       "size": 3078,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/assignmentLedger.ts",
       "size": 750,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/completion.ts",
       "size": 6616,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/dispatcher.ts",
       "size": 12545,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/recordAssignment.ts",
       "size": 1094,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/runtime.ts",
       "size": 3810,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/orchestrator/testQueue.ts",
       "size": 4679,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/pages/dashboard/ModelDashboardPage.tsx",
       "size": 447,
-      "mtime": 1760336187641
+      "mtime": 1760343282798
     },
     {
       "path": "src/planner/planBuilder.ts",
       "size": 8623,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/planner/types.ts",
       "size": 2132,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/state/deriveTaskStats.ts",
       "size": 2479,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/supervisor/planGate.ts",
       "size": 9871,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/supervisor/validationLog.ts",
       "size": 769,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/taskAgent/claim.ts",
       "size": 5966,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/taskAgent/complete.ts",
       "size": 3460,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/taskAgent/index.ts",
       "size": 81,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/taskAgent/types.ts",
       "size": 1080,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/telemetry/rateLimiter.ts",
       "size": 4654,
-      "mtime": 1760336187641
+      "mtime": 1760343282799
     },
     {
       "path": "src/telemetry/supabaseWriter.ts",
       "size": 3261,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/testAgent/claim.ts",
       "size": 4353,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/testAgent/complete.ts",
       "size": 3385,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/testAgent/index.ts",
       "size": 81,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/testAgent/types.ts",
       "size": 1113,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/types/ModelStatus.ts",
       "size": 346,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/types/telemetry.ts",
       "size": 1476,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/utils/events.ts",
       "size": 694,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/utils/jsonFile.ts",
       "size": 1040,
-      "mtime": 1760336187642
+      "mtime": 1760343282799
     },
     {
       "path": "src/utils/notify.ts",
       "size": 395,
-      "mtime": 1760336187642
+      "mtime": 1760343282800
     },
     {
       "path": "supabase/tasks-events.sql",
       "size": 765,
-      "mtime": 1760336187642
+      "mtime": 1760343282800
     },
     {
       "path": "tsconfig.json",
       "size": 1514,
-      "mtime": 1760336187642
+      "mtime": 1760343282800
     }
   ]
 }
