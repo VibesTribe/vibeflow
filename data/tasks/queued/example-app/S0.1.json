@@ -1,0 +1,43 @@
+{
+  "idea_id": "example-app",
+  "slice_id": "S0",
+  "task_id": "S0.1",
+  "assignment_type": "cli",
+  "platform": "vscode-codex",
+  "model": "openai:gpt-4.1-mini",
+  "model_display": "OpenAI GPT-4.1 Mini",
+  "requires_chat_url": false,
+  "deliverables": [
+    "scripts/context/write-repo-snapshot.mjs"
+  ],
+  "context": {
+    "goal": "Ensure every agent reads the same repo snapshot, OpenSpec digest, and synced state.",
+    "snapshot_path": "docs/reports/repo-snapshot.json"
+  },
+  "instructions": [
+    "Read the repo tree (exclude .git, node_modules) and emit docs/reports/repo-snapshot.json.",
+    "Capture per-file sha256, byte size, and modified timestamp; include git commit + branch.",
+    "Keep memory footprint low by streaming directory traversal.",
+    "Return the updated script file inside <FILE> fences."
+  ],
+  "acceptance_criteria": [
+    "npm run context:snapshot succeeds",
+    "docs/reports/repo-snapshot.json includes git metadata and file list",
+    "Unit tests cover happy path + ignored directories"
+  ],
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    },
+    {
+      "name": "manual-run",
+      "tool": "npm run context:snapshot"
+    }
+  ],
+  "notes": [
+    "Platform: OpenAI GPT-4.1 Mini",
+    "Carry out the task in your CLI/IDE environment (Codex, Roo, Kilo, etc.).",
+    "Commit work in the slice branch or attach a diff in your completion response."
+  ]
+}

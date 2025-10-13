@@ -1,0 +1,42 @@
+{
+  "generated_at": "2025-10-11T21:44:03.670Z",
+  "stats": {
+    "totals": {
+      "tasks": 1,
+      "completed": 1,
+      "failed": 0,
+      "running": 0,
+      "queued": 0
+    },
+    "byPlatform": {}
+  },
+  "tasks": [
+    {
+      "taskId": "plan-gate",
+      "sliceId": "S0",
+      "attempts": 0,
+      "latestStatus": "validated",
+      "lastUpdated": "2025-10-11T21:33:52.264Z",
+      "lastPlatform": null,
+      "lastModel": null,
+      "history": [
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T21:31:24.496Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        },
+        {
+          "type": "validation",
+          "status": "pass",
+          "timestamp": "2025-10-11T21:33:52.264Z",
+          "reviewer": "supervisor",
+          "rerouteTo": null,
+          "notes": null
+        }
+      ]
+    }
+  ]
+}

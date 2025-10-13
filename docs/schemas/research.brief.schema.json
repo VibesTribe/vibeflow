@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/research.brief.schema.json",
+  "title": "ResearchBrief",
+  "type": "object",
+  "required": ["idea_id", "summary", "market", "competitors", "recommendations"],
+  "properties": {
+    "idea_id": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string" },
+    "market": {
+      "type": "object",
+      "required": ["target_personas", "market_size", "growth_rate"],
+      "properties": {
+        "target_personas": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "market_size": { "type": "string" },
+        "growth_rate": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "summary", "strengths", "gaps"],
+        "properties": {
+          "name": { "type": "string" },
+          "summary": { "type": "string" },
+          "strengths": { "type": "array", "items": { "type": "string" } },
+          "gaps": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "recommended_stack": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["layer", "technologies"],
+        "properties": {
+          "layer": { "type": "string" },
+          "technologies": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "core_features": { "type": "array", "items": { "type": "string" } },
+    "gap_features": { "type": "array", "items": { "type": "string" } },
+    "recommendations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,41 @@
+﻿ -c -o -n -s -t -  -f -m -t -= -n -= -> -n -e -w -  -I -n -t -l -. -N -u -m -b -e -r -F -o -r -m -a -t -( -' -e -n -- -U -S -' -, -{ -m -a -x -i -m -u -m -F -r -a -c -t -i -o -n -D -i -g -i -t -s -: -2 -} -) -. -f -o -r -m -a -t -( -n -| -| -0 -) -; -
+ -c -o -n -s -t -  -q -s -= -s -= -> -d -o -c -u -m -e -n -t -. -q -u -e -r -y -S -e -l -e -c -t -o -r -( -s -) -; -
+ -a -s -y -n -c -  -f -u -n -c -t -i -o -n -  -f -e -t -c -h -J -S -O -N -( -p -) -{ -
+ -  -  -t -r -y -{ -c -o -n -s -t -  -r -= -a -w -a -i -t -  -f -e -t -c -h -( -p -, -{ -c -a -c -h -e -: -' -n -o -- -s -t -o -r -e -' -} -) -; -  -i -f -( -! -r -. -o -k -) -  -t -h -r -o -w -  -n -e -w -  -E -r -r -o -r -( -p -+ -' -: -  -' -+ -r -. -s -t -a -t -u -s -) -; -  -r -e -t -u -r -n -  -a -w -a -i -t -  -r -. -j -s -o -n -( -) -; -} -
+ -  -  -c -a -t -c -h -( -e -) -{ -c -o -n -s -o -l -e -. -w -a -r -n -( -' -f -e -t -c -h -J -S -O -N -  -f -a -i -l -e -d -' -, -p -, -e -) -; -  -r -e -t -u -r -n -  -n -u -l -l -; -} -
+ -} -
+ -a -s -y -n -c -  -f -u -n -c -t -i -o -n -  -i -n -i -t -( -) -{ -
+ -  -  -c -o -n -s -t -  -t -a -s -k -S -t -a -t -e -= -a -w -a -i -t -  -f -e -t -c -h -J -S -O -N -( -' -. -. -/ -s -t -a -t -e -/ -t -a -s -k -. -s -t -a -t -e -. -j -s -o -n -' -) -; -
+ -  -  -c -o -n -s -t -  -o -p -e -n -s -p -e -c -= -a -w -a -i -t -  -f -e -t -c -h -J -S -O -N -( -' -. -. -/ -s -t -a -t -e -/ -o -p -e -n -s -p -e -c -. -i -n -d -e -x -. -j -s -o -n -' -) -; -
+ -  -  -c -o -n -s -t -  -s -n -a -p -s -h -o -t -= -a -w -a -i -t -  -f -e -t -c -h -J -S -O -N -( -' -. -. -/ -r -e -p -o -r -t -s -/ -r -e -p -o -- -s -n -a -p -s -h -o -t -. -j -s -o -n -' -) -; -
+ -
+ -  -  -c -o -n -s -t -  -t -= -t -a -s -k -S -t -a -t -e -? -. -s -t -a -t -s -? -. -t -o -t -a -l -s -| -| -{ -} -; -
+ -  -  -q -s -( -' -# -t -a -s -k -s -_ -t -o -t -a -l -' -) -. -t -e -x -t -C -o -n -t -e -n -t -= -f -m -t -( -t -. -t -a -s -k -s -) -; -
+ -  -  -q -s -( -' -# -t -a -s -k -s -_ -d -o -n -e -' -) -. -t -e -x -t -C -o -n -t -e -n -t -= -f -m -t -( -t -. -c -o -m -p -l -e -t -e -d -) -; -
+ -  -  -q -s -( -' -# -t -a -s -k -s -_ -r -u -n -n -i -n -g -' -) -. -t -e -x -t -C -o -n -t -e -n -t -= -f -m -t -( -t -. -r -u -n -n -i -n -g -) -; -
+ -  -  -q -s -( -' -# -t -a -s -k -s -_ -q -u -e -u -e -d -' -) -. -t -e -x -t -C -o -n -t -e -n -t -= -f -m -t -( -t -. -q -u -e -u -e -d -) -; -
+ -
+ -  -  -c -o -n -s -t -  -l -i -s -t -= -q -s -( -' -# -o -p -e -n -s -p -e -c -_ -c -h -a -n -g -e -s -' -) -; -  -l -i -s -t -. -i -n -n -e -r -H -T -M -L -= -' -' -; -
+ -  -  -( -o -p -e -n -s -p -e -c -? -. -c -h -a -n -g -e -s -| -| -[ -] -) -. -s -l -i -c -e -( -0 -, -1 -5 -) -. -f -o -r -E -a -c -h -( -c -= -> -{ -
+ -  -  -  -  -c -o -n -s -t -  -l -i -= -d -o -c -u -m -e -n -t -. -c -r -e -a -t -e -E -l -e -m -e -n -t -( -' -l -i -' -) -; -
+ -  -  -  -  -c -o -n -s -t -  -a -= -d -o -c -u -m -e -n -t -. -c -r -e -a -t -e -E -l -e -m -e -n -t -( -' -a -' -) -; -
+ -  -  -  -  -a -. -h -r -e -f -= -` -. -. -/ -. -. -/ -$ -{ -c -. -p -a -t -h -} -` -; -
+ -  -  -  -  -a -. -t -e -x -t -C -o -n -t -e -n -t -= -` -$ -{ -c -. -t -i -t -l -e -} -  -â -€ -” -  -$ -{ -c -. -s -u -m -m -a -r -y -} -` -; -
+ -  -  -  -  -l -i -. -a -p -p -e -n -d -C -h -i -l -d -( -a -) -; -
+ -  -  -  -  -l -i -s -t -. -a -p -p -e -n -d -C -h -i -l -d -( -l -i -) -; -
+ -  -  -} -) -; -
+ -  -  -i -f -( -! -l -i -s -t -. -c -h -i -l -d -r -e -n -. -l -e -n -g -t -h -) -  -l -i -s -t -. -i -n -n -e -r -H -T -M -L -= -' -< -l -i -> -( -n -o -n -e -  -i -n -d -e -x -e -d -  -y -e -t -) -< -/ -l -i -> -' -; -
+ -
+ -  -  -c -o -n -s -t -  -r -f -= -q -s -( -' -# -r -e -c -e -n -t -_ -f -i -l -e -s -' -) -; -  -r -f -. -i -n -n -e -r -H -T -M -L -= -' -' -; -
+ -  -  -( -s -n -a -p -s -h -o -t -? -. -f -i -l -e -s -| -| -[ -] -) -. -s -l -i -c -e -( -0 -, -3 -0 -) -. -f -o -r -E -a -c -h -( -f -= -> -{ -
+ -  -  -  -  -c -o -n -s -t -  -l -i -= -d -o -c -u -m -e -n -t -. -c -r -e -a -t -e -E -l -e -m -e -n -t -( -' -l -i -' -) -; -
+ -  -  -  -  -l -i -. -t -e -x -t -C -o -n -t -e -n -t -= -` -$ -{ -f -. -p -a -t -h -} -  -( -s -i -z -e -  -$ -{ -f -m -t -( -f -. -s -i -z -e -) -} -) -` -; -
+ -  -  -  -  -r -f -. -a -p -p -e -n -d -C -h -i -l -d -( -l -i -) -; -
+ -  -  -} -) -; -
+ -  -  -i -f -( -! -r -f -. -c -h -i -l -d -r -e -n -. -l -e -n -g -t -h -) -  -r -f -. -i -n -n -e -r -H -T -M -L -= -' -< -l -i -> -( -s -n -a -p -s -h -o -t -  -e -m -p -t -y -) -< -/ -l -i -> -' -; -
+ -
+ -  -  -c -o -n -s -t -  -l -i -n -k -D -i -v -= -d -o -c -u -m -e -n -t -. -g -e -t -E -l -e -m -e -n -t -B -y -I -d -( -' -h -a -n -d -o -f -f -_ -l -i -n -k -' -) -; -  -l -i -n -k -D -i -v -. -i -n -n -e -r -H -T -M -L -= -' -' -; -
+ -  -  -c -o -n -s -t -  -a -= -d -o -c -u -m -e -n -t -. -c -r -e -a -t -e -E -l -e -m -e -n -t -( -' -a -' -) -; -  -a -. -h -r -e -f -= -' -. -. -/ -u -p -d -a -t -e -s -/ -I -N -D -E -X -. -m -d -' -; -  -a -. -t -e -x -t -C -o -n -t -e -n -t -= -' -O -p -e -n -  -H -a -n -d -o -f -f -  -I -n -d -e -x -' -; -
+ -  -  -l -i -n -k -D -i -v -. -a -p -p -e -n -d -C -h -i -l -d -( -a -) -; -
+ -} -
+ -i -n -i -t -( -) -; -

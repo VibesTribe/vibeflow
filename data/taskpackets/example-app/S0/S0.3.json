@@ -1,0 +1,59 @@
+{
+  "task_id": "S0.3",
+  "title": "Sync Dashboard State",
+  "purpose": "Mirror data/state/**/* into docs/state/**/* for GitHub Pages telemetry dashboards.",
+  "confidence": 0.96,
+  "context": {
+    "goal": "Ensure every agent reads the same repo snapshot, OpenSpec digest, and synced state.",
+    "snapshot_path": "docs/reports/repo-snapshot.json"
+  },
+  "dependencies": [
+    "task:S0.1",
+    "task:S0.2",
+    "artifact:data/state/openspec.index.json"
+  ],
+  "deliverables": [
+    "scripts/pages/sync-dashboard-state.mjs"
+  ],
+  "output_format": {
+    "language": "JavaScript",
+    "version": "ES2020",
+    "format": "text",
+    "files": [
+      "scripts/pages/sync-dashboard-state.mjs"
+    ]
+  },
+  "instructions": [
+    "Recursively copy data/state and data/metrics into docs/state (remove old files first).",
+    "Ensure the script is idempotent and preserves directory structure.",
+    "When executed on a hosted studio, include the chat URL in your completion for audit.",
+    "Return the updated script file inside <FILE> fences."
+  ],
+  "acceptance_criteria": [
+    "npm run pages:sync completes",
+    "docs/state mirrors data/state structure",
+    "No stale files remain after sync"
+  ],
+  "review_policy": "auto",
+  "validation": [
+    {
+      "name": "unit-tests",
+      "tool": "npm test"
+    },
+    {
+      "name": "manual-run",
+      "tool": "npm run pages:sync"
+    }
+  ],
+  "execution": {
+    "platform": "opencode-studio",
+    "model": "opencode:glm-4-6-free",
+    "budget_usd": 0.15,
+    "max_tokens": 4000,
+    "latency_slo_ms": 60000,
+    "require_chat_url": true
+  },
+  "handoff_expectations": [
+    "Include execution.chat_url in the completion so supervisors can audit hosted platform runs."
+  ]
+}

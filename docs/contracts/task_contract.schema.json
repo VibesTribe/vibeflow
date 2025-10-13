@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/task-contract-v1.json",
+  "type": "object",
+  "required": [
+    "task_id",
+    "title",
+    "context_snapshot_id",
+    "task_type",
+    "domain_tag",
+    "constraints",
+    "output_schema"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "context_snapshot_id": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string"
+    },
+    "domain_tag": {
+      "type": "string"
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "review_policy": {
+      "type": "string"
+    }
+  }
+}
