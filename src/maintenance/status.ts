@@ -53,10 +53,8 @@ async function ensureTable(): Promise<StatusTable> {
 async function writeTable(table: StatusTable): Promise<void> {
   const statusPath = getStatusPath();
   await fs.mkdir(path.dirname(statusPath), { recursive: true });
-  await fs.writeFile(statusPath, JSON.stringify(table, null, 2) + '
-', 'utf8');
+  await fs.writeFile(statusPath, JSON.stringify(table, null, 2) + '\n', 'utf8');
 }
-
 export async function loadStatusRecords(): Promise<StatusRecord[]> {
   const table = await ensureTable();
   return table.items;
@@ -122,3 +120,4 @@ export async function removeStatusRecord(id: string): Promise<void> {
   const filtered = records.filter((record) => record.id !== id);
   await saveStatusRecords(filtered);
 }
+
