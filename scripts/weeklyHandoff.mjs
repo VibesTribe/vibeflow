@@ -1,10 +1,11 @@
 // scripts/weeklyHandoff.mjs
-// Builds rolling weekly handoff + latest digest with ROI/Tasks + full file tree + pruning
+// Builds a rolling weekly handoff + latest digest with ROI/Tasks,
+// 72-hour change summary, full file tree, and auto-pruning.
 
 import fs from "node:fs";
 import path from "node:path";
 
-// === helpers ===
+// ---------- helpers ----------
 function walk(dir, arr = []) {
   for (const f of fs.readdirSync(dir)) {
     if ([".git", "node_modules"].includes(f)) continue;
@@ -38,7 +39,7 @@ function readJSONSafe(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch { return null; }
 }
 
-// === main ===
+// ---------- main ----------
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "docs", "updates");
 fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -70,15 +71,35 @@ const totals = {
   roi: metrics.roi_percent ?? 0
 };
 
-// --- build sections ---
+// --- 72-hour change summary ---
+const now = Date.now();
+const cutoff = now - 72 * 60 * 60 * 1000;
+const fileStats = files.map(f => {
+  const stat = fs.statSync(f);
+  return { path: f, size: stat.size, mtime: stat.mtimeMs };
+});
+const recent = fileStats.filter(f => f.mtime > cutoff);
+recent.sort((a,b)=>b.size-a.size);
+const top10 = recent.slice(0,10);
+
+const recentSummary = recent.length
+  ? `**Files modified in last 72h:** ${recent.length}\n\n${top10.map(f => `- ${f.path} (size ${f.size.toLocaleString()})`).join("\n")}`
+  : "No file modifications detected in last 72 hours.";
+
+// --- diff vs previous week ---
 const diff = summarizeDiff(prevFiles, files);
+
+// --- build header ---
 const dateStr = today.toISOString().replace("T", " ").slice(0, 16);
 const header = `# 🪶 Vibeflow Handoff (Enriched) — ${dateStr}
 ## Totals
 - Tasks: ${totals.tasks}  Done: ${totals.done}  Running: ${totals.running}  Queued: ${totals.queued}
 - ROI: ${totals.roi}% (CF $${totals.cf_usd} vs VF $${totals.vf_usd})
 
-## 📦 Recent Changes
+## 📊 Changes in Last 72 Hours
+${recentSummary}
+
+## 📦 Structural Changes
 ${diff}
 
 ---
