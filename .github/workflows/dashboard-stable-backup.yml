@@ -1,0 +1,24 @@
+name: Dashboard Stable Backup
+
+on:
+  push:
+    paths:
+      - 'dashboard/stable/**'
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create snapshot
+        run: |
+          mkdir -p .snapshots/dashboard
+          DATE=$(date +"%Y-%m-%d_%H-%M")
+          cp -r dashboard/stable ".snapshots/dashboard/${DATE}"
+      - name: Commit snapshot
+        run: |
+          git config user.name "Vibeflow Auto"
+          git config user.email "actions@github.com"
+          git add .snapshots/dashboard
+          git commit -m "Snapshot dashboard stable @ ${DATE}" || echo "No changes to commit"
+          git push
