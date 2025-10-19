@@ -1,9 +1,17 @@
 // scripts/weeklyHandoff.mjs
-// Builds a rolling weekly handoff + latest digest with ROI/Tasks,
-// 72-hour change summary, full file tree, and auto-pruning.
+// Vibeflow: Unified weekly + latest handoff generator (future-proof edition)
+// Safe: local FS only, no API calls or network activity.
+// Features: ROI/tasks summary, 72h diff, full repo tree, auto-prune,
+// future stubs for telemetry, alerts, ROI trend, registered skills.
 
 import fs from "node:fs";
 import path from "node:path";
+
+// --- Environment toggles (future-ready) ---
+const ENABLE_ALERTS = process.env.ENABLE_ALERTS === "true";       // pulls from data/events
+const ENABLE_TELEMETRY = process.env.ENABLE_TELEMETRY === "true"; // pulls from Supabase metrics
+const ENABLE_TREND = process.env.ENABLE_TREND === "true";         // charts ROI trend
+const ENABLE_SKILLS = process.env.ENABLE_SKILLS === "true";       // lists registered skills
 
 // ---------- helpers ----------
 function walk(dir, arr = []) {
@@ -89,6 +97,19 @@ const recentSummary = recent.length
 // --- diff vs previous week ---
 const diff = summarizeDiff(prevFiles, files);
 
+// --- Future stubs ---
+let telemetryBlock = "## 🧠 Telemetry Summary\n_(auto-generated if ENABLE_TELEMETRY=true)_";
+if (ENABLE_TELEMETRY) telemetryBlock = "## 🧠 Telemetry Summary\n_(Telemetry integration placeholder — data unavailable offline.)_";
+
+let alertsBlock = "## ⚠️ Alerts (Last Week)\n_(none detected)_";
+if (ENABLE_ALERTS) alertsBlock = "## ⚠️ Alerts (Last Week)\n_(Alert summary placeholder — ENABLE_ALERTS=true.)_";
+
+let trendBlock = "## 📈 ROI Trend (7 days)\n_(chart placeholder)_";
+if (ENABLE_TREND) trendBlock = "## 📈 ROI Trend (7 days)\n_(Trend chart placeholder — ENABLE_TREND=true.)_";
+
+let skillsBlock = "## 🧩 Registered Skills\n_(none yet)_";
+if (ENABLE_SKILLS) skillsBlock = "## 🧩 Registered Skills\n_(Skill registry placeholder — ENABLE_SKILLS=true.)_";
+
 // --- build header ---
 const dateStr = today.toISOString().replace("T", " ").slice(0, 16);
 const header = `# 🪶 Vibeflow Handoff (Enriched) — ${dateStr}
@@ -101,6 +122,14 @@ ${recentSummary}
 
 ## 📦 Structural Changes
 ${diff}
+
+${telemetryBlock}
+
+${alertsBlock}
+
+${trendBlock}
+
+${skillsBlock}
 
 ---
 
