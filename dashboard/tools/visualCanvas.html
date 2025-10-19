@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vibeflow – Visual Canvas Compare</title>
+<style>
+  body { margin:0; background:#0e1116; color:#e8e8e8; font-family:system-ui,sans-serif; height:100vh; overflow:hidden;}
+  header {display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;background:#161a22;}
+  select,input[type=range]{background:#1d222c;color:#00e0b0;border:1px solid #00e0b0;border-radius:4px;padding:.3rem .6rem;margin:0 .3rem;}
+  canvas {width:100%;height:calc(100vh - 3rem);cursor:grab;}
+  canvas:active{cursor:grabbing;}
+</style>
+</head>
+<body>
+<header>
+  <div>🧭 <strong>Vibeflow Visual Canvas</strong></div>
+  <div>
+    <label>Base:</label><select id="baseSel"></select>
+    <label>Overlay:</label><select id="overlaySel"></select>
+    <label>Opacity:</label><input id="opacity" type="range" min="0" max="1" step="0.05" value="0.5" />
+  </div>
+</header>
+<canvas id="canvas"></canvas>
+<script>
+// simplified script placeholder
+document.getElementById("canvas").getContext("2d").fillText("Visual Compare Canvas Placeholder", 50, 50);
+</script>
+</body>
+</html>
