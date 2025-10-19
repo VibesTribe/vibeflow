@@ -19,3 +19,4 @@ jobs:
           git add docs/updates/
           git commit -m "Update weekly handoff & latest digest" || echo "No changes"
           git push
+
