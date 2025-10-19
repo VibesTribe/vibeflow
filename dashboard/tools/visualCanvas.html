@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vibeflow – Visual Canvas Compare</title>
-<style>
-  body { margin:0; background:#0e1116; color:#e8e8e8; font-family:system-ui,sans-serif; height:100vh; overflow:hidden;}
-  header {display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;background:#161a22;}
-  select,input[type=range]{background:#1d222c;color:#00e0b0;border:1px solid #00e0b0;border-radius:4px;padding:.3rem .6rem;margin:0 .3rem;}
-  canvas {width:100%;height:calc(100vh - 3rem);cursor:grab;}
-  canvas:active{cursor:grabbing;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Canvas 2.0</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; background: #f0f2f5; }
+    select, button { margin: 0.5rem; padding: 0.4rem; }
+    iframe { width: 32%; height: 500px; border: 1px solid #ccc; }
+    .viewer { display: flex; justify-content: space-between; gap: 1rem; }
+  </style>
 </head>
 <body>
-<header>
-  <div>🧭 <strong>Vibeflow Visual Canvas</strong></div>
+  <h1>Visual Canvas 2.0</h1>
+  <p>Select up to three dashboards to compare side-by-side.</p>
   <div>
-    <label>Base:</label><select id="baseSel"></select>
-    <label>Overlay:</label><select id="overlaySel"></select>
-    <label>Opacity:</label><input id="opacity" type="range" min="0" max="1" step="0.05" value="0.5" />
+    <select id="view1"><option value="">Select View 1</option></select>
+    <select id="view2"><option value="">Select View 2</option></select>
+    <select id="view3"><option value="">Select View 3</option></select>
+    <button id="compare">Compare</button>
   </div>
-</header>
-<canvas id="canvas"></canvas>
-<script>
-// simplified script placeholder
-document.getElementById("canvas").getContext("2d").fillText("Visual Compare Canvas Placeholder", 50, 50);
-</script>
+  <div class="viewer" id="viewer"></div>
+
+  <script>
+    const views = ["Cardview", "ModelView", "ROIView"];
+    const selects = [document.getElementById('view1'), document.getElementById('view2'), document.getElementById('view3')];
+    for (const sel of selects) views.forEach(v => sel.innerHTML += `<option value="${v}">${v}</option>`);
+
+    document.getElementById('compare').onclick = () => {
+      const chosen = selects.map(s => s.value).filter(v => v);
+      const container = document.getElementById('viewer');
+      container.innerHTML = chosen.map(v => `<iframe src="../stable/${v}/index.html" title="${v}"></iframe>`).join('');
+    };
+  </script>
 </body>
 </html>
