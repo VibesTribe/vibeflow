@@ -1,2383 +1,1340 @@
 {
-  "generated_at": "2025-10-13T03:15:06.704Z",
-  "git": {
-    "commit": "6837f2caa075d4b78a6dfca3767efa49e54191f9",
-    "branch": "HEAD"
-  },
-  "counts": {
-    "files": 392,
-    "bytes": 1174236,
-    "by_extension": {
-      ".yml": 17,
-      "NO_EXT": 4,
-      ".ts": 63,
-      ".yaml": 1,
-      ".md": 167,
-      ".json": 81,
-      ".js": 4,
-      ".html": 1,
-      ".css": 1,
-      ".csv": 1,
-      ".txt": 1,
-      ".sh": 2,
-      ".mjs": 31,
-      ".cjs": 12,
-      ".tsx": 5,
-      ".sql": 1
-    }
-  },
+  "timestamp": "2025-10-19T13:05:17.945Z",
   "files": [
     {
-      "path": ".github/workflows/apply-provider-profiles.yml",
-      "size": 5175,
-      "modified": "2025-10-12T21:59:00.977Z",
-      "sha256": "93db9752ab989b1f97a08a49ff987e7dcd6332a630f93082391744e99afa46a2"
-    },
-    {
-      "path": ".github/workflows/apply-vf-packs.yml",
-      "size": 19235,
-      "modified": "2025-10-12T21:59:00.977Z",
-      "sha256": "4f9aafc2aa65118a3368d74558710f21ac298d0abb996875bec1c31990889bb9"
-    },
-    {
-      "path": ".github/workflows/approval.yml",
-      "size": 344,
-      "modified": "2025-10-13T03:14:50.534Z",
-      "sha256": "823b8ac5979a785f0b447f39bf9053aee60883cbd670c99f09bfa47fbf347600"
-    },
-    {
-      "path": ".github/workflows/build-openspec-digest.yml",
-      "size": 1199,
-      "modified": "2025-10-12T21:59:00.978Z",
-      "sha256": "de576f73edc502aba1183034a0c2503de8d573b47276b0f0b6202dceb640c824"
-    },
-    {
-      "path": ".github/workflows/ci-test.yml",
-      "size": 856,
-      "modified": "2025-10-13T03:14:51.127Z",
-      "sha256": "d7e52edd2e61a9087c883081a93a1c55b8a4222153ce5fe06b7fab28fd7c853e"
-    },
-    {
-      "path": ".github/workflows/CODEOWNERS",
-      "size": 20,
-      "modified": "2025-10-13T03:14:51.126Z",
-      "sha256": "2ca5f7b37160c6c03ee912fb8ab5b84862d7b3c59cccfa3faa5e11db54b51276"
-    },
-    {
-      "path": ".github/workflows/docs-validate.yml",
-      "size": 1145,
-      "modified": "2025-10-13T03:14:51.127Z",
-      "sha256": "bcc6d82b548530b74e91d6e1c97cb00cb436257d8f35fff52b7f11438982566f"
-    },
-    {
-      "path": ".github/workflows/orchestrator-dispatch.yml",
-      "size": 1575,
-      "modified": "2025-10-12T21:59:00.979Z",
-      "sha256": "09c7faf4aae14c84fbe686ca15ef100195410d62d693d82509222cc9ea3a64fb"
-    },
-    {
-      "path": ".github/workflows/pages-sync-dashboard.yml",
-      "size": 823,
-      "modified": "2025-10-12T21:59:00.979Z",
-      "sha256": "b5aba92227c36fa51b16241a696ae9e17010d1a1cde51a84452b1d4257569f2d"
-    },
-    {
-      "path": ".github/workflows/promote-to-approved.yml",
-      "size": 884,
-      "modified": "2025-10-13T03:14:51.127Z",
-      "sha256": "41f3ebb22d0ded55fcca8e67b38d1473be52494a7ee7e16a9843311cf0276adf"
-    },
-    {
-      "path": ".github/workflows/promote-to-main.yml",
-      "size": 525,
-      "modified": "2025-10-13T03:14:51.128Z",
-      "sha256": "569a4eba7a1c4b15354317b1917bd0524ea796db9de164046720e76ce6826489"
-    },
-    {
-      "path": ".github/workflows/safe-apply-from-zip.yml",
-      "size": 1620,
-      "modified": "2025-10-12T21:59:00.980Z",
-      "sha256": "80cf4d7c9dd6452d6d03654094beed285c77b814aa0fba3cb8094302da7f10a1"
-    },
-    {
-      "path": ".github/workflows/status-pulse.yml",
-      "size": 2054,
-      "modified": "2025-10-12T21:59:00.980Z",
-      "sha256": "20215941c5db6da2c965b457bd7a0ca811bee0d095cebd4a4b18638030e3946a"
-    },
-    {
-      "path": ".github/workflows/supervisor-gate.yml",
-      "size": 1155,
-      "modified": "2025-10-13T03:14:51.129Z",
-      "sha256": "dde812dfb62e6a46fbafd07c1b157b5ecd766a9f60265d7c3a071b684d9e4720"
-    },
-    {
-      "path": ".github/workflows/telemetry-bootstrap.yml",
-      "size": 854,
-      "modified": "2025-10-13T03:14:51.130Z",
-      "sha256": "eb2413103c30e60fafd65e00439fb58b7fbdfdff487e5fe51b3da7a4a2f0424d"
-    },
-    {
-      "path": ".github/workflows/telemetry-export.yml",
-      "size": 1275,
-      "modified": "2025-10-12T21:59:00.981Z",
-      "sha256": "61fc78dd69ea94d9a6433df2ed21416ea645a7d7a902f0e7d96153a9a9e2d627"
-    },
-    {
-      "path": ".github/workflows/tests/sanity.test.ts",
-      "size": 112,
-      "modified": "2025-10-13T03:14:50.568Z",
-      "sha256": "37a84a2c96d60087a1372cdb62c03852a3072ca49b05d9f473b054038797e164"
-    },
-    {
-      "path": ".github/workflows/tests.yaml",
-      "size": 419,
-      "modified": "2025-10-13T03:14:50.603Z",
-      "sha256": "5b7159186173d046d8c8855d563c292ff5a16cad6fc937029d5e68922750c9b6"
-    },
-    {
-      "path": ".github/workflows/tools-run.yml",
-      "size": 1124,
-      "modified": "2025-10-12T21:59:00.981Z",
-      "sha256": "2020dd7878041214f0e3bb527c5719f48718b14d26f818ed4905903b9d7f4d3f"
-    },
-    {
-      "path": ".github/workflows/visual-gate.yml",
-      "size": 439,
-      "modified": "2025-10-13T03:14:51.131Z",
-      "sha256": "5e1a2dba1c1666b251b42f3c8b45ba79778b79376a1c34545f52cdf62dd703b1"
-    },
-    {
       "path": ".gitignore",
-      "size": 53,
-      "modified": "2025-10-13T03:14:51.131Z",
-      "sha256": "8bdfed39541f841c1345611384d4549351e5a90ff879f004f5fdcc838a652bb5"
+      "size": 49,
+      "mtime": 1760879117052
     },
     {
       "path": "AGENTS.md",
-      "size": 6548,
-      "modified": "2025-10-13T03:14:51.132Z",
-      "sha256": "224f757fcd9f3205849139938f32e16a0dbfb067c0485fa769c03e54f98e6f7b"
-    },
-    {
-      "path": "codex_test.md",
-      "size": 38,
-      "modified": "2025-10-13T03:14:50.774Z",
-      "sha256": "48a57414f6bca2aacb185816349b8336501fd79bf0652d4a6c56767eb6b06e05"
-    },
-    {
-      "path": "config/alerts.providers.json",
-      "size": 669,
-      "modified": "2025-10-12T21:59:00.985Z",
-      "sha256": "a14293f1154b62e8fa4a113ad162de20f9078353f59c262b4a84b79081f93549"
-    },
-    {
-      "path": "config/secrets-registry.example.json",
-      "size": 127,
-      "modified": "2025-10-12T21:59:00.986Z",
-      "sha256": "91e8232c2eb3c5fabb5cd79a8aea19df73fd163bcd3470c3abfb75db20f4f046"
-    },
-    {
-      "path": "dashboard/app.js",
-      "size": 5170,
-      "modified": "2025-10-13T03:14:51.148Z",
-      "sha256": "67ac0fa082c45a3140cbdd89615735dc4f9c7a2ab6b87e2c0426753fbb9f715f"
-    },
-    {
-      "path": "dashboard/index.html",
-      "size": 1603,
-      "modified": "2025-10-13T03:14:51.148Z",
-      "sha256": "bde3518b3de622895df7043b2eb187858c16c36c4dd296eef8bc102f18ad86e1"
-    },
-    {
-      "path": "dashboard/styles.css",
-      "size": 1268,
-      "modified": "2025-10-13T03:14:51.150Z",
-      "sha256": "3502150662a8798b72715501e81c0099d0624e01f1bc4c438f0b7ecee2dcc93a"
-    },
-    {
-      "path": "data/ideas/example-app/analyst.review.json",
-      "size": 444,
-      "modified": "2025-10-13T03:14:51.152Z",
-      "sha256": "13b0c42ef1d60e78794df6810ed44075147dee9f6dc3adf3b03c150578910481"
-    },
-    {
-      "path": "data/ideas/example-app/prd.summary.json",
-      "size": 4155,
-      "modified": "2025-10-13T03:14:51.153Z",
-      "sha256": "65531f9a6f18dca6eb0caea1de3af9ac277f2b6684f537d4aa0cd087fa4ac8e1"
-    },
-    {
-      "path": "data/ideas/example-app/research.brief.json",
-      "size": 1195,
-      "modified": "2025-10-13T03:14:51.154Z",
-      "sha256": "4837524248ef9b022fe79ce31162c46d3b29d1379f02cf9b04f2d467bb132a35"
-    },
-    {
-      "path": "data/ideas/example-app/status.json",
-      "size": 687,
-      "modified": "2025-10-13T03:14:51.154Z",
-      "sha256": "380501940de38a25270538d36799f4c4713d7a7101b00058e8e3d628783e6c31"
-    },
-    {
-      "path": "data/ideas/maintenance-agent/analyst.review.json",
-      "size": 611,
-      "modified": "2025-10-13T03:14:51.155Z",
-      "sha256": "194306f72458f37f969e8ae7fe409ffa1cf17e94341a525bc9bfef2d0811e212"
-    },
-    {
-      "path": "data/ideas/maintenance-agent/prd.summary.json",
-      "size": 4305,
-      "modified": "2025-10-13T03:14:51.156Z",
-      "sha256": "8b07d93d6668daa0830202d1c2f7652cf5461f0b264ff9546e7c0614dcbb7aa3"
-    },
-    {
-      "path": "data/ideas/maintenance-agent/research.brief.json",
-      "size": 1748,
-      "modified": "2025-10-13T03:14:51.158Z",
-      "sha256": "1f0f65fbed6557599cae29cc92b07a9a6094783a094c2954650604c2a6f3c84a"
-    },
-    {
-      "path": "data/ideas/maintenance-agent/status.json",
-      "size": 701,
-      "modified": "2025-10-13T03:14:51.158Z",
-      "sha256": "0787fef6b2553a80bbeff68cd7eb13c62687a33ec6df38fa1c2f5408a8dd5f3b"
-    },
-    {
-      "path": "data/ideas/README.md",
-      "size": 646,
-      "modified": "2025-10-13T03:14:51.151Z",
-      "sha256": "1d3cf58d9e704223d333a569ce0f6044ba79412b8db94a8f29ba5aee2db94a0e"
-    },
-    {
-      "path": "data/maintenance/README.md",
-      "size": 267,
-      "modified": "2025-10-13T03:14:51.159Z",
-      "sha256": "bcb26dd7a22f2104b04e4b16c5a5a02f30058290512383cf56abb555503363da"
-    },
-    {
-      "path": "data/maintenance/status.json",
-      "size": 26,
-      "modified": "2025-10-13T03:14:51.159Z",
-      "sha256": "a9d7311319596f48b84a5a274b6f0fac1e1d401dd1d6c0b62967b32db21e77c1"
-    },
-    {
-      "path": "data/metrics/README.md",
-      "size": 265,
-      "modified": "2025-10-13T03:14:51.160Z",
-      "sha256": "359b7e851fc0b1f707329424b75017fbe5c90d14962fd023448236674ffbc29f"
-    },
-    {
-      "path": "data/metrics/run_metrics.json",
-      "size": 596,
-      "modified": "2025-10-13T03:14:51.161Z",
-      "sha256": "628a7317f2d21dcfa72a22a01988c608f096034e5eecb688c76eeef262e2007e"
-    },
-    {
-      "path": "data/policies/rate_limits.json",
-      "size": 2648,
-      "modified": "2025-10-13T03:14:51.162Z",
-      "sha256": "9e925f7e52e5dec38d494a358c955c2aac9ce67630d9b9b68dd0985def6933c5"
-    },
-    {
-      "path": "data/policies/routing.json",
-      "size": 1315,
-      "modified": "2025-10-13T03:14:51.163Z",
-      "sha256": "5efdb8c9da5fe2f475511689e8f7559e52fbababd464c9c20a75512571f21381"
-    },
-    {
-      "path": "data/registry/models.json",
-      "size": 4975,
-      "modified": "2025-10-13T03:14:51.165Z",
-      "sha256": "6af2135ecd1354ff63dbbba3a4a3fe918198edef42d33a41c1f1553f8b64fe93"
-    },
-    {
-      "path": "data/registry/tools.json",
-      "size": 934,
-      "modified": "2025-10-13T03:14:51.165Z",
-      "sha256": "eb33fd487f63271ac8bc66f35337cedd65b9f24013e51399d764fc53b8c47de4"
-    },
-    {
-      "path": "data/secrets-registry.json",
-      "size": 62,
-      "modified": "2025-10-12T21:59:00.986Z",
-      "sha256": "29229d812a39169ffd6f7790ebadfb89cc2b104ef2e4cd8051bde94654aadd98"
-    },
-    {
-      "path": "data/state/assignment.log.json",
-      "size": 1955,
-      "modified": "2025-10-13T03:14:51.167Z",
-      "sha256": "72e2af62b9486514d22a22e249e096c61eebc817312016550d44f74a55e64933"
-    },
-    {
-      "path": "data/state/openspec.index.json",
-      "size": 537,
-      "modified": "2025-10-13T03:14:57.407Z",
-      "sha256": "07a67f40e91cd1973f6f3ac7ecc4ca29b924454a408f749dfdcd1ff61d52278e"
-    },
-    {
-      "path": "data/state/README.md",
-      "size": 385,
-      "modified": "2025-10-13T03:14:51.166Z",
-      "sha256": "e55648574617147cee218060bc7311f1f43f3b73434b93cae8eca8001a0109e2"
-    },
-    {
-      "path": "data/state/supervisor.log.json",
-      "size": 5236,
-      "modified": "2025-10-13T03:14:51.168Z",
-      "sha256": "b60e12c23ed82687ff509b434926a9f8c5b33c7250074b465ae4b5fd7afa74fa"
-    },
-    {
-      "path": "data/state/task.state.json",
-      "size": 4425,
-      "modified": "2025-10-13T03:14:51.169Z",
-      "sha256": "468354c1ec6c2840146ffbdf597c31f9dbed381c029200c84ef173f6e35c323b"
-    },
-    {
-      "path": "data/taskpackets/example-app/S0/plan.json",
-      "size": 7742,
-      "modified": "2025-10-13T03:14:51.174Z",
-      "sha256": "7531a01fd51589d2dad9efd90fc7050650fe665871266b0ef1740cac1888e57f"
-    },
-    {
-      "path": "data/taskpackets/example-app/S0/S0.1.json",
-      "size": 1581,
-      "modified": "2025-10-13T03:14:51.171Z",
-      "sha256": "cbf6939a25fd17b66b444f887a668b48e47c179b8fa12b60709c106b75f03b7b"
-    },
-    {
-      "path": "data/taskpackets/example-app/S0/S0.2.json",
-      "size": 1623,
-      "modified": "2025-10-13T03:14:51.172Z",
-      "sha256": "b7dfdbf5116bf78d7b9f2254c26baa157637a9611e6c7732e8b52eda1788898c"
-    },
-    {
-      "path": "data/taskpackets/example-app/S0/S0.3.json",
-      "size": 1780,
-      "modified": "2025-10-13T03:14:51.173Z",
-      "sha256": "33f255a258ab5577728cbdac2e4fdeb6926c519d76cf1fd956da5912e24abbd4"
-    },
-    {
-      "path": "data/taskpackets/maintenance-agent/M1/M1.1.json",
-      "size": 1597,
-      "modified": "2025-10-13T03:14:51.176Z",
-      "sha256": "c866e31504c198279ef70cd4e26c80ca8e016b99cb7f4cbbbe46d396b747342d"
-    },
-    {
-      "path": "data/taskpackets/maintenance-agent/M1/M1.2.json",
-      "size": 1853,
-      "modified": "2025-10-13T03:14:51.176Z",
-      "sha256": "ce6334ce64053b9019851358e19f949928dcfbfd6783eed3c778a88091ca04ea"
-    },
-    {
-      "path": "data/taskpackets/maintenance-agent/M1/plan.json",
-      "size": 5561,
-      "modified": "2025-10-13T03:14:51.177Z",
-      "sha256": "12e2bb018544f4c1de79cbc37f64d758ddfbc51b315c57213dd1441dc807e1f6"
-    },
-    {
-      "path": "data/taskpackets/README.md",
-      "size": 432,
-      "modified": "2025-10-13T03:14:51.170Z",
-      "sha256": "df9ba47a7fde665df148bd458de1f1869d1b5f84decfa4ebb54304e581b4d08f"
-    },
-    {
-      "path": "data/taskpackets/S2.1.json",
-      "size": 899,
-      "modified": "2025-10-12T21:59:00.988Z",
-      "sha256": "d0e8e6800f1e60de086b3205daaece5cd4dab7057016e5d65791a73f43f47d3a"
-    },
-    {
-      "path": "data/tasks/demo/failing-supervisor-check.json",
-      "size": 695,
-      "modified": "2025-10-12T21:59:00.988Z",
-      "sha256": "d7b76ee0da655f4a8b44f3264d0296de56b1bfaf0591f537b48bb71241fc7a9d"
-    },
-    {
-      "path": "data/tasks/demo/ui-sanity-check.json",
-      "size": 684,
-      "modified": "2025-10-12T21:59:00.989Z",
-      "sha256": "90b3b5a47d930de7935d8474eb982c945b926bb75a893c22ab00ec3594c529d3"
-    },
-    {
-      "path": "data/tasks/queued/example-app/S0.1.json",
-      "size": 1461,
-      "modified": "2025-10-13T03:14:51.179Z",
-      "sha256": "143d07180f85d64a2502ab97e9373e46c6a9c35849f6dd7735152590226d3538"
-    },
-    {
-      "path": "data/tasks/queued/example-app/S0.2.json",
-      "size": 1428,
-      "modified": "2025-10-13T03:14:51.179Z",
-      "sha256": "95991ab8c4d8b4f4262b942e4a44278f88249ebceee1850502e7bd889a51a11a"
-    },
-    {
-      "path": "data/tasks/queued/example-app/S0.3.json",
-      "size": 1614,
-      "modified": "2025-10-13T03:14:51.180Z",
-      "sha256": "829c399b4b4828a750b425b194bad55e696eab5f071a9f43695befb3bb061a28"
-    },
-    {
-      "path": "data/tasks/queued/maintenance-agent/M1.1.json",
-      "size": 1408,
-      "modified": "2025-10-13T03:14:51.182Z",
-      "sha256": "1b1451bd614304e28854f9e70eaffbbb568f0474e65bcadb9a32df7a01970f19"
-    },
-    {
-      "path": "data/tasks/queued/maintenance-agent/M1.2.json",
-      "size": 1637,
-      "modified": "2025-10-13T03:14:51.183Z",
-      "sha256": "d22bca5084cdbd2e624b4155cef7a9057028237d57eecaab2a7af4b06634c483"
-    },
-    {
-      "path": "data/tasks/secrets-registry.json",
-      "size": 445,
-      "modified": "2025-10-13T03:14:51.183Z",
-      "sha256": "ec73cee9f5926fa74d700598a1d1533f397c631f577e5eb01b8bdc4c164da0bf"
-    },
-    {
-      "path": "data/tasks/slices/bootstrap_slice.json",
-      "size": 1443,
-      "modified": "2025-10-12T21:59:00.990Z",
-      "sha256": "8d4979e05a39e0e838fe49cc3b40b1b0b9d03b039c3b5ab97b162ccbad7fa5a4"
-    },
-    {
-      "path": "docs/agents/confidence.md",
-      "size": 284,
-      "modified": "2025-10-13T03:14:51.184Z",
-      "sha256": "caad7b60207c1db551741f05baf97628ce0f1ed4697f6226cf5768d05b4c7608"
-    },
-    {
-      "path": "docs/agents/roles.md",
-      "size": 749,
-      "modified": "2025-10-13T03:14:51.184Z",
-      "sha256": "04d54ba3952592f73382b0d47831ff726e7a1cbd80c0848fe16cd3c46fec8893"
-    },
-    {
-      "path": "docs/arch/overview.md",
-      "size": 426,
-      "modified": "2025-10-13T03:14:51.185Z",
-      "sha256": "a4342487cc6352b28d0bcfbfbdd582c0be3cf618b5d5372081906884a7e79af7"
-    },
-    {
-      "path": "docs/arch/vibeflow_agent_logic_overview.md",
-      "size": 4452,
-      "modified": "2025-10-12T21:59:00.991Z",
-      "sha256": "c98acc8415e6e6f2c6edfb17c7ffd96fa44d0741a1b052a3524eb12118ef69f5"
-    },
-    {
-      "path": "docs/capability_vector_embedding_recipe.md",
-      "size": 640,
-      "modified": "2025-10-13T03:14:51.185Z",
-      "sha256": "2ad3dbf928dcad299b8669209d49a4608073e44179d565a34637e7f26795835d"
-    },
-    {
-      "path": "docs/ci/branch_flow.md",
-      "size": 189,
-      "modified": "2025-10-13T03:14:51.186Z",
-      "sha256": "1bd02d9cb50ce3c6a1fb43eb87241599836c8e36eddb2bfa8b536c64d86fc3a2"
-    },
-    {
-      "path": "docs/ci/job_matrix.md",
-      "size": 177,
-      "modified": "2025-10-13T03:14:51.187Z",
-      "sha256": "c6ab8cdda49ae4fb4b4c8808ed12d6886707c836eb505061ae261928964450f1"
-    },
-    {
-      "path": "docs/contracts/capability_vector.schema.json",
-      "size": 1296,
-      "modified": "2025-10-13T03:14:51.188Z",
-      "sha256": "e8028320009e7bea7b2359d82d9a040bdd0afc8e939badd922540e3eaa8bd8c6"
-    },
-    {
-      "path": "docs/contracts/model_scorecard.schema.json",
-      "size": 484,
-      "modified": "2025-10-13T03:14:51.188Z",
-      "sha256": "ed7415dd9cdc58003dea648e5f7383022903578db4850644b498bfaf409b4d73"
-    },
-    {
-      "path": "docs/contracts/plan.schema.json",
-      "size": 578,
-      "modified": "2025-10-13T03:14:51.189Z",
-      "sha256": "be76c69819e00f6ff990ee06b87e6508a458acc00a87ea8d50e2cb579a26ba1f"
-    },
-    {
-      "path": "docs/contracts/README.md",
-      "size": 189,
-      "modified": "2025-10-13T03:14:51.187Z",
-      "sha256": "973d89574753d2de169fa51cf93ef3ead8c4be8b67076bc2f72fd8b3f167eec8"
-    },
-    {
-      "path": "docs/contracts/registry_model.schema.json",
-      "size": 586,
-      "modified": "2025-10-13T03:14:51.190Z",
-      "sha256": "7dbdba62ec848232b330f78c16a0fc29cbd15696b01b240a45fb4a528222c196"
-    },
-    {
-      "path": "docs/contracts/run_metric.schema.json",
-      "size": 599,
-      "modified": "2025-10-13T03:14:51.190Z",
-      "sha256": "6de051ba048e870436d83f1cd0790696e6f053dcd47b3e138748330738aa19c2"
-    },
-    {
-      "path": "docs/contracts/task_contract.schema.json",
-      "size": 766,
-      "modified": "2025-10-13T03:14:51.190Z",
-      "sha256": "ad41d0e791155ea07bbf3cc5f4649ce3f5afa5966db821670a4e58ba9475781c"
-    },
-    {
-      "path": "docs/examples/plan.sample.json",
-      "size": 2993,
-      "modified": "2025-10-13T03:14:51.191Z",
-      "sha256": "7675492617841ad052e910c02a6f8f0c4d0a7206050cf7dc3ce571acbcf5c861"
-    },
-    {
-      "path": "docs/integrations/openmemory.md",
-      "size": 739,
-      "modified": "2025-10-12T21:59:00.991Z",
-      "sha256": "74e2ad52fd9b471889dcb2667973de2f554698cdcb6009eb21a9c3ba2692f214"
-    },
-    {
-      "path": "docs/mcp/browser_use_checklist.md",
-      "size": 267,
-      "modified": "2025-10-13T03:14:51.191Z",
-      "sha256": "27d3423db9e226a19b2a9253bc319ef814fd2afd092640d00b1c5d5b11ff8cf1"
-    },
-    {
-      "path": "docs/mcp/tools/OpenSpecWriter.tool.json",
-      "size": 1022,
-      "modified": "2025-10-12T21:59:00.992Z",
-      "sha256": "6ab84b4992b2daf50b30bc4cfb6bf5c39f8168cc4525ca777b347140d74ecd65"
-    },
-    {
-      "path": "docs/mcp/tools/VisualChecklist.tool.json",
-      "size": 789,
-      "modified": "2025-10-12T21:59:00.993Z",
-      "sha256": "db4de48d6a94e5baf3c5042a54663992a5335b3ef7022b0ef7b61a9d2b97f9bd"
-    },
-    {
-      "path": "docs/mcp/tool_contract.schema.json",
-      "size": 565,
-      "modified": "2025-10-13T03:14:51.192Z",
-      "sha256": "751e015455721997a7338fa215fbba8a73b0a64a9c22124c65e1735cf3201402"
-    },
-    {
-      "path": "docs/obs/telemetry.md",
-      "size": 222,
-      "modified": "2025-10-13T03:14:51.192Z",
-      "sha256": "449cc6db4c4e2fde29f9afe2503084af1b747461807716e6d9c22a19bd0737f9"
-    },
-    {
-      "path": "docs/openspec/README.md",
-      "size": 349,
-      "modified": "2025-10-12T21:59:00.993Z",
-      "sha256": "28bead656c528053016b7aa277ededcf2c3ba43fc704bb6f6b4b6b1b180ce981"
-    },
-    {
-      "path": "docs/orchestrator_scoring_pseudocode_ts_ish_compact.md",
-      "size": 1219,
-      "modified": "2025-10-13T03:14:51.193Z",
-      "sha256": "2d8f43b40024d253639b4623fab1def52d74d640e02ae4ede3ab5a050e1458d9"
-    },
-    {
-      "path": "docs/planning_prompt.md",
-      "size": 853,
-      "modified": "2025-10-13T03:14:51.193Z",
-      "sha256": "075dddf65774a82d9fb7953338ddb79bf6e404028689afe63ecd0cf908b586a4"
-    },
-    {
-      "path": "docs/policies/review_policy.md",
-      "size": 362,
-      "modified": "2025-10-13T03:14:51.194Z",
-      "sha256": "8ec926e6e6f43c5a9534c102545c65bc2d9f8ecfb03450cd45675b1dacb2018d"
-    },
-    {
-      "path": "docs/prd/canonical.constraints.json",
-      "size": 1694,
-      "modified": "2025-10-13T03:14:51.196Z",
-      "sha256": "aec1bb917d9ade1fcc871259260763161347fe47be0a6609565c8ba296f6688e"
-    },
-    {
-      "path": "docs/prd/dashboard sample starter mockup",
-      "size": 22759,
-      "modified": "2025-10-13T03:14:51.196Z",
-      "sha256": "c0b3b59a653810defd7dfa046e7308edfc7fc81126eac359bc9dcfcf0663e464"
-    },
-    {
-      "path": "docs/prd/vibeflow_prd_strategic_technical_addendum.md",
-      "size": 11766,
-      "modified": "2025-10-13T03:14:51.197Z",
-      "sha256": "e90aecd6cf963e01e624203a13752d50bc2cf1fa4c220aebf88b9e202d18d1c3"
-    },
-    {
-      "path": "docs/process/NBE-01.md",
-      "size": 738,
-      "modified": "2025-10-12T21:59:00.994Z",
-      "sha256": "a758dc677e150ae113904f93b50a4788f98c9cf658fa04ddf13576a4ce7eff3a"
-    },
-    {
-      "path": "docs/README.md",
-      "size": 1568,
-      "modified": "2025-10-13T03:14:51.183Z",
-      "sha256": "f0f2f1dbdc1d1c9057935c0031130e72c9e7da6c378adbf0042863f861c60ed1"
-    },
-    {
-      "path": "docs/registry/seed.csv",
-      "size": 757,
-      "modified": "2025-10-13T03:14:51.197Z",
-      "sha256": "c0b83b6ce2033d9676067dec222453769f5fbf6a87bf93d56470b79ea679148f"
-    },
-    {
-      "path": "docs/reports/ideas/example-app/plan.md",
-      "size": 1069,
-      "modified": "2025-10-13T03:14:51.200Z",
-      "sha256": "9c85f3b2a1eb05b095410ce15f5dc90d62cef2610578e88efc89b1e041e4f5c6"
-    },
-    {
-      "path": "docs/reports/ideas/maintenance-agent/plan.md",
-      "size": 853,
-      "modified": "2025-10-13T03:14:51.200Z",
-      "sha256": "f3e634db37343adf4a27540d6f4fa6d4ee2f607474c06d30b12fbd86d57aaa75"
-    },
-    {
-      "path": "docs/reports/repo-snapshot.json",
-      "size": 112563,
-      "modified": "2025-10-13T03:14:51.201Z",
-      "sha256": "2e958b4b5985add86051f71437797d9012185315e82f32254862d4fe36a3e916"
-    },
-    {
-      "path": "docs/reports/supervisor/example-app.json",
-      "size": 2559,
-      "modified": "2025-10-13T03:14:51.203Z",
-      "sha256": "3bda35178fa7e8fbc0b7b672d8d35dfc703c3554447623840a0db56938d515ad"
-    },
-    {
-      "path": "docs/reports/supervisor/maintenance-agent.json",
-      "size": 2102,
-      "modified": "2025-10-13T03:14:51.204Z",
-      "sha256": "d358b6d9f4c8a7d05ec1cc80252dc41d00b4142a6b0f3be8b3be856f947208ad"
-    },
-    {
-      "path": "docs/routing_policy.md",
-      "size": 632,
-      "modified": "2025-10-13T03:14:51.204Z",
-      "sha256": "2ca6e9ebece6c56369e96bd9c8c12bffd6b73b8867501946844b38ded2fc8a54"
-    },
-    {
-      "path": "docs/schemas/analyst.review.schema.json",
-      "size": 1043,
-      "modified": "2025-10-13T03:14:51.206Z",
-      "sha256": "563f2f8bbbce4604c831639e504124f5642e748448c6b980727986cc625c712c"
-    },
-    {
-      "path": "docs/schemas/idea.status.schema.json",
-      "size": 937,
-      "modified": "2025-10-13T03:14:51.207Z",
-      "sha256": "546ab1effe3e3c0c70c96497a6ded02effc09422c8443df3dbdf46ba3b39e2eb"
-    },
-    {
-      "path": "docs/schemas/prd.summary.schema.json",
-      "size": 5639,
-      "modified": "2025-10-13T03:14:51.208Z",
-      "sha256": "c65bb20a8f81e958b4754d618ad6f7b89277d590bf2ab4912d740ac318fe5eb6"
-    },
-    {
-      "path": "docs/schemas/research.brief.schema.json",
-      "size": 1939,
-      "modified": "2025-10-13T03:14:51.209Z",
-      "sha256": "b6cab300863b1e513abd4269affc45d534e38c610e99309b703d3aea31c18d9a"
-    },
-    {
-      "path": "docs/security/data_classification.md",
-      "size": 162,
-      "modified": "2025-10-13T03:14:51.209Z",
-      "sha256": "1936eec0b09e9aee307120e62b184e8b2b3c2c4d92a7afa89408f2310d4760bc"
-    },
-    {
-      "path": "docs/security/rbac.md",
-      "size": 132,
-      "modified": "2025-10-13T03:14:51.210Z",
-      "sha256": "5dd6e4ef9bf4620835c8a9906cdda8996baca2db616dee8ac704b217cb3eb0ad"
-    },
-    {
-      "path": "docs/slice_template.json",
-      "size": 1553,
-      "modified": "2025-10-13T03:14:51.210Z",
-      "sha256": "92795ad59ab513edd85dc56e889fbe7187af0c4442459515aef74fbd7c9cacb9"
-    },
-    {
-      "path": "docs/specs/error_taxonomy.md",
-      "size": 287,
-      "modified": "2025-10-12T21:59:00.996Z",
-      "sha256": "b9dbc201ae626ef662374390660091d6d5e593ecc208ae9f0fa3ba3a79b1ac8c"
-    },
-    {
-      "path": "docs/specs/prompt_packet.md",
-      "size": 485,
-      "modified": "2025-10-12T21:59:00.996Z",
-      "sha256": "ec0b59b0f987cb2cccc32161f5e9f5816168a11d8c9bffb2f6ed3155f7241005"
-    },
-    {
-      "path": "docs/specs/reassignment_policy.md",
-      "size": 1248,
-      "modified": "2025-10-12T21:59:00.997Z",
-      "sha256": "4dbcb1f501faee8cba4158bd5d58dd7f5e886968a41e2edad79d93bcb63a4d47"
-    },
-    {
-      "path": "docs/specs/roi_calculator.md",
-      "size": 2459,
-      "modified": "2025-10-12T21:59:00.997Z",
-      "sha256": "ca3d4438c38bc48155cdb09fda31f6985f336fa7ee5d3ea49235c01bb0396265"
-    },
-    {
-      "path": "docs/state/metrics/README.md",
-      "size": 265,
-      "modified": "2025-10-13T03:14:51.211Z",
-      "sha256": "359b7e851fc0b1f707329424b75017fbe5c90d14962fd023448236674ffbc29f"
-    },
-    {
-      "path": "docs/state/metrics/run_metrics.json",
-      "size": 187,
-      "modified": "2025-10-13T03:14:51.212Z",
-      "sha256": "e57b51bb679cf91a5805241ed48d896c56e28101c13e247a48b7404c8a080ce1"
-    },
-    {
-      "path": "docs/state/openspec.index.json",
-      "size": 81,
-      "modified": "2025-10-13T01:51:11.061Z",
-      "sha256": "81774e56ead8355f1ac3d90910beee701c085afb49fe0cf19ae05266ee151650"
-    },
-    {
-      "path": "docs/state/state/openspec.index.json",
-      "size": 554,
-      "modified": "2025-10-13T03:14:51.213Z",
-      "sha256": "a27f649c5d137aeae29585efef63b0b1b6a51ca9dc50027ed5ae28613322d9c2"
-    },
-    {
-      "path": "docs/state/state/README.md",
-      "size": 385,
-      "modified": "2025-10-13T03:14:51.213Z",
-      "sha256": "e55648574617147cee218060bc7311f1f43f3b73434b93cae8eca8001a0109e2"
-    },
-    {
-      "path": "docs/state/state/supervisor.log.json",
-      "size": 2619,
-      "modified": "2025-10-13T03:14:51.214Z",
-      "sha256": "9d90121342f1f69fd93fecbb9f01c035287619468b866adfd57d62ecbb207f9c"
-    },
-    {
-      "path": "docs/state/state/task.state.json",
-      "size": 958,
-      "modified": "2025-10-13T03:14:51.215Z",
-      "sha256": "6a472fe8347af6321c1d1bb874381f057af2c945fceb469ec12439d58469aaec"
-    },
-    {
-      "path": "docs/state/task.state.json",
-      "size": 370,
-      "modified": "2025-10-12T21:59:00.998Z",
-      "sha256": "61f33f5d7442a491418e3402f1accf390e6764d397c3df3870dbf900423acdea"
-    },
-    {
-      "path": "docs/supervisor_validation_checklist.md",
-      "size": 626,
-      "modified": "2025-10-13T03:14:51.215Z",
-      "sha256": "1d113b606601279cd8ebc99f5303f4a1cadf8802284d82be60d4089de6118304"
-    },
-    {
-      "path": "docs/ui/task_chips_usage.md",
-      "size": 540,
-      "modified": "2025-10-12T21:59:00.999Z",
-      "sha256": "24a93358d7a35676b8ff37b972a7eab68f1929de2633c4adb3f835ae04a60fcb"
-    },
-    {
-      "path": "docs/updates/ANTI_DRIFT_CHANGELOG.md",
-      "size": 294,
-      "modified": "2025-10-12T21:59:00.999Z",
-      "sha256": "ec2819b9730829d875ff18efe6098c9184adcdcbfbf34b9ce1c1da2524b1486f"
-    },
-    {
-      "path": "docs/updates/handoff_2025-10-07.md",
-      "size": 5859,
-      "modified": "2025-10-13T03:14:51.216Z",
-      "sha256": "b6d09d65db2ac256aa7ac94d7025436348274c7fdfdc55c69ae9dfa6b585d2c2"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-08_22-20.md",
-      "size": 2456,
-      "modified": "2025-10-12T21:59:01.000Z",
-      "sha256": "9908ed0678b7548990f3ab294bf4fd809b32120072ab149f0fc487d19b805591"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-26.md",
-      "size": 2543,
-      "modified": "2025-10-12T21:59:01.000Z",
-      "sha256": "894826908caf1b556e47a8f44a26263a73fcc3f26c885328fffdd6954a06d5dd"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-31.md",
-      "size": 2561,
-      "modified": "2025-10-12T21:59:01.001Z",
-      "sha256": "c6e8dc67302fe5bf2f4e07a4fb0d9a848696a72aefa624f9a45b7e521066001a"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-08_23-32.md",
-      "size": 2561,
-      "modified": "2025-10-12T21:59:01.001Z",
-      "sha256": "bf351a2531ca7bb62d2a06876e1fcdc61a7506e9a4d4e4046940858fd189afa8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_00-43.md",
-      "size": 2605,
-      "modified": "2025-10-12T21:59:01.001Z",
-      "sha256": "0338632613aadf40bc48cee8554b6a72e98da7956dbd9e9da1caf9db20d5bb56"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_01-58.md",
-      "size": 2605,
-      "modified": "2025-10-12T21:59:01.002Z",
-      "sha256": "45a847ddda1145a0415494f60d4397d0d0175d481ce3ce745b01d19963a99172"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_02-54.md",
-      "size": 2626,
-      "modified": "2025-10-12T21:59:01.002Z",
-      "sha256": "4162e9f0345095ae2b3031b5e9f7febc33f688a05f0bac734b49fed2287c62f8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-06.md",
-      "size": 2626,
-      "modified": "2025-10-12T21:59:01.002Z",
-      "sha256": "e7ba232b381062a181a849cb9a2e55354fb857b4435d7c311ccc6f34104401fa"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-23.md",
-      "size": 2667,
-      "modified": "2025-10-12T21:59:01.003Z",
-      "sha256": "d20ee2537bef95520e1244b51fcae1e297cede0edad320d95b99b209668c3e04"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-24.md",
-      "size": 2673,
-      "modified": "2025-10-12T21:59:01.003Z",
-      "sha256": "e3b9ea557584ea313b3970c4f56062309b1eccd66e7079ad05bc4ab75e379116"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_03-26.md",
-      "size": 2693,
-      "modified": "2025-10-12T21:59:01.003Z",
-      "sha256": "e450fbd3d84e095d95fef41b68ba2225e79e517e22b72cf641e611f104204632"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-11.md",
-      "size": 2689,
-      "modified": "2025-10-12T21:59:01.004Z",
-      "sha256": "8afdda30bf2d63e1f23de6a4a2b56cb2c3dce9f069dccf80cd3322ba8726a7cd"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-32.md",
-      "size": 2689,
-      "modified": "2025-10-12T21:59:01.004Z",
-      "sha256": "561745f3fa42ddcff207f4866fe02a1f7fa6a3dd6f1a74ee97f02ecc9403e4bb"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_04-59.md",
-      "size": 2694,
-      "modified": "2025-10-12T21:59:01.004Z",
-      "sha256": "6a09fd08bf95b9349f6eede7e093c055b1b4631c0e1bf78d3532b4c28f224f97"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-15.md",
-      "size": 2733,
-      "modified": "2025-10-12T21:59:01.005Z",
-      "sha256": "285f46e6a8d2b27e9e8f1723e5b47621928df2f8b4cc1e90e9902391442b87ee"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_06-40.md",
-      "size": 2733,
-      "modified": "2025-10-12T21:59:01.005Z",
-      "sha256": "4e198cf3511b9850fae64086fb4774933951a6787f031b5b2d1cdcda5a1cef1a"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_08-13.md",
-      "size": 2809,
-      "modified": "2025-10-12T21:59:01.006Z",
-      "sha256": "ad1cecc3f8b072543e7cb47d8e690c801578eb4e03188341e7eee1e836aa0db4"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_08-35.md",
-      "size": 2809,
-      "modified": "2025-10-12T21:59:01.006Z",
-      "sha256": "384ec17369e0190b492d6a8dd22e359bb783376dc5f974ddc5c403723d8b8375"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_10-11.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.006Z",
-      "sha256": "da5703bd117c0f69564cbd4e25dd5138ea6400680a68c0a793a5fa9a9f55e600"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_10-32.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.007Z",
-      "sha256": "b6e85d97b00bc2b32c082532827b378df738b01d001ec2b89e3bf1b2f462d257"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_12-18.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.007Z",
-      "sha256": "497a717440b2d7d85348ae3a84d8aea7feb405177b3d3806e44f71fb79f47c10"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_12-56.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.007Z",
-      "sha256": "bcde5e3a5aba7ea7b50f364ed72f80a7b73e1c75c934511a2e1a51c3d1fcd040"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_14-09.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.008Z",
-      "sha256": "dbc7498f9cfbd747f1ddee048d9f79e83319244f46a4ac3563a1f3470aa29356"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_14-30.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.008Z",
-      "sha256": "b856fa89605382e9b1d7408ff9e2ecdbf13bc0b6b1a0d41f2919dce22e2a7883"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_16-13.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.009Z",
-      "sha256": "e7b0c689eadd628a37e1f45bb74ed160e4f6d57d5a9585e6fa3e65366602b46e"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_16-37.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.009Z",
-      "sha256": "351b87dbb59ef4e8bd95ce6f21fa3b88487b43340c69599d876d9bc53d88e4a5"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_18-13.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.009Z",
-      "sha256": "135be783aa073816fb22700d1948642a4979db4151e3da4cf6b06a25d9ba42ab"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_18-38.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.010Z",
-      "sha256": "75dec6985082b8443049fa05894ec3247071ec7bffe82dae5cbf1c0669ee52c1"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-10.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.010Z",
-      "sha256": "58fd732c5816e532b49603aa09351b43e46ee3a7924ef73632f273bb683b74f8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-18.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.010Z",
-      "sha256": "823c542c568d9936a7c61c1a622c4572e40ce96b457c314872121c4618957260"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_20-30.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.011Z",
-      "sha256": "b485a5dd7b2d28396be226bf7ae9839b0ac609b0a412d12f699a18b7924216a2"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_22-08.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.011Z",
-      "sha256": "7bce5f851d36d33986bd2dcdadee6cd8f1c25e9ad6739b51422db92df8c3a72a"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_22-26.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.012Z",
-      "sha256": "917859289f34772dff5d4e58d17df6b9dec8b66d24f74ecb48c12f837c3ec689"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_23-58.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.012Z",
-      "sha256": "5311afd3427aafcf02c11ba265891efbd32dae95d63f3087c398a47a91f869d9"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-09_23-59.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.012Z",
-      "sha256": "6edd00b5c5b839a4496d5ca98e19eef0d0766180dce41ff91a65719db9878cfd"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-01.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.013Z",
-      "sha256": "da99c2b6f6f9c1ba91274f1da6e076aa9c754c380f234cfde270b35c2de6cd0b"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-04.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.013Z",
-      "sha256": "1eb3d8142e3ddff61106f4f5658cd271a1e049eafea829c59695d083deb55f29"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_00-43.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.013Z",
-      "sha256": "6dbe3944bc40ca628cbc3042b96427304f30da2d23402d5b758de0d9209ebee5"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_01-59.md",
-      "size": 2828,
-      "modified": "2025-10-12T21:59:01.014Z",
-      "sha256": "d407225f390c9da16bdb06685902138035f4c4515d9c96a9d89b29080a7a7452"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_02-55.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.014Z",
-      "sha256": "c39f359d4e878bbd46a693fb47ef946230b8a9a18961eb8b8bdc6fc706975d2b"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_03-07.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.014Z",
-      "sha256": "6d0f172a7eb9824e79eb9a9a79c468e5150cd574045e641bc6b4fe32b5d50889"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_04-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.015Z",
-      "sha256": "04efcd14baf53e70c96cc9d1e4012ca2ef94447419242f9dc01f2d72393bde57"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_04-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.015Z",
-      "sha256": "12e9117ea8f2810fdb12b39a33de3c8b5a7196a5f27d5cd5404c094459c4554d"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_06-14.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.015Z",
-      "sha256": "ab17b7b6f5bad1e90acbac9924b229ae5998c5ff76bb0ea92f706f03a38ed67a"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_06-40.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.016Z",
-      "sha256": "39161758b7ab7d824ace6ea9bb98c4c074faaa51b775151d529e6240da5c7860"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_08-13.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.016Z",
-      "sha256": "91525858b91d75acbfac3fb4c1ef5eb8c6fdb95f8e113f226a753cbcf28ac4f8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_08-34.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.017Z",
-      "sha256": "90278b573e6ead2d91b31d2f9667c9cce82b50550ff1c9411b0a678b93086b12"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_10-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.017Z",
-      "sha256": "dfcb4490329bdb1f7e24fea71468b597378a464e083b871ddcacf0f2b9e95884"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_10-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.017Z",
-      "sha256": "f5b7453e26fce3e7ba69fd74c6b9cfa468d6f76d90771198d460376035f5576d"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_12-19.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.018Z",
-      "sha256": "c6d003813ccea09be5876264b1319b1055539766cfa6e880ded9940148eada58"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_12-54.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.018Z",
-      "sha256": "6c66d037d05b6b549c68c080ca8b7f364495747685eddd8bbb391be4b38c10d6"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_14-09.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.018Z",
-      "sha256": "15612567ee01fef057bcc4475a79203b23d9cbe007e59836a3a7a17cd9449ad0"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_14-29.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.019Z",
-      "sha256": "5b7ac89e35acbaba0b1266721b7b80952d287b022919f823367b8539135154e9"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_16-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.019Z",
-      "sha256": "dd5c5db816e5dd0d5073711cff6c7126713466635c8e299a3fface541ac46d96"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_16-33.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.020Z",
-      "sha256": "d7ec3498c3baa5c82b575ade4a7c3e71f487c954a36f12a11f4365491b8014e9"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_18-14.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.020Z",
-      "sha256": "f9b9514caa962e71aff9f31cbd917402058d8d55b3341e43e78ae0ea185d81e5"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_18-37.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.020Z",
-      "sha256": "3bc3c41479d91b03f1c6b97d3a99e84fcf4a1aa6905d19c2aebd464670e3f454"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_20-10.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.021Z",
-      "sha256": "662d8406f92f0d7adc284f193896d13ddf403ff2e042097ccc2ea880ef1429ce"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_20-28.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.021Z",
-      "sha256": "cc899049eb9a852db4fb1cd4f813070ec0f6f929fbef2a239544e02b8d798c62"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_22-08.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.021Z",
-      "sha256": "0504045ed3ac86a46c7166f1e8bfb8f1fc741a702d934a307a92f3bcdbbdd8a8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-10_22-26.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.022Z",
-      "sha256": "22d125a03f5b654278e3140e96e2a5abba527275b79d195083b09f881cd4138c"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_00-41.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.022Z",
-      "sha256": "a1ef0f3b563b9bc9786cfc12ea3ecc79e36559eca2447a99923a0ded437aca8b"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_01-54.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.023Z",
-      "sha256": "36f16dcb7e569b1b87ceb59a1a1e078ef435745e4cc633478763eb7a485feafe"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_02-45.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.023Z",
-      "sha256": "334a5a3310e95447423ee2aeb8594ca8ee5b5fc8429981c272fc88c2afa39520"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_04-10.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.023Z",
-      "sha256": "d058a3e217b803ac4e0ef2db046782c64efa017353c0efbc22100800ec90ec92"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_04-29.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.024Z",
-      "sha256": "74d967ff9631e019bb4f690406ac8d57963296044066da9b099bd7431fec582f"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_06-12.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.024Z",
-      "sha256": "b5c00433f12e39248941c7661bf43832d5374f1a3bfda2ece361227a445832c9"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_06-35.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.025Z",
-      "sha256": "40c5f8002f373d6fc5a430735773b1e2b8c4fe25eb357559bca8caa9244698f8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_08-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.025Z",
-      "sha256": "df12b393483e2ad55afb8e44037ad1033315a67d26be83424d059378b902f0a8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_08-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.025Z",
-      "sha256": "9948ee413eef736bddb90a75fce305505b7d884e25a3ba5aedbd5a61670581d8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_10-08.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.026Z",
-      "sha256": "29e865b6b89a93eaec1d9d240981c06bf5a11e07740cf4669b6cc65e0cc0d2a0"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_10-27.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.026Z",
-      "sha256": "f8c34ebce4047fac870aff0f8e754ab29d33c3ee453865201367390f56c17dae"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_12-15.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.026Z",
-      "sha256": "cd437088754f7bfdf47b93e3e8d1a88674738acb80d536caee7a0c1833838c49"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_12-49.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.027Z",
-      "sha256": "ef2c17a539b9e8ae00260f353c2c5ea949ca56a2358763a53652bfb85813f234"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_14-07.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.027Z",
-      "sha256": "f2de04b41b0246a33422d80751a419676a6caf7937da5fce1ccb6678133964d9"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_14-23.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.028Z",
-      "sha256": "5e349cf27b96380e8ef900e43dcbcb63dcafc454db2590b7ea032b94639da539"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_15-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.028Z",
-      "sha256": "93cdf1d362b5e8b1769ca69115004e0c4c8e047a4953335e7426fb2aba93fc88"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-09.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.028Z",
-      "sha256": "1bb246ebed5cb7e36f59b2e5bb5bf4334a6cecb1612443be42ac2bcd94c2127e"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-13.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.029Z",
-      "sha256": "fd8e4ef371df8967e118cff97a071087364eef7674302503aa5aecfbb8e673be"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-15.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.029Z",
-      "sha256": "c72b74330a36b4e4028ef49a132be9deb86a8053def1f48a540ac67476f37e8d"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_16-29.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.029Z",
-      "sha256": "04efcb88d7b8651ebf48b5380a2c076e4d34d3a897d77f08631d0bac52ec36c5"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_18-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.030Z",
-      "sha256": "38c18e04236177aa9a63c4d75f87c7f4808256bc1039df232e0e103a929e1c40"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_18-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.030Z",
-      "sha256": "ec4fe5289ca6d54bee25e28a752e627a60c7c4bb326031b90fb57ecc4dab675c"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_20-09.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.030Z",
-      "sha256": "6fc9c627c8b51ee1b90ac99ad6a499a4ce0204888c903c6363460180fde324e6"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_20-25.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.031Z",
-      "sha256": "92b5a53ba4bfffd0584302980b71c1f95f1c55f3faf15b85bcf157c5b78ad482"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_22-07.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.031Z",
-      "sha256": "3ecc5511b831c7f35a56f486d0ee4b1f34c7a3ad92f1edcedbc4fbc20cc2aee8"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-11_22-25.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.032Z",
-      "sha256": "7c1bb5a884119afb4c6b5469804d4249276d06f9ebee4ce42523ed94f4e6fcd7"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_00-45.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.032Z",
-      "sha256": "f52775a049dd9048691a513e8a088404bf5c611bbdf15b0fa02baa5851426edb"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_02-03.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.032Z",
-      "sha256": "63b94c3484b181416165ed08e749a0f8cb2f8907c5af9be03b03f864543b5058"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_02-56.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.033Z",
-      "sha256": "1c2cc7a5a973527a74e9806c77efcc46db63ccb169b08b6e3e06d51c90031d81"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_03-08.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.033Z",
-      "sha256": "082bff23dfbad45687f9833debd3d88662d23473272b7bee3cab81e339772fcd"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_04-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.034Z",
-      "sha256": "e97f74568d1180f5851db4d6b3309123471095e5f81f479d8935b709ae9f925a"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_04-30.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.034Z",
-      "sha256": "c7b8bd2b55ca8756b25ee00cd5ab9dae4b4baec58c20dc64a957362871969a47"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_06-12.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.034Z",
-      "sha256": "0ee1ee978020658f0293a2f1672943dde82051753d7b5cffd91c168340c45c3c"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_06-35.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.035Z",
-      "sha256": "491bd83d6148dc19c29eff280e0c3253ba46218f6578015d6f7161bc8636e560"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_08-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.035Z",
-      "sha256": "8acd7511bf1ce4117483d3d9a6ad419be27a89a6f9b67ade397d0f831c740647"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_08-31.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.035Z",
-      "sha256": "4bd8bba9d2b1c4c8ab97781530e617a53448337b0045138957116c92510b0746"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_10-08.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.036Z",
-      "sha256": "d3e24a15f296230393a753a377f0b844fa570cbe7cc7a147fac743dbaba0bfa1"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_10-27.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.036Z",
-      "sha256": "5b2c3402892d38794952957bde9b5f050bff212c7c0e83390bbf5a45fcdea0e5"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_12-16.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.036Z",
-      "sha256": "ce6da58edcf88a2c5572312b3fbc09710a701c73079bd45f678a2837b2af9018"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_12-49.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.037Z",
-      "sha256": "004e1581e27648b2c7b76566a444be9165b902c37042a5d2c868978dd5f2b9e7"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_14-07.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.037Z",
-      "sha256": "497ce65b2402b6a2bc998cdaea25418f3ac501d7c3317704cfdc2fd583691f97"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_14-24.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.038Z",
-      "sha256": "dde7eaea7bb2d46a03ea1831aabb1abce6c8f8d55aa1da679109f3c9cecf6b5d"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_16-10.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.038Z",
-      "sha256": "a2f8accbe99d505a5243835f94e49427ddb996bd7deb83587300fe55b5e50d82"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_16-30.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.038Z",
-      "sha256": "78531d74b975e4186687b028dc205c795ce69671a05e84f21d2385c165d4eb95"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_18-11.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.039Z",
-      "sha256": "3687387b360643e1ba27016206da17192a0b75cfe490e66a7015aaea4a0f66ee"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_18-33.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.039Z",
-      "sha256": "0eb71f7824134ab413e6c2e49775a50e631bac596d370b6ef53a7edff025de91"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_20-09.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.040Z",
-      "sha256": "3a8ecda3aca0ff899bfe0cb94cde31137ce8b13d769603c43fdc103c5041b623"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_20-27.md",
-      "size": 2781,
-      "modified": "2025-10-12T21:59:01.040Z",
-      "sha256": "5a50e648361bf3175917d60f302aa38c86c3089e4e63533eecc12b2411c0740d"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_22-08.md",
-      "size": 2781,
-      "modified": "2025-10-13T01:51:11.062Z",
-      "sha256": "e242187b0d101824a25326d65572a4a5886d1a4cf15903a8968e0ce435bd75ee"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-12_22-26.md",
-      "size": 2781,
-      "modified": "2025-10-13T01:51:11.063Z",
-      "sha256": "0d661473b28ea03828781dde36a047d1cd99630eab61014655cf2e9a5c8e37fe"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-13_00-47.md",
-      "size": 2781,
-      "modified": "2025-10-13T01:51:11.063Z",
-      "sha256": "700626c016d991ac3fc5d2ae171070f0a799601a6caa0995adbc0eb9d49b69b7"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-13_02-06.md",
-      "size": 2781,
-      "modified": "2025-10-13T03:14:50.499Z",
-      "sha256": "d827636864430bb52b2f1cbc908b34ba4dd42fbd1082e595408721dc29293212"
-    },
-    {
-      "path": "docs/updates/handoff_ENRICHED_2025-10-13_03-03.md",
-      "size": 2781,
-      "modified": "2025-10-13T03:14:50.500Z",
-      "sha256": "f08ba7c35538f99589cedc04dc83e42a2b8add2d3b081f39bff23bd18a5a68bc"
-    },
-    {
-      "path": "docs/updates/handoff_TEMPLATE.md",
-      "size": 260,
-      "modified": "2025-10-12T21:59:01.040Z",
-      "sha256": "679785a1187b9d6d9cefebaadc356980446cf20b0c545e45182b11daf04b3162"
-    },
-    {
-      "path": "docs/updates/OPEN_SPEC_DIGEST.md",
-      "size": 407,
-      "modified": "2025-10-13T03:14:57.404Z",
-      "sha256": "ab2a30a2553bfa3641c1194332169b13268bc90ea540ad5cd4b13ada579023b3"
-    },
-    {
-      "path": "docs/ux/dashboard_spec.md",
-      "size": 245,
-      "modified": "2025-10-13T03:14:51.217Z",
-      "sha256": "83cd265f0173cad1a8969a02e2f6acdaf966d3a479d572bdc9d964829af349c3"
-    },
-    {
-      "path": "docs/visual/checklists/s2-visual-smoke.md",
-      "size": 330,
-      "modified": "2025-10-13T03:14:51.218Z",
-      "sha256": "184ca6f44dc8fdd2eb0acbdf39b54c508fea82a8751e25b7e14bfbac3942bb63"
-    },
-    {
-      "path": "examples/openspec.example.json",
-      "size": 449,
-      "modified": "2025-10-13T03:14:51.219Z",
-      "sha256": "cb998408e99e602ec842418b850fa8785fffa41716ed0a4a726f4e76f420adac"
-    },
-    {
-      "path": "examples/visual-checklist.example.json",
-      "size": 467,
-      "modified": "2025-10-13T03:14:51.219Z",
-      "sha256": "85b8abe9b45b6ab26182780c78f276f207e9a9103605f96cb7c7ae02fe7329ff"
-    },
-    {
-      "path": "jest.config.js",
-      "size": 466,
-      "modified": "2025-10-13T03:14:51.220Z",
-      "sha256": "d7f83c157ffb92fd5a9bccd7969fd737e6da8bd708de091e22c8afecd5a54a7b"
+      "size": 6466,
+      "mtime": 1760879117053
     },
     {
       "path": "LICENSE",
-      "size": 2,
-      "modified": "2025-10-12T21:59:00.983Z",
-      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
-    },
-    {
-      "path": "manifest.json",
-      "size": 86,
-      "modified": "2025-10-12T21:59:01.041Z",
-      "sha256": "bc76a9ebbd24818bfcb15c7c4662196471249c924070fe16721d67875cab9d10"
-    },
-    {
-      "path": "node scripts/providers/run-packet-locally.mjs data/taskpackets/S2.1.json",
-      "size": 734,
-      "modified": "2025-10-12T21:59:01.043Z",
-      "sha256": "44e46964e99efd298ce350b4250c22cc39be813feb34638b5d027757bd746ab4"
-    },
-    {
-      "path": "openspec/changes/example-openspec-test.md",
-      "size": 331,
-      "modified": "2025-10-13T03:14:51.222Z",
-      "sha256": "c409355c0f49d1e1364da261c4a45801283aadafb940a9df718904e3c27e31cf"
-    },
-    {
-      "path": "openspec/README.md",
-      "size": 211,
-      "modified": "2025-10-13T03:14:51.221Z",
-      "sha256": "2d4f0eea0749c1d5616773e672b7f938c1a885b91d9019cc26330329872c65e2"
-    },
-    {
-      "path": "package-lock.json",
-      "size": 188548,
-      "modified": "2025-10-13T03:14:51.225Z",
-      "sha256": "b491d066049dbc1e011eac99a2c492215c646fe72cb7de01b63159362089d183"
-    },
-    {
-      "path": "package.json",
-      "size": 2310,
-      "modified": "2025-10-13T03:14:51.226Z",
-      "sha256": "be52ee94eb3ad4afd5bab9b6b15f8ac9a992811c4613a780b7ddccc1a54b0bff"
-    },
-    {
-      "path": "phase0_env_ci.json",
-      "size": 3386,
-      "modified": "2025-10-13T03:14:51.002Z",
-      "sha256": "c517b8d2bb18bf52c15d48a4490105335398b053d05bb41dc7015bc6c929387a"
-    },
-    {
-      "path": "phase1_foundation.json",
-      "size": 4876,
-      "modified": "2025-10-13T03:14:51.037Z",
-      "sha256": "14b457b2792346eb6bf98e94b8928bf1a6d816effe8ea595485d2715fcd5d66c"
-    },
-    {
-      "path": "planner/examples/maintenance-agent.json",
-      "size": 4191,
-      "modified": "2025-10-13T03:14:51.227Z",
-      "sha256": "5e615d07f76a79d4a88b955b8ff9947531b3c96401944993b844816633a6379f"
-    },
-    {
-      "path": "planner/examples/shared-context.json",
-      "size": 12929,
-      "modified": "2025-10-13T03:14:51.228Z",
-      "sha256": "3650643033dbbc47c0788e3b2076c5dae6048708d249e03a173cee059ac2f088"
+      "size": 1,
+      "mtime": 1760879117053
     },
     {
       "path": "README.md",
-      "size": 5829,
-      "modified": "2025-10-13T03:14:51.133Z",
-      "sha256": "4c2b428c3f029ec048c91a66641c29222f5252c2d633f235f3d15c752d769101"
+      "size": 2960,
+      "mtime": 1760879117053
     },
     {
       "path": "README.txt",
-      "size": 971,
-      "modified": "2025-10-12T21:59:00.983Z",
-      "sha256": "367a64c6ed36aded018de16228bc8bf52154c90176548cd23780ae9e7f76095a"
+      "size": 954,
+      "mtime": 1760879117053
     },
     {
       "path": "README_ALERTS.md",
-      "size": 586,
-      "modified": "2025-10-12T21:59:00.984Z",
-      "sha256": "de393ba964406a36fa9aa777f62e5ea6b1efc2f254eb88a79c47c44c3f3f9d40"
+      "size": 572,
+      "mtime": 1760879117053
     },
     {
       "path": "README_HANOFF_SNIPPET.md",
-      "size": 466,
-      "modified": "2025-10-12T21:59:00.984Z",
-      "sha256": "a52a87fe78e084ef4e2ff16a4dc04efd013064f86c1e4137015d17a9370875e8"
+      "size": 458,
+      "mtime": 1760879117053
     },
     {
       "path": "README_MODEL_PANEL.md",
-      "size": 954,
-      "modified": "2025-10-12T21:59:00.984Z",
-      "sha256": "e84dfa7dbe5d9a759243ad49eb11c9f0640a4a660408b3c720d779a1c7eaa4d2"
+      "size": 925,
+      "mtime": 1760879117053
+    },
+    {
+      "path": "README_OLD.md",
+      "size": 5748,
+      "mtime": 1760879117053
     },
     {
       "path": "README_STATUS.md",
-      "size": 1159,
-      "modified": "2025-10-12T21:59:00.985Z",
-      "sha256": "07545205ac2ae05e1852aba16019ca5a4a26006c092d574bc3536e19b0c1fcac"
-    },
-    {
-      "path": "schemas/contracts/task_contract.schema.json",
-      "size": 2010,
-      "modified": "2025-10-12T21:59:01.044Z",
-      "sha256": "352cff2c2ed689fc0bdada6cbe2b7b0149fab8b04f76033eb362637f5601b16d"
-    },
-    {
-      "path": "schemas/model.status.json",
-      "size": 1029,
-      "modified": "2025-10-12T21:59:01.044Z",
-      "sha256": "53218aad0d9999503f1437a0e79ed4674e7a582e04d1022feb1f7380318439fe"
-    },
-    {
-      "path": "schemas/policies/routing_policy.schema.json",
-      "size": 1246,
-      "modified": "2025-10-12T21:59:01.045Z",
-      "sha256": "e3890eb3248e380cb11e261b4a732fe7986fdd992e15b135a961574363e0e9db"
-    },
-    {
-      "path": "schemas/task.state.json",
-      "size": 356,
-      "modified": "2025-10-12T21:59:01.046Z",
-      "sha256": "000c8cc445f1a1a53426f0a282cdc1218abe3492f006b92bd42010d31f79dc64"
-    },
-    {
-      "path": "schemas/telemetry/cost_ledger.schema.json",
-      "size": 1408,
-      "modified": "2025-10-12T21:59:01.047Z",
-      "sha256": "bd0a07ce091256d26f95d26a7395a920716ae3b6eefa084fafdba9abc087c5d0"
-    },
-    {
-      "path": "schemas/telemetry/run_metric.schema.json",
-      "size": 1153,
-      "modified": "2025-10-12T21:59:01.047Z",
-      "sha256": "a18fb208699cc8e023dc54c995400773df510f2442081e1b3b9468408de2749b"
-    },
-    {
-      "path": "schemas/telemetry/task_assignment_history.schema.json",
-      "size": 1483,
-      "modified": "2025-10-12T21:59:01.048Z",
-      "sha256": "2828b3067b706fc7c4454c1be905e2992756b99a8a35fade21d3da5d92f4bb14"
-    },
-    {
-      "path": "scripts/agent_pr_example.js",
-      "size": 935,
-      "modified": "2025-10-13T03:14:51.228Z",
-      "sha256": "88d0cfd5de9d051aaf5943cc7a65f93c65d4d3932a02fb52f7cef747338eeeb7"
-    },
-    {
-      "path": "scripts/agent_pr_example.sh",
-      "size": 939,
-      "modified": "2025-10-13T03:14:51.229Z",
-      "sha256": "e7699162c210778a30203bac579cfcf8433b5d93d12c5a00bf754212e0723e3c"
-    },
-    {
-      "path": "scripts/bootstrap-supabase.mjs",
-      "size": 85,
-      "modified": "2025-10-12T21:59:01.048Z",
-      "sha256": "b5fb979520a36e471fef09983c4f2865b313d0dfbcd3317fb808bb68d126c3f9"
-    },
-    {
-      "path": "scripts/codex_push.sh",
-      "size": 406,
-      "modified": "2025-10-13T03:14:50.740Z",
-      "sha256": "b365a200c1d6b2b2a67e2664ca25511063f34918081607a65f1bdfb02a464ca8"
-    },
-    {
-      "path": "scripts/context/generate-openspec-digest.mjs",
-      "size": 3222,
-      "modified": "2025-10-13T03:14:51.230Z",
-      "sha256": "0d26d26ca9d1d31a1b6a11d35c6b2a78ae5210f9c6269fc474a8d74653b365bb"
-    },
-    {
-      "path": "scripts/context/write-repo-snapshot.mjs",
-      "size": 2819,
-      "modified": "2025-10-13T03:14:51.230Z",
-      "sha256": "21ba812045e5d8357316464ed308dcb25cc5632afafa64dfaf0630da98eb4842"
-    },
-    {
-      "path": "scripts/event-bridge.mjs",
-      "size": 1262,
-      "modified": "2025-10-12T21:59:01.048Z",
-      "sha256": "2f1b9a709c71493ba1777f117c8d17aaf16b8e3e274cc63183846d9805577dc5"
-    },
-    {
-      "path": "scripts/export-telemetry-to-json.mjs",
-      "size": 2657,
-      "modified": "2025-10-13T03:14:51.231Z",
-      "sha256": "3415b5f12f63fc055c55ace6efbcdda5df6457a7862af61829cf82d818c1facc"
-    },
-    {
-      "path": "scripts/generate-enriched-handoff.mjs",
-      "size": 3152,
-      "modified": "2025-10-12T21:59:01.049Z",
-      "sha256": "958daacec2932a4ba48217b51fd26a377545fa3a49c23912c75c35e3c8f286f2"
-    },
-    {
-      "path": "scripts/generate-handoff-index.mjs",
-      "size": 943,
-      "modified": "2025-10-12T21:59:01.050Z",
-      "sha256": "531ed685051e84d10d17049f43dd855ffc574b39e9a649204f573b33e55866b6"
-    },
-    {
-      "path": "scripts/generate-handoff.mjs",
-      "size": 3113,
-      "modified": "2025-10-12T21:59:01.050Z",
-      "sha256": "876f5fa065fa54bb685a8c647d3bbb4a59a8f19db9aa4437a7d8870fc21c63f6"
-    },
-    {
-      "path": "scripts/generate-openspec-digest.mjs",
-      "size": 2957,
-      "modified": "2025-10-12T21:59:01.051Z",
-      "sha256": "316d2bba3e4be0e7f095971847e8c2902806fc57038b36610d8e954a52922633"
-    },
-    {
-      "path": "scripts/generate-repo-snapshot.mjs",
-      "size": 1253,
-      "modified": "2025-10-12T21:59:01.051Z",
-      "sha256": "b632e3f6676b1d74c5f1d35999ca7e9273afffa5ddaa461754cb2e47f5e08bce"
-    },
-    {
-      "path": "scripts/guardrails/validate-secrets.mjs",
-      "size": 1359,
-      "modified": "2025-10-13T03:14:51.232Z",
-      "sha256": "36dd947f71e6f021b0be1953a8e1479e00cc98a0dcafb7d03a0db9635552478f"
-    },
-    {
-      "path": "scripts/ideas/build-prd.mjs",
-      "size": 5339,
-      "modified": "2025-10-13T03:14:51.233Z",
-      "sha256": "20ebfd4d266a31b30bc0c9f748392f5ae94f56fb382e34aef28f304b6fcc65eb"
-    },
-    {
-      "path": "scripts/ideas/promote-status.mjs",
-      "size": 1773,
-      "modified": "2025-10-13T03:14:51.234Z",
-      "sha256": "b7f0d0b2b965d04a5607ff61078adfad8dd987175bc7542bfe166ab9c19182a0"
-    },
-    {
-      "path": "scripts/ideas/validate-artifacts.mjs",
-      "size": 2443,
-      "modified": "2025-10-13T03:14:51.235Z",
-      "sha256": "41806c825a7f5fd903a50ce52f1afec83c7409276a5b6a9c3d8c0bf753afc452"
-    },
-    {
-      "path": "scripts/maintenance/import-digest.cjs",
-      "size": 2208,
-      "modified": "2025-10-13T03:14:51.237Z",
-      "sha256": "ce2d870aff1aceb3d3e10d6e4931d1e7ae930ec4d98ddc7f3c89e4df2a1feacd"
-    },
-    {
-      "path": "scripts/maintenance/process-inbox.cjs",
-      "size": 699,
-      "modified": "2025-10-13T03:14:51.237Z",
-      "sha256": "f8003c45e3cd2bf9677531eac4b5447d58f0f6392ee0c7846919c96bdd55377c"
-    },
-    {
-      "path": "scripts/maintenance/render-status.cjs",
-      "size": 2148,
-      "modified": "2025-10-13T03:14:51.238Z",
-      "sha256": "fe2b47ab959f2d76535a239482d576c45ae8232f37e77c74ca43cda461d405cf"
-    },
-    {
-      "path": "scripts/maintenance/update-status.cjs",
-      "size": 1420,
-      "modified": "2025-10-13T03:14:51.240Z",
-      "sha256": "8b071dbf9d4d6461203034f69a3024522ae96beacde41231534bd93aa2289800"
-    },
-    {
-      "path": "scripts/notify-brevo.mjs",
-      "size": 3754,
-      "modified": "2025-10-12T21:59:01.051Z",
-      "sha256": "bfea2fb35880ec8022ad6258293f2b313c55ab54520fe8fe032de1267ebba0fc"
-    },
-    {
-      "path": "scripts/orchestrator/assign.cjs",
-      "size": 1399,
-      "modified": "2025-10-13T03:14:51.240Z",
-      "sha256": "0e4f1dfea696827a509b2f88cde79ceefafdaa140e8c4af9cbc086f9e2b8f2f2"
-    },
-    {
-      "path": "scripts/orchestrator/handoff-handler.mjs",
-      "size": 1704,
-      "modified": "2025-10-12T21:59:01.052Z",
-      "sha256": "cf0b1b0747002258d892ca8048476024642bd99c20891b519c8902fa01e636a9"
-    },
-    {
-      "path": "scripts/orchestrator/limit-ledger.mjs",
-      "size": 1908,
-      "modified": "2025-10-12T21:59:01.052Z",
-      "sha256": "f02a2cf4cc7d6dc02e013f3bc8c5b3f57692709a1e3d8c8019b9084b768b8842"
-    },
-    {
-      "path": "scripts/orchestrator/ready.cjs",
-      "size": 772,
-      "modified": "2025-10-13T03:14:51.240Z",
-      "sha256": "bcf47f9adc2f50fb58d13feeb5cbe2c356edf2f02abc5dce8bbbf0efac3c00b9"
-    },
-    {
-      "path": "scripts/orchestrator/reassign-log.mjs",
-      "size": 1330,
-      "modified": "2025-10-12T21:59:01.053Z",
-      "sha256": "d4e0c89ae3ffdc5cf25eba32fa81fa9a49c0977eab5647de61960101f0f18143"
-    },
-    {
-      "path": "scripts/pages/sync-dashboard-state.mjs",
-      "size": 1936,
-      "modified": "2025-10-13T03:14:51.242Z",
-      "sha256": "60f5e133269398cd9cb1d101b65c9f37193258bdf25c81abac7e2bc9e526b465"
-    },
-    {
-      "path": "scripts/plan-apply.mjs",
-      "size": 1932,
-      "modified": "2025-10-12T21:59:01.053Z",
-      "sha256": "5dc24d3f85ea5849dd7c9cad108b2183ffd4d273763a38b4b5cc650dd00a5c63"
-    },
-    {
-      "path": "scripts/planner/generate-plan.cjs",
-      "size": 1677,
-      "modified": "2025-10-13T03:14:51.243Z",
-      "sha256": "e72350d416ffd26f55cdb5639fc29c2174b514d0ab93d00e96f5e4c90c511a27"
-    },
-    {
-      "path": "scripts/propose-next-plan.mjs",
-      "size": 1664,
-      "modified": "2025-10-12T21:59:01.053Z",
-      "sha256": "ac13b95d31647ead7d491f82290778bb7d904e70aa36206f28d7a66d4c0439a3"
-    },
-    {
-      "path": "scripts/safe-apply.mjs",
-      "size": 2648,
-      "modified": "2025-10-12T21:59:01.054Z",
-      "sha256": "8f97750149eb68056b6c106b163d568fd9ca5532f89d551ab8a3fe179215b17a"
-    },
-    {
-      "path": "scripts/supervisor/gate-plan.cjs",
-      "size": 673,
-      "modified": "2025-10-13T03:14:51.244Z",
-      "sha256": "7b537356f0a60a8036391259a17e097abfa53d3eb2d77f8884551771c25bf041"
-    },
-    {
-      "path": "scripts/sync-dashboard-assets.mjs",
-      "size": 748,
-      "modified": "2025-10-12T21:59:01.054Z",
-      "sha256": "51ebe00534863c41edcc3bebfa6b055ea459439a9ef374702ee152302a604369"
-    },
-    {
-      "path": "scripts/task-agent/claim.cjs",
-      "size": 3388,
-      "modified": "2025-10-13T03:14:51.245Z",
-      "sha256": "ff449e53571cd7bcb12a0447dac3448381eb7cb85b95296b22beaabc370684b1"
-    },
-    {
-      "path": "scripts/task-agent/complete.cjs",
-      "size": 6507,
-      "modified": "2025-10-13T03:14:51.246Z",
-      "sha256": "35f02efce19b3aebc384985aa510aaaaaebcb64d0ff888b2e34237003696b2f8"
-    },
-    {
-      "path": "scripts/telemetry/bootstrap-supabase.mjs",
-      "size": 3548,
-      "modified": "2025-10-13T03:14:51.247Z",
-      "sha256": "be176e52e7bce6e127b87607e4529cc651166d6178bcb5445e2af73e6558f26e"
-    },
-    {
-      "path": "scripts/telemetry/update-state.mjs",
-      "size": 5836,
-      "modified": "2025-10-13T03:14:51.248Z",
-      "sha256": "51e21419833a19483247a6c5b75d7c772d8295cdbc9c244fef9f8e5c9658d63b"
-    },
-    {
-      "path": "scripts/test-agent/claim.cjs",
-      "size": 3581,
-      "modified": "2025-10-13T03:14:51.249Z",
-      "sha256": "641eacaa4d382045af970e5d5134b3d76b65d10cf1d5e16915ec19d43a7d60be"
-    },
-    {
-      "path": "scripts/test-agent/complete.cjs",
-      "size": 3840,
-      "modified": "2025-10-13T03:14:51.250Z",
-      "sha256": "e52240366514cd9833d4b98d7bf71c2229177d6d16dae2baee15b0d2ace94d8e"
-    },
-    {
-      "path": "scripts/tools/dispatch-trusted-tool.mjs",
-      "size": 4817,
-      "modified": "2025-10-13T03:14:51.252Z",
-      "sha256": "dd4e849745fedbd81e51de142e9bc716c78826da1718eaee03498159c55f8186"
-    },
-    {
-      "path": "scripts/tools/README.md",
-      "size": 686,
-      "modified": "2025-10-13T03:14:51.251Z",
-      "sha256": "c7061f0df39c1c038f0ffcb1e217312b7d780aecf4f03a16d2a400ef8ff3d76a"
-    },
-    {
-      "path": "scripts/toolsCli.mjs",
-      "size": 1436,
-      "modified": "2025-10-12T21:59:01.055Z",
-      "sha256": "04567bf4414ad0dbf36fc255a2c23441c9a9e5b1b4e39d8e669e929ebbe2bbd0"
-    },
-    {
-      "path": "scripts/update-model-status.mjs",
-      "size": 1935,
-      "modified": "2025-10-12T21:59:01.055Z",
-      "sha256": "4f9cabcbd0cbb07ba5bff491f7fb9eba8d475c9fa8506817ce3c6cb08c965072"
-    },
-    {
-      "path": "scripts/validate-secrets.mjs",
-      "size": 1630,
-      "modified": "2025-10-12T21:59:01.055Z",
-      "sha256": "64f1ffeb4797f9945507b38169c12212b09ec1573977c378b90ee778dc0c3438"
-    },
-    {
-      "path": "scripts/visual/checklists/S-EXAMPLE.md",
-      "size": 166,
-      "modified": "2025-10-12T21:59:01.056Z",
-      "sha256": "012782e736f17e1cd9f9011194bd5a7c2bf3afa3940df68a4e5d58582f7dfb85"
-    },
-    {
-      "path": "scripts/visual/visual-run.mjs",
-      "size": 1164,
-      "modified": "2025-10-12T21:59:01.057Z",
-      "sha256": "2319165603fc8307cc1b8fe3f4fd5e6868b3a081a2297b88659dee59fa2033b7"
-    },
-    {
-      "path": "src/adapters/assignmentHistory.ts",
-      "size": 1780,
-      "modified": "2025-10-12T21:59:01.057Z",
-      "sha256": "20f2f7dcae144dc5e4d47660b34268adadb5c91e1b8aa738b2655355cdd387d0"
-    },
-    {
-      "path": "src/adapters/memory/OpenMemoryAdapter.ts",
-      "size": 1369,
-      "modified": "2025-10-12T21:59:01.058Z",
-      "sha256": "853ac498d9a43dd1cae445f55292a0972b86ccc494c0fa4cbb23b958ea38142c"
-    },
-    {
-      "path": "src/adapters/roi.ts",
-      "size": 1304,
-      "modified": "2025-10-12T21:59:01.058Z",
-      "sha256": "89c60f832e196a4fa986432977d582dad681f6db4cf67c93c40012f78910586b"
-    },
-    {
-      "path": "src/adapters/tools/ToolRunner.ts",
-      "size": 2168,
-      "modified": "2025-10-12T21:59:01.059Z",
-      "sha256": "3442dc54da5e55f5c5b9e886d5e69d29502f8b06a5f443a1e3bae951da87629a"
-    },
-    {
-      "path": "src/adapters/visual/browserUse.ts",
-      "size": 507,
-      "modified": "2025-10-12T21:59:01.059Z",
-      "sha256": "9e12340e122ad57469dc8332a3169ecc354fd20e4e8160d1ace264d13492c40e"
-    },
-    {
-      "path": "src/adapters/visual/devtoolsMCP.ts",
-      "size": 518,
-      "modified": "2025-10-12T21:59:01.060Z",
-      "sha256": "5e429ee3e70e8088ae65d7e30316a55ba4c4453edbb18bd04ea0c2864faa6804"
-    },
-    {
-      "path": "src/agents/watcher-agent.mjs",
-      "size": 2780,
-      "modified": "2025-10-12T21:59:01.060Z",
-      "sha256": "132fa68336a3204381f3ecc1cb56d2ab918e191f319b4d0e7ce778febb33bdaa"
-    },
-    {
-      "path": "src/components/dashboard/ModelStatusPanel.tsx",
-      "size": 3427,
-      "modified": "2025-10-12T21:59:01.061Z",
-      "sha256": "f2ca53d4647022abe6f28f9c20fda9d4f0d95bd508a1cd08c4469d816573a3ec"
-    },
-    {
-      "path": "src/components/dashboard/TaskChips.tsx",
-      "size": 1508,
-      "modified": "2025-10-12T21:59:01.062Z",
-      "sha256": "f47b89b55d883bbd862ac82db9745785273a3153de659660ab63e249969d27e7"
-    },
-    {
-      "path": "src/config/paths.ts",
-      "size": 918,
-      "modified": "2025-10-13T03:14:51.253Z",
-      "sha256": "688ba16db495b277003a8c2ca52f464d37aeb6ad21ec66b512dcc323130e8b5b"
-    },
-    {
-      "path": "src/config/rateLimits.ts",
-      "size": 1348,
-      "modified": "2025-10-13T03:14:51.254Z",
-      "sha256": "3370fca4cd4bbf9c0177b6e82d4c5383299684d574332dfb14b147ebab2409db"
-    },
-    {
-      "path": "src/config/registry.ts",
-      "size": 2652,
-      "modified": "2025-10-13T03:14:51.254Z",
-      "sha256": "2c86dbfd8a6075523813a1c438ed1a44a443883473d70d38614e9ce5bca91780"
-    },
-    {
-      "path": "src/dashboard/ModelAnalyticsView.tsx",
-      "size": 93,
-      "modified": "2025-10-12T21:59:01.062Z",
-      "sha256": "0149d1360e7907720206b1217b9117a5f53ed57c22adc3151b0b49e4980d4e6e"
-    },
-    {
-      "path": "src/dashboard/ProjectProgress.tsx",
-      "size": 83,
-      "modified": "2025-10-12T21:59:01.063Z",
-      "sha256": "bbb951074d14d1bb8b3dfcc7f84d7337c95360ea7a2f08700351093b917a6105"
-    },
-    {
-      "path": "src/guardrails/secretsRegistry.ts",
-      "size": 1113,
-      "modified": "2025-10-13T03:14:51.256Z",
-      "sha256": "38ea5fae9355566172b1a592f76a91c973004770852aad89d80ba2810de77730"
-    },
-    {
-      "path": "src/ideas/status.ts",
-      "size": 2155,
-      "modified": "2025-10-13T03:14:51.257Z",
-      "sha256": "a1ae9750510f1a09433cba269436db2ab95d2fc56447f1731158a4a0e14b2385"
-    },
-    {
-      "path": "src/maintenance/index.ts",
-      "size": 82,
-      "modified": "2025-10-13T03:14:51.258Z",
-      "sha256": "a465da62968d76a6e2aaf6ba325147c0ba8313b77f55a6aaaf892e7b666288fc"
-    },
-    {
-      "path": "src/maintenance/ingest.ts",
-      "size": 2862,
-      "modified": "2025-10-13T03:14:51.259Z",
-      "sha256": "1853c74064b2060ff5f61df75fad08d0f769783f1c3197ea9762a5f7e3f5c3a2"
-    },
-    {
-      "path": "src/maintenance/status.ts",
-      "size": 3428,
-      "modified": "2025-10-13T03:14:51.259Z",
-      "sha256": "5b78450ae14a8d2041ef033dc411bb3815b57b46f52b4fbc6ebaee7086ae6740"
-    },
-    {
-      "path": "src/maintenance/types.ts",
-      "size": 617,
-      "modified": "2025-10-13T03:14:51.260Z",
-      "sha256": "940de97fbde5e8f83cf4883ca5930c434eb8f87a355e1352213649db34a162f1"
-    },
-    {
-      "path": "src/memory/memoryStore.ts",
-      "size": 1220,
-      "modified": "2025-10-13T03:14:51.261Z",
-      "sha256": "192881489f7de6952f99d502324847534fc00790a0cbd666f59831940eaed9ea"
-    },
-    {
-      "path": "src/memory/snapshotLoader.ts",
-      "size": 1366,
-      "modified": "2025-10-13T03:14:51.262Z",
-      "sha256": "5ab8b615098901e323c7e8f5dab68ee202f3c8ab19d19ee5ef2eb4f4872cabfa"
-    },
-    {
-      "path": "src/mock/modelStatusData.ts",
-      "size": 848,
-      "modified": "2025-10-12T21:59:01.065Z",
-      "sha256": "32c5ab2cdd4158a083e810e275325591c06a085ccad115c886e52d3cc032641c"
-    },
-    {
-      "path": "src/notifications/brevo.ts",
-      "size": 3182,
-      "modified": "2025-10-13T03:14:51.263Z",
-      "sha256": "c87baa88dc7af6096843e4feea620d1fbb2d078a63b4f0aa19a035afc7b780c7"
-    },
-    {
-      "path": "src/orchestrator/assignmentLedger.ts",
-      "size": 777,
-      "modified": "2025-10-13T03:14:51.263Z",
-      "sha256": "1f5bffbd4e9f1522dcd83d1e7e5468b918d302f8bc257100a00405299b620877"
-    },
-    {
-      "path": "src/orchestrator/completion.ts",
-      "size": 6835,
-      "modified": "2025-10-13T03:14:51.265Z",
-      "sha256": "6a34bdb1d2dbd30e82cf3f6f1a02c0f8d597f9408a4f686f78dd754243ae3e41"
-    },
-    {
-      "path": "src/orchestrator/dispatcher.ts",
-      "size": 12911,
-      "modified": "2025-10-13T03:14:51.266Z",
-      "sha256": "4e863dfe87d0cf568fe3ad73b74f20e4f1228d08fd51f24c7e5cb9b2ea188ea1"
-    },
-    {
-      "path": "src/orchestrator/recordAssignment.ts",
-      "size": 1128,
-      "modified": "2025-10-12T21:59:01.065Z",
-      "sha256": "d2a53a61ea9b84b4db8cc9c5a032d77958bf05e40e395c841c821f48dfe72f89"
-    },
-    {
-      "path": "src/orchestrator/runtime.ts",
-      "size": 3940,
-      "modified": "2025-10-13T03:14:51.266Z",
-      "sha256": "7a6a98db60b8264faa34813bd1f204a84b324be52039cae2bce9a025ff6cc138"
-    },
-    {
-      "path": "src/orchestrator/testQueue.ts",
-      "size": 4825,
-      "modified": "2025-10-13T03:14:51.267Z",
-      "sha256": "f4189201e5cce82f33d04e96bf854495c4f6f9ba4668ab5b9f400a9406fc15dc"
-    },
-    {
-      "path": "src/pages/dashboard/ModelDashboardPage.tsx",
-      "size": 459,
-      "modified": "2025-10-12T21:59:01.066Z",
-      "sha256": "cd2b7840b4e8c23ad02f8b5c1ca36afa437906610d715f75c4e42770be11713d"
-    },
-    {
-      "path": "src/planner/planBuilder.ts",
-      "size": 8863,
-      "modified": "2025-10-13T03:14:51.268Z",
-      "sha256": "2dcb970d69fd56f1d2da2197f9bd16cf05a8cf81df320347177f446d87b4d277"
-    },
-    {
-      "path": "src/planner/types.ts",
-      "size": 2222,
-      "modified": "2025-10-13T03:14:51.269Z",
-      "sha256": "223c33d59d442fc333e2c6481bca196355134dd5c3b8ab235fd85372dee92bf9"
-    },
-    {
-      "path": "src/state/deriveTaskStats.ts",
-      "size": 2559,
-      "modified": "2025-10-12T21:59:01.067Z",
-      "sha256": "e2369a9bfd0619f23ca0074375621bf6479b7a67b77cef03f2bc166434ce806e"
-    },
-    {
-      "path": "src/supervisor/planGate.ts",
-      "size": 10166,
-      "modified": "2025-10-13T03:14:51.270Z",
-      "sha256": "3efb1ecbb1747ba1c4e5d211e854d6bc5c9bf04de72363b3da2b850e3575155c"
-    },
-    {
-      "path": "src/supervisor/validationLog.ts",
-      "size": 796,
-      "modified": "2025-10-13T03:14:51.270Z",
-      "sha256": "1b0a6b03eb75229cc0530075ecb8eefaac9c236f87eabf14366404e5e0e298d6"
-    },
-    {
-      "path": "src/taskAgent/claim.ts",
-      "size": 6172,
-      "modified": "2025-10-13T03:14:51.271Z",
-      "sha256": "9193a0edf5d333ea2aef38e60b292487ad9d40c7086caeb532456c46f2e19eaf"
-    },
-    {
-      "path": "src/taskAgent/complete.ts",
-      "size": 3574,
-      "modified": "2025-10-13T03:14:51.272Z",
-      "sha256": "a56c7057b164ea05f980498fd4ad1eed3fb407ced23e7b2f9f19065abd8d1642"
-    },
-    {
-      "path": "src/taskAgent/index.ts",
-      "size": 84,
-      "modified": "2025-10-13T03:14:51.273Z",
-      "sha256": "1bf3eabd2675462dca05fb12b945cd270c866854d6bef34277de937fcdf90ba1"
-    },
-    {
-      "path": "src/taskAgent/types.ts",
-      "size": 1126,
-      "modified": "2025-10-13T03:14:51.274Z",
-      "sha256": "59381409e43eb9f3ae334c44cb6c74dbc57c95e40a255f753e63cec5bfe238a5"
-    },
-    {
-      "path": "src/telemetry/rateLimiter.ts",
-      "size": 4792,
-      "modified": "2025-10-13T03:14:51.275Z",
-      "sha256": "c8dae58e0bf69a436cab5b50966ecf996e9b9f2590814fe665dd6f60ab5efb96"
-    },
-    {
-      "path": "src/telemetry/supabaseWriter.ts",
-      "size": 3371,
-      "modified": "2025-10-13T03:14:51.276Z",
-      "sha256": "b83254c375826fa13852f4742c85ce69cda2ad4672543d4f047fe55c728acb12"
-    },
-    {
-      "path": "src/testAgent/claim.ts",
-      "size": 4505,
-      "modified": "2025-10-13T03:14:51.276Z",
-      "sha256": "5338034f8147aef9d66e452ccf751e980128ca6fd0bf7b2f364f78ae4c7e20a3"
-    },
-    {
-      "path": "src/testAgent/complete.ts",
-      "size": 3490,
-      "modified": "2025-10-13T03:14:51.277Z",
-      "sha256": "b50b90f9dbec920dc4df5772368e3732a63d7a29f9ff66464a699f7c7b3e7081"
-    },
-    {
-      "path": "src/testAgent/index.ts",
-      "size": 84,
-      "modified": "2025-10-13T03:14:51.278Z",
-      "sha256": "1bf3eabd2675462dca05fb12b945cd270c866854d6bef34277de937fcdf90ba1"
-    },
-    {
-      "path": "src/testAgent/types.ts",
-      "size": 1164,
-      "modified": "2025-10-13T03:14:51.278Z",
-      "sha256": "9cb5c35d9a3fdae602c83bb3bcda2e8f7c0957c1d73b1576389640ffd5b34e36"
-    },
-    {
-      "path": "src/types/ModelStatus.ts",
-      "size": 361,
-      "modified": "2025-10-12T21:59:01.067Z",
-      "sha256": "c0614208eef37eecd8483db18530f45227f78ad3ef418b6cf30e4a953f2278e1"
-    },
-    {
-      "path": "src/types/telemetry.ts",
-      "size": 1535,
-      "modified": "2025-10-12T21:59:01.068Z",
-      "sha256": "77c7e2de679c18dafdcb13bc398aa840a0b68faf219511809d7be57857d462e0"
-    },
-    {
-      "path": "src/utils/events.ts",
-      "size": 705,
-      "modified": "2025-10-12T21:59:01.068Z",
-      "sha256": "f759a16b5035ba6e3903c2cb1cb14de30c8576cc8ad810231cd25c13dc1f02bc"
-    },
-    {
-      "path": "src/utils/jsonFile.ts",
-      "size": 1075,
-      "modified": "2025-10-13T03:14:51.279Z",
-      "sha256": "cdf60352f2b28b3c1e1915e3d4e4a25bbf883f8ac25c5e537acc50b154b2b030"
-    },
-    {
-      "path": "src/utils/notify.ts",
-      "size": 405,
-      "modified": "2025-10-12T21:59:01.069Z",
-      "sha256": "6cccc89301e0b9060edaa295f38191f39f147600b6322286cb3ea62543cb2bd9"
-    },
-    {
-      "path": "supabase/tasks-events.sql",
-      "size": 791,
-      "modified": "2025-10-12T21:59:01.069Z",
-      "sha256": "b3d7641b78fa79e5e11c65855293996cbe2e1368aab1d71abe41150175e580c3"
-    },
-    {
-      "path": "tsconfig.json",
-      "size": 1550,
-      "modified": "2025-10-13T03:14:51.279Z",
-      "sha256": "22f59230b330dfb1aa1c4b2250d851897d149c7cda402dc594eed20349d8f33c"
+      "size": 1125,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/assignmentLedger.test.ts",
-      "size": 1415,
-      "modified": "2025-10-13T03:14:51.134Z",
-      "sha256": "5dd9f3e8eb6b0c3bf0b2b6fa2c26ad8f9989482c4b29f51fb07ce44bc76fbf0f"
+      "size": 1370,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/completion.test.ts",
-      "size": 9486,
-      "modified": "2025-10-13T03:14:51.135Z",
-      "sha256": "721b10f3475b346194fc0e8579ab6f5e603c0c02b707ca4dc0015c92e4dc59cb"
+      "size": 9231,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/dispatcher.test.ts",
-      "size": 6692,
-      "modified": "2025-10-13T03:14:51.136Z",
-      "sha256": "f5d7cef55b0e10e861a9bc112b7101171ceaf48b61e3d3c56a35a7cba0b62f71"
+      "size": 6497,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/ideaStatus.test.ts",
-      "size": 745,
-      "modified": "2025-10-13T03:14:51.136Z",
-      "sha256": "03dc39ac505c6c6c25b4be775b130987f1826be09fcbe57f7edb69a0b3904f2f"
+      "size": 728,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/maintenance.test.ts",
-      "size": 2417,
-      "modified": "2025-10-13T03:14:51.137Z",
-      "sha256": "8c2263ee98ff1772d65daa3641a7ed869446ef84ec7445c4782880b34ba5cf2d"
+      "size": 2349,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/memoryStore.test.ts",
-      "size": 1093,
-      "modified": "2025-10-13T03:14:51.137Z",
-      "sha256": "9a5026b858f1485317224a222c0a5c53ceaff029629f3640b5f7c2616e42a7cc"
+      "size": 1065,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/orchestratorRuntime.test.ts",
-      "size": 2760,
-      "modified": "2025-10-13T03:14:51.138Z",
-      "sha256": "a4debf080057381e3943e0c115f5509312af773181fe3b89e35c6c48e5576029"
+      "size": 2684,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/planBuilder.test.ts",
-      "size": 923,
-      "modified": "2025-10-13T03:14:51.139Z",
-      "sha256": "c62784f9707c8e25419f9bc4794a8d9877a8d9e1f829abfabd1d58bbecbfa8fa"
+      "size": 899,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/rateLimiter.test.ts",
-      "size": 2613,
-      "modified": "2025-10-13T03:14:51.140Z",
-      "sha256": "e015d92c66bcf89bd3540b492c730e77c0cb99be1c7c6ba5cf16b73473238042"
+      "size": 2529,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/registryLoader.test.ts",
-      "size": 857,
-      "modified": "2025-10-13T03:14:51.140Z",
-      "sha256": "22716b477c9b552080af8b411b9be4d483851fe9e883ac0d1835c82f13031152"
+      "size": 836,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/sanity.test.js",
-      "size": 100,
-      "modified": "2025-10-13T03:14:50.864Z",
-      "sha256": "0a86bc39ff656428e7fb28f5ee4e2815c98d6ca53dc08923be57574955c6e762"
+      "size": 99,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/secretsRegistry.test.ts",
-      "size": 1320,
-      "modified": "2025-10-13T03:14:51.141Z",
-      "sha256": "24fbf437a36c4b57a76e0f07faefa7b20d6344b6f3f7a58974935ab57124dd75"
+      "size": 1287,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/snapshotLoader.test.ts",
-      "size": 1300,
-      "modified": "2025-10-13T03:14:51.142Z",
-      "sha256": "0fe058947a1a2075059450bffa16e27e03667935d321fdd093a83a8ff3f33b4f"
+      "size": 1265,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/supervisorPlanGate.test.ts",
-      "size": 5868,
-      "modified": "2025-10-13T03:14:51.143Z",
-      "sha256": "0b33a8eca6d26f0a6cfe0d9c2a018b0de4015440337cc2fd4aedc46fcce7396d"
+      "size": 5702,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/supervisorValidation.test.ts",
-      "size": 1604,
-      "modified": "2025-10-13T03:14:51.144Z",
-      "sha256": "e3cc9a193467ba75a681a15f254bc925f382759fefdb2246bb9e649a6f49cf01"
+      "size": 1557,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/taskAgent.test.ts",
-      "size": 4495,
-      "modified": "2025-10-13T03:14:51.145Z",
-      "sha256": "389dbb5ec7d41648d80353f43f454292d5de72ccae8bb51ae7962214239c1e9e"
+      "size": 4381,
+      "mtime": 1760879117053
     },
     {
       "path": "__tests__/telemetryWriter.test.ts",
-      "size": 3720,
-      "modified": "2025-10-13T03:14:51.146Z",
-      "sha256": "b30ead0741de9370913977112ed840e61889ae2b4cabc9880bab7f60137857fb"
+      "size": 3625,
+      "mtime": 1760879117054
     },
     {
       "path": "__tests__/testAgent.test.ts",
-      "size": 6024,
-      "modified": "2025-10-13T03:14:51.147Z",
-      "sha256": "88cc77e85b8f8965af655e3385c22520f24ee8e2ca24165adf6e977c52fe57c4"
+      "size": 5877,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "codex_test.md",
+      "size": 37,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "config/alerts.providers.json",
+      "size": 658,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "config/secrets-registry.example.json",
+      "size": 122,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "dashboard/app.js",
+      "size": 5129,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "dashboard/index.html",
+      "size": 1554,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "dashboard/styles.css",
+      "size": 1250,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/README.md",
+      "size": 636,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/example-app/analyst.review.json",
+      "size": 431,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/example-app/prd.summary.json",
+      "size": 4028,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/example-app/research.brief.json",
+      "size": 1168,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/example-app/status.json",
+      "size": 656,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/maintenance-agent/analyst.review.json",
+      "size": 597,
+      "mtime": 1760879117054
+    },
+    {
+      "path": "data/ideas/maintenance-agent/prd.summary.json",
+      "size": 4176,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/ideas/maintenance-agent/research.brief.json",
+      "size": 1704,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/ideas/maintenance-agent/status.json",
+      "size": 670,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/maintenance/README.md",
+      "size": 264,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/maintenance/status.json",
+      "size": 22,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/metrics/README.md",
+      "size": 255,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/metrics/run_metrics.json",
+      "size": 567,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/policies/rate_limits.json",
+      "size": 2540,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/policies/routing.json",
+      "size": 1257,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/registry/models.json",
+      "size": 4834,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/registry/tools.json",
+      "size": 910,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/secrets-registry.json",
+      "size": 58,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/state/README.md",
+      "size": 377,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/state/assignment.log.json",
+      "size": 1883,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/state/openspec.index.json",
+      "size": 286,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/state/supervisor.log.json",
+      "size": 4974,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/state/task.state.json",
+      "size": 4259,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/taskpackets/README.md",
+      "size": 420,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/taskpackets/S2.1.json",
+      "size": 880,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/taskpackets/example-app/S0/S0.1.json",
+      "size": 1530,
+      "mtime": 1760879117055
+    },
+    {
+      "path": "data/taskpackets/example-app/S0/S0.2.json",
+      "size": 1569,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/taskpackets/example-app/S0/S0.3.json",
+      "size": 1721,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/taskpackets/example-app/S0/plan.json",
+      "size": 7506,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/taskpackets/maintenance-agent/M1/M1.1.json",
+      "size": 1549,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/taskpackets/maintenance-agent/M1/M1.2.json",
+      "size": 1796,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/taskpackets/maintenance-agent/M1/plan.json",
+      "size": 5401,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/demo/failing-supervisor-check.json",
+      "size": 674,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/demo/ui-sanity-check.json",
+      "size": 663,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/queued/example-app/S0.1.json",
+      "size": 1418,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/queued/example-app/S0.2.json",
+      "size": 1385,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/queued/example-app/S0.3.json",
+      "size": 1568,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/queued/maintenance-agent/M1.1.json",
+      "size": 1369,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/queued/maintenance-agent/M1.2.json",
+      "size": 1591,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/secrets-registry.json",
+      "size": 425,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "data/tasks/slices/bootstrap_slice.json",
+      "size": 1395,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "docs/README.md",
+      "size": 1523,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "docs/agents/confidence.md",
+      "size": 279,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "docs/agents/roles.md",
+      "size": 738,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "docs/arch/overview.md",
+      "size": 420,
+      "mtime": 1760879117056
+    },
+    {
+      "path": "docs/arch/vibeflow_agent_logic_overview.md",
+      "size": 4388,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/arch/vibeflow_complete_reference.md",
+      "size": 13305,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/arch/vibeflow_system_plan_v2_alignment.md",
+      "size": 6397,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/capability_vector_embedding_recipe.md",
+      "size": 625,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/ci/branch_flow.md",
+      "size": 184,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/ci/job_matrix.md",
+      "size": 170,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/README.md",
+      "size": 184,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/capability_vector.schema.json",
+      "size": 1230,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/model_scorecard.schema.json",
+      "size": 459,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/plan.schema.json",
+      "size": 548,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/registry_model.schema.json",
+      "size": 557,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/run_metric.schema.json",
+      "size": 566,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/contracts/task_contract.schema.json",
+      "size": 726,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/examples/plan.sample.json",
+      "size": 2888,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/integrations/openmemory.md",
+      "size": 724,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/mcp/browser_use_checklist.md",
+      "size": 261,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/mcp/tool_contract.schema.json",
+      "size": 534,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/mcp/tools/OpenSpecWriter.tool.json",
+      "size": 970,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/mcp/tools/VisualChecklist.tool.json",
+      "size": 747,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/obs/telemetry.md",
+      "size": 216,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/openspec/README.md",
+      "size": 341,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/orchestrator_scoring_pseudocode_ts_ish_compact.md",
+      "size": 1192,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/planning_prompt.md",
+      "size": 834,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/policies/review_policy.md",
+      "size": 350,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/prd/canonical.constraints.json",
+      "size": 1648,
+      "mtime": 1760879117057
+    },
+    {
+      "path": "docs/prd/dashboard sample starter mockup",
+      "size": 22206,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/prd/vibeflow_prd_strategic_technical_addendum.md",
+      "size": 11439,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/process/NBE-01.md",
+      "size": 726,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/registry/seed.csv",
+      "size": 752,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/reports/ideas/example-app/plan.md",
+      "size": 1046,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/reports/ideas/maintenance-agent/plan.md",
+      "size": 837,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/reports/repo-snapshot.json",
+      "size": 29475,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/reports/supervisor/example-app.json",
+      "size": 2446,
+      "mtime": 1760879117058
+    },
+    {
+      "path": "docs/reports/supervisor/maintenance-agent.json",
+      "size": 2014,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/routing_policy.md",
+      "size": 619,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/schemas/analyst.review.schema.json",
+      "size": 1018,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/schemas/idea.status.schema.json",
+      "size": 902,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/schemas/prd.summary.schema.json",
+      "size": 5365,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/schemas/research.brief.schema.json",
+      "size": 1882,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/security/data_classification.md",
+      "size": 158,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/security/rbac.md",
+      "size": 128,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/slice_template.json",
+      "size": 1500,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/specs/error_taxonomy.md",
+      "size": 274,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/specs/prompt_packet.md",
+      "size": 474,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/specs/reassignment_policy.md",
+      "size": 1225,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/specs/roi_calculator.md",
+      "size": 2415,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/metrics/README.md",
+      "size": 255,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/metrics/run_metrics.json",
+      "size": 177,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/openspec.index.json",
+      "size": 286,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/state/README.md",
+      "size": 377,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/state/openspec.index.json",
+      "size": 537,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/state/supervisor.log.json",
+      "size": 2487,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/state/task.state.json",
+      "size": 916,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/state/task.state.json",
+      "size": 4259,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/supervisor_validation_checklist.md",
+      "size": 614,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/ui/task_chips_usage.md",
+      "size": 522,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/updates/ANTI_DRIFT_CHANGELOG.md",
+      "size": 289,
+      "mtime": 1760879117059
+    },
+    {
+      "path": "docs/updates/OPEN_SPEC_DIGEST.md",
+      "size": 213,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "docs/updates/handoff_ENRICHED_2025-10-19_12-59.md",
+      "size": 2508,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "docs/updates/handoff_week_2025-10-19_to_2025-10-25.md",
+      "size": 31602,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "docs/updates/latest.md",
+      "size": 11564,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "docs/ux/dashboard_spec.md",
+      "size": 239,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "docs/visual/checklists/s2-visual-smoke.md",
+      "size": 314,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "examples/openspec.example.json",
+      "size": 434,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "examples/visual-checklist.example.json",
+      "size": 449,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "jest.config.js",
+      "size": 448,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "main",
+      "size": 0,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "manifest.json",
+      "size": 82,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "node scripts/providers/run-packet-locally.mjs data/taskpackets/S2.1.json",
+      "size": 719,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "openspec/README.md",
+      "size": 206,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "openspec/changes/example-openspec-test.md",
+      "size": 318,
+      "mtime": 1760879117060
+    },
+    {
+      "path": "package-lock.json",
+      "size": 184194,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "package.json",
+      "size": 2262,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "phase0_env_ci.json",
+      "size": 3306,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "phase1_foundation.json",
+      "size": 4760,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "planner/examples/maintenance-agent.json",
+      "size": 4087,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "planner/examples/shared-context.json",
+      "size": 12752,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/contracts/task_contract.schema.json",
+      "size": 1911,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/model.status.json",
+      "size": 1001,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/policies/routing_policy.schema.json",
+      "size": 1188,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/task.state.json",
+      "size": 337,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/telemetry/cost_ledger.schema.json",
+      "size": 1340,
+      "mtime": 1760879117061
+    },
+    {
+      "path": "schemas/telemetry/run_metric.schema.json",
+      "size": 1093,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "schemas/telemetry/task_assignment_history.schema.json",
+      "size": 1416,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/agent_pr_example.js",
+      "size": 899,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/agent_pr_example.sh",
+      "size": 917,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/bootstrap-supabase.mjs",
+      "size": 84,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/codex_push.sh",
+      "size": 388,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/context/generate-openspec-digest.mjs",
+      "size": 3122,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/context/write-repo-snapshot.mjs",
+      "size": 2728,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/event-bridge.mjs",
+      "size": 1227,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/export-telemetry-to-json.mjs",
+      "size": 2573,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/generate-enriched-handoff.mjs",
+      "size": 3083,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/generate-handoff-index.mjs",
+      "size": 915,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/generate-handoff.mjs",
+      "size": 3040,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/generate-openspec-digest.mjs",
+      "size": 2877,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/generate-repo-snapshot.mjs",
+      "size": 1218,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/guardrails/validate-secrets.mjs",
+      "size": 1314,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/ideas/build-prd.mjs",
+      "size": 5184,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/ideas/promote-status.mjs",
+      "size": 1711,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/ideas/validate-artifacts.mjs",
+      "size": 2363,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/maintenance/import-digest.cjs",
+      "size": 2144,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/maintenance/process-inbox.cjs",
+      "size": 681,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/maintenance/render-status.cjs",
+      "size": 2070,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/maintenance/update-status.cjs",
+      "size": 1371,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/notify-brevo.mjs",
+      "size": 3659,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/orchestrator/assign.cjs",
+      "size": 1355,
+      "mtime": 1760879117062
+    },
+    {
+      "path": "scripts/orchestrator/handoff-handler.mjs",
+      "size": 1660,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/orchestrator/limit-ledger.mjs",
+      "size": 1861,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/orchestrator/ready.cjs",
+      "size": 747,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/orchestrator/reassign-log.mjs",
+      "size": 1294,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/pages/sync-dashboard-state.mjs",
+      "size": 1872,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/plan-apply.mjs",
+      "size": 1887,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/planner/generate-plan.cjs",
+      "size": 1630,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/propose-next-plan.mjs",
+      "size": 1619,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/safe-apply.mjs",
+      "size": 2571,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/supervisor/gate-plan.cjs",
+      "size": 650,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/sync-dashboard-assets.mjs",
+      "size": 734,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/task-agent/claim.cjs",
+      "size": 3270,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/task-agent/complete.cjs",
+      "size": 6309,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/telemetry/bootstrap-supabase.mjs",
+      "size": 3439,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/telemetry/update-state.mjs",
+      "size": 5642,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/test-agent/claim.cjs",
+      "size": 3460,
+      "mtime": 1760879117063
+    },
+    {
+      "path": "scripts/test-agent/complete.cjs",
+      "size": 3719,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/test-glm.mjs",
+      "size": 536,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/tools/README.md",
+      "size": 661,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/tools/dispatch-trusted-tool.mjs",
+      "size": 4668,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/toolsCli.mjs",
+      "size": 1408,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/update-model-status.mjs",
+      "size": 1882,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/validate-secrets.mjs",
+      "size": 1577,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/visual/checklists/S-EXAMPLE.md",
+      "size": 161,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/visual/visual-run.mjs",
+      "size": 1142,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "scripts/weeklyHandoff.mjs",
+      "size": 6001,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/assignmentHistory.ts",
+      "size": 1734,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/glmAdapter.mjs",
+      "size": 1391,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/memory/OpenMemoryAdapter.ts",
+      "size": 1330,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/opencode.ts",
+      "size": 490,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/roi.ts",
+      "size": 1267,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/tools/ToolRunner.ts",
+      "size": 2102,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/visual/browserUse.ts",
+      "size": 494,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/adapters/visual/devtoolsMCP.ts",
+      "size": 505,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/agents/watcher-agent.mjs",
+      "size": 2718,
+      "mtime": 1760879117064
+    },
+    {
+      "path": "src/components/dashboard/ModelStatusPanel.tsx",
+      "size": 3340,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/components/dashboard/TaskChips.tsx",
+      "size": 1464,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/config/paths.ts",
+      "size": 893,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/config/rateLimits.ts",
+      "size": 1298,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/config/registry.ts",
+      "size": 3289,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/dashboard/ModelAnalyticsView.tsx",
+      "size": 92,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/dashboard/ProjectProgress.tsx",
+      "size": 82,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/guardrails/secretsRegistry.ts",
+      "size": 1077,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/ideas/status.ts",
+      "size": 2090,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/maintenance/index.ts",
+      "size": 78,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/maintenance/ingest.ts",
+      "size": 2778,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/maintenance/status.ts",
+      "size": 3305,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/maintenance/types.ts",
+      "size": 589,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/memory/memoryStore.ts",
+      "size": 1181,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/memory/snapshotLoader.ts",
+      "size": 1324,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/mock/modelStatusData.ts",
+      "size": 816,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/notifications/brevo.ts",
+      "size": 3078,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/assignmentLedger.ts",
+      "size": 750,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/completion.ts",
+      "size": 6616,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/dispatcher.ts",
+      "size": 12545,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/recordAssignment.ts",
+      "size": 1094,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/runtime.ts",
+      "size": 3810,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/orchestrator/testQueue.ts",
+      "size": 4679,
+      "mtime": 1760879117065
+    },
+    {
+      "path": "src/pages/dashboard/ModelDashboardPage.tsx",
+      "size": 447,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/planner/planBuilder.ts",
+      "size": 8623,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/planner/types.ts",
+      "size": 2132,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/state/deriveTaskStats.ts",
+      "size": 2479,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/supervisor/planGate.ts",
+      "size": 9871,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/supervisor/validationLog.ts",
+      "size": 769,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/taskAgent/claim.ts",
+      "size": 5966,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/taskAgent/complete.ts",
+      "size": 3460,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/taskAgent/index.ts",
+      "size": 81,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/taskAgent/types.ts",
+      "size": 1080,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/telemetry/rateLimiter.ts",
+      "size": 4654,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/telemetry/supabaseWriter.ts",
+      "size": 3261,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/testAgent/claim.ts",
+      "size": 4353,
+      "mtime": 1760879117066
+    },
+    {
+      "path": "src/testAgent/complete.ts",
+      "size": 3385,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/testAgent/index.ts",
+      "size": 81,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/testAgent/types.ts",
+      "size": 1113,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/types/ModelStatus.ts",
+      "size": 346,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/types/telemetry.ts",
+      "size": 1476,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/utils/events.ts",
+      "size": 694,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/utils/jsonFile.ts",
+      "size": 1040,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "src/utils/notify.ts",
+      "size": 395,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "supabase/tasks-events.sql",
+      "size": 765,
+      "mtime": 1760879117067
+    },
+    {
+      "path": "tsconfig.json",
+      "size": 1514,
+      "mtime": 1760879117067
     }
   ]
 }

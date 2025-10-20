@@ -1,0 +1,1 @@
+console.log("ModelView placeholder script loaded.");
