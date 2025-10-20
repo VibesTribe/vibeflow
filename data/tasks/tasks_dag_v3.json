@@ -1,0 +1,40 @@
+[
+  {"id": "S1", "slice": "dashboard_layer", "status": "in_progress", "confidence": 0.9, "tasks": [
+    {"id": "T1.1", "description": "Implement Cardview base layout", "status": "done", "depends_on": [], "owner": "visual_agent"},
+    {"id": "T1.2", "description": "Integrate ModelView analytics view", "status": "in_progress", "depends_on": ["T1.1"], "owner": "visual_agent"},
+    {"id": "T1.3", "description": "Add ROIView cost calculator view", "status": "planned", "depends_on": ["T1.2"], "owner": "visual_agent"},
+    {"id": "T1.4", "description": "Deploy Visual Canvas 2.0", "status": "in_progress", "depends_on": ["T1.3"], "owner": "visual_agent"},
+    {"id": "T1.5", "description": "Design VibesView audio overview (phase 3)", "status": "planned", "depends_on": ["T1.4"], "owner": "visual_agent"}
+  ]},
+  {"id": "S2", "slice": "core_orchestrator_layer", "status": "planned", "confidence": 0.95, "tasks": [
+    {"id": "T2.1", "description": "Implement DAG parsing + token budgeting", "status": "planned", "depends_on": [], "owner": "orchestrator"},
+    {"id": "T2.2", "description": "Implement model selector and fallback policy", "status": "planned", "depends_on": ["T2.1"], "owner": "orchestrator"},
+    {"id": "T2.3", "description": "Build task assignment engine", "status": "planned", "depends_on": ["T2.2"], "owner": "orchestrator"},
+    {"id": "T2.4", "description": "Confidence propagation rule (95%)", "status": "planned", "depends_on": ["T2.3"], "owner": "orchestrator"},
+    {"id": "T2.5", "description": "Merge and validation hooks", "status": "planned", "depends_on": ["T2.4"], "owner": "orchestrator"}
+  ]},
+  {"id": "S3", "slice": "agent_layer", "status": "planned", "confidence": 0.9, "tasks": [
+    {"id": "T3.1", "description": "Supervisor prompt alignment", "status": "planned", "depends_on": [], "owner": "supervisor_agent"},
+    {"id": "T3.2", "description": "Tester validation for code and output", "status": "planned", "depends_on": ["T3.1"], "owner": "tester_agent"},
+    {"id": "T3.3", "description": "Maintenance auto-patch logic", "status": "planned", "depends_on": ["T3.2"], "owner": "maintenance_agent"},
+    {"id": "T3.4", "description": "Watcher and Planner auto-sync", "status": "planned", "depends_on": ["T3.3"], "owner": "watcher_agent"}
+  ]},
+  {"id": "S4", "slice": "platform_adapter_layer", "status": "planned", "confidence": 0.85, "tasks": [
+    {"id": "T4.1", "description": "Integrate Browser-Use MCP", "status": "planned", "depends_on": [], "owner": "adapter_agent"},
+    {"id": "T4.2", "description": "Integrate Chrome DevTools MCP", "status": "planned", "depends_on": ["T4.1"], "owner": "adapter_agent"},
+    {"id": "T4.3", "description": "Connect Roo, Codex, OpenCode CLI", "status": "planned", "depends_on": ["T4.2"], "owner": "adapter_agent"},
+    {"id": "T4.4", "description": "Adapter registry + validation schema", "status": "planned", "depends_on": ["T4.3"], "owner": "adapter_agent"}
+  ]},
+  {"id": "S5", "slice": "data_telemetry_layer", "status": "done", "confidence": 1.0, "tasks": [
+    {"id": "T5.1", "description": "Supabase telemetry setup", "status": "done", "depends_on": [], "owner": "data_agent"},
+    {"id": "T5.2", "description": "Automated roll-up system", "status": "done", "depends_on": ["T5.1"], "owner": "data_agent"},
+    {"id": "T5.3", "description": "ROI tracking schema", "status": "done", "depends_on": ["T5.2"], "owner": "data_agent"},
+    {"id": "T5.4", "description": "Snapshot + restore dashboards", "status": "done", "depends_on": ["T5.3"], "owner": "data_agent"}
+  ]},
+  {"id": "S6", "slice": "idea_planning_layer", "status": "planned", "confidence": 0.8, "tasks": [
+    {"id": "T6.1", "description": "PRD summarizer agent", "status": "planned", "depends_on": [], "owner": "planner_agent"},
+    {"id": "T6.2", "description": "DAG builder from PRD", "status": "planned", "depends_on": ["T6.1"], "owner": "planner_agent"},
+    {"id": "T6.3", "description": "OpenSpec synchronization", "status": "planned", "depends_on": ["T6.2"], "owner": "planner_agent"},
+    {"id": "T6.4", "description": "Idea ingestion + classification", "status": "planned", "depends_on": ["T6.3"], "owner": "planner_agent"}
+  ]}
+]
