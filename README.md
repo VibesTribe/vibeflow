@@ -9,18 +9,19 @@ It decomposes work from idea → PRD → plan → execution → validation → m
 
 | Layer | Purpose |
 |-------|----------|
-| **Control Plane** | Orchestrator · Supervisor · Watcher · Memory · Policies · MCP Server |
-| **Execution Plane** | Adapters for CLI tools (Roo, Codex, OpenCode, Kilo) and Web AI Studios (Gemini, DeepSeek) + GraphBit executor |
-| **Data Plane** | State · Ledger · Telemetry · Policies · Memory · Rollback |
+| **Control Plane** | Orchestrator · Supervisor · Watcher · Planner · Memory · Policies · MCP Server |
+| **Execution Plane** | Adapters for CLI tools (Roo, Codex, OpenCode, Kilo) and Web AI Studios (Gemini, DeepSeek) + GraphBit-inspired DAG executor |
+| **Data Plane** | State · Ledger · Telemetry · Policies · Rollback |
 | **Presentation** | Dashboard + Voice interface (“Vibes”) |
 
 Everything in Vibeflow is **contract-first, traceable, and reversible** — no hidden context, no silent overwrites.
 
 ---
 
-## 📂 Repository Documentation Map (current)
+## 📂 Repository Documentation Map (Current)
 
-### Root-level READMEs
+### Root-Level READMEs
+
 | File | Purpose |
 |------|----------|
 | [`README.md`](README.md) | ← you are here — overall guide and directory map |
@@ -35,33 +36,94 @@ Everything in Vibeflow is **contract-first, traceable, and reversible** — no h
 ### `/docs/arch/`
 Architecture and systems design.
 
-- [`vibeflow_complete_reference.md`](docs/arch/vibeflow_complete_reference.md) – *archived early concept reference*  
-- [`vibeflow_system_plan_v2_alignment.md`](docs/arch/vibeflow_system_plan_v2_alignment.md) – **canonical system plan (current)**  
-  - Includes alignment audit, phases, MCP integration, gates, and rollback policies.
+| File | Purpose |
+|------|----------|
+| [`vibeflow_complete_reference.md`](docs/arch/vibeflow_complete_reference.md) | *archived early concept reference* |
+| [`vibeflow_system_plan_v2_alignment.md`](docs/arch/vibeflow_system_plan_v2_alignment.md) | **previous system plan (v2)** — superseded by v3 vertical-slice PRD |
+
+---
 
 ### `/docs/prd/`
 Product requirements and strategic addenda.
 
-- [`vibeflow_prd_strategic_technical_addendum.md`](docs/prd/vibeflow_prd_strategic_technical_addendum.md) – PRD + strategic technical notes for Vibeflow.  
-- (Add new PRDs here as the system expands.)
+| File | Purpose |
+|------|----------|
+| [`vibeflow_prd_v3_vertical_slice.md`](docs/prd/vibeflow_prd_v3_vertical_slice.md) | **canonical PRD + vertical-slice alignment (latest)** |
+| [`vibeflow_prd_strategic_technical_addendum.md`](docs/prd/vibeflow_prd_strategic_technical_addendum.md) | superseded reference (v2) |
+
+---
+
+### `/data/tasks/`
+Machine-readable task DAGs and orchestration metadata.
+
+| File | Purpose |
+|------|----------|
+| [`tasks_dag_v3.json`](data/tasks/tasks_dag_v3.json) | **authoritative DAG for orchestrator / roll-up / agents** |
+| *(older task or state JSONs)* | archived or intermediate state files |
+
+---
+
+### `/dashboard/`
+Presentation and visualization layer.
+
+| Path | Description |
+|------|--------------|
+| `/stable/Cardview` | Primary dashboard view (in progress) |
+| `/stable/ModelView` | Analytics view (phase 2 placeholder) |
+| `/stable/ROIView` | ROI calculator view (phase 2 placeholder) |
+| `/tools/visualCanvas.html` | Visual Canvas 2.0 — compare any 2 or 3 dashboard views |
+| `/merge/` | Generated dashboards and templates |
+| `/scripts/dashboard/` | Merge and restore utilities |
+
+---
+
+### `/scripts/`
+Automation scripts and orchestrator utilities.
+
+| Path | Description |
+|------|--------------|
+| `/scripts/dashboard/mergeBuilder.js` | Merges stable dashboards into unified sets |
+| `/scripts/dashboard/restoreSnapshot.js` | Restores backed-up dashboards from `.snapshots/` |
+| `/scripts/rollupHandoffs.js` | Rolls up daily enriched handoffs into weekly summaries |
+| `/scripts/cleanupOldHandoffs.js` | Removes old enriched handoffs post-merge |
+| `/scripts/orchestrator/` | (Planned) Orchestrator logic and assignment routines |
+
+---
+
+### `/docs/updates/`
+System updates, changelogs, and automation handoffs.
+
+| File | Purpose |
+|------|----------|
+| `handoff_week_<date>.md` | Weekly rolled-up summary (auto-generated) |
+| `latest.md` | Latest daily summary |
+| `ANTI_DRIFT_CHANGELOG.md` | Manual anti-drift notes and audit trail |
+| `OPEN_SPEC_DIGEST.md` | Auto-generated OpenSpec deltas |
+| `handoff_template.md` | Header template for handoff roll-ups |
 
 ---
 
 ## 🧠 Quick Start
 
-1. **Read the architecture plan**  
+1. **Review the architecture plan (v2 reference)**  
    → [`docs/arch/vibeflow_system_plan_v2_alignment.md`](docs/arch/vibeflow_system_plan_v2_alignment.md)
 
-2. **Understand the PRD context**  
-   → [`docs/prd/vibeflow_prd_strategic_technical_addendum.md`](docs/prd/vibeflow_prd_strategic_technical_addendum.md)
+2. **Read the canonical PRD (v3)**  
+   → [`docs/prd/vibeflow_prd_v3_vertical_slice.md`](docs/prd/vibeflow_prd_v3_vertical_slice.md)
 
-3. **Check live subsystems**
-   - Alerts & Notifications → [`README_ALERTS.md`](README_ALERTS.md)  
-   - Model Panel / Dashboard → [`README_MODEL_PANEL.md`](README_MODEL_PANEL.md)  
-   - Pipeline & CI Status → [`README_STATUS.md`](README_STATUS.md)
+3. **Check the task DAG for orchestrator context**  
+   → [`data/tasks/tasks_dag_v3.json`](data/tasks/tasks_dag_v3.json)
+
+4. **Review dashboard operations**  
+   → [`dashboard/README_OPERATIONS.md`](dashboard/README_OPERATIONS.md)
+
+5. **Confirm automation is active**  
+   - `.github/workflows/dashboard-stable-backup.yml` – backs up dashboards on push  
+   - `.github/workflows/dashboard-weekly-prune.yml` – prunes old snapshots  
+   - `.github/workflows/handoff-rollup.yml` – merges daily handoffs into weekly summaries  
 
 ---
 
-## 🛠️ Planned Folder Refinement (future)
-When the system matures, READMEs may be moved under clearer namespaces:
+## 🛠️ Planned Folder Refinement (Future)
+As the system matures, READMEs and scripts may be reorganized under clearer namespaces:
 
