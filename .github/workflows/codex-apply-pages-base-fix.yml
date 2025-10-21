@@ -9,8 +9,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 1) Always fix Vite base to relative './' in production (core Pages fix)
-      - name: Write vite.config.ts (relative base)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 1) Core Pages fix: relative base in production
+      - name: Write vite.config.ts
         run: |
           cat > vite.config.ts <<'EOF'
           import { defineConfig } from 'vite';
@@ -28,7 +33,7 @@ jobs:
           });
           EOF
 
-      # 2) If src/main.tsx exists, ensure canvas route works when hosted under a subpath
+      # 2) Optional: add canvas route normalization if src/main.tsx exists
       - name: Patch src/main.tsx (optional)
         shell: bash
         run: |
@@ -37,19 +42,20 @@ jobs:
             const fs = require('fs');
             const p = 'src/main.tsx';
             let s = fs.readFileSync(p, 'utf8');
-            if (!/normalizedPath.*visual-canvas/.test(s)) {
-              // Insert normalization after the param line if present
+
+            // Insert normalization block after the "param" line if not present already
+            if (!/normalizedPath\\.endsWith\\('\\/visual-canvas'\\)/.test(s)) {
               s = s.replace(
-                /(const param = .*?;\s*)(?![^]*normalizedPath)/s,
+                /(const param = [^\\n]*\\n)/,
                 `$1
-  const normalizedPath = url.pathname.replace(/\\/+\$/, '');
+  const normalizedPath = url.pathname.replace(/\\/+$/, '');
   if (normalizedPath.endsWith('/visual-canvas')) {
     return 'canvas';
   }
 `
               );
               fs.writeFileSync(p, s);
-              console.log('Inserted visual-canvas route normalization.');
+              console.log('Inserted route normalization in src/main.tsx');
             } else {
               console.log('Route normalization already present; skipping.');
             }
@@ -58,8 +64,8 @@ jobs:
             echo "src/main.tsx not found; skipping."
           fi
 
-      # 3) If any file references '/visual-canvas/config.json', rewrite to BASE_URL form (optional)
-      - name: Rewrite visual-canvas config URL (optional, search across src/**)
+      # 3) Optional: rewrite config URL to use BASE_URL across src/**
+      - name: Rewrite visual-canvas config URL (optional)
         shell: bash
         run: |
           if [ -d src ]; then
@@ -68,9 +74,9 @@ jobs:
             const path = require('path');
             const root = 'src';
             let changed = 0;
-            function walk(d) {
-              for (const name of fs.readdirSync(d)) {
-                const full = path.join(d, name);
+            function walk(dir) {
+              for (const name of fs.readdirSync(dir)) {
+                const full = path.join(dir, name);
                 const st = fs.statSync(full);
                 if (st.isDirectory()) walk(full);
                 else if (/\.(t|j)sx?$/.test(name)) {
