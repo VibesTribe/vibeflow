@@ -9,7 +9,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Write vite.config.ts
+      # 1) Always fix Vite base to relative './' in production (core Pages fix)
+      - name: Write vite.config.ts (relative base)
         run: |
           cat > vite.config.ts <<'EOF'
           import { defineConfig } from 'vite';
@@ -27,54 +28,71 @@ jobs:
           });
           EOF
 
-      - name: Write src/main.tsx
+      # 2) If src/main.tsx exists, ensure canvas route works when hosted under a subpath
+      - name: Patch src/main.tsx (optional)
+        shell: bash
         run: |
-          mkdir -p src
-          cat > src/main.tsx <<'EOF'
-          import React from 'react';
-          import ReactDOM from 'react-dom/client';
-          import './index.css';
-          import ModelAnalyticsView from './dashboard/ModelAnalyticsView';
-          import VisualCanvasPage from './visual/VisualCanvasPage';
-
-          function resolveView(): 'analytics' | 'canvas' {
-            const url = new URL(window.location.href);
-            const param = url.searchParams.get('view');
-            if (param === 'canvas') {
-              return 'canvas';
+          if [ -f src/main.tsx ]; then
+            node - <<'NODE'
+            const fs = require('fs');
+            const p = 'src/main.tsx';
+            let s = fs.readFileSync(p, 'utf8');
+            if (!/normalizedPath.*visual-canvas/.test(s)) {
+              // Insert normalization after the param line if present
+              s = s.replace(
+                /(const param = .*?;\s*)(?![^]*normalizedPath)/s,
+                `$1
+  const normalizedPath = url.pathname.replace(/\\/+\$/, '');
+  if (normalizedPath.endsWith('/visual-canvas')) {
+    return 'canvas';
+  }
+`
+              );
+              fs.writeFileSync(p, s);
+              console.log('Inserted visual-canvas route normalization.');
+            } else {
+              console.log('Route normalization already present; skipping.');
             }
+            NODE
+          else
+            echo "src/main.tsx not found; skipping."
+          fi
 
-            const normalizedPath = url.pathname.replace(/\/+$/, '');
-            if (normalizedPath.endsWith('/visual-canvas')) {
-              return 'canvas';
-            }
-            return 'analytics';
-          }
-
-          const view = resolveView();
-
-          ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-            <React.StrictMode>
-              {view === 'canvas' ? <VisualCanvasPage /> : <ModelAnalyticsView />}
-            </React.StrictMode>
-          );
-          EOF
-
-      - name: Patch VisualCanvasPage.tsx config URL
+      # 3) If any file references '/visual-canvas/config.json', rewrite to BASE_URL form (optional)
+      - name: Rewrite visual-canvas config URL (optional, search across src/**)
+        shell: bash
         run: |
-          test -f src/visual/VisualCanvasPage.tsx || { echo "Missing src/visual/VisualCanvasPage.tsx"; exit 1; }
-          node - <<'NODE'
-          const fs = require('fs');
-          const path = 'src/visual/VisualCanvasPage.tsx';
-          let s = fs.readFileSync(path, 'utf8');
-          const next = s.replace(/const CONFIG_URL = [^;]+;/, "const CONFIG_URL = `${import.meta.env.BASE_URL}visual-canvas/config.json`;");
-          if (s !== next) {
-            fs.writeFileSync(path, next);
-            console.log('Patched CONFIG_URL line.');
-          } else {
-            console.log('CONFIG_URL already correct or pattern not found.');
-          }
-          NODE
+          if [ -d src ]; then
+            node - <<'NODE'
+            const fs = require('fs');
+            const path = require('path');
+            const root = 'src';
+            let changed = 0;
+            function walk(d) {
+              for (const name of fs.readdirSync(d)) {
+                const full = path.join(d, name);
+                const st = fs.statSync(full);
+                if (st.isDirectory()) walk(full);
+                else if (/\.(t|j)sx?$/.test(name)) {
+                  let s = fs.readFileSync(full, 'utf8');
+                  const next = s.replace(
+                    /(['"`])\/visual-canvas\/config\.json\1/g,
+                    '`${import.meta.env.BASE_URL}visual-canvas/config.json`'
+                  );
+                  if (next !== s) {
+                    fs.writeFileSync(full, next);
+                    changed++;
+                    console.log('Patched:', full);
+                  }
+                }
+              }
+            }
+            walk(root);
+            console.log(`Patched files: ${changed}`);
+            NODE
+          else
+            echo "src/ not present; skipping."
+          fi
 
       - name: Commit changes
         run: |
@@ -84,6 +102,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add vite.config.ts src/main.tsx src/visual/VisualCanvasPage.tsx
-          git commit -m "fix(pages): set Vite base for GitHub Pages, route normalization, BASE_URL config"
+          git add -A
+          git commit -m "fix(pages): relative Vite base; optional canvas route + config URL updates"
           git push
