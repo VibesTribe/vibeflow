@@ -1,90 +1,58 @@
-# 🪶 Vibeflow Handoff (Enriched) — 2025-10-20 17:02
+# 🪶 Vibeflow Handoff (Enriched) — 2025-10-21 12:40
 ## Totals
 - Tasks: 0  Done: 0  Running: 0  Queued: 0
 - ROI: 0% (CF $0 vs VF $0)
 
 ## 📊 Changes in Last 72 Hours
-**Files modified in last 72h:** 335
+**Files modified in last 72h:** 369
 
-- package-lock.json (size 184,194)
-- docs/updates/handoff_week_2025-10-19_to_2025-10-25.md (size 31,602)
+- package-lock.json (size 202,774)
+- docs/updates/handoff_week_2025-10-19_to_2025-10-25.md (size 46,736)
 - docs/reports/repo-snapshot.json (size 29,475)
 - docs/prd/dashboard sample starter mockup (size 22,206)
 - .github/workflows/apply-vf-packs.yml (size 18,864)
+- docs/updates/latest.md (size 15,132)
 - docs/arch/vibeflow_complete_reference.md (size 13,305)
 - planner/examples/shared-context.json (size 12,752)
 - src/orchestrator/dispatcher.ts (size 12,545)
-- docs/updates/latest.md (size 11,564)
 - docs/prd/vibeflow_prd_strategic_technical_addendum.md (size 11,439)
 
 ## 📦 Structural Changes
-### 🟢 Added (49)
-- .github/workflows/dashboard-stable-backup.yml
-- .github/workflows/dashboard-weekly-prune.yml
-- .snapshots/README.md
-- .snapshots/dashboard/.gitkeep
-- dashboard/merge/README.md
-- dashboard/merge/README_MODELS.md
-- dashboard/merge/manifest_checklist.md
-- dashboard/merge/templates/.gitkeep
-- dashboard/merge/templates/manifest.sample.json
-- dashboard/stable/Cardview/assets/css/styles.css
-- dashboard/stable/Cardview/assets/js/app.js
-- dashboard/stable/Cardview/index.html
-- dashboard/stable/Cardview/manifest.json
-- dashboard/stable/ModelView/assets/css/styles.css
-- dashboard/stable/ModelView/assets/js/app.js
-- dashboard/stable/ModelView/index.html
-- dashboard/stable/ModelView/manifest.json
-- dashboard/stable/ROIView/assets/css/styles.css
-- dashboard/stable/ROIView/assets/js/app.js
-- dashboard/stable/ROIView/index.html
-- dashboard/stable/ROIView/manifest.json
-- dashboard/tools/visualCanvas.html
-- data/tasks/README_TASKS.md
-- data/tasks/tasks_dag_v3.json
-- docs/prd/README_PRD.md
-- docs/prd/vibeflow_prd_v3_vertical_slice.md
-- docs/updates/handoff_ENRICHED_2025-10-19_13-05.md
-- docs/updates/handoff_ENRICHED_2025-10-19_14-25.md
-- docs/updates/handoff_ENRICHED_2025-10-19_16-31.md
-- docs/updates/handoff_ENRICHED_2025-10-19_18-34.md
-- docs/updates/handoff_ENRICHED_2025-10-19_20-28.md
-- docs/updates/handoff_ENRICHED_2025-10-19_22-27.md
-- docs/updates/handoff_ENRICHED_2025-10-20_02-10.md
-- docs/updates/handoff_ENRICHED_2025-10-20_04-34.md
-- docs/updates/handoff_ENRICHED_2025-10-20_06-41.md
-- docs/updates/handoff_ENRICHED_2025-10-20_08-36.md
-- docs/updates/handoff_ENRICHED_2025-10-20_10-33.md
-- docs/updates/handoff_ENRICHED_2025-10-20_12-57.md
-- docs/updates/handoff_ENRICHED_2025-10-20_14-30.md
-- docs/updates/handoff_ENRICHED_2025-10-20_16-35.md
-- scripts/dashboard/mergeBuilder.js
-- scripts/dashboard/mergeBuilder.mjs
-- scripts/dashboard/restoreSnapshot.js
-- scripts/dashboard/restoreSnapshot.mjs
-- scripts/orchestrator/README_ORCHESTRATOR.md
-- scripts/orchestrator/orchestrator.config.json
-- scripts/orchestrator/planner_dryrun.mjs
-- scripts/orchestrator/supervisor_agent.mjs
-- scripts/orchestrator/tester_agent.mjs
-
-### 🔴 Removed (15)
-- .github/workflows/status-pulse.yml
-- dashboard/app.js
-- dashboard/index.html
-- dashboard/styles.css
-- docs/updates/handoff_ENRICHED_2025-10-19_02-42.md
-- docs/updates/handoff_ENRICHED_2025-10-19_03-08.md
-- docs/updates/handoff_ENRICHED_2025-10-19_04-13.md
-- docs/updates/handoff_ENRICHED_2025-10-19_04-32.md
-- docs/updates/handoff_ENRICHED_2025-10-19_06-13.md
-- docs/updates/handoff_ENRICHED_2025-10-19_06-37.md
-- docs/updates/handoff_ENRICHED_2025-10-19_08-11.md
-- docs/updates/handoff_ENRICHED_2025-10-19_08-31.md
-- docs/updates/handoff_ENRICHED_2025-10-19_10-09.md
-- docs/updates/handoff_ENRICHED_2025-10-19_10-28.md
-- docs/updates/handoff_ENRICHED_2025-10-19_12-16.md
+### 🟢 Added (34)
+- .github/workflows/codex-apply-pages-base-fix.yml
+- .github/workflows/codex-fix-and-deploy.yml
+- .github/workflows/pages-deploy.yml
+- .snapshots/dashboard/2025-10-20_23-38/Cardview/assets/css/styles.css
+- .snapshots/dashboard/2025-10-20_23-38/Cardview/assets/js/app.js
+- .snapshots/dashboard/2025-10-20_23-38/Cardview/index.html
+- .snapshots/dashboard/2025-10-20_23-38/Cardview/manifest.json
+- .snapshots/dashboard/2025-10-20_23-38/ModelView/assets/css/styles.css
+- .snapshots/dashboard/2025-10-20_23-38/ModelView/assets/js/app.js
+- .snapshots/dashboard/2025-10-20_23-38/ModelView/index.html
+- .snapshots/dashboard/2025-10-20_23-38/ModelView/manifest.json
+- .snapshots/dashboard/2025-10-20_23-38/ROIView/assets/css/styles.css
+- .snapshots/dashboard/2025-10-20_23-38/ROIView/assets/js/app.js
+- .snapshots/dashboard/2025-10-20_23-38/ROIView/index.html
+- .snapshots/dashboard/2025-10-20_23-38/ROIView/manifest.json
+- README_DASHBOARD_LIVE.md
+- docs/updates/handoff_ENRICHED_2025-10-20_18-41.md
+- docs/updates/handoff_ENRICHED_2025-10-20_20-31.md
+- docs/updates/handoff_ENRICHED_2025-10-20_22-27.md
+- docs/updates/handoff_ENRICHED_2025-10-21_02-03.md
+- docs/updates/handoff_ENRICHED_2025-10-21_03-12.md
+- docs/updates/handoff_ENRICHED_2025-10-21_04-32.md
+- docs/updates/handoff_ENRICHED_2025-10-21_06-39.md
+- docs/updates/handoff_ENRICHED_2025-10-21_08-38.md
+- docs/updates/handoff_ENRICHED_2025-10-21_10-32.md
+- index.html
+- scripts/dashboard/copy-static.mjs
+- scripts/orchestrator/executor_router.mjs
+- scripts/orchestrator/runner.mjs
+- scripts/telemetry/telemetry_test.mjs
+- scripts/telemetry/telemetry_writer.mjs
+- src/components/dashboard/TelemetryCard.tsx
+- src/index.css
+- src/main.jsx
 
 ## 🧠 Telemetry Summary
 _(auto-generated if ENABLE_TELEMETRY=true)_
@@ -100,7 +68,7 @@ _(none yet)_
 
 ---
 
-<details><summary>Full Current Repo File Tree (335 files)</summary>
+<details><summary>Full Current Repo File Tree (369 files)</summary>
 
 ```
 .github/workflows/CODEOWNERS
@@ -109,11 +77,14 @@ _(none yet)_
 .github/workflows/approval.yml
 .github/workflows/build-openspec-digest.yml
 .github/workflows/ci-test.yml
+.github/workflows/codex-apply-pages-base-fix.yml
+.github/workflows/codex-fix-and-deploy.yml
 .github/workflows/dashboard-stable-backup.yml
 .github/workflows/dashboard-weekly-prune.yml
 .github/workflows/docs-validate.yml
 .github/workflows/opencode.yml
 .github/workflows/orchestrator-dispatch.yml
+.github/workflows/pages-deploy.yml
 .github/workflows/pages-sync-dashboard.yml
 .github/workflows/promote-to-approved.yml
 .github/workflows/promote-to-main.yml
@@ -131,11 +102,24 @@ _(none yet)_
 .gitignore
 .snapshots/README.md
 .snapshots/dashboard/.gitkeep
+.snapshots/dashboard/2025-10-20_23-38/Cardview/assets/css/styles.css
+.snapshots/dashboard/2025-10-20_23-38/Cardview/assets/js/app.js
+.snapshots/dashboard/2025-10-20_23-38/Cardview/index.html
+.snapshots/dashboard/2025-10-20_23-38/Cardview/manifest.json
+.snapshots/dashboard/2025-10-20_23-38/ModelView/assets/css/styles.css
+.snapshots/dashboard/2025-10-20_23-38/ModelView/assets/js/app.js
+.snapshots/dashboard/2025-10-20_23-38/ModelView/index.html
+.snapshots/dashboard/2025-10-20_23-38/ModelView/manifest.json
+.snapshots/dashboard/2025-10-20_23-38/ROIView/assets/css/styles.css
+.snapshots/dashboard/2025-10-20_23-38/ROIView/assets/js/app.js
+.snapshots/dashboard/2025-10-20_23-38/ROIView/index.html
+.snapshots/dashboard/2025-10-20_23-38/ROIView/manifest.json
 AGENTS.md
 LICENSE
 README.md
 README.txt
 README_ALERTS.md
+README_DASHBOARD_LIVE.md
 README_HANOFF_SNIPPET.md
 README_MODEL_PANEL.md
 README_OLD.md
@@ -300,12 +284,22 @@ docs/updates/handoff_ENRICHED_2025-10-20_10-33.md
 docs/updates/handoff_ENRICHED_2025-10-20_12-57.md
 docs/updates/handoff_ENRICHED_2025-10-20_14-30.md
 docs/updates/handoff_ENRICHED_2025-10-20_16-35.md
+docs/updates/handoff_ENRICHED_2025-10-20_18-41.md
+docs/updates/handoff_ENRICHED_2025-10-20_20-31.md
+docs/updates/handoff_ENRICHED_2025-10-20_22-27.md
+docs/updates/handoff_ENRICHED_2025-10-21_02-03.md
+docs/updates/handoff_ENRICHED_2025-10-21_03-12.md
+docs/updates/handoff_ENRICHED_2025-10-21_04-32.md
+docs/updates/handoff_ENRICHED_2025-10-21_06-39.md
+docs/updates/handoff_ENRICHED_2025-10-21_08-38.md
+docs/updates/handoff_ENRICHED_2025-10-21_10-32.md
 docs/updates/handoff_week_2025-10-19_to_2025-10-25.md
 docs/updates/latest.md
 docs/ux/dashboard_spec.md
 docs/visual/checklists/s2-visual-smoke.md
 examples/openspec.example.json
 examples/visual-checklist.example.json
+index.html
 jest.config.js
 main
 manifest.json
@@ -331,6 +325,7 @@ scripts/bootstrap-supabase.mjs
 scripts/codex_push.sh
 scripts/context/generate-openspec-digest.mjs
 scripts/context/write-repo-snapshot.mjs
+scripts/dashboard/copy-static.mjs
 scripts/dashboard/mergeBuilder.js
 scripts/dashboard/mergeBuilder.mjs
 scripts/dashboard/restoreSnapshot.js
@@ -353,12 +348,14 @@ scripts/maintenance/update-status.cjs
 scripts/notify-brevo.mjs
 scripts/orchestrator/README_ORCHESTRATOR.md
 scripts/orchestrator/assign.cjs
+scripts/orchestrator/executor_router.mjs
 scripts/orchestrator/handoff-handler.mjs
 scripts/orchestrator/limit-ledger.mjs
 scripts/orchestrator/orchestrator.config.json
 scripts/orchestrator/planner_dryrun.mjs
 scripts/orchestrator/ready.cjs
 scripts/orchestrator/reassign-log.mjs
+scripts/orchestrator/runner.mjs
 scripts/orchestrator/supervisor_agent.mjs
 scripts/orchestrator/tester_agent.mjs
 scripts/pages/sync-dashboard-state.mjs
@@ -371,6 +368,8 @@ scripts/sync-dashboard-assets.mjs
 scripts/task-agent/claim.cjs
 scripts/task-agent/complete.cjs
 scripts/telemetry/bootstrap-supabase.mjs
+scripts/telemetry/telemetry_test.mjs
+scripts/telemetry/telemetry_writer.mjs
 scripts/telemetry/update-state.mjs
 scripts/test-agent/claim.cjs
 scripts/test-agent/complete.cjs
@@ -394,6 +393,7 @@ src/adapters/visual/devtoolsMCP.ts
 src/agents/watcher-agent.mjs
 src/components/dashboard/ModelStatusPanel.tsx
 src/components/dashboard/TaskChips.tsx
+src/components/dashboard/TelemetryCard.tsx
 src/config/paths.ts
 src/config/rateLimits.ts
 src/config/registry.ts
@@ -401,6 +401,8 @@ src/dashboard/ModelAnalyticsView.tsx
 src/dashboard/ProjectProgress.tsx
 src/guardrails/secretsRegistry.ts
 src/ideas/status.ts
+src/index.css
+src/main.jsx
 src/maintenance/index.ts
 src/maintenance/ingest.ts
 src/maintenance/status.ts

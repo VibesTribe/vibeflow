@@ -1,0 +1,164 @@
+name: Codex – Add Multi‑Page Canvas and Deploy
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  add-build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 1) Add a dedicated canvas entry page (no change to src/main.jsx)
+      - name: Write visual-canvas/index.html
+        run: |
+          mkdir -p visual-canvas
+          cat > visual-canvas/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>Vibeflow Visual Canvas</title>
+            </head>
+            <body class="bg-neutral-900 text-gray-100">
+              <div id="root"></div>
+              <script type="module" src="/src/canvas.jsx"></script>
+            </body>
+          </html>
+          EOF
+
+      - name: Write src/canvas.jsx
+        run: |
+          mkdir -p src/visual
+          cat > src/canvas.jsx <<'EOF'
+          import React, { useEffect, useState } from 'react';
+          import ReactDOM from 'react-dom/client';
+          import './index.css';
+
+          function VisualCanvasPage() {
+            const [cfg, setCfg] = useState(null);
+            const [err, setErr] = useState(null);
+            useEffect(() => {
+              const url = `${import.meta.env.BASE_URL}visual-canvas/config.json`;
+              fetch(url, { cache: 'no-store' })
+                .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+                .then(setCfg)
+                .catch(e => setErr(e.message || String(e)));
+            }, []);
+            if (err) return <div style={{padding:20,color:'#fca5a5'}}>Error loading canvas config: {err}</div>;
+            if (!cfg) return <div style={{padding:20,color:'#9ca3af'}}>Loading visual canvas…</div>;
+            return (
+              <div style={{padding:20}}>
+                <h1 style={{margin:'0 0 12px 0'}}>Visual Canvas</h1>
+                <pre style={{background:'#0b0f19',color:'#e5e7eb',padding:'12px',borderRadius:'8px',overflow:'auto'}}>
+{JSON.stringify(cfg, null, 2)}
+                </pre>
+              </div>
+            );
+          }
+
+          ReactDOM.createRoot(document.getElementById('root')).render(
+            <React.StrictMode>
+              <VisualCanvasPage />
+            </React.StrictMode>
+          );
+          EOF
+
+      # 2) Ensure the canvas config (kept if already present)
+      - name: Ensure canvas config
+        run: |
+          mkdir -p public/visual-canvas
+          if [ ! -f public/visual-canvas/config.json ]; then
+            cat > public/visual-canvas/config.json <<'EOF'
+            {
+              "lastUpdated": "",
+              "groups": [
+                {
+                  "id": "baseline",
+                  "label": "Baseline",
+                  "defaultLayout": 1,
+                  "variants": [
+                    { "id": "main-analytics", "label": "Main Analytics", "source": "/vibeflow/?view=analytics" }
+                  ]
+                }
+              ]
+            }
+            EOF
+          fi
+
+      - name: Commit added files (if any)
+        run: |
+          if git status --porcelain | grep -qE 'visual-canvas/index.html|src/canvas.jsx|public/visual-canvas/config.json'; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add visual-canvas/index.html src/canvas.jsx public/visual-canvas/config.json
+            git commit -m "feat(canvas): add standalone /visual-canvas entry + ensure config"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      # 3) Build multi‑page with a temporary Vite config (no repo file changes)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write temporary Vite config for multipage build
+        run: |
+          cat > vite.canvas.config.mjs <<'EOF'
+          import { defineConfig } from 'vite';
+          import react from '@vitejs/plugin-react';
+          import { resolve } from 'path';
+
+          export default defineConfig({
+            base: './',
+            plugins: [react()],
+            build: {
+              rollupOptions: {
+                input: {
+                  main: resolve(process.cwd(), 'index.html'),
+                  canvas: resolve(process.cwd(), 'visual-canvas/index.html')
+                }
+              }
+            }
+          });
+          EOF
+
+      - name: Build with relative base (multi‑page)
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: npx vite build --config vite.canvas.config.mjs
+
+      - name: Verify outputs
+        run: |
+          test -f dist/index.html
+          test -f dist/visual-canvas/index.html
+          grep -q 'src="./assets/' dist/index.html || (echo "dist/index.html not using relative assets" && head -n 40 dist/index.html && exit 1)
+          grep -q 'src="../assets/' dist/visual-canvas/index.html || (echo "dist/visual-canvas/index.html not using relative assets" && head -n 40 dist/visual-canvas/index.html && exit 1)
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
