@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-10-20T22:27:35.209Z",
+  "timestamp": "2025-10-21T02:03:24.430Z",
   "specs": [],
   "changes": [
     {
       "path": "openspec/changes/example-openspec-test.md",
       "title": "Example: confirm Trusted Tool write",
       "summary": "Generated: 2025-10-11T17:50:00.382Z",
-      "mtime": 62660724
+      "mtime": 75609533
     }
   ]
 }
