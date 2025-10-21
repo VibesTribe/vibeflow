@@ -1,0 +1,89 @@
+name: Codex - Apply Pages base fix
+on:
+  workflow_dispatch: {}
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write vite.config.ts
+        run: |
+          cat > vite.config.ts <<'EOF'
+          import { defineConfig } from 'vite';
+          import react from '@vitejs/plugin-react';
+
+          const base = process.env.NODE_ENV === 'production' ? './' : '/';
+
+          export default defineConfig({
+            base,
+            plugins: [react()],
+            server: {
+              port: 5173,
+              host: true
+            }
+          });
+          EOF
+
+      - name: Write src/main.tsx
+        run: |
+          mkdir -p src
+          cat > src/main.tsx <<'EOF'
+          import React from 'react';
+          import ReactDOM from 'react-dom/client';
+          import './index.css';
+          import ModelAnalyticsView from './dashboard/ModelAnalyticsView';
+          import VisualCanvasPage from './visual/VisualCanvasPage';
+
+          function resolveView(): 'analytics' | 'canvas' {
+            const url = new URL(window.location.href);
+            const param = url.searchParams.get('view');
+            if (param === 'canvas') {
+              return 'canvas';
+            }
+
+            const normalizedPath = url.pathname.replace(/\/+$/, '');
+            if (normalizedPath.endsWith('/visual-canvas')) {
+              return 'canvas';
+            }
+            return 'analytics';
+          }
+
+          const view = resolveView();
+
+          ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+            <React.StrictMode>
+              {view === 'canvas' ? <VisualCanvasPage /> : <ModelAnalyticsView />}
+            </React.StrictMode>
+          );
+          EOF
+
+      - name: Patch VisualCanvasPage.tsx config URL
+        run: |
+          test -f src/visual/VisualCanvasPage.tsx || { echo "Missing src/visual/VisualCanvasPage.tsx"; exit 1; }
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = 'src/visual/VisualCanvasPage.tsx';
+          let s = fs.readFileSync(path, 'utf8');
+          const next = s.replace(/const CONFIG_URL = [^;]+;/, "const CONFIG_URL = `${import.meta.env.BASE_URL}visual-canvas/config.json`;");
+          if (s !== next) {
+            fs.writeFileSync(path, next);
+            console.log('Patched CONFIG_URL line.');
+          } else {
+            console.log('CONFIG_URL already correct or pattern not found.');
+          }
+          NODE
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vite.config.ts src/main.tsx src/visual/VisualCanvasPage.tsx
+          git commit -m "fix(pages): set Vite base for GitHub Pages, route normalization, BASE_URL config"
+          git push
