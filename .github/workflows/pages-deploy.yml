@@ -1,4 +1,4 @@
-name: Deploy Vite Dashboard to Pages
+﻿name: Deploy Vite Dashboard to Pages
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: npm run build
+        run: npm run build -- --base=./
 
       - name: Copy snapshot assets
         env:
@@ -54,3 +54,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
