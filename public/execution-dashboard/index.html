@@ -138,6 +138,11 @@
   let liveTimer = null;
   let project = { name: "Vibeflow", description: "AI-assisted execution planner with atomic tasks, prompt editing, and strict roll-up progress.", phases: [] };
   let editRef = null;
+  // Track expanded phases/tasks across refreshes
+  const expandedKeys = new Set(); // keys like P0, T0-1.2.3
+  const keyPhase = (i) => `P${i}`;
+  const keyTask = (i, pathArr) => `T${i}-${pathArr.join('.')}`;
+
   function toggleSidebar(){
     const sb = document.getElementById('sidebar');
     sb.classList.toggle('expanded');
@@ -147,41 +152,52 @@
   }
   function openRepo(){ window.open("https://github.com/VibesTribe/vibeflow","_blank"); }
   function refreshData(){ loadAllPhases(true); }
+
   (function injectLiveToggle(){
     const header = document.querySelector('.project-header');
-    const pill = document.createElement('button');
-    pill.className = 'pill'; pill.style.cursor='pointer'; pill.title='Toggle live auto-refresh'; pill.id='livePill'; pill.textContent='Live: ON';
-    pill.onclick = () => setLive(!isLive());
-    header.appendChild(pill);
+    if (!document.getElementById('livePill')) {
+      const pill = document.createElement('button');
+      pill.className = 'pill'; pill.style.cursor='pointer'; pill.title='Toggle live auto-refresh'; pill.id='livePill'; pill.textContent='Live: ON';
+      pill.onclick = () => setLive(!isLive());
+      header.appendChild(pill);
+    }
   })();
+
   function isLive(){ return !!liveTimer; }
   function setLive(next){
     const pill = document.getElementById('livePill');
-    if(next){ if(!liveTimer){ liveTimer = setInterval(() => loadAllPhases(true), AUTO_REFRESH_MS); pill.textContent='Live: ON'; } }
-    else { if(liveTimer) clearInterval(liveTimer); liveTimer=null; pill.textContent='Live: OFF'; }
+    if(next){ if(!liveTimer){ liveTimer = setInterval(() => loadAllPhases(true), AUTO_REFRESH_MS); if(pill) pill.textContent='Live: ON'; } }
+    else { if(liveTimer) clearInterval(liveTimer); liveTimer=null; if(pill) pill.textContent='Live: OFF'; }
   }
+
   async function loadAllPhases(cacheBust=false){
     try{
       const urls = cacheBust ? PHASE_URLS.map(u => `${u}${u.includes('?') ? '&' : '?'}t=${Date.now()}`) : PHASE_URLS;
       const results = await Promise.all(urls.map(u => fetch(u,{cache:'no-store'}).then(r=>r.json())));
       project.phases = results.map((json, idx) => ({ name: json.executionPlan?.phase || `Phase ${idx+1}`, tasks: (json.executionPlan?.tasks||[]).map(t=>normalizeTask(t)) }));
+      const y = window.scrollY; // remember scroll
       renderProject();
+      window.scrollTo(0, y);
     }catch(e){ console.error(e); const phasesEl=document.getElementById('phases'); if(!phasesEl.querySelector('#loadError')){ const err=document.createElement('div'); err.id='loadError'; err.style.cssText='color:#fca5a5;margin:10px 0'; err.textContent='Error loading latest data (temporary). Retrying...'; phasesEl.prepend(err); setTimeout(()=>err.remove(),4000);} }
   }
+
   function normalizeTask(t){
     const status=(t.status||'planned').toLowerCase(); const deps=t.dependencies||[]; const hasDeps=Array.isArray(deps)&&deps.length>0;
     let statusKey = hasDeps? 'planned-dependent':'planned-independent';
     if(status==='completed') statusKey='completed'; else if(status==='in progress'||status==='in-progress') statusKey='in-progress';
     const subtasks=(t.subtasks||[]).map(st=>normalizeTask(st)); return { ...t, status, statusKey, dependencies: deps, subtasks };
   }
+
   function renderProject(){
     const allLeaf=flattenAllLeafTasks(project.phases); const completed=allLeaf.filter(x=>x.status==='completed').length; const total=allLeaf.length||1; const pct=Math.round(100*completed/total);
     setProgress('overallFill', pct);
     const phasesEl=document.getElementById('phases'); phasesEl.innerHTML=''; project.phases.forEach((ph,i)=>phasesEl.appendChild(renderPhase(ph,i)));
   }
+
   function flattenAllLeafTasks(phases){ const list=[]; phases.forEach(ph=>{ ph.tasks.forEach(t=>collectLeaf(t,list)); }); return list; }
   function collectLeaf(task,list){ if(!task.subtasks||task.subtasks.length===0){ list.push(task);} else { task.subtasks.forEach(st=>collectLeaf(st,list)); } }
   function setProgress(id,pct){ const el=document.getElementById(id); el.style.width=pct+'%'; el.textContent=pct+'%'; }
+
   function renderPhase(phase,phaseIndex){
     const leaves=[]; phase.tasks.forEach(t=>collectLeaf(t,leaves)); const total=leaves.length||1; const completed=leaves.filter(x=>x.status==='completed').length; const pct=Math.round(100*completed/total);
     const wrap=document.createElement('div'); wrap.className='phase'; const head=document.createElement('div'); head.className='phase-head';
@@ -192,10 +208,21 @@
         <div class="phase-num" style="min-width:42px; text-align:right; color:#555">${pct}%</div>
       </div>`;
     const body=document.createElement('div'); body.className='phase-body';
-    head.addEventListener('click',()=>{ const open=body.style.display==='block'; body.style.display=open?'none':'block'; });
+
+    const phaseKey = keyPhase(phaseIndex);
+    const openInitially = expandedKeys.has(phaseKey);
+    body.style.display = openInitially ? 'block' : 'none';
+
+    head.addEventListener('click',()=>{
+      const open = body.style.display === 'block';
+      body.style.display = open ? 'none' : 'block';
+      if (open) expandedKeys.delete(phaseKey); else expandedKeys.add(phaseKey);
+    });
+
     phase.tasks.forEach((t,idx)=>body.appendChild(renderTask(t,phaseIndex,[idx])));
     wrap.appendChild(head); wrap.appendChild(body); return wrap;
   }
+
   function renderTask(task,phaseIndex,path){
     const card=document.createElement('div'); card.className='task '+classForStatus(task.statusKey); const header=document.createElement('div'); header.className='task-header';
     header.innerHTML = `
@@ -213,19 +240,33 @@
       <div class="task-row"><b>Deliverables:</b> ${task.deliverables?.length?task.deliverables.join(", "):"-"}</div>
       <div class="task-row"><b>Tests:</b> ${task.tests?.length?task.tests.join("; "):"-"}</div>
       <div class="task-row"><b>Completed By:</b> ${formatCompletedBy(task.completedBy)}</div>`;
-    header.addEventListener('click',(e)=>{ if(e.target.closest('.btn')) return; details.style.display=details.style.display==='block'?'none':'block'; });
+
+    const tKey = keyTask(phaseIndex, path);
+    const openInitially = expandedKeys.has(tKey);
+    details.style.display = openInitially ? 'block' : 'none';
+
+    header.addEventListener('click',(e)=>{
+      if(e.target.closest('.btn')) return;
+      const open = details.style.display === 'block';
+      details.style.display = open ? 'none' : 'block';
+      if (open) expandedKeys.delete(tKey); else expandedKeys.add(tKey);
+    });
+
     card.appendChild(header); card.appendChild(details);
     if(task.subtasks?.length){ task.subtasks.forEach((st,i)=>{ const subEl=renderTask(st,phaseIndex,path.concat(i)); subEl.style.marginLeft='14px'; card.appendChild(subEl); }); }
     return card;
   }
+
   function classForStatus(key){ return key==='completed'?'status-completed': key==='in-progress'?'status-in-progress': key==='planned-dependent'?'status-planned-dependent':'status-planned-independent'; }
   function prettyStatus(key){ return key.replace('-', ' ').replace('-', ' '); }
   function formatTech(tech){ if(!tech) return '-'; if(typeof tech==='string') return tech; if(tech.platformStack||tech.codeStack){ const ps=tech.platformStack?.join(', ')||'-'; const cs=tech.codeStack?.join(', ')||'-'; return `Platform: ${ps}; Code: ${cs}`;} return JSON.stringify(tech); }
   function formatCompletedBy(cb){ if(!cb) return 'Unassigned'; if(typeof cb==='string') return cb; if(cb.type==='ai') return `AI – ${cb.platform||'platform'}${cb.model?` (${cb.model})`:''}`; if(cb.type==='human') return `Human – ${cb.name||'unknown'}${cb.role?` (${cb.role})`:''}`; if(cb.type==='org') return `Org – ${cb.name||'unknown'}`; return 'Unassigned'; }
   function domIdForPrompt(phaseIndex,pathArr){ return `prompt-P${phaseIndex}-${pathArr.join('.')}`; }
   function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s])); }
+
   loadAllPhases(true).then(()=>setLive(true));
 </script>
 </body>
 </html>
+
 
