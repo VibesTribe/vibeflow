@@ -1,0 +1,9 @@
+name: keep-supabase-awake
+on:
+  schedule:
+    - cron: "0 12 * * 1"
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -I ${{ secrets.SUPABASE_URL }}
