@@ -1,0 +1,46 @@
+name: Nightly Manifest Drift Check
+
+on:
+  schedule:
+    # every night at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  verify-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (if any)
+        run: npm ci || true
+
+      - name: Ensure manifest exists
+        run: node scripts/generate_manifest.mjs
+
+      - name: Recompute keep/delete list
+        run: node scripts/compute_keep_delete.mjs --from-branch=codex
+
+      - name: Detect drift
+        id: drift
+        run: |
+          if git diff --quiet docs/keep_delete_v5.md; then
+            echo "no_drift=true" >> $GITHUB_OUTPUT
+          else
+            echo "no_drift=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create issue if drift detected
+        if: steps.drift.outputs.no_drift == 'false'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "⚠️ Manifest drift detected in codex branch"
+          content-filepath: docs/keep_delete_v5.md
+          labels: |
+            auto
+            manifest-drift
