@@ -1,0 +1,19 @@
+﻿name: ci-merge-gate
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  merge-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run generate:manifest
+      - run: node scripts/validate_code_conventions.mjs

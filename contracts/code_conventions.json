@@ -1,0 +1,11 @@
+{
+  "typescript_only": true,
+  "ui_format": "tsx",
+  "editable_regions": "@editable:<region> … @endeditable",
+  "max_diff_lines": 400,
+  "forbidden_extensions": [
+    ".js",
+    ".jsx"
+  ],
+  "required_headers": "vibeflow-meta block at top of managed files"
+}

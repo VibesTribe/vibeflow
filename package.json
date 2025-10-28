@@ -1,0 +1,38 @@
+{
+  "name": "vibeflow",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint \"src/**/*.ts\" \"apps/**/*.tsx\"",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "generate:manifest": "node scripts/generate_manifest.mjs",
+    "compute:keep-delete": "node scripts/compute_keep_delete.mjs --target-tree=docs/system_plan_v5.md --out=docs/keep_delete_v5.md",
+    "validate:schemas": "node scripts/validate_json_schemas.mjs",
+    "validate:conventions": "node scripts/validate_code_conventions.mjs",
+    "state:derive": "node scripts/deriveStateFromEvents.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "dayjs": "^1.11.11",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "yaml": "^2.5.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.13",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0"
+  }
+}

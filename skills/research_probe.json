@@ -1,0 +1,17 @@
+{
+  "id": "research_probe",
+  "name": "Research Probe",
+  "category": "execution",
+  "description": "Collects market research snippets with confidence scoring.",
+  "runner": "./research_probe.runner.mjs",
+  "inputs": [
+    "query"
+  ],
+  "outputs": [
+    "insights"
+  ],
+  "ok_probe": {
+    "command": "node skills/research_probe.runner.mjs --probe",
+    "timeout_seconds": 30
+  }
+}

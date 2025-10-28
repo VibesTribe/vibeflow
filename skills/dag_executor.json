@@ -1,0 +1,18 @@
+{
+  "id": "dag_executor",
+  "name": "DAG Executor",
+  "category": "core",
+  "description": "Executes mission DAGs using GraphBit with Mastra fallback.",
+  "runner": "./dag_executor.runner.mjs",
+  "inputs": [
+    "plan",
+    "task_state"
+  ],
+  "outputs": [
+    "events"
+  ],
+  "ok_probe": {
+    "command": "node skills/dag_executor.runner.mjs --probe",
+    "timeout_seconds": 30
+  }
+}

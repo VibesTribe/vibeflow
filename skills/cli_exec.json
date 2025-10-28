@@ -1,0 +1,18 @@
+{
+  "id": "cli_exec",
+  "name": "CLI Executor",
+  "category": "execution",
+  "description": "Executes commands via MCP tooling interface.",
+  "runner": "./cli_exec.runner.mjs",
+  "inputs": [
+    "command"
+  ],
+  "outputs": [
+    "stdout",
+    "stderr"
+  ],
+  "ok_probe": {
+    "command": "node skills/cli_exec.runner.mjs --probe",
+    "timeout_seconds": 20
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "generate_prd",
+  "name": "Generate PRD",
+  "category": "execution",
+  "description": "Generates PRD slices from research packets.",
+  "runner": "./generate_prd.runner.mjs",
+  "inputs": [
+    "research_packet"
+  ],
+  "outputs": [
+    "prd_slice"
+  ],
+  "ok_probe": {
+    "command": "node skills/generate_prd.runner.mjs --probe",
+    "timeout_seconds": 30
+  }
+}

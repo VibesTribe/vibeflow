@@ -1,0 +1,21 @@
+{
+  "skills": [
+    {
+      "id": "dag_executor",
+      "score": 0.96,
+      "signals": [
+        "graphbit_parity",
+        "ok_probe_pass"
+      ]
+    },
+    {
+      "id": "visual_execution",
+      "score": 0.88,
+      "signals": [
+        "browser_use",
+        "human_review"
+      ]
+    }
+  ],
+  "updated_at": "2025-10-28T15:00:00.000Z"
+}

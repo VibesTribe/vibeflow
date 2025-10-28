@@ -1,0 +1,69 @@
+{
+  "tasks": [
+    {
+      "id": "task/alpha",
+      "title": "Research competitive landscape",
+      "status": "in_progress",
+      "confidence": 0.97,
+      "updated_at": "2025-10-28T14:45:00.000Z",
+      "owner": "research_agent",
+      "lessons": [
+        {
+          "title": "Vendor contract limits",
+          "summary": "Browser-Use sessions require weekly refresh; added to maintenance backlog."
+        }
+      ]
+    },
+    {
+      "id": "task/beta",
+      "title": "Implement manifest diff gate",
+      "status": "testing",
+      "confidence": 0.98,
+      "updated_at": "2025-10-28T14:50:00.000Z",
+      "owner": "dev_agent",
+      "lessons": []
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent/research",
+      "name": "Research Agent",
+      "status": "ready",
+      "summary": "Collected 12 data points for PRD alignment.",
+      "updated_at": "2025-10-28T14:48:00.000Z"
+    },
+    {
+      "id": "agent/supervisor",
+      "name": "Supervisor",
+      "status": "reviewing",
+      "summary": "Validating scoped patches for task/beta.",
+      "updated_at": "2025-10-28T14:55:00.000Z"
+    }
+  ],
+  "failures": [
+    {
+      "id": "failure-001",
+      "title": "Schema validation failed",
+      "summary": "contracts/run_metric.schema.json mismatch detected",
+      "reason_code": "E/SCHEMA_INVALID"
+    }
+  ],
+  "merge_candidates": [
+    {
+      "branch": "task/alpha-manifest",
+      "title": "Manifest regeneration",
+      "summary": "Updated system manifest for plan v5",
+      "checklist": [
+        true,
+        false,
+        true
+      ]
+    }
+  ],
+  "metrics": {
+    "active_tasks": 6,
+    "blocked_tasks": 1,
+    "mean_confidence": 0.965
+  },
+  "updated_at": "2025-10-28T15:00:00.000Z"
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lifecycle Event",
+  "type": "object",
+  "required": [
+    "id",
+    "task_id",
+    "type",
+    "timestamp"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "status_change",
+        "note",
+        "failure",
+        "repair",
+        "handoff"
+      ]
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reason_code": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,1041 @@
+{
+  "source": "docs/system_plan_v5.md",
+  "generated_at": "2025-10-28T15:29:56.337Z",
+  "files": [
+    {
+      "path": ".eslintrc.cjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".github/workflows/ci-backup.yml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".github/workflows/ci-contracts.yml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".github/workflows/ci-diff-scope.yml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".github/workflows/ci-merge-gate.yml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".github/workflows/ci-tests.yml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": ".prettierrc",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "README.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/AgentView.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/Failures.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/LearningFeed.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/OverviewStrip.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/ReadyToMerge.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/TaskCard.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/components/Timeline.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/index.html",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/main.tsx",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/styles.css",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/vite.config.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "apps/dashboard/voice/voice.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/capability_vector.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/code_conventions.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/event.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/market_research_report.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/plan.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/prd_full.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/role_prompt.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/run_metric.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/skill_manifest.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/status_transition.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/task_packet.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "contracts/task_state.schema.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "credentials/README.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "credentials/google_session.enc.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/conversations/.gitkeep",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/digest/latest.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/digest/weekly.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/metrics/capability_vector.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/metrics/run_metrics.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/prompts/roles/dev_agent.yaml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/prompts/roles/prd_agent.yaml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/prompts/roles/research_agent.yaml",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/prompts/templates/prd_agent.prompt.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/prompts/templates/research_agent.prompt.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/registry/platforms/EXAMPLE.webstudio.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/registry/platforms/index.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/registry/system_manifest.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/state/events.log.jsonl",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "data/state/task.state.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/architecture.mmd",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/contribution.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/overview.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/runbook.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/system_plan_v5.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "docs/tech-stack.md",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "package.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/auto_backup.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/check_safe_diff.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/deriveStateFromEvents.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/generate_manifest.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/nightly/analyst.summarize.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/repair_from_reason.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/setFileLock.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/validate_code_conventions.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "scripts/validate_json_schemas.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/cli_exec.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/cli_exec.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/dag_executor.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/dag_executor.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/generate_prd.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/generate_prd.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/maintenance_update.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/maintenance_update.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/registry.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/research_probe.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/research_probe.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/run_visual_tests.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/run_visual_tests.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/text_completion.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/text_completion.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/validate_output.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/validate_output.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/visual_execution.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "skills/visual_execution.runner.mjs",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/apiAdapter.template.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/browserUseRunner.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/devToolsRunner.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/graphbitRunner.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/mastraRunner.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/adapters/visualAdapter.template.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/analystAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/designAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/devAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/maintenanceAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/plannerAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/prdAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/researchAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/supervisorAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/testerAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/agents/watcherAgent.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/eventEmitter.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/orchestrator.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/planner.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/router.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/statusMap.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/taskState.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/types.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/utils.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/core/watcher.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/mcp/server.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/mcp/tools/emitNote.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/mcp/tools/getTaskState.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/mcp/tools/queryEvents.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "src/mcp/tools/runSkill.ts",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    },
+    {
+      "path": "tsconfig.json",
+      "regions": [],
+      "assigned_to": null,
+      "locked": false,
+      "last_hash": null,
+      "last_commit": null,
+      "status": "planned"
+    }
+  ]
+}
