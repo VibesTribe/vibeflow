@@ -1,0 +1,39 @@
+name: Telemetry — Export state for Pages
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 * * * *" # hourly
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install supabase client
+        run: npm i @supabase/supabase-js
+      - name: Export state from Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/export-telemetry-to-json.mjs
+      - name: Commit JSON state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/state/task.state.json
+          git commit -m "chore(telemetry): export task.state.json" || echo "No changes"
+          git push
+      - name: Sync to Pages folder
+        run: node scripts/sync-dashboard-assets.mjs
+      - name: Commit Pages state
+        run: |
+          git add docs/state/*.json || true
+          git commit -m "chore(pages): sync dashboard state" || echo "No changes"
+          git push
