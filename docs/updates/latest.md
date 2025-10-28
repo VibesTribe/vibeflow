@@ -1,36 +1,42 @@
-# 🪶 Vibeflow Handoff (Enriched) — 2025-10-27 12:40
+# 🪶 Vibeflow Handoff (Enriched) — 2025-10-28 12:39
 ## Totals
 - Tasks: 0  Done: 0  Running: 0  Queued: 0
 - ROI: 0% (CF $0 vs VF $0)
 
 ## 📊 Changes in Last 72 Hours
-**Files modified in last 72h:** 443
+**Files modified in last 72h:** 461
 
 - package-lock.json (size 202,774)
 - docs/updates/handoff_week_2025-10-19_to_2025-10-25.md (size 127,077)
+- docs/updates/handoff_week_2025-10-26_to_2025-11-01.md (size 35,849)
 - docs/reports/repo-snapshot.json (size 29,475)
 - docs/prd/dashboard sample starter mockup (size 22,206)
 - .github/workflows/apply-vf-packs.yml (size 18,864)
-- docs/updates/handoff_week_2025-10-26_to_2025-11-01.md (size 17,609)
-- docs/updates/latest.md (size 17,607)
+- docs/updates/latest.md (size 18,238)
 - public/execution-dashboard/index.html (size 17,050)
+- docs/system_plan_v5.md (size 15,013)
 - docs/arch/vibeflow_complete_reference.md (size 13,305)
-- planner/examples/shared-context.json (size 12,752)
 
 ## 📦 Structural Changes
-### 🟢 Added (12)
-- docs/updates/handoff_ENRICHED_2025-10-26_12-51.md
-- docs/updates/handoff_ENRICHED_2025-10-26_14-25.md
-- docs/updates/handoff_ENRICHED_2025-10-26_16-32.md
-- docs/updates/handoff_ENRICHED_2025-10-26_18-36.md
-- docs/updates/handoff_ENRICHED_2025-10-26_20-28.md
-- docs/updates/handoff_ENRICHED_2025-10-26_22-27.md
-- docs/updates/handoff_ENRICHED_2025-10-27_02-18.md
-- docs/updates/handoff_ENRICHED_2025-10-27_04-38.md
-- docs/updates/handoff_ENRICHED_2025-10-27_06-46.md
-- docs/updates/handoff_ENRICHED_2025-10-27_08-37.md
-- docs/updates/handoff_ENRICHED_2025-10-27_10-34.md
-- docs/updates/handoff_week_2025-10-26_to_2025-11-01.md
+### 🟢 Added (18)
+- .github/workflows/ci-auto-manifest.yml
+- .github/workflows/ci-keep-supabase-awake.yml
+- .github/workflows/ci-nightly-manifest-check.yml
+- docs/system_plan_v5.md
+- docs/updates/handoff_ENRICHED_2025-10-27_12-59.md
+- docs/updates/handoff_ENRICHED_2025-10-27_14-31.md
+- docs/updates/handoff_ENRICHED_2025-10-27_16-37.md
+- docs/updates/handoff_ENRICHED_2025-10-27_18-39.md
+- docs/updates/handoff_ENRICHED_2025-10-27_20-28.md
+- docs/updates/handoff_ENRICHED_2025-10-27_22-27.md
+- docs/updates/handoff_ENRICHED_2025-10-28_02-02.md
+- docs/updates/handoff_ENRICHED_2025-10-28_03-14.md
+- docs/updates/handoff_ENRICHED_2025-10-28_04-33.md
+- docs/updates/handoff_ENRICHED_2025-10-28_06-43.md
+- docs/updates/handoff_ENRICHED_2025-10-28_08-37.md
+- docs/updates/handoff_ENRICHED_2025-10-28_10-34.md
+- scripts/compute_keep_delete.mjs
+- scripts/generate_manifest.mjs
 
 ## 🧠 Telemetry Summary
 _(auto-generated if ENABLE_TELEMETRY=true)_
@@ -46,7 +52,7 @@ _(none yet)_
 
 ---
 
-<details><summary>Full Current Repo File Tree (443 files)</summary>
+<details><summary>Full Current Repo File Tree (461 files)</summary>
 
 ```
 .github/workflows/CODEOWNERS
@@ -54,6 +60,9 @@ _(none yet)_
 .github/workflows/apply-vf-packs.yml
 .github/workflows/approval.yml
 .github/workflows/build-openspec-digest.yml
+.github/workflows/ci-auto-manifest.yml
+.github/workflows/ci-keep-supabase-awake.yml
+.github/workflows/ci-nightly-manifest-check.yml
 .github/workflows/ci-test.yml
 .github/workflows/codex-add-multipage-canvas-and-deploy.yml
 .github/workflows/codex-multipage-canvas-deploy.yml
@@ -245,6 +254,7 @@ docs/state/state/supervisor.log.json
 docs/state/state/task.state.json
 docs/state/task.state.json
 docs/supervisor_validation_checklist.md
+docs/system_plan_v5.md
 docs/ui/task_chips_usage.md
 docs/updates/ANTI_DRIFT_CHANGELOG.md
 docs/updates/OPEN_SPEC_DIGEST.md
@@ -342,6 +352,18 @@ docs/updates/handoff_ENRICHED_2025-10-27_04-38.md
 docs/updates/handoff_ENRICHED_2025-10-27_06-46.md
 docs/updates/handoff_ENRICHED_2025-10-27_08-37.md
 docs/updates/handoff_ENRICHED_2025-10-27_10-34.md
+docs/updates/handoff_ENRICHED_2025-10-27_12-59.md
+docs/updates/handoff_ENRICHED_2025-10-27_14-31.md
+docs/updates/handoff_ENRICHED_2025-10-27_16-37.md
+docs/updates/handoff_ENRICHED_2025-10-27_18-39.md
+docs/updates/handoff_ENRICHED_2025-10-27_20-28.md
+docs/updates/handoff_ENRICHED_2025-10-27_22-27.md
+docs/updates/handoff_ENRICHED_2025-10-28_02-02.md
+docs/updates/handoff_ENRICHED_2025-10-28_03-14.md
+docs/updates/handoff_ENRICHED_2025-10-28_04-33.md
+docs/updates/handoff_ENRICHED_2025-10-28_06-43.md
+docs/updates/handoff_ENRICHED_2025-10-28_08-37.md
+docs/updates/handoff_ENRICHED_2025-10-28_10-34.md
 docs/updates/handoff_week_2025-10-19_to_2025-10-25.md
 docs/updates/handoff_week_2025-10-26_to_2025-11-01.md
 docs/updates/latest.md
@@ -374,6 +396,7 @@ scripts/agent_pr_example.js
 scripts/agent_pr_example.sh
 scripts/bootstrap-supabase.mjs
 scripts/codex_push.sh
+scripts/compute_keep_delete.mjs
 scripts/context/generate-openspec-digest.mjs
 scripts/context/write-repo-snapshot.mjs
 scripts/dashboard/copy-static.mjs
@@ -388,6 +411,7 @@ scripts/generate-handoff-index.mjs
 scripts/generate-handoff.mjs
 scripts/generate-openspec-digest.mjs
 scripts/generate-repo-snapshot.mjs
+scripts/generate_manifest.mjs
 scripts/guardrails/validate-secrets.mjs
 scripts/ideas/build-prd.mjs
 scripts/ideas/promote-status.mjs
