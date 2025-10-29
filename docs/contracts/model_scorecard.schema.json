@@ -1,0 +1,25 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeflow.dev/schemas/model-scorecard-v1.json",
+  "type": "object",
+  "required": [
+    "platform",
+    "model",
+    "task_type",
+    "success_rate_30d"
+  ],
+  "properties": {
+    "platform": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string"
+    },
+    "success_rate_30d": {
+      "type": "number"
+    }
+  }
+}
