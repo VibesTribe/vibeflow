@@ -4,19 +4,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import Ajv2020 from "ajv/dist/2020.js";
 
-const ajv = new Ajv2020({ allErrors: true, strict: false });
-await maybeAddFormats();
-
-async function maybeAddFormats() {
-  try {
-    const module = await import("ajv-formats");
-    if (typeof module.default === "function") {
-      module.default(ajv);
-    }
-  } catch (error) {
-    console.warn(`[validate_json_schemas] ajv-formats not available: ${error.message}`);
-  }
-}
+const ajv = new Ajv2020({ allErrors: true, strict: false, validateFormats: false });
 
 async function validateSchema(file) {
   const schemaText = await fs.readFile(file, "utf8");
