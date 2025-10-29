@@ -1,4 +1,4 @@
-name: Docs Validate
+﻿name: Docs Validate
 
 on:
   push:
@@ -24,13 +24,15 @@ jobs:
 
       - name: Validate JSON Schemas (Draft 2020-12)
         run: |
-          ajv compile --spec=draft2020 -s docs/contracts/plan.schema.json
-          ajv compile --spec=draft2020 -s docs/contracts/task_contract.schema.json
-          ajv compile --spec=draft2020 -s docs/contracts/run_metric.schema.json
-          ajv compile --spec=draft2020 -s docs/contracts/model_scorecard.schema.json
-          ajv compile --spec=draft2020 -s docs/contracts/registry_model.schema.json
-          ajv compile --spec=draft2020 -s docs/contracts/capability_vector.schema.json
+          ajv compile --spec=draft2020 -s contracts/plan.schema.json
+          ajv compile --spec=draft2020 -s contracts/task_packet.schema.json
+          ajv compile --spec=draft2020 -s contracts/run_metric.schema.json
+          ajv compile --spec=draft2020 -s contracts/capability_vector.schema.json
+          ajv compile --spec=draft2020 -s contracts/skill_manifest.schema.json
+          ajv compile --spec=draft2020 -s contracts/task_state.schema.json
 
       - name: Check Markdown Links
         run: |
           find docs -name "*.md" -print0 | xargs -0 -I{} markdown-link-check -q {}
+
+
