@@ -19,24 +19,15 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install validators
-        run: npm i -g ajv-cli@5 ajv-formats markdown-link-check
+      - name: Install dependencies
+        run: npm install
 
       - name: Validate JSON Schemas (Draft 2020-12)
-        run: |
-          ajv compile --spec=draft2020 -s contracts/plan.schema.json
-          ajv compile --spec=draft2020 -s contracts/task_packet.schema.json
-          ajv compile --spec=draft2020 -s contracts/run_metric.schema.json
-          ajv compile --spec=draft2020 -s contracts/capability_vector.schema.json
-          ajv compile --spec=draft2020 -s contracts/skill_manifest.schema.json
-          ajv compile --spec=draft2020 -s contracts/task_state.schema.json
+        run: npm run validate:schemas -- contracts/*.schema.json
+
+      - name: Install markdown link checker
+        run: npm install -g markdown-link-check
 
       - name: Check Markdown Links
         run: |
           find docs -name "*.md" -print0 | xargs -0 -I{} markdown-link-check -q {}
-
-
-
-
-
-
