@@ -29,9 +29,10 @@ export async function handleRequest(request: McpRequest) {
     case "emitNote":
       return emitNote(request.payload ?? {});
     case "queryEvents":
-      return queryEvents(request.payload ?? {});
+      return queryEvents();
     default:
       throw new Error(`Unknown MCP command ${request.command}`);
   }
 }
 /* @endeditable */
+

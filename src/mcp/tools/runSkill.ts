@@ -11,13 +11,32 @@
 
 /* @editable:mcp-run-skill */
 import { spawn } from "child_process";
+import fs from "fs";
+import path from "path";
 
-export function runSkill(payload: Record<string, unknown>): Promise<unknown> {
-  const skill = payload.skillId as string;
-  if (!skill) {
+const SKILL_PATTERN = /^[a-zA-Z0-9_-]+$/;
+const SKILLS_ROOT = path.resolve("skills");
+
+function resolveRunnerPath(rawSkillId: unknown): string {
+  if (typeof rawSkillId !== "string" || rawSkillId.trim().length === 0) {
     throw new Error("skillId is required");
   }
-  const runner = `skills/${skill}.runner.mjs`;
+  if (!SKILL_PATTERN.test(rawSkillId)) {
+    throw new Error("skillId contains invalid characters");
+  }
+
+  const runnerPath = path.resolve(SKILLS_ROOT, `${rawSkillId}.runner.mjs`);
+  if (!runnerPath.startsWith(SKILLS_ROOT + path.sep)) {
+    throw new Error("Resolved runner path is outside the skills directory");
+  }
+  if (!fs.existsSync(runnerPath)) {
+    throw new Error(`Skill runner not found for ${rawSkillId}`);
+  }
+  return runnerPath;
+}
+
+export function runSkill(payload: Record<string, unknown>): Promise<unknown> {
+  const runner = resolveRunnerPath(payload.skillId);
   return new Promise((resolve, reject) => {
     const child = spawn("node", [runner], { stdio: ["pipe", "pipe", "inherit"] });
     child.stdin.write(JSON.stringify(payload));
