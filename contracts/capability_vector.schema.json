@@ -1,5 +1,5 @@
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Capability Vector",
   "type": "object",
   "required": ["skills", "updated_at"],
@@ -22,3 +22,4 @@
     "updated_at": { "type": "string", "format": "date-time" }
   }
 }
+
