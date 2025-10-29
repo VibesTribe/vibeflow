@@ -20,7 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install validators
-        run: npm i -g ajv-cli markdown-link-check
+        run: npm i -g ajv-cli@5 ajv-formats markdown-link-check
 
       - name: Validate JSON Schemas (Draft 2020-12)
         run: |
@@ -34,6 +34,7 @@ jobs:
       - name: Check Markdown Links
         run: |
           find docs -name "*.md" -print0 | xargs -0 -I{} markdown-link-check -q {}
+
 
 
 
