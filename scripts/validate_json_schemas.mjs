@@ -3,10 +3,9 @@
 import { promises as fs } from "fs";
 import path from "path";
 import Ajv from "ajv";
-import addFormats from "ajv-formats";
 
 const ajv = new Ajv({ allErrors: true, strict: false });
-addFormats(ajv);
+await maybeAddFormats();
 
 const DEFAULT_BASE = "https://json-schema.org";
 const META_SCHEMAS = new Map([
@@ -14,6 +13,17 @@ const META_SCHEMAS = new Map([
   ["https://json-schema.org/draft-07/schema#", `${DEFAULT_BASE}/draft-07/schema`],
   ["https://json-schema.org/draft/2020-12/schema", `${DEFAULT_BASE}/draft/2020-12/schema`],
 ]);
+
+async function maybeAddFormats() {
+  try {
+    const module = await import("ajv-formats");
+    if (typeof module.default === "function") {
+      module.default(ajv);
+    }
+  } catch (error) {
+    console.warn(`[validate_json_schemas] ajv-formats not available: ${error.message}`);
+  }
+}
 
 async function ensureMetaSchema(url) {
   if (!META_SCHEMAS.has(url)) {
