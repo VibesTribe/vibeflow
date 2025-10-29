@@ -5,6 +5,9 @@ import path from "path";
 import Ajv2020 from "ajv/dist/2020.js";
 
 const ajv = new Ajv2020({ allErrors: true, strict: false, validateFormats: false });
+const draft7 = await import("ajv/dist/refs/json-schema-draft-07.json", { assert: { type: "json" } });
+ajv.addMetaSchema(draft7.default, "http://json-schema.org/draft-07/schema#");
+ajv.addMetaSchema(draft7.default, "https://json-schema.org/draft-07/schema#");
 
 async function validateSchema(file) {
   const schemaText = await fs.readFile(file, "utf8");
