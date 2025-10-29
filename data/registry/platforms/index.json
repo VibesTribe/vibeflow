@@ -1,0 +1,29 @@
+{
+  "providers": [
+    {
+      "id": "openrouter",
+      "modes": [
+        "text",
+        "code"
+      ],
+      "success_rate": 0.94,
+      "latency_avg": 5.2,
+      "limits": {
+        "rpm": 60,
+        "tpm": 60000
+      }
+    },
+    {
+      "id": "browser_use",
+      "modes": [
+        "visual"
+      ],
+      "success_rate": 0.81,
+      "latency_avg": 32.1,
+      "limits": {
+        "concurrent_sessions": 3
+      }
+    }
+  ],
+  "generated_at": "2025-10-28T15:00:00.000Z"
+}

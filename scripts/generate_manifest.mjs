@@ -1,53 +1,121 @@
-#!/usr/bin/env node
-/**
- * Vibeflow Manifest Generator
- * ---------------------------------------
- * Reads docs/system_plan_v5.md
- * Extracts all file paths shown in code fences
- * Emits data/registry/system_manifest.json
- *
- * Each entry includes:
- *   path, status="planned", locked=false, last_commit=null
- *
- * Run:
- *   node scripts/generate_manifest.mjs
- */
+﻿#!/usr/bin/env node
 
-import fs from "node:fs";
-import path from "node:path";
+import { promises as fs } from "fs";
+import path from "path";
+import process from "process";
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
-const PLAN = path.join(ROOT, "docs", "system_plan_v5.md");
-const OUT = path.join(ROOT, "data", "registry", "system_manifest.json");
+const DEFAULT_PLAN_PATH = "docs/system_plan_v5.md";
+const DEFAULT_OUTPUT_PATH = "data/registry/system_manifest.json";
 
-if (!fs.existsSync(PLAN)) {
-  console.error(`❌ Cannot find ${PLAN}`);
-  process.exit(1);
+function parseArgs(argv) {
+  const args = new Map();
+  for (let i = 2; i < argv.length; i++) {
+    const [key, value] = argv[i].split("=");
+    if (value === undefined) {
+      args.set(key.replace(/^--/, ""), true);
+    } else {
+      args.set(key.replace(/^--/, ""), value);
+    }
+  }
+  return args;
 }
 
-const text = fs.readFileSync(PLAN, "utf8");
+function extractTargetTree(planContent) {
+  const anchor = "## 7) Target File Tree";
+  const subsection = planContent.split(anchor)[1];
+  if (!subsection) {
+    throw new Error("Unable to locate 'Target File Tree' section in plan.");
+  }
 
-// match all paths that look like `folder/file.ext` inside code fences
-const regex = /^(?:[ \t]*)([A-Za-z0-9_.\-\/]+\/[A-Za-z0-9_.\-]+)$/gm;
-const matches = [...text.matchAll(regex)].map((m) => m[1].trim());
+  const terminator = "### 7.1";
+  const targetSection = subsection.split(terminator)[0] ?? subsection;
 
-// deduplicate and normalize
-const unique = Array.from(new Set(matches))
-  .filter((p) => !p.startsWith("```") && !p.endsWith("```"))
-  .sort();
+  const treeBlocks = [];
+  const regex = /```([\s\S]*?)```/g;
+  let match;
+  while ((match = regex.exec(targetSection)) !== null) {
+    const block = match[1].trim();
+    if (block) {
+      treeBlocks.push(block);
+    }
+  }
 
-const manifest = unique.map((p) => ({
-  path: p,
-  status: "planned",
-  locked: false,
-  last_commit: null,
-}));
+  if (treeBlocks.length === 0) {
+    throw new Error("No tree blocks found in target file tree section.");
+  }
 
-// ensure output directory
-const dir = path.dirname(OUT);
-fs.mkdirSync(dir, { recursive: true });
+  return treeBlocks;
+}
 
-// write manifest
-fs.writeFileSync(OUT, JSON.stringify({ generated: new Date().toISOString(), files: manifest }, null, 2));
-console.log(`✅ Manifest written to ${OUT}`);
-console.log(`→ ${manifest.length} files enumerated`);
+function parseTreeBlocks(blocks) {
+  const files = new Set();
+
+  for (const block of blocks) {
+    const levels = [];
+    const lines = block.split("\n");
+
+    for (const rawLine of lines) {
+      const line = rawLine.replace(/\r$/, "");
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+
+      const indent = line.match(/^\s*/)?.[0]?.length ?? 0;
+      const depth = Math.floor(indent / 2);
+      const isDirectory = trimmed.endsWith("/");
+      const rawToken = isDirectory ? trimmed.slice(0, -1) : trimmed;
+      const token = rawToken.split(/\s+/)[0];
+
+      const parent = depth === 0 ? "" : levels[depth - 1] ?? "";
+      const fullPath = parent ? path.posix.join(parent, token) : token;
+
+      if (isDirectory) {
+        levels[depth] = fullPath;
+        levels.length = depth + 1;
+      } else {
+        files.add(fullPath);
+      }
+    }
+  }
+
+  return Array.from(files).sort();
+}
+
+async function ensureDirectory(filePath) {
+  const dir = path.dirname(filePath);
+  await fs.mkdir(dir, { recursive: true });
+}
+
+async function main() {
+  try {
+    const args = parseArgs(process.argv);
+    const planPath = path.resolve(process.cwd(), args.get("plan") ?? DEFAULT_PLAN_PATH);
+    const outputPath = path.resolve(process.cwd(), args.get("out") ?? DEFAULT_OUTPUT_PATH);
+
+    const planContent = await fs.readFile(planPath, "utf8");
+    const treeBlocks = extractTargetTree(planContent);
+    const files = parseTreeBlocks(treeBlocks);
+
+    const manifest = {
+      source: path.relative(process.cwd(), planPath).replace(/\\/g, "/"),
+      generated_at: new Date().toISOString(),
+      files: files.map((filePath) => ({
+        path: filePath,
+        regions: [],
+        assigned_to: null,
+        locked: false,
+        last_hash: null,
+        last_commit: null,
+        status: "planned",
+      })),
+    };
+
+    await ensureDirectory(outputPath);
+    await fs.writeFile(outputPath, JSON.stringify(manifest, null, 2));
+    console.log(`Manifest generated for ${files.length} files.`);
+  } catch (error) {
+    console.error(`[generate_manifest] ${error.message}`);
+    process.exitCode = 1;
+  }
+}
+
+main();

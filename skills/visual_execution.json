@@ -1,0 +1,19 @@
+{
+  "id": "visual_execution",
+  "name": "Visual Execution",
+  "category": "execution",
+  "description": "Runs Browser-Use workflows with captured HTML and screenshot artifacts.",
+  "runner": "./visual_execution.runner.mjs",
+  "inputs": [
+    "task_packet",
+    "context"
+  ],
+  "outputs": [
+    "artifacts",
+    "events"
+  ],
+  "ok_probe": {
+    "command": "node skills/visual_execution.runner.mjs --probe",
+    "timeout_seconds": 60
+  }
+}
