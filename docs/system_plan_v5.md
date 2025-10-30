@@ -150,6 +150,7 @@ src/adapters/
   mastraRunner.ts
   browserUseRunner.ts
   devToolsRunner.ts
+  llmProvider.ts
 
 src/mcp/
   server.ts
@@ -196,9 +197,14 @@ data/conversations/.gitkeep
 
 data/registry/
   system_manifest.json     ← auto-generated
+  llm_providers.json
   platforms/
     index.json
     EXAMPLE.webstudio.json
+
+data/tasks/
+  slices/
+    vibeflow_full_build_v5.json
 
 data/digest/
   latest.md
@@ -252,6 +258,17 @@ scripts/
   ci-merge-gate.yml
   ci-tests.yml
   ci-backup.yml
+  ci-auto-manifest.yml
+  ci-keep-supabase-awake.yml
+  ci-nightly-manifest-check.yml
+  docs-validate.yml
+  pages-deploy.yml
+  pages-sync-dashboard.yml
+  supervisor-gate.yml
+  telemetry-bootstrap.yml
+  telemetry-export.yml
+  visual-gate.yml
+  weekly-handoff.yml
 ```
 **Root**
 ```
@@ -266,6 +283,12 @@ docs/
   contribution.md
   runbook.md
   architecture.mmd
+  updates/handoff_ENRICHED_2025-10-28_20-32.md
+  updates/handoff_ENRICHED_2025-10-28_22-29.md
+  updates/handoff_ENRICHED_2025-10-29_16-38.md
+  updates/handoff_ENRICHED_2025-10-29_18-40.md
+  updates/handoff_ENRICHED_2025-10-29_20-31.md
+  updates/handoff_v5_codex_build.md
 
 package.json
 tsconfig.json
