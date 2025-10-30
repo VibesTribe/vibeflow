@@ -15,12 +15,15 @@ import path from "path";
 import Ajv, { type ValidateFunction } from "ajv";
 import { TaskPacket } from "@core/types";
 import { saveTaskState, TaskState } from "@core/taskState";
+import { TesterAgent, TesterOutcome } from "./testerAgent";
 
 const STATE_PATH = path.resolve("data/state/task.state.json");
 const SCHEMA_PATH = path.resolve("contracts/task_state.schema.json");
 
 export class SupervisorAgent {
   private validatorPromise: Promise<ValidateFunction<TaskState>> | null = null;
+
+  constructor(private readonly tester = new TesterAgent()) {}
 
   async execute(packet: TaskPacket) {
     const outputPath = this.resolveOutputPath(packet);
@@ -30,10 +33,11 @@ export class SupervisorAgent {
     const validate = await this.getValidator();
     if (!validate(parsed)) {
       const message = this.formatValidationErrors(validate);
-      throw new Error(`SupervisorAgent: task state validation failed — ${message}`);
+      throw new Error(`SupervisorAgent: task state validation failed - ${message}`);
     }
 
     await saveTaskState(parsed);
+    const testerOutcome = await this.runTester(packet, parsed);
 
     return {
       summary: `Supervisor validated state for ${packet.taskId}`,
@@ -42,6 +46,7 @@ export class SupervisorAgent {
       metadata: {
         source: this.toRelative(outputPath),
         tasks: parsed.tasks?.length ?? 0,
+        tester: testerOutcome,
       },
     };
   }
@@ -63,7 +68,9 @@ export class SupervisorAgent {
     try {
       return await fs.readFile(outputPath, "utf8");
     } catch (error) {
-      throw new Error(`SupervisorAgent: unable to read output at ${this.toRelative(outputPath)} — ${(error as Error).message}`);
+      throw new Error(
+        `SupervisorAgent: unable to read output at ${this.toRelative(outputPath)} - ${(error as Error).message}`
+      );
     }
   }
 
@@ -105,6 +112,17 @@ export class SupervisorAgent {
   private toRelative(targetPath: string): string {
     const relative = path.relative(process.cwd(), targetPath);
     return relative || targetPath;
+  }
+
+  private async runTester(packet: TaskPacket, state: TaskState): Promise<TesterOutcome> {
+    try {
+      return await this.tester.execute({ packet, state });
+    } catch (error) {
+      return {
+        status: "error",
+        reason: (error as Error).message,
+      };
+    }
   }
 }
 /* @endeditable */
