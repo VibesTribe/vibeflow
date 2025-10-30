@@ -1,29 +1,83 @@
-{
+﻿{
   "providers": [
     {
       "id": "openrouter",
+      "label": "OpenRouter GPT-4.1 Mini",
+      "priority": 0.95,
+      "confidence": 0.93,
+      "success_rate": 0.94,
+      "latency_avg": 5.2,
+      "token_penalty": 0.03,
+      "model": "gpt-4.1-mini",
       "modes": [
         "text",
         "code"
       ],
-      "success_rate": 0.94,
-      "latency_avg": 5.2,
       "limits": {
         "rpm": 60,
         "tpm": 60000
       }
     },
     {
+      "id": "deepseek",
+      "label": "DeepSeek Reasoner",
+      "priority": 0.88,
+      "confidence": 0.9,
+      "success_rate": 0.9,
+      "latency_avg": 6.4,
+      "token_penalty": 0.02,
+      "model": "deepseek-reasoner",
+      "modes": [
+        "text",
+        "code"
+      ],
+      "limits": {
+        "rpm": 45,
+        "tpm": 45000
+      }
+    },
+    {
+      "id": "glm",
+      "label": "GLM 4.6 Ultra",
+      "priority": 0.86,
+      "confidence": 0.89,
+      "success_rate": 0.88,
+      "latency_avg": 7.1,
+      "token_penalty": 0.015,
+      "model": "glm-4.6-ultra",
+      "modes": [
+        "text",
+        "code"
+      ],
+      "limits": {
+        "rpm": 40,
+        "tpm": 42000
+      }
+    },
+    {
       "id": "browser_use",
+      "label": "Browser Use Visual",
+      "priority": 0.7,
+      "confidence": 0.8,
+      "success_rate": 0.81,
+      "latency_avg": 32.1,
+      "token_penalty": 0.05,
+      "model": "visual-exec",
       "modes": [
         "visual"
       ],
-      "success_rate": 0.81,
-      "latency_avg": 32.1,
       "limits": {
         "concurrent_sessions": 3
       }
     }
   ],
-  "generated_at": "2025-10-28T15:00:00.000Z"
+  "weights": {
+    "priority": 0.28,
+    "confidence": 0.26,
+    "success_rate": 0.24,
+    "latency": 0.14,
+    "penalty": 0.08
+  },
+  "latency_target_seconds": 12,
+  "generated_at": "2025-10-29T20:05:00.000Z"
 }
