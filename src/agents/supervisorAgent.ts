@@ -33,7 +33,7 @@ export class SupervisorAgent {
     const validate = await this.getValidator();
     if (!validate(parsed)) {
       const message = this.formatValidationErrors(validate);
-      throw new Error(`SupervisorAgent: task state validation failed — ${message}`);
+      throw new Error(`SupervisorAgent: task state validation failed - ${message}`);
     }
 
     await saveTaskState(parsed);
@@ -53,9 +53,7 @@ export class SupervisorAgent {
 
   private resolveOutputPath(packet: TaskPacket): string {
     const candidate = [
-      typeof packet.metadata?.supervisorOutput === "string"
-        ? (packet.metadata?.supervisorOutput as string)
-        : undefined,
+      typeof packet.metadata?.supervisorOutput === "string" ? packet.metadata?.supervisorOutput : undefined,
       ...packet.deliverables,
     ].find((value): value is string => Boolean(value));
 
@@ -71,9 +69,7 @@ export class SupervisorAgent {
       return await fs.readFile(outputPath, "utf8");
     } catch (error) {
       throw new Error(
-        `SupervisorAgent: unable to read output at ${this.toRelative(outputPath)} — ${
-          (error as Error).message
-        }`
+        `SupervisorAgent: unable to read output at ${this.toRelative(outputPath)} - ${(error as Error).message}`
       );
     }
   }
@@ -81,10 +77,8 @@ export class SupervisorAgent {
   private parseState(raw: string, outputPath: string): TaskState {
     try {
       return JSON.parse(raw) as TaskState;
-    } catch {
-      throw new Error(
-        `SupervisorAgent: output at ${this.toRelative(outputPath)} is not valid JSON`
-      );
+    } catch (error) {
+      throw new Error(`SupervisorAgent: output at ${this.toRelative(outputPath)} is not valid JSON`);
     }
   }
 
