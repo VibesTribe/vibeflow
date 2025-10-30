@@ -39,17 +39,28 @@ export function runSkill(payload: Record<string, unknown>): Promise<unknown> {
   const runner = resolveRunnerPath(payload.skillId);
   return new Promise((resolve, reject) => {
     const child = spawn("node", [runner], { stdio: ["pipe", "pipe", "inherit"] });
+    child.stdout.setEncoding("utf8");
     child.stdin.write(JSON.stringify(payload));
     child.stdin.end();
-    const chunks: Buffer[] = [];
-    child.stdout.on("data", (chunk) => chunks.push(chunk));
+
+    const chunks: string[] = [];
+    child.stdout.on("data", (chunk) => {
+      chunks.push(typeof chunk === "string" ? chunk : chunk.toString("utf8"));
+    });
+
     child.on("error", reject);
     child.on("close", (code) => {
       if (code !== 0) {
         reject(new Error(`Skill runner exited with code ${code}`));
         return;
       }
-      resolve(JSON.parse(Buffer.concat(chunks).toString("utf8")));
+
+      const output = chunks.join("");
+      try {
+        resolve(output.length ? JSON.parse(output) : null);
+      } catch (error) {
+        reject(new Error(`Skill runner returned invalid JSON: ${(error as Error).message}`));
+      }
     });
   });
 }
