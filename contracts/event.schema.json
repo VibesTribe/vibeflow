@@ -22,7 +22,8 @@
         "note",
         "failure",
         "repair",
-        "handoff"
+        "handoff",
+        "reassigned"
       ]
     },
     "details": {
