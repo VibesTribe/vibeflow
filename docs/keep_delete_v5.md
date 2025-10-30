@@ -1,10 +1,21 @@
 KEEP:
   .eslintrc.cjs
+  .github/workflows/ci-auto-manifest.yml
   .github/workflows/ci-backup.yml
   .github/workflows/ci-contracts.yml
   .github/workflows/ci-diff-scope.yml
+  .github/workflows/ci-keep-supabase-awake.yml
   .github/workflows/ci-merge-gate.yml
+  .github/workflows/ci-nightly-manifest-check.yml
   .github/workflows/ci-tests.yml
+  .github/workflows/docs-validate.yml
+  .github/workflows/pages-deploy.yml
+  .github/workflows/pages-sync-dashboard.yml
+  .github/workflows/supervisor-gate.yml
+  .github/workflows/telemetry-bootstrap.yml
+  .github/workflows/telemetry-export.yml
+  .github/workflows/visual-gate.yml
+  .github/workflows/weekly-handoff.yml
   .prettierrc
   README.md
   apps/dashboard/components/AgentView.tsx
@@ -43,11 +54,13 @@ KEEP:
   data/prompts/roles/research_agent.yaml
   data/prompts/templates/prd_agent.prompt.md
   data/prompts/templates/research_agent.prompt.md
+  data/registry/llm_providers.json
   data/registry/platforms/EXAMPLE.webstudio.json
   data/registry/platforms/index.json
   data/registry/system_manifest.json
   data/state/events.log.jsonl
   data/state/task.state.json
+  data/tasks/slices/vibeflow_full_build_v5.json
   docs/architecture.mmd
   docs/contribution.md
   docs/keep_delete_v5.md
@@ -55,6 +68,12 @@ KEEP:
   docs/runbook.md
   docs/system_plan_v5.md
   docs/tech-stack.md
+  docs/updates/handoff_ENRICHED_2025-10-28_20-32.md
+  docs/updates/handoff_ENRICHED_2025-10-28_22-29.md
+  docs/updates/handoff_ENRICHED_2025-10-29_16-38.md
+  docs/updates/handoff_ENRICHED_2025-10-29_18-40.md
+  docs/updates/handoff_ENRICHED_2025-10-29_20-31.md
+  docs/updates/handoff_v5_codex_build.md
   package.json
   scripts/auto_backup.mjs
   scripts/check_safe_diff.mjs
@@ -89,6 +108,7 @@ KEEP:
   src/adapters/browserUseRunner.ts
   src/adapters/devToolsRunner.ts
   src/adapters/graphbitRunner.ts
+  src/adapters/llmProvider.ts
   src/adapters/mastraRunner.ts
   src/adapters/visualAdapter.template.ts
   src/agents/analystAgent.ts
@@ -118,9 +138,8 @@ KEEP:
   tsconfig.json
 
 DELETE:
-  node_modules/
 
 CREATE:
 
-# Generated at 2025-10-28T15:29:41.362Z
+# Generated at 2025-10-30T04:16:02.090Z
 # Source plan: docs/system_plan_v5.md
