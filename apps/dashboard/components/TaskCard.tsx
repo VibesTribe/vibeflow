@@ -1,37 +1,38 @@
-﻿/**
- * vibeflow-meta:
- * id: apps/dashboard/components/TaskCard.tsx
- * task: REBUILD-V5
- * regions:
- *   - id: task-card
- *     hash: 00000000
- * locked: false
- * last_commit: null
- */
-
-/* @editable:task-card */
 import React from "react";
 import { TaskSnapshot } from "@core/types";
 
+type QualityStatus = "pass" | "fail" | "pending";
+
 interface TaskCardProps {
   task: TaskSnapshot;
+  qualityStatus?: QualityStatus;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const QUALITY_LABELS: Record<QualityStatus, string> = {
+  pass: "Supervisor pass",
+  fail: "Needs repair",
+  pending: "In review",
+};
+
+const TaskCard: React.FC<TaskCardProps> = ({ task, qualityStatus = "pending" }) => {
+  const qualityClass = `task-card__quality task-card__quality--${qualityStatus}`;
+
   return (
     <article className="task-card">
-      <header style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+      <header className="task-card__header">
         <strong>{task.title}</strong>
         <span className="status-chip">{task.status}</span>
       </header>
-      <div style={{ fontSize: "0.85rem", opacity: 0.7 }}>{task.owner ?? "Unassigned"}</div>
-      <footer style={{ marginTop: 8, fontSize: "0.75rem", opacity: 0.9 }}>
-        <div>Confidence: {(task.confidence * 100).toFixed(0)}%</div>
-        <div>Updated: {new Date(task.updatedAt).toLocaleTimeString()}</div>
+      <div className="task-card__meta">
+        <span className="task-card__owner">{task.owner ?? "Unassigned"}</span>
+        <span className="task-card__confidence">{Math.round(task.confidence * 100)}% conf</span>
+      </div>
+      <footer className="task-card__footer">
+        <span className="task-card__updated">Updated {new Date(task.updatedAt).toLocaleTimeString()}</span>
+        <span className={qualityClass}>{QUALITY_LABELS[qualityStatus]}</span>
       </footer>
     </article>
   );
 };
 
 export default TaskCard;
-/* @endeditable */

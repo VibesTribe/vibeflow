@@ -45,7 +45,7 @@ export class Orchestrator {
     });
   }
 
-  async dispatch(packet: TaskPacket): Promise<void> {
+  async dispatch(packet: TaskPacket): Promise<RouterDecision> {
     const decision = this.router.decide("dag_executor");
     const timestamp = now();
     const assignedEvent: LifecycleEvent = {
@@ -64,6 +64,7 @@ export class Orchestrator {
     await this.persistEvent(assignedEvent);
     await this.events.emit(assignedEvent);
     await this.updateTaskState(packet, decision, timestamp);
+    return decision;
   }
 
   private async persistEvent(event: LifecycleEvent): Promise<void> {
