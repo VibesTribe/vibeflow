@@ -17,7 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -29,32 +28,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Build the dashboard using Supabase keys from secrets
       - name: Build Vite site
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-
-          # Static info for GitHub Mission Loop integration
           VITE_GITHUB_OWNER: vibestribe
           VITE_GITHUB_REPO: vibeflow
-          VITE_GITHUB_BRANCH: codex             # where queued JSONs land
+          VITE_GITHUB_BRANCH: codex
           VITE_GITHUB_WORKFLOW: mission-loop.yml
-          # Optional: direct MCP endpoint (store token in secrets if used)
-          # VITE_RUN_TASK_ENDPOINT: https://your-mcp-host/run-task
-          # VITE_MCP_TOKEN: ${{ secrets.MCP_SERVER_TOKEN }}
+        run: npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/
 
-        run: npm run build --workspace apps/dashboard -- --base=./
-
-      - name: Copy snapshot assets
-        env:
-          PUBLIC_BASE_PATH: /vibeflow
-        run: npm run dashboard:publish
+      - name: Copy telemetry assets
+        run: |
+          mkdir -p dist/dashboard/data/state
+          mkdir -p dist/dashboard/data/metrics
+          cp -a data/state/. dist/dashboard/data/state/
+          cp -a data/metrics/. dist/dashboard/data/metrics/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/dashboard/dist
+          path: dist/dashboard
 
   deploy:
     needs: build
