@@ -1,2 +1,0 @@
-﻿{"id":"evt-001","task_id":"task/alpha","type":"status_change","timestamp":"2025-10-28T14:30:00.000Z","details":{"from":"assigned","to":"in_progress"}}
-{"id":"evt-002","task_id":"task/beta","type":"failure","timestamp":"2025-10-28T14:45:00.000Z","reason_code":"E/SCHEMA_INVALID","details":{"notes":"Schema mismatch detected"}}
