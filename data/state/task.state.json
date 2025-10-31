@@ -1,13 +1,5 @@
 {
-  "tasks": [
-    {
-      "id": "task/sample",
-      "title": "Placeholder",
-      "status": "assigned",
-      "confidence": 1,
-      "updated_at": "1970-01-01T00:00:00.000Z"
-    }
-  ],
+  "tasks": [],
   "agents": [
     {
       "id": "agent/sample",
@@ -22,5 +14,5 @@
   "metrics": {
     "active_tasks": 0
   },
-  "updated_at": "1970-01-01T00:00:00.000Z"
+  "updated_at": "2025-10-31T19:56:11.326Z"
 }
