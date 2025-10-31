@@ -1,4 +1,4 @@
-﻿/**
+/**
  * vibeflow-meta:
  * id: apps/dashboard/main.tsx
  * task: REBUILD-V5
@@ -12,12 +12,10 @@
 /* @editable:dashboard-app */
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import OverviewStrip from "./components/OverviewStrip";
-import Timeline from "./components/Timeline";
-import AgentView from "./components/AgentView";
-import Failures from "./components/Failures";
-import LearningFeed from "./components/LearningFeed";
-import ReadyToMerge from "./components/ReadyToMerge";
+import SliceDock from "./components/SliceDock";
+import AgentHangar from "./components/AgentHangar";
+import AgentOverviewModal from "./components/AgentOverviewModal";
+import ModelAnalyticsView from "../../src/dashboard/ModelAnalyticsView";
 import { TaskSnapshot, AgentSnapshot, FailureSnapshot, MergeCandidate } from "@core/types";
 
 interface DashboardSnapshot {
@@ -29,6 +27,18 @@ interface DashboardSnapshot {
   updatedAt: string;
 }
 
+interface RunMetricEntry {
+  id: string;
+  started_at: string;
+  status: string;
+  notes?: string;
+}
+
+interface RunMetrics {
+  runs: RunMetricEntry[];
+  updated_at: string;
+}
+
 const initialSnapshot: DashboardSnapshot = {
   tasks: [],
   agents: [],
@@ -38,18 +48,29 @@ const initialSnapshot: DashboardSnapshot = {
   updatedAt: new Date().toISOString(),
 };
 
+const initialRunMetrics: RunMetrics = {
+  runs: [],
+  updated_at: new Date().toISOString(),
+};
+
 const DashboardApp: React.FC = () => {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>(initialSnapshot);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [runMetrics, setRunMetrics] = useState<RunMetrics>(initialRunMetrics);
+  const [snapshotLoading, setSnapshotLoading] = useState(true);
+  const [metricsLoading, setMetricsLoading] = useState(true);
+  const [selectedAgent, setSelectedAgent] = useState<AgentSnapshot | null>(null);
+  const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
 
   useEffect(() => {
-    async function fetchSnapshot() {
+    let cancelled = false;
+    async function loadSnapshot() {
       try {
         const response = await fetch("/data/state/task.state.json", { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Failed to load snapshot (${response.status})`);
         }
         const data = await response.json();
+        if (cancelled) return;
         setSnapshot({
           tasks: data.tasks ?? [],
           agents: data.agents ?? [],
@@ -59,41 +80,87 @@ const DashboardApp: React.FC = () => {
           updatedAt: data.updated_at ?? new Date().toISOString(),
         });
       } catch (error) {
-        console.warn("dashboard snapshot fallback", error);
+        console.warn("[dashboard] snapshot fetch failed", error);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setSnapshotLoading(false);
+        }
       }
     }
 
-    fetchSnapshot();
-    const interval = setInterval(fetchSnapshot, 60_000);
-    return () => clearInterval(interval);
+    loadSnapshot();
+    const interval = setInterval(loadSnapshot, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    async function loadRunMetrics() {
+      try {
+        const response = await fetch("/data/metrics/run_metrics.json", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Failed to load metrics (${response.status})`);
+        }
+        const data = await response.json();
+        if (cancelled) return;
+        setRunMetrics({
+          runs: Array.isArray(data.runs) ? data.runs : [],
+          updated_at: data.updated_at ?? new Date().toISOString(),
+        });
+      } catch (error) {
+        console.warn("[dashboard] metrics fetch failed", error);
+      } finally {
+        if (!cancelled) {
+          setMetricsLoading(false);
+        }
+      }
+    }
+
+    loadRunMetrics();
+    const interval = setInterval(loadRunMetrics, 90_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const isLoading = snapshotLoading || metricsLoading;
+
   return (
-    <div className="dashboard">
-      <section className="panel" style={{ gridColumn: "1 / span 3" }}>
-        <OverviewStrip
+    <div className="dashboard-grid">
+      <aside className="dashboard-grid__sidebar">
+        <SliceDock
+          tasks={snapshot.tasks}
+          failures={snapshot.failures}
           metrics={snapshot.metrics}
           updatedAt={snapshot.updatedAt}
           isLoading={isLoading}
+          onSelectTask={setSelectedTask}
         />
-      </section>
-      <section className="panel" style={{ gridColumn: "1 / span 2" }}>
-        <Timeline tasks={snapshot.tasks} isLoading={isLoading} />
-      </section>
-      <section className="panel">
-        <AgentView agents={snapshot.agents} />
-      </section>
-      <section className="panel">
-        <Failures failures={snapshot.failures} />
-      </section>
-      <section className="panel">
-        <LearningFeed tasks={snapshot.tasks} />
-      </section>
-      <section className="panel">
-        <ReadyToMerge candidates={snapshot.mergeCandidates} />
-      </section>
+      </aside>
+      <main className="dashboard-grid__main">
+        <ModelAnalyticsView runs={runMetrics.runs} updatedAt={runMetrics.updated_at} loading={metricsLoading} />
+        <AgentHangar
+          agents={snapshot.agents}
+          selectedAgentId={selectedAgent?.id ?? null}
+          onSelectAgent={setSelectedAgent}
+        />
+      </main>
+      <aside className="dashboard-grid__detail">
+        <AgentOverviewModal
+          branches={snapshot.mergeCandidates}
+          failures={snapshot.failures}
+          selectedAgent={selectedAgent}
+          selectedTask={selectedTask}
+          onClearSelection={() => {
+            setSelectedAgent(null);
+            setSelectedTask(null);
+          }}
+        />
+      </aside>
     </div>
   );
 };
