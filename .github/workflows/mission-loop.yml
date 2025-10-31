@@ -1,0 +1,59 @@
+name: Mission Loop
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  push:
+    paths:
+      - "data/tasks/queued/**/*.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mission-loop
+  cancel-in-progress: false
+
+jobs:
+  run-mission-loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      BREVO_FROM_EMAIL: ${{ secrets.BREVO_FROM_EMAIL }}
+      BREVO_FROM_NAME: ${{ secrets.BREVO_FROM_NAME }}
+      BREVO_TO: ${{ secrets.BREVO_TO }}
+      MCP_SERVER_TOKEN: ${{ secrets.MCP_SERVER_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install --no-fund --no-audit
+
+      - name: Build TypeScript sources
+        run: npm run build
+
+      - name: Run mission loop auto-runner
+        run: node scripts/orchestrator/auto_runner.mjs
+
+      - name: Emit mission loop summary
+        run: |
+          echo "Mission loop executed for $GITHUB_REF at $(date -u)"
+          echo "Latest queue state:"
+          ls -alh data/tasks/queued || true
