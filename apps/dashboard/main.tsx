@@ -44,9 +44,9 @@ const initialRunMetrics: RunMetrics = {
   updated_at: new Date().toISOString(),
 };
 
-const SNAPSHOT_POLL_MS = 10_000;
-const METRICS_POLL_MS = 30_000;
-const EVENTS_POLL_MS = 10_000;
+const SNAPSHOT_POLL_MS = 5_000;
+const METRICS_POLL_MS = 25_000;
+const EVENTS_POLL_MS = 5_000;
 
 const DashboardApp: React.FC = () => {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>(initialSnapshot);
@@ -167,6 +167,15 @@ const DashboardApp: React.FC = () => {
 
   const qualityByTask = useMemo(() => deriveQualityMap(events), [events]);
   const isLoading = snapshotLoading || metricsLoading || eventsLoading;
+  const lastSnapshotAt = useMemo(
+    () => new Date(snapshot.updatedAt).toLocaleTimeString(),
+    [snapshot.updatedAt]
+  );
+  const latestEventAt = useMemo(() => {
+    const latest = events[0];
+    return latest ? new Date(latest.timestamp).toLocaleTimeString() : null;
+  }, [events]);
+  const syncLabel = isLoading ? "Syncing…" : "Live";
 
   const handleTaskQueued = useCallback(() => {
     loadSnapshot();
@@ -190,6 +199,13 @@ const DashboardApp: React.FC = () => {
           <div>
             <h1>Mission Control</h1>
             <p className="dashboard-grid__subtitle">Live telemetry and mission automation</p>
+            <div className="dashboard-grid__sync">
+              <span className={isLoading ? "dashboard-grid__badge" : "dashboard-grid__badge dashboard-grid__badge--ready"}>
+                {syncLabel}
+              </span>
+              <span className="dashboard-grid__sync-meta">Snapshot {lastSnapshotAt}</span>
+              {latestEventAt && <span className="dashboard-grid__sync-meta">Latest event {latestEventAt}</span>}
+            </div>
           </div>
           <RunTaskButton onQueued={handleTaskQueued} />
         </div>
