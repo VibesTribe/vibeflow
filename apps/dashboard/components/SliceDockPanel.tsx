@@ -1,6 +1,8 @@
 ﻿import React, { CSSProperties } from "react";
 import { MissionSlice } from "../utils/mission";
 
+const SLICE_PLACEHOLDERS = [0, 1, 2];
+
 interface SliceDockPanelProps {
   slices: MissionSlice[];
   loading: boolean;
@@ -54,7 +56,20 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
             </button>
           );
         })}
-        {slices.length === 0 && !loading && <p className="mission-empty">No slices yet - missions will populate here.</p>}
+        {slices.length === 0 && !loading && (
+          <div className="slice-placeholder">
+            {SLICE_PLACEHOLDERS.map((index) => (
+              <div key={index} className="slice-placeholder__chip">
+                <span className="slice-placeholder__ring" />
+                <div className="slice-placeholder__text">
+                  <span />
+                  <span />
+                </div>
+              </div>
+            ))}
+            <p className="mission-empty">No slices yet - missions will populate here.</p>
+          </div>
+        )}
       </div>
     </aside>
   );
