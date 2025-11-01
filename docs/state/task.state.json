@@ -1,18 +1,76 @@
 {
-  "tasks": [],
+  "updated_at": "2025-11-01T16:08:56.358Z",
+  "metrics": {
+    "tokens_used": 275000,
+    "active_tasks": 10
+  },
   "agents": [
     {
-      "id": "agent/sample",
-      "name": "Sample Agent",
+      "id": "agent.gemini",
+      "name": "Gemini",
+      "status": "in_progress",
+      "summary": "Finishing supabase telemetry wiring",
+      "updatedAt": "2025-10-31T04:55:00Z"
+    },
+    {
+      "id": "agent.openai-gpt5",
+      "name": "OpenAI GPT-5",
+      "status": "received",
+      "summary": "Reviewing dashboard PRD refinements",
+      "updatedAt": "2025-10-31T04:52:00Z"
+    },
+    {
+      "id": "agent.claude-qc",
+      "name": "Claude QC",
+      "status": "testing",
+      "summary": "Running prompt regression suite",
+      "updatedAt": "2025-10-31T04:48:00Z"
+    },
+    {
+      "id": "agent.roo-ide",
+      "name": "Roo IDE",
+      "status": "approved",
+      "summary": "Published capability vector notes",
+      "updatedAt": "2025-10-31T04:46:00Z"
+    },
+    {
+      "id": "agent.cursor",
+      "name": "Cursor",
+      "status": "in_progress",
+      "summary": "Patching orchestration crash recovery",
+      "updatedAt": "2025-10-31T04:44:00Z"
+    },
+    {
+      "id": "agent.cline",
+      "name": "Cline",
+      "status": "received",
+      "summary": "Queued smoke tests for endpoints",
+      "updatedAt": "2025-10-31T04:42:00Z"
+    },
+    {
+      "id": "agent.opencode",
+      "name": "OpenCode",
+      "status": "testing",
+      "summary": "Auditing mission loop documentation",
+      "updatedAt": "2025-10-31T04:40:00Z"
+    },
+    {
+      "id": "agent.opentools",
+      "name": "OpenTools",
       "status": "idle",
-      "summary": "Bootstrap",
-      "updated_at": "1970-01-01T00:00:00.000Z"
+      "summary": "Standing by for next assignment",
+      "updatedAt": "2025-10-31T04:10:00Z"
+    }
+  ],
+  "tasks": [
+    {
+      "status": "assigned",
+      "confidence": 1,
+      "updated_at": "2025-10-31T04:20:00Z",
+      "owner": null,
+      "lessons": []
     }
   ],
   "failures": [],
-  "merge_candidates": [],
-  "metrics": {
-    "active_tasks": 0
-  },
-  "updated_at": "2025-11-01T15:23:52.066Z"
+  "merge_candidates": []
 }
