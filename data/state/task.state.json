@@ -1,18 +1,149 @@
 {
-  "tasks": [],
+  "updated_at": "2025-11-01T15:16:24.525Z",
+  "metrics": {
+    "tokens_used": 275000,
+    "active_tasks": 10
+  },
   "agents": [
     {
-      "id": "agent/sample",
-      "name": "Sample Agent",
+      "id": "agent.gemini",
+      "name": "Gemini",
+      "status": "in_progress",
+      "summary": "Finishing supabase telemetry wiring",
+      "updatedAt": "2025-10-31T04:55:00Z"
+    },
+    {
+      "id": "agent.openai-gpt5",
+      "name": "OpenAI GPT-5",
+      "status": "received",
+      "summary": "Reviewing dashboard PRD refinements",
+      "updatedAt": "2025-10-31T04:52:00Z"
+    },
+    {
+      "id": "agent.claude-qc",
+      "name": "Claude QC",
+      "status": "testing",
+      "summary": "Running prompt regression suite",
+      "updatedAt": "2025-10-31T04:48:00Z"
+    },
+    {
+      "id": "agent.roo-ide",
+      "name": "Roo IDE",
+      "status": "approved",
+      "summary": "Published capability vector notes",
+      "updatedAt": "2025-10-31T04:46:00Z"
+    },
+    {
+      "id": "agent.cursor",
+      "name": "Cursor",
+      "status": "in_progress",
+      "summary": "Patching orchestration crash recovery",
+      "updatedAt": "2025-10-31T04:44:00Z"
+    },
+    {
+      "id": "agent.cline",
+      "name": "Cline",
+      "status": "received",
+      "summary": "Queued smoke tests for endpoints",
+      "updatedAt": "2025-10-31T04:42:00Z"
+    },
+    {
+      "id": "agent.opencode",
+      "name": "OpenCode",
+      "status": "testing",
+      "summary": "Auditing mission loop documentation",
+      "updatedAt": "2025-10-31T04:40:00Z"
+    },
+    {
+      "id": "agent.opentools",
+      "name": "OpenTools",
       "status": "idle",
-      "summary": "Bootstrap",
-      "updated_at": "1970-01-01T00:00:00.000Z"
+      "summary": "Standing by for next assignment",
+      "updatedAt": "2025-10-31T04:10:00Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-124",
+      "title": "Data ingestion telemetry pipeline",
+      "status": "in_progress",
+      "confidence": 0.84,
+      "updatedAt": "2025-10-31T04:55:00Z",
+      "owner": "agent.gemini"
+    },
+    {
+      "id": "task-125",
+      "title": "Analytics dashboard insight review",
+      "status": "received",
+      "confidence": 0.77,
+      "updatedAt": "2025-10-31T04:52:00Z",
+      "owner": "agent.openai-gpt5"
+    },
+    {
+      "id": "task-126",
+      "title": "Prompt regression test harness",
+      "status": "testing",
+      "confidence": 0.69,
+      "updatedAt": "2025-10-31T04:48:00Z",
+      "owner": "agent.claude-qc"
+    },
+    {
+      "id": "task-203",
+      "title": "Auth security permission audit",
+      "status": "in_progress",
+      "confidence": 0.71,
+      "updatedAt": "2025-10-31T04:46:00Z",
+      "owner": "agent.roo-ide"
+    },
+    {
+      "id": "task-204",
+      "title": "Mission orchestration crash recovery",
+      "status": "received",
+      "confidence": 0.66,
+      "updatedAt": "2025-10-31T04:44:00Z",
+      "owner": "agent.cursor"
+    },
+    {
+      "id": "task-205",
+      "title": "Quality validation endpoint tests",
+      "status": "testing",
+      "confidence": 0.64,
+      "updatedAt": "2025-10-31T04:42:00Z",
+      "owner": "agent.cline"
+    },
+    {
+      "id": "task-205b",
+      "title": "Mission orchestration token budget audit",
+      "status": "testing",
+      "confidence": 0.63,
+      "updatedAt": "2025-10-31T04:40:00Z",
+      "owner": "agent.opencode"
+    },
+    {
+      "id": "task-127",
+      "title": "Analytics capability insight vector",
+      "status": "supervisor_approval",
+      "confidence": 0.81,
+      "updatedAt": "2025-10-31T04:38:00Z",
+      "owner": "agent.roo-ide"
+    },
+    {
+      "id": "task-206",
+      "title": "Mission dispatch rollout plan",
+      "status": "ready_to_merge",
+      "confidence": 0.78,
+      "updatedAt": "2025-10-31T04:36:00Z",
+      "owner": "agent.gemini"
+    },
+    {
+      "id": "task-207",
+      "title": "Auth permission failover review",
+      "status": "supervisor_review",
+      "confidence": 0.72,
+      "updatedAt": "2025-10-31T04:34:00Z",
+      "owner": "agent.openai-gpt5"
     }
   ],
   "failures": [],
-  "merge_candidates": [],
-  "metrics": {
-    "active_tasks": 0
-  },
-  "updated_at": "2025-11-01T15:16:24.525Z"
+  "merge_candidates": []
 }
