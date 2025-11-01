@@ -34,6 +34,7 @@ const RunTaskButton: React.FC<RunTaskButtonProps> = ({ endpoint, token, onQueued
   const [mode, setMode] = useState<DispatchMode>(initialMode);
   const [githubToken, setGithubToken] = useState("");
   const [rememberToken, setRememberToken] = useState(false);
+  const panelId = "mission-run-task-panel";
 
   const isValid = useMemo(() => title.trim().length > 0 && deliverables.trim().length > 0, [title, deliverables]);
 
@@ -73,6 +74,12 @@ const RunTaskButton: React.FC<RunTaskButtonProps> = ({ endpoint, token, onQueued
     setObjectives("");
     setDeliverables("");
     setConfidence(DEFAULT_CONFIDENCE.toFixed(2));
+  };
+
+  const togglePanel = () => {
+    setState("idle");
+    setMessage(null);
+    setOpen((value) => !value);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -145,16 +152,14 @@ const RunTaskButton: React.FC<RunTaskButtonProps> = ({ endpoint, token, onQueued
       <button
         type="button"
         className="run-task__button"
-        onClick={() => {
-          setOpen((value) => !value);
-          setState("idle");
-          setMessage(null);
-        }}
+        onClick={togglePanel}
+        aria-expanded={open}
+        aria-controls={open ? panelId : undefined}
       >
         <span>Run Task</span>
       </button>
       {open && (
-        <form className="run-task__panel" onSubmit={handleSubmit}>
+        <form id={panelId} className="run-task__panel" onSubmit={handleSubmit}>
           {hasEndpoint && hasGithubConfig && (
             <div className="run-task__row">
               <label htmlFor="run-task-mode">Dispatch Mode</label>
