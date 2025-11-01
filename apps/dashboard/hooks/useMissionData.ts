@@ -80,7 +80,7 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, snapshot: true }));
     try {
-      const response = await fetch("/data/state/task.state.json", { cache: "no-store" });
+      const response = await fetch("/data/state/dashboard.mock.json", { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load snapshot (${response.status})`);
       }
