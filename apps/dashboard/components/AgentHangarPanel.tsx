@@ -2,6 +2,8 @@
 import { MissionAgent } from "../utils/mission";
 import { FALLBACK_ICON } from "../utils/icons";
 
+const AGENT_PLACEHOLDERS = [0, 1, 2, 3];
+
 interface AgentHangarPanelProps {
   agents: MissionAgent[];
   loading: boolean;
@@ -25,22 +27,39 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
         <h2 className="mission-panel__title">Agent Hangar</h2>
       </div>
       <div className="mission-panel__scroll">
-        {loading && agents.length === 0 && <p className="mission-empty">Syncing agents…</p>}
+        {loading && agents.length === 0 && <p className="mission-empty">Syncing agents.</p>}
         {agents.map((agent) => (
           <button key={agent.id} type="button" onClick={() => onSelectAgent(agent)} className="agent-card">
             <span className={`agent-card__tier agent-card__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-            <img src={agent.icon} alt="" className="agent-card__icon" onError={(event) => (event.currentTarget.src = FALLBACK_ICON)} />
+            <img
+              src={agent.icon}
+              alt=""
+              className="agent-card__icon"
+              onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+            />
             <div className="agent-card__body">
               <strong>{agent.name}</strong>
               <span className={`agent-card__status agent-card__status--${agent.status ?? "idle"}`}>{agent.status ?? "idle"}</span>
             </div>
           </button>
         ))}
-        {!loading && agents.length === 0 && <p className="mission-empty">No agents registered yet.</p>}
+        {!loading && agents.length === 0 && (
+          <div className="agent-placeholder">
+            {AGENT_PLACEHOLDERS.map((index) => (
+              <div key={index} className="agent-placeholder__card">
+                <span className="agent-placeholder__avatar" />
+                <div className="agent-placeholder__body">
+                  <span />
+                  <span />
+                </div>
+              </div>
+            ))}
+            <p className="mission-empty">No agents registered yet.</p>
+          </div>
+        )}
       </div>
     </aside>
   );
 };
 
 export default AgentHangarPanel;
-

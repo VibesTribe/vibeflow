@@ -2,6 +2,8 @@
 import { MissionAgent, MissionSlice } from "../utils/mission";
 import { FALLBACK_ICON } from "../utils/icons";
 
+const ORBIT_PLACEHOLDERS = [0, 1];
+
 interface SliceHubProps {
   slices: MissionSlice[];
   onSelectSlice: (slice: MissionSlice) => void;
@@ -9,6 +11,28 @@ interface SliceHubProps {
 }
 
 const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgent }) => {
+  if (slices.length === 0) {
+    return (
+      <section className="slice-hub slice-hub--empty">
+        <div className="slice-hub__grid slice-hub__grid--placeholder">
+          {ORBIT_PLACEHOLDERS.map((index) => (
+            <div key={index} className="slice-orbit slice-orbit--placeholder">
+              <div className="slice-orbit__ring slice-orbit__ring--placeholder">
+                <div className="slice-orbit__center slice-orbit__center--placeholder">
+                  <span className="slice-placeholder__line slice-placeholder__line--title" />
+                  <span className="slice-placeholder__line slice-placeholder__line--value" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="slice-placeholder__legend">
+          <span>Mission slices will appear once telemetry syncs.</span>
+        </div>
+      </section>
+    );
+  }
+
   const featured = slices.slice(0, 2);
   const remainder = slices.slice(2);
 
@@ -19,7 +43,7 @@ const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgen
           <SliceOrbit key={slice.id} slice={slice} onSelectSlice={onSelectSlice} onSelectAgent={onSelectAgent} />
         ))}
       </div>
-      {remainder.length > 0 && (
+      {remainder.length > 0 ? (
         <div className="slice-hub__list">
           {remainder.map((slice) => {
             const progress = slice.total === 0 ? 0 : Math.round((slice.completed / slice.total) * 100);
@@ -33,6 +57,10 @@ const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgen
               </button>
             );
           })}
+        </div>
+      ) : (
+        <div className="slice-placeholder__legend slice-placeholder__legend--compact">
+          <span>Additional slices will appear here.</span>
         </div>
       )}
     </section>
@@ -91,3 +119,4 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
 };
 
 export default SliceHub;
+
