@@ -1,0 +1,25 @@
+{
+  "agents": [
+    { "id": "gemini", "name": "Gemini", "logo": "/logos/gemini.png", "tier": "W", "status": "in progress", "tokens": 24000, "warnings": ["⏰ Timeout (refresh in 2h)"] },
+    { "id": "gpt5", "name": "OpenAI GPT-5", "logo": "/logos/openai.png", "tier": "W", "status": "received", "tokens": 19000, "warnings": ["💰 Out of credits"] },
+    { "id": "claude", "name": "Claude QC", "logo": "/logos/anthropic.png", "tier": "Q", "status": "testing", "tokens": 28000 },
+    { "id": "roo", "name": "Roo IDE", "logo": "/logos/vscode.png", "tier": "M", "status": "approved", "tokens": 15000 },
+    { "id": "cursor", "name": "Cursor", "logo": "/logos/cursor.png", "tier": "M", "status": "in progress", "tokens": 9000 },
+    { "id": "cline", "name": "Cline", "logo": "/logos/cline.png", "tier": "M", "status": "received", "tokens": 8000 },
+    { "id": "opencode", "name": "OpenCode", "logo": "/logos/opencode.png", "tier": "Q", "status": "testing", "tokens": 11000 }
+  ],
+  "slices": [
+    { "id": "S1", "name": "Data Ingestion", "tasksDone": 18, "tasksTotal": 25, "tokens": 40000 },
+    { "id": "S2", "name": "Data Analysis", "tasksDone": 12, "tasksTotal": 20, "tokens": 32000 },
+    { "id": "S3", "name": "Auth & RBAC", "tasksDone": 0, "tasksTotal": 14, "tokens": 2000 },
+    { "id": "S4", "name": "Orchestration", "tasksDone": 14, "tasksTotal": 14, "tokens": 51000 },
+    { "id": "S5", "name": "UI Polish", "tasksDone": 2, "tasksTotal": 10, "tokens": 3000 },
+    { "id": "S6", "name": "MCP Bridges", "tasksDone": 1, "tasksTotal": 18, "tokens": 1200 },
+    { "id": "S7", "name": "Observability", "tasksDone": 9, "tasksTotal": 12, "tokens": 18000 },
+    { "id": "S8", "name": "Billing", "tasksDone": 0, "tasksTotal": 8, "tokens": 0 },
+    { "id": "S9", "name": "Docs", "tasksDone": 8, "tasksTotal": 8, "tokens": 4000 },
+    { "id": "S10", "name": "CLI", "tasksDone": 3, "tasksTotal": 9, "tokens": 2200 },
+    { "id": "S11", "name": "Deploy", "tasksDone": 5, "tasksTotal": 11, "tokens": 7600 },
+    { "id": "S12", "name": "Benchmarks", "tasksDone": 0, "tasksTotal": 6, "tokens": 0 }
+  ]
+}
