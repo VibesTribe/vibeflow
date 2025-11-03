@@ -198,7 +198,67 @@ const ModalShell: React.FC<{
   </div>
 );
 
-/* ---------------------------- SliceDetails -------------------------- */
+/* -------------------------- SliceDetails --------------------------- */
+const TaskDetailModal: React.FC<{ task: Task; onClose: () => void }> = ({
+  task,
+  onClose,
+}) => {
+  const [prompt, setPrompt] = useState(task.prompt || "");
+  const codeUrl =
+    task.code_url && typeof task.code_url === "string" ? task.code_url : "";
+  const isDownloadable =
+    !!codeUrl &&
+    /\.(ts|tsx|js|jsx|json|py|md|sql|yaml|yml|toml|ini|sh)$/i.test(codeUrl);
+
+  return (
+    <ModalShell
+      title={task.name || "Unnamed Task"}
+      onClose={onClose}
+      wClass="w-[36rem]"
+    >
+      <p className="text-[11px] mb-1">
+        Status:{" "}
+        <span className="text-blue-400">{task.status || "pending"}</span>
+      </p>
+      <p className="text-[11px] mb-1">Tokens used: {task.tokens ?? 0}</p>
+      {Array.isArray(task.dependencies) && task.dependencies.length > 0 && (
+        <p className="text-[11px] mb-2 text-amber-400">
+          Depends on: {task.dependencies.join(", ")}
+        </p>
+      )}
+      {codeUrl && (
+        <div className="flex items-center gap-2 mb-2 text-[11px]">
+          <a
+            href={codeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-cyan-400 hover:text-cyan-300 underline flex items-center gap-1"
+            title="Open on GitHub"
+          >
+            <span>🔗</span> View Code
+          </a>
+          {isDownloadable && (
+            <a
+              href={codeUrl}
+              download
+              className="text-slate-300 hover:text-white underline"
+              title="Download file"
+            >
+              ⬇ Download
+            </a>
+          )}
+        </div>
+      )}
+      <p className="text-[11px] text-slate-400 mb-1">Prompt / Packet:</p>
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        className="w-full h-40 bg-slate-700 text-[11px] p-2 rounded border border-slate-600 focus:outline-none"
+      />
+    </ModalShell>
+  );
+};
+
 const SliceDetails: React.FC<{ slice: Slice; onClose: () => void }> = ({
   slice,
   onClose,
@@ -278,58 +338,13 @@ const SliceDetails: React.FC<{ slice: Slice; onClose: () => void }> = ({
         </div>
       </div>
       {selectedTask && (
-        <ModalShell
-          title={selectedTask.name || "Unnamed Task"}
+        <TaskDetailModal
+          task={selectedTask}
           onClose={() => setSelectedTask(null)}
-          wClass="w-[36rem]"
-        >
-          <p className="text-[11px] mb-1">
-            Status:{" "}
-            <span className="text-blue-400">
-              {selectedTask.status || "pending"}
-            </span>
-          </p>
-          <p className="text-[11px] mb-1">
-            Tokens used: {selectedTask.tokens ?? 0}
-          </p>
-          {Array.isArray(selectedTask.dependencies) &&
-            selectedTask.dependencies.length > 0 && (
-              <p className="text-[11px] mb-2 text-amber-400">
-                Depends on: {selectedTask.dependencies.join(", ")}
-              </p>
-            )}
-          {selectedTask.code_url && (
-            <div className="flex items-center gap-2 mb-2 text-[11px]">
-              <a
-                href={selectedTask.code_url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-cyan-400 hover:text-cyan-300 underline flex items-center gap-1"
-                title="Open on GitHub"
-              >
-                <span>🔗</span> View Code
-              </a>
-              {/\.(ts|tsx|js|jsx|json|py|md|sql|yaml|yml|toml|ini|sh)$/i.test(
-                selectedTask.code_url
-              ) && (
-                <a
-                  href={selectedTask.code_url}
-                  download
-                  className="text-slate-300 hover:text-white underline"
-                >
-                  ⬇ Download
-                </a>
-              )}
-            </div>
-          )}
-          <p className="text-[11px] text-slate-400 mb-1">Prompt / Packet:</p>
-          <textarea
-            defaultValue={selectedTask.prompt || ""}
-            className="w-full h-40 bg-slate-700 text-[11px] p-2 rounded border border-slate-600 focus:outline-none"
-          />
-        </ModalShell>
+        />
       )}
     </div>
   );
 };
+
 export default SliceDetails;
