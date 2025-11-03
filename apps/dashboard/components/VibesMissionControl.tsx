@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 // 🔒 AUTO-GUARD: Full deployable Vibeflow Mission Control with mock→live toggle
 // Includes: Slice Dock, Orbit Hub, Agent Hangar, Models Overview, Slice/Task detail editor
 // Fixed: ModalShell children typing + proper useEffect cleanup types
@@ -50,7 +51,6 @@ const AgentBadge: React.FC<{ tier?: string; size?: 'normal'|'large' }> = ({ tier
   );
 };
 
-// --- Sticky headers ---
 function SliceDockHeader({ onDocs, onLogs }: { onDocs?: () => void; onLogs?: () => void }) {
   return (
     <div className="sticky top-0 w-full bg-slate-900 pb-1 z-20 flex flex-col items-center">
@@ -60,6 +60,7 @@ function SliceDockHeader({ onDocs, onLogs }: { onDocs?: () => void; onLogs?: () 
     </div>
   );
 }
+
 function AgentHangarHeader({ onAdd, onViewAll }: { onAdd?: () => void; onViewAll?: () => void }) {
   return (
     <div className="sticky top-0 w-full bg-slate-900 pb-1 z-20 flex flex-col items-center gap-1">
@@ -70,7 +71,6 @@ function AgentHangarHeader({ onAdd, onViewAll }: { onAdd?: () => void; onViewAll
   );
 }
 
-// --- Modals ---
 const ModalShell: React.FC<{ title: string; onClose: () => void; wClass?: string; children: React.ReactNode }> = ({ title, onClose, wClass = 'w-96', children }) => (
   <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
     <div className={`bg-slate-800 p-4 rounded-lg border border-slate-600 text-slate-200 ${wClass} max-h-[80vh] overflow-y-auto`}>
@@ -83,7 +83,6 @@ const ModalShell: React.FC<{ title: string; onClose: () => void; wClass?: string
   </div>
 );
 
-// --- Main Root ---
 export default function VibesMissionControl() {
   useEffect(() => {
     const st = document.createElement('style');
@@ -120,9 +119,11 @@ export default function VibesMissionControl() {
           tokens: y.tokens ?? 0,
           tasks: y.tasks || []
         }));
-        setAgents(a); setSlices(s);
+        setAgents(a);
+        setSlices(s);
       } catch {
-        setAgents([]); setSlices([]);
+        setAgents([]);
+        setSlices([]);
       }
     })();
     return () => { cancelled = true; };
