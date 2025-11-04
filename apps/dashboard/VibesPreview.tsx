@@ -10,7 +10,6 @@ export default function VibesPreview() {
   const view = params.get("view");
 
   if (view === "vibes") {
-    // @ts-expect-error Mission Control runs standalone with no props
     return <VibesMissionControl />;
   }
 
