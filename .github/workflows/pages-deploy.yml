@@ -1,8 +1,7 @@
 # =========================================================
-# 🚀 Deploy Vite Dashboard to GitHub Pages (finalized 2025-11-04)
-# ---------------------------------------------------------
-# Builds from apps/dashboard using Vite, copies live telemetry assets,
-# uploads correct dist folder, and publishes to GitHub Pages.
+# ✅ Deploy Vibeflow Dashboard to GitHub Pages (final)
+# Ensures Vite builds into apps/dashboard/dist and that
+# Pages uploads the correct artifact root containing index.html.
 # =========================================================
 
 name: Deploy Vite Dashboard to Pages
@@ -48,8 +47,10 @@ jobs:
           VITE_GITHUB_WORKFLOW: mission-loop.yml
         run: |
           echo "🏗️ Starting Vite build..."
-          npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/
-          echo "✅ Build complete. Output contents:"
+          cd apps/dashboard
+          npx vite build --base=/vibeflow/
+          cd ../..
+          echo "✅ Build complete. Checking dist contents:"
           ls -R apps/dashboard/dist || echo "⚠️ dist folder missing!"
 
       - name: 📊 Copy telemetry + metrics assets
@@ -61,7 +62,7 @@ jobs:
           echo "📁 Final dist structure:"
           ls -R apps/dashboard/dist | head -50
 
-      - name: 🚚 Upload Pages artifact
+      - name: 🚚 Upload built site to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: apps/dashboard/dist
@@ -76,4 +77,3 @@ jobs:
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
