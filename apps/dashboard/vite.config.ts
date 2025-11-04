@@ -1,12 +1,7 @@
 /**
  * vibeflow-meta:
  * id: apps/dashboard/vite.config.ts
- * task: REBUILD-V5
- * regions:
- *   - id: vite-config
- *     hash: 20251104
- * locked: false
- * last_commit: VibesMissionControl-Fix
+ * task: FIX-GHPAGES-ROOT-OUTPUT
  */
 
 import { defineConfig } from "vite";
@@ -16,23 +11,22 @@ import { fileURLToPath } from "url";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ✅ Fixed: correct outDir and base for GitHub Pages
-// ✅ Keeps same dev server + aliases for local work
+// ✅ Base path for GitHub Pages
+const base = "/vibeflow/v2/";
+
 export default defineConfig({
   root: dirname,
   plugins: [react()],
-
-  base: "/vibeflow/", // GitHub Pages subpath
+  base,
   server: {
     host: true,
     port: 5173,
   },
-
+  // ✅ Output directly to /dist so Pages finds index.html at the root
   build: {
-    outDir: path.resolve(dirname, "dist"), // ✅ local dist inside apps/dashboard
+    outDir: path.resolve(dirname, "../../dist"),
     emptyOutDir: true,
   },
-
   resolve: {
     alias: {
       "@core": path.resolve(dirname, "../../src/core"),
