@@ -1,4 +1,4 @@
-﻿/**
+/**
  * vibeflow-meta:
  * id: src/mcp/server.ts
  * task: REBUILD-V5
@@ -10,8 +10,15 @@
  */
 
 /* @editable:mcp-server */
+import { promises as fs } from "fs";
+import fsSync from "fs";
 import http, { IncomingMessage } from "http";
+import path from "path";
 import { URL } from "url";
+import Ajv, { type ValidateFunction } from "ajv";
+import { TaskPacket } from "@core/types";
+import { createOrchestrator } from "../runtime/createOrchestrator";
+import { normalizeTaskPacket } from "../runtime/normalizeTaskPacket";
 import { runSkill } from "./tools/runSkill";
 import { getTaskState } from "./tools/getTaskState";
 import { emitNote } from "./tools/emitNote";
@@ -42,6 +49,14 @@ export interface StartOptions {
   logger?: Pick<Console, "log" | "error" | "warn">;
   signal?: AbortSignal;
 }
+
+const TASK_PACKET_SCHEMA_PATH = path.resolve("contracts/task_packet.schema.json");
+const QUEUE_DIR = path.resolve("data/tasks/queued");
+const AUTH_TOKEN = process.env.MCP_SERVER_TOKEN ?? null;
+
+const validatorPromise: Promise<ValidateFunction<unknown>> = loadTaskPacketValidator();
+type OrchestratorRuntime = Awaited<ReturnType<typeof createOrchestrator>>;
+let orchestratorRuntimePromise: Promise<OrchestratorRuntime> | null = null;
 
 class McpServer {
   private readonly tools = new Map<McpCommand, McpTool>();
@@ -91,12 +106,32 @@ class McpServer {
           this.respondJson(res, { ok: true, data });
           return;
         }
+        if (req.method === "POST" && url.pathname === "/run-task") {
+          this.requireToken(req);
+          const payload = await this.readJsonBody(req);
+          const taskPacket = await validateTaskPacketPayload(payload);
+          const runtime = await getOrchestratorRuntime();
+          const decision = await runtime.orchestrator.dispatch(taskPacket);
+          const queued = await enqueueTask(taskPacket, { autoDispatch: true, logger });
+          this.respondJson(res, {
+            ok: true,
+            data: {
+              status: "queued",
+              task_id: taskPacket.taskId,
+              provider: decision.provider,
+              confidence: decision.confidence,
+              queue_path: queued.queuePath,
+            },
+          });
+          return;
+        }
 
         res.statusCode = 404;
         this.respondJson(res, { ok: false, error: "Not found" });
       } catch (error) {
+        const statusCode = (error as { statusCode?: number }).statusCode ?? 400;
+        res.statusCode = statusCode;
         logger.error("[mcp] request handling failed", error);
-        res.statusCode = 400;
         this.respondJson(res, { ok: false, error: (error as Error).message });
       }
     });
@@ -114,6 +149,18 @@ class McpServer {
         resolve(server);
       });
     });
+  }
+
+  private requireToken(req: IncomingMessage): void {
+    if (!AUTH_TOKEN) {
+      return;
+    }
+    const header = req.headers.authorization;
+    if (!header || header !== `Bearer ${AUTH_TOKEN}`) {
+      const error = new Error("Unauthorized");
+      (error as { statusCode?: number }).statusCode = 401;
+      throw error;
+    }
   }
 
   private respondJson(res: http.ServerResponse, payload: McpResponse): void {
@@ -145,21 +192,25 @@ class McpServer {
 }
 
 const defaultServer = new McpServer();
+
 defaultServer.registerTool({
   name: "runSkill",
   description: "Execute a registered skill runner and return its JSON output.",
   handler: (payload) => runSkill(payload),
 });
+
 defaultServer.registerTool({
   name: "getTaskState",
   description: "Load the latest task state snapshot from disk.",
   handler: () => getTaskState(),
 });
+
 defaultServer.registerTool({
   name: "emitNote",
   description: "Append a note event to the mission log.",
   handler: (payload) => emitNote(payload),
 });
+
 defaultServer.registerTool({
   name: "queryEvents",
   description: "Read lifecycle events from the mission log.",
@@ -176,6 +227,74 @@ export async function handleRequest(request: McpRequest) {
 
 export function startServer(options?: StartOptions) {
   return defaultServer.start(options);
+}
+
+interface EnqueueOptions {
+  autoDispatch?: boolean;
+  logger?: Pick<Console, "log" | "error" | "warn">;
+}
+
+async function enqueueTask(packet: TaskPacket, options: EnqueueOptions = {}): Promise<{ queuePath: string; taskId: string }> {
+  await fs.mkdir(QUEUE_DIR, { recursive: true });
+  const safeId = packet.taskId?.replace(/[^a-z0-9/_-]+/gi, "-") ?? "task";
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const fileName = `${safeId.replace(/\//g, "-")}-${timestamp}.json`;
+  const queuePath = path.join(QUEUE_DIR, fileName);
+  const payload = toQueuePayload(packet, options.autoDispatch === true);
+  await fs.writeFile(queuePath, JSON.stringify(payload, null, 2), "utf8");
+  options.logger?.log(`[mcp] queued ${packet.taskId} -> ${queuePath}`);
+  return { queuePath, taskId: packet.taskId };
+}
+
+async function loadTaskPacketValidator(): Promise<ValidateFunction<unknown>> {
+  const ajv = new Ajv({ allErrors: true, strict: false });
+  const schema = JSON.parse(fsSync.readFileSync(TASK_PACKET_SCHEMA_PATH, "utf8"));
+  return ajv.compile(schema);
+}
+
+async function validateTaskPacketPayload(payload: unknown): Promise<TaskPacket> {
+  const validate = await validatorPromise;
+  if (!validate(payload)) {
+    const message = (validate.errors ?? [])
+      .map((err) => `${err.instancePath || err.schemaPath} ${err.message}`.trim())
+      .join("; ");
+    throw new Error(`Task packet invalid: ${message}`);
+  }
+  return normalizeTaskPacket(payload);
+}
+
+function toQueuePayload(packet: TaskPacket, autoDispatch: boolean): Record<string, unknown> {
+  const metadata = packet.metadata ? { ...packet.metadata } : {};
+  if (autoDispatch) {
+    metadata.autoDispatch = true;
+    metadata.autoDispatchAt = new Date().toISOString();
+  }
+
+  const payload: Record<string, unknown> = {
+    task_id: packet.taskId,
+    title: packet.title,
+    objectives: packet.objectives,
+    deliverables: packet.deliverables,
+    confidence: packet.confidence,
+    edit_scope: packet.editScope ?? [],
+  };
+
+  if (Object.keys(metadata).length > 0) {
+    payload.metadata = metadata;
+  }
+
+  return payload;
+}
+
+async function getOrchestratorRuntime(): Promise<OrchestratorRuntime> {
+  if (!orchestratorRuntimePromise) {
+    orchestratorRuntimePromise = createOrchestrator().catch((error) => {
+      console.error("[mcp] orchestrator bootstrap failed", error);
+      orchestratorRuntimePromise = null;
+      throw error;
+    });
+  }
+  return orchestratorRuntimePromise;
 }
 
 if (require.main === module) {

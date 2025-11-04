@@ -1,15 +1,3 @@
-﻿/**
- * vibeflow-meta:
- * id: apps/dashboard/components/Timeline.tsx
- * task: REBUILD-V5
- * regions:
- *   - id: timeline
- *     hash: 00000000
- * locked: false
- * last_commit: null
- */
-
-/* @editable:timeline */
 import React from "react";
 import { TaskSnapshot } from "@core/types";
 import TaskCard from "./TaskCard";
@@ -17,6 +5,7 @@ import TaskCard from "./TaskCard";
 interface TimelineProps {
   tasks: TaskSnapshot[];
   isLoading: boolean;
+  qualityByTask: Record<string, "pass" | "fail" | "pending">;
 }
 
 const order = [
@@ -30,9 +19,9 @@ const order = [
   "complete",
 ];
 
-const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading }) => {
+const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading, qualityByTask }) => {
   if (isLoading && tasks.length === 0) {
-    return <div>Loading task timeline…</div>;
+    return <div>Loading task timeline.</div>;
   }
 
   const grouped = tasks.reduce<Record<string, TaskSnapshot[]>>((acc, task) => {
@@ -45,12 +34,10 @@ const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading }) => {
     <div className="timeline-grid">
       {order.map((status) => (
         <section key={status}>
-          <h3 style={{ textTransform: "uppercase", fontSize: "0.8rem", opacity: 0.7 }}>
-            {status.replace(/_/g, " ")}
-          </h3>
+          <h3 style={{ textTransform: "uppercase", fontSize: "0.8rem", opacity: 0.7 }}>{status.replace(/_/g, " ")}</h3>
           <div style={{ display: "grid", gap: 8 }}>
             {(grouped[status] ?? []).map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task.id} task={task} qualityStatus={qualityByTask[task.id] ?? "pending"} />
             ))}
             {(grouped[status] ?? []).length === 0 && <div style={{ opacity: 0.5 }}>No tasks</div>}
           </div>
@@ -61,4 +48,3 @@ const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading }) => {
 };
 
 export default Timeline;
-/* @endeditable */

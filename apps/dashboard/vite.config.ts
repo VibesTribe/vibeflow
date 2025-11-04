@@ -1,15 +1,9 @@
-﻿/**
+/**
  * vibeflow-meta:
  * id: apps/dashboard/vite.config.ts
- * task: REBUILD-V5
- * regions:
- *   - id: vite-config
- *     hash: 00000000
- * locked: false
- * last_commit: null
+ * task: STABLE-GHPAGES-ROOT
  */
 
-/* @editable:vite-config */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
@@ -17,15 +11,20 @@ import { fileURLToPath } from "url";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// ✅ Standard GitHub Pages base
+const base = "/vibeflow/";
+
 export default defineConfig({
   root: dirname,
   plugins: [react()],
+  base,
   server: {
     host: true,
     port: 5173,
   },
+  // ✅ Output to project root /dist (where Pages will look)
   build: {
-    outDir: path.resolve(dirname, "../../dist/dashboard"),
+    outDir: path.resolve(dirname, "../../dist"),
     emptyOutDir: true,
   },
   resolve: {
@@ -35,4 +34,3 @@ export default defineConfig({
     },
   },
 });
-/* @endeditable */

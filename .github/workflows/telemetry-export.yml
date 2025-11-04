@@ -1,4 +1,4 @@
-name: Telemetry â€” Export state for Pages
+name: Telemetry — Export state for Pages
 
 on:
   workflow_dispatch: {}
@@ -16,22 +16,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install supabase client
-        run: npm i @supabase/supabase-js
-      - name: Export state from Supabase
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node scripts/export-telemetry-to-json.mjs
+      - name: Derive task state snapshot
+        run: node scripts/deriveStateFromEvents.mjs
       - name: Commit JSON state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/state/task.state.json
+          git add data/state/task.state.json || true
           git commit -m "chore(telemetry): export task.state.json" || echo "No changes"
           git push
-      - name: Sync to Pages folder
-        run: node scripts/sync-dashboard-assets.mjs
+      - name: Copy state artifacts for Pages
+        run: |
+          mkdir -p docs/state
+          cp data/state/task.state.json docs/state/task.state.json || true
+          cp data/state/events.log.jsonl docs/state/events.log.jsonl || true
+          cp data/metrics/run_metrics.json docs/state/run_metrics.json || true
       - name: Commit Pages state
         run: |
           git add docs/state/*.json || true

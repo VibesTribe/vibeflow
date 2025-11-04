@@ -1,4 +1,4 @@
-﻿name: Deploy Vite Dashboard to Pages
+name: Deploy Vite Dashboard to Pages
 
 on:
   push:
@@ -18,9 +18,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -28,16 +30,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Vite site
+      - name: Build Vite Dashboard
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: npm run build -- --base=./
+          VITE_GITHUB_OWNER: vibestribe
+          VITE_GITHUB_REPO: vibeflow
+          VITE_GITHUB_BRANCH: main
+          VITE_GITHUB_WORKFLOW: mission-loop.yml
+        run: |
+          echo "🏗️ Building stable dashboard for /vibeflow/"
+          npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/
+          echo "✅ Build complete. Dist contents:"
+          ls -R dist || true
 
-      - name: Copy snapshot assets
-        env:
-          PUBLIC_BASE_PATH: /vibeflow
-        run: npm run dashboard:publish
+      - name: Copy telemetry assets
+        run: |
+          mkdir -p dist/data/state
+          mkdir -p dist/data/metrics
+          cp -a data/state/. dist/data/state/ || true
+          cp -a data/metrics/. dist/data/metrics/ || true
+          echo "📁 Final dist structure:"
+          ls -R dist || true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -54,4 +68,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

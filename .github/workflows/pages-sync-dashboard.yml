@@ -1,11 +1,10 @@
-name: Pages â€” Sync Dashboard Assets
+name: Pages — Sync Dashboard Assets
 on:
   push:
     branches: [ main ]
     paths:
       - 'data/state/**'
       - 'docs/reports/repo-snapshot.json'
-      - 'scripts/sync-dashboard-assets.mjs'
   schedule:
     - cron: '5 * * * *'
   workflow_dispatch: {}
@@ -19,8 +18,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: node scripts/sync-dashboard-assets.mjs
-      - run: |
+      - name: Derive task state snapshot
+        run: node scripts/deriveStateFromEvents.mjs
+      - name: Copy state artifacts for Pages
+        run: |
+          mkdir -p docs/state
+          cp data/state/task.state.json docs/state/task.state.json || true
+          cp data/state/events.log.jsonl docs/state/events.log.jsonl || true
+          cp data/metrics/run_metrics.json docs/state/run_metrics.json || true
+      - name: Commit dashboard state
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add docs/state/*.json || true

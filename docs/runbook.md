@@ -1,4 +1,4 @@
-﻿# Operations Runbook
+# Operations Runbook
 
 ## Daily Checklist
 
@@ -18,3 +18,9 @@
 1. Restore last snapshot from `data/backups` if backup workflow triggered.
 2. Re-run failing skills with `skills/*/*.runner.mjs` using harness `scripts/repair_from_reason.mjs`.
 3. Document findings in `docs/updates/<date>.md` (automation will archive during nightly sync).
+
+## Mission Loop Dashboard
+
+1. Set `VITE_RUN_TASK_ENDPOINT` (and optional `VITE_MCP_TOKEN`) before building if you host the MCP server directly.
+2. For GitHub-backed queueing provide `VITE_GITHUB_OWNER`, `VITE_GITHUB_REPO`, and optional `VITE_GITHUB_BRANCH` / `VITE_GITHUB_WORKFLOW`; the dashboard prompts for a personal access token with `repo` and `workflow` scopes.
+3. The dashboard polls `data/state/task.state.json`, `data/state/events.log.jsonl`, and `data/metrics/run_metrics.json` every few seconds - ensure mission loop automation keeps these files fresh to reflect live progress.
