@@ -1,7 +1,7 @@
 /**
  * vibeflow-meta:
  * id: apps/dashboard/vite.config.ts
- * task: FIX-GHPAGES-ROOT-OUTPUT
+ * task: STABLE-GHPAGES-ROOT
  */
 
 import { defineConfig } from "vite";
@@ -11,8 +11,8 @@ import { fileURLToPath } from "url";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// ✅ Base path for GitHub Pages
-const base = "/vibeflow/v2/";
+// ✅ Standard GitHub Pages base
+const base = "/vibeflow/";
 
 export default defineConfig({
   root: dirname,
@@ -22,7 +22,7 @@ export default defineConfig({
     host: true,
     port: 5173,
   },
-  // ✅ Output directly to /dist so Pages finds index.html at the root
+  // ✅ Output to project root /dist (where Pages will look)
   build: {
     outDir: path.resolve(dirname, "../../dist"),
     emptyOutDir: true,
