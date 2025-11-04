@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 🧩 Corrected build step – compiles actual dashboard app
+      # 🧩 Use direct Vite command, not workspace flag
       - name: Build Vite Dashboard
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -40,9 +40,9 @@ jobs:
           VITE_GITHUB_REPO: vibeflow
           VITE_GITHUB_BRANCH: main
           VITE_GITHUB_WORKFLOW: mission-loop.yml
-        run: npm run build --workspace=apps/dashboard -- --base=/vibeflow/
+        run: npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/
 
-      # 🧩 Copy telemetry and metrics assets into correct dist path
+      # 🧩 Copy telemetry and metrics assets into built dashboard
       - name: Copy telemetry assets
         run: |
           mkdir -p apps/dashboard/dist/data/state
@@ -50,7 +50,7 @@ jobs:
           cp -a data/state/. apps/dashboard/dist/data/state/ || true
           cp -a data/metrics/. apps/dashboard/dist/data/metrics/ || true
 
-      # 🧩 Upload the correct artifact folder for GitHub Pages
+      # 🧩 Upload the correct artifact to GitHub Pages
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -66,3 +66,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
