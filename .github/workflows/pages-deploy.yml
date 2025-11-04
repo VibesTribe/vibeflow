@@ -1,9 +1,3 @@
-# =========================================================
-# ✅ Deploy Vibeflow Dashboard to GitHub Pages (final)
-# Ensures Vite builds into apps/dashboard/dist and that
-# Pages uploads the correct artifact root containing index.html.
-# =========================================================
-
 name: Deploy Vite Dashboard to Pages
 
 on:
@@ -23,21 +17,24 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🧾 Checkout repository
+      # 🧭 Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧰 Setup Node.js
+      # ⚙️ Setup Node environment
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: 📦 Install dependencies
+      # 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🏗️ Build Vite Dashboard
+      # 🧱 Build Vite Dashboard (cache-busted base path /vibeflow/v2/)
+      - name: Build Vite Dashboard
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
@@ -46,23 +43,23 @@ jobs:
           VITE_GITHUB_BRANCH: main
           VITE_GITHUB_WORKFLOW: mission-loop.yml
         run: |
-          echo "🏗️ Starting Vite build..."
-          cd apps/dashboard
-          npx vite build --base=/vibeflow/
-          cd ../..
-          echo "✅ Build complete. Checking dist contents:"
-          ls -R apps/dashboard/dist || echo "⚠️ dist folder missing!"
+          echo "🏗️ Starting Vite build for /vibeflow/v2 ..."
+          npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/v2/
+          echo "✅ Build complete. Contents of dist:"
+          ls -R apps/dashboard/dist || true
 
-      - name: 📊 Copy telemetry + metrics assets
+      # 📊 Copy telemetry and metrics
+      - name: Copy telemetry assets
         run: |
           mkdir -p apps/dashboard/dist/data/state
           mkdir -p apps/dashboard/dist/data/metrics
-          cp -a data/state/. apps/dashboard/dist/data/state/ || echo "no /data/state found"
-          cp -a data/metrics/. apps/dashboard/dist/data/metrics/ || echo "no /data/metrics found"
+          cp -a data/state/. apps/dashboard/dist/data/state/ || true
+          cp -a data/metrics/. apps/dashboard/dist/data/metrics/ || true
           echo "📁 Final dist structure:"
-          ls -R apps/dashboard/dist | head -50
+          ls -R apps/dashboard/dist || true
 
-      - name: 🚚 Upload built site to GitHub Pages
+      # 🚀 Upload artifact to GitHub Pages
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: apps/dashboard/dist
@@ -74,6 +71,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
