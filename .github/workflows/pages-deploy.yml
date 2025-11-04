@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 🧱 Build Vite Dashboard (cache-busted base path /vibeflow/v2/)
+      # 🧱 Build Vite Dashboard (output now at /dist)
       - name: Build Vite Dashboard
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -46,23 +46,23 @@ jobs:
           echo "🏗️ Starting Vite build for /vibeflow/v2 ..."
           npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/v2/
           echo "✅ Build complete. Contents of dist:"
-          ls -R apps/dashboard/dist || true
+          ls -R dist || true
 
       # 📊 Copy telemetry and metrics
       - name: Copy telemetry assets
         run: |
-          mkdir -p apps/dashboard/dist/data/state
-          mkdir -p apps/dashboard/dist/data/metrics
-          cp -a data/state/. apps/dashboard/dist/data/state/ || true
-          cp -a data/metrics/. apps/dashboard/dist/data/metrics/ || true
+          mkdir -p dist/data/state
+          mkdir -p dist/data/metrics
+          cp -a data/state/. dist/data/state/ || true
+          cp -a data/metrics/. dist/data/metrics/ || true
           echo "📁 Final dist structure:"
-          ls -R apps/dashboard/dist || true
+          ls -R dist || true
 
       # 🚀 Upload artifact to GitHub Pages
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/dashboard/dist
+          path: dist
 
   deploy:
     needs: build
