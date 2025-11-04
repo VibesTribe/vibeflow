@@ -18,22 +18,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 🧭 Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ⚙️ Setup Node environment
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      # 📦 Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 🧱 Build Vite Dashboard (output now at /dist)
       - name: Build Vite Dashboard
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -43,12 +39,11 @@ jobs:
           VITE_GITHUB_BRANCH: main
           VITE_GITHUB_WORKFLOW: mission-loop.yml
         run: |
-          echo "🏗️ Starting Vite build for /vibeflow/v2 ..."
-          npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/v2/
-          echo "✅ Build complete. Contents of dist:"
+          echo "🏗️ Building stable dashboard for /vibeflow/"
+          npx vite build --config apps/dashboard/vite.config.ts --base=/vibeflow/
+          echo "✅ Build complete. Dist contents:"
           ls -R dist || true
 
-      # 📊 Copy telemetry and metrics
       - name: Copy telemetry assets
         run: |
           mkdir -p dist/data/state
@@ -58,7 +53,6 @@ jobs:
           echo "📁 Final dist structure:"
           ls -R dist || true
 
-      # 🚀 Upload artifact to GitHub Pages
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
