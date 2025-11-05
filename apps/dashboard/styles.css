@@ -2174,3 +2174,155 @@ a {
   display: grid;
   gap: 10px;
 }
+/* --- Dashboard overrides aligned to design --- */
+.token-pill {
+  min-width: 220px;
+  padding: 18px 22px;
+  border-radius: 48px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  background: radial-gradient(circle at 40% 30%, rgba(250, 204, 21, 0.4), rgba(11, 19, 40, 0.92));
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  color: #fef9c3;
+}
+
+.token-pill__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: conic-gradient(#041221 0deg 36deg, #facc15 36deg 360deg);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.35);
+}
+
+.token-pill__copy strong {
+  font-size: 1.1rem;
+  color: #fef08a;
+}
+
+.token-pill__copy small {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.mission-header__meta div {
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(9, 16, 32, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+}
+
+.mission-header__meta dt {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+}
+
+.mission-header__meta dd {
+  font-size: 0.9rem;
+}
+
+.mission-main {
+  overflow-y: auto;
+}
+
+.mission-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mission-main::-webkit-scrollbar-track {
+  background: rgba(10, 15, 28, 0.82);
+}
+
+.mission-main::-webkit-scrollbar-thumb {
+  background: rgba(240, 244, 255, 0.85);
+  border-radius: 999px;
+}
+
+.mission-root {
+  grid-template-columns: 210px minmax(0, 1fr) 210px;
+  gap: 24px;
+  padding: 24px 32px;
+}
+
+.rail {
+  margin: 0;
+  width: 100%;
+}
+
+.agent-pill {
+  border: 1px solid transparent;
+  background: rgba(9, 14, 26, 0.88);
+  box-shadow: none;
+}
+
+.agent-pill:hover {
+  border-color: rgba(56, 189, 248, 0.28);
+  box-shadow: 0 12px 24px rgba(7, 11, 25, 0.35);
+}
+
+.agent-pill__avatar {
+  background: transparent;
+  border: none;
+}
+
+.slice-orbit__node {
+  box-shadow: none;
+  transition: none;
+}
+
+.mission-modal {
+  width: min(560px, 92vw);
+  max-height: 90vh;
+}
+
+.mission-modal__close {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.roi-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.roi-panel__total {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fef3c7;
+}
+
+.roi-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.roi-panel__grid div {
+  background: rgba(9, 14, 26, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.roi-panel__grid dt {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.roi-panel__grid dd {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.roi-panel__note {
+  font-size: 0.65rem;
+  color: rgba(148, 163, 184, 0.75);
+}

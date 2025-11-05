@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import MissionHeader from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
@@ -21,6 +21,7 @@ const VibesMissionControl: React.FC = () => {
   const handleOpenDocs = () => setModal({ type: "docs" });
   const handleOpenLogs = () => setModal({ type: "logs" });
   const handleOpenModels = () => setModal({ type: "models" });
+  const handleOpenRoi = () => setModal({ type: "roi" });
   const handleOpenAdd = () => setModal({ type: "add" });
   const handleSelectAgent = (agent: MissionAgent) => setModal({ type: "agent", agent });
   const handleSelectSlice = (slice: MissionSlice) => setModal({ type: "slice", slice });
@@ -40,7 +41,7 @@ const VibesMissionControl: React.FC = () => {
           statusSummary={statusSummary}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
-          onOpenTokens={handleOpenModels}
+          onOpenTokens={handleOpenRoi}
         />
         <SliceHub slices={slices} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
       </main>
@@ -57,3 +58,4 @@ const VibesMissionControl: React.FC = () => {
 };
 
 export default VibesMissionControl;
+
