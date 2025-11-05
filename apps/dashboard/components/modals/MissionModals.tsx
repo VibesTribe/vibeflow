@@ -205,42 +205,6 @@ const RoiPanel: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = (
     </div>
   );
 };
-  }, [agents, slices]);
-
-  return (
-    <div className="mission-modal__section roi-panel">
-      <header className="roi-panel__header">
-        <div>
-          <h3>Mission ROI Snapshot</h3>
-          <p>Total tokens consumed by all slices and agents.</p>
-        </div>
-        <div className="roi-panel__total">{totals.totalTokens.toLocaleString()} tokens</div>
-      </header>
-      <dl className="roi-panel__grid">
-        <div>
-          <dt>Active slices</dt>
-          <dd>{totals.activeSlices}</dd>
-        </div>
-        <div>
-          <dt>Blocked slices</dt>
-          <dd>{totals.blockedSlices}</dd>
-        </div>
-        <div>
-          <dt>Completed slices</dt>
-          <dd>{totals.completedSlices}</dd>
-        </div>
-        <div>
-          <dt>Avg agent cost / run</dt>
-          <dd>${totals.agentSpend.toFixed(2)}</dd>
-        </div>
-      </dl>
-      <p className="roi-panel__note">
-        Replace this mock with live telemetry by mapping mission metrics to your cost model. Tokens are drawn from the current
-        slice catalog and agent metadata.
-      </p>
-    </div>
-  );
-};
 const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[] }> = ({ agent, events, slices }) => {
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
 
@@ -573,6 +537,7 @@ function extractEventMessage(event: MissionEvent): string | null {
 function isCompleted(status: TaskSnapshot["status"]) {
   return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval";
 }
+
 
 
 
