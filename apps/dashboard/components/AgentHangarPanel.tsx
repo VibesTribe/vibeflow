@@ -1,8 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import { MissionAgent } from "../utils/mission";
 import { FALLBACK_ICON } from "../utils/icons";
-
-const AGENT_PLACEHOLDERS = [0, 1, 2, 3];
 
 interface AgentHangarPanelProps {
   agents: MissionAgent[];
@@ -14,49 +12,45 @@ interface AgentHangarPanelProps {
 
 const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, onViewAll, onAdd, onSelectAgent }) => {
   return (
-    <aside className="mission-panel mission-panel--right">
-      <div className="mission-panel__sticky">
-        <div className="mission-panel__actions">
-          <button type="button" onClick={onViewAll} className="mission-button mission-button--primary">
-            View All
-          </button>
-          <button type="button" onClick={onAdd} className="mission-button mission-button--ghost">
-            Add
-          </button>
-        </div>
-        <h2 className="mission-panel__title">Agent Hangar</h2>
+    <aside className="rail rail--right" aria-label="Agent hangar">
+      <div className="rail__header">
+        <button type="button" onClick={onViewAll} className="rail__button rail__button--primary">
+          Models
+        </button>
+        <button type="button" onClick={onAdd} className="rail__button rail__button--ghost">
+          Add
+        </button>
+        <span className="rail__title">Agents</span>
       </div>
-      <div className="mission-panel__scroll">
-        {loading && agents.length === 0 && <p className="mission-empty">Syncing agents.</p>}
-        {agents.map((agent) => (
-          <button key={agent.id} type="button" onClick={() => onSelectAgent(agent)} className="agent-card">
-            <span className={`agent-card__tier agent-card__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-            <img
-              src={agent.icon}
-              alt=""
-              className="agent-card__icon"
-              onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
-            />
-            <div className="agent-card__body">
-              <strong>{agent.name}</strong>
-              <span className={`agent-card__status agent-card__status--${agent.status ?? "idle"}`}>{agent.status ?? "idle"}</span>
-            </div>
-          </button>
-        ))}
-        {!loading && agents.length === 0 && (
-          <div className="agent-placeholder">
-            {AGENT_PLACEHOLDERS.map((index) => (
-              <div key={index} className="agent-placeholder__card">
-                <span className="agent-placeholder__avatar" />
-                <div className="agent-placeholder__body">
-                  <span />
-                  <span />
-                </div>
-              </div>
-            ))}
-            <p className="mission-empty">No agents registered yet.</p>
-          </div>
-        )}
+      <div className="rail__scroll">
+        {loading && agents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
+        {agents.map((agent) => {
+          const tier = (agent.tier ?? "Q").toUpperCase();
+          const tierClass = `agent-pill__tier agent-pill__tier--${tier.toLowerCase()}`;
+          const statusLabel = agent.status ?? "idle";
+          const statusKey = statusLabel.toLowerCase().replace(/\s+/g, "_");
+
+          return (
+            <button key={agent.id} type="button" className="agent-pill" onClick={() => onSelectAgent(agent)}>
+              <span className={tierClass}>{tier}</span>
+              <img
+                src={agent.icon}
+                alt={agent.name}
+                className="agent-pill__avatar"
+                onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="agent-pill__name" title={agent.name}>
+                {agent.name}
+              </span>
+              <span className={`agent-pill__status agent-pill__status--${statusKey}`}>
+                {statusLabel}
+              </span>
+            </button>
+          );
+        })}
+        {!loading && agents.length === 0 && <p className="rail__empty">No agents registered yet.</p>}
       </div>
     </aside>
   );
