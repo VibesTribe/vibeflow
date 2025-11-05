@@ -1061,7 +1061,7 @@ a {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 960px) {
   .mission-root {
     grid-template-columns: 1fr;
     height: auto;
