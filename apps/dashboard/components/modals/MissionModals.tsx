@@ -49,6 +49,9 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     case "logs":
       content = <LogList events={events} />;
       break;
+    case "roi":
+      content = <RoiPanel agents={agents} slices={slices} />;
+      break;
     case "models":
       content = <ModelOverview agents={agents} slices={slices} />;
       break;
@@ -69,7 +72,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
       <div className="mission-modal">
         <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
-          ×
+          ï¿½
         </button>
         {content}
       </div>
@@ -139,16 +142,16 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
             </div>
             <div className="model-panel__metrics">
               <p>
-                Assigned <strong>{summary.assigned}</strong> · Succeeded <strong>{summary.succeeded}</strong> · Failed <strong>{summary.failed}</strong>{ }
+                Assigned <strong>{summary.assigned}</strong> ï¿½ Succeeded <strong>{summary.succeeded}</strong> ï¿½ Failed <strong>{summary.failed}</strong>{ }
                 <span className={`model-panel__success model-panel__success--${summary.statusKey}`}>Success {summary.successRate}%</span>
               </p>
               {summary.primaryTask && (
                 <p className="model-panel__task">
-                  Working — {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
+                  Working ï¿½ {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
                 </p>
               )}
               {summary.agent.cooldownReason && <p className="model-panel__hint">{summary.agent.cooldownReason}</p>}
-              <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} · Avg response: {summary.avgRuntime}s</p>
+              <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} ï¿½ Avg response: {summary.avgRuntime}s</p>
             </div>
           </li>
         ))}
@@ -268,7 +271,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
         <div>
           <h3>{slice.name}</h3>
           <p>
-            {slice.completed}/{slice.total} complete · {slice.active} active
+            {slice.completed}/{slice.total} complete ï¿½ {slice.active} active
           </p>
         </div>
         <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
@@ -502,7 +505,7 @@ function normalizeStatus(status: string) {
 
 function buildStatusLabel(status: string, task: TaskSnapshot | null) {
   if (task) {
-    return `${status} — Working on ${task.taskNumber ?? task.title}`;
+    return `${status} ï¿½ Working on ${task.taskNumber ?? task.title}`;
   }
   return status;
 }
