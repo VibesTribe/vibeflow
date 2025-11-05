@@ -12,6 +12,10 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
+const CANVAS_SIZE = 280;
+const CANVAS_CENTER = CANVAS_SIZE / 2;
+const ORBIT_RADIUS = 112;
+
 interface SliceHubProps {
   slices: MissionSlice[];
   onSelectSlice: (slice: MissionSlice) => void;
@@ -19,7 +23,14 @@ interface SliceHubProps {
 }
 
 const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgent }) => {
-  if (slices.length === 0) {
+  const orderedSlices = useMemo(() => {
+    if (slices.length === 0) {
+      return [];
+    }
+    return slices.slice().sort((a, b) => b.active - a.active || b.total - a.total);
+  }, [slices]);
+
+  if (orderedSlices.length === 0) {
     return (
       <section className="slice-hub slice-hub--empty">
         <p>No slices yet. Once telemetry syncs, active missions will appear here.</p>
@@ -30,7 +41,7 @@ const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgen
   return (
     <section className="slice-hub">
       <div className="slice-hub__grid">
-        {slices.map((slice) => (
+        {orderedSlices.map((slice) => (
           <SliceOrbit key={slice.id} slice={slice} onSelectSlice={onSelectSlice} onSelectAgent={onSelectAgent} />
         ))}
       </div>
@@ -44,31 +55,43 @@ interface SliceOrbitProps {
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
-const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectAgent }) => {
-  const progress = slice.total === 0 ? 0 : Math.round((slice.completed / slice.total) * 100);
+type OrbitPosition = {
+  assignment: SliceAssignment;
+  x: number;
+  y: number;
+  angleDeg: number;
+  angleRad: number;
+};
 
-  const orbitAssignments = useMemo(() => {
-    const actives = slice.assignments.filter((assignment) => ACTIVE_STATUSES.has(assignment.task.status));
-    if (actives.length > 0) {
-      return actives.slice(0, 8);
+const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectAgent }) => {
+  const progress = slice.total === 0 ? 0 : Math.min(100, Math.round((slice.completed / slice.total) * 100));
+
+  const orbitAssignments = useMemo(() => buildOrbitAssignments(slice), [slice]);
+
+  const orbitPositions = useMemo<OrbitPosition[]>(() => {
+    const withAgents = orbitAssignments.filter((assignment) => assignment.agent);
+    if (withAgents.length === 0) {
+      return [];
     }
-    const fallbackTask: TaskSnapshot =
-      slice.tasks[0] ?? {
-        id: `${slice.id}-placeholder`,
-        title: slice.name,
-        status: "assigned",
-        confidence: 1,
-        updatedAt: slice.assignments[0]?.task.updatedAt ?? new Date().toISOString(),
-      };
-    return slice.agents.slice(0, 8).map((agent) => ({ task: fallbackTask, agent, isBlocking: false } as SliceAssignment));
-  }, [slice.assignments, slice.agents, slice.tasks, slice.id, slice.name]);
+    const total = withAgents.length;
+    return withAgents.map((assignment, index) => {
+      const angleFraction = total === 1 ? 0 : index / total;
+      const angleDeg = angleFraction * 360 - 90;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const x = CANVAS_CENTER + ORBIT_RADIUS * Math.cos(angleRad);
+      const y = CANVAS_CENTER + ORBIT_RADIUS * Math.sin(angleRad);
+      return { assignment, angleDeg, angleRad, x, y };
+    });
+  }, [orbitAssignments]);
 
   return (
     <article className="slice-orbit-card">
       <header className="slice-orbit-card__header">
         <div>
           <h3>{slice.name}</h3>
-          <p>{slice.active} active · {slice.completed} complete · {slice.total} total</p>
+          <p>
+            {slice.active} active {"\u00B7"} {slice.completed} complete {"\u00B7"} {slice.total} total
+          </p>
         </div>
         <button type="button" className="slice-orbit-card__cta" onClick={() => onSelectSlice(slice)}>
           View slice
@@ -76,16 +99,34 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
       </header>
       <div className="slice-orbit-card__body">
         <div className="slice-orbit" style={{ "--slice-accent": slice.accent } as CSSProperties}>
+          <svg className="slice-orbit__connections" viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`} aria-hidden="true">
+            {orbitPositions.map(({ assignment, x, y }) => {
+              const locationKind = assignment.task.location?.kind ?? "internal";
+              const connectorKey = `${assignment.task.id}-${assignment.agent?.id ?? "connector"}`;
+              return (
+                <line
+                  key={connectorKey}
+                  x1={CANVAS_CENTER}
+                  y1={CANVAS_CENTER}
+                  x2={x}
+                  y2={y}
+                  className={`slice-orbit__connector slice-orbit__connector--${locationKind}`}
+                />
+              );
+            })}
+          </svg>
           <OrbitCenter slice={slice} progress={progress} onClick={() => onSelectSlice(slice)} />
-          {orbitAssignments.map((assignment, index) => (
-            <OrbitNode key={`${assignment.task.id}-${assignment.agent?.id ?? index}`} index={index} total={orbitAssignments.length} assignment={assignment} onSelectAgent={onSelectAgent} />
+          {orbitPositions.map((position) => (
+            <OrbitNode key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`} position={position} onSelectAgent={onSelectAgent} />
           ))}
         </div>
         <ul className="slice-orbit-card__tasks">
           {slice.assignments.slice(0, 3).map((assignment) => (
             <li key={`detail-${assignment.task.id}`}>
               <button type="button" onClick={() => onSelectSlice(slice)}>
-                <span className={`task-chip task-chip--${assignment.task.status}`}>{assignment.task.taskNumber ?? assignment.task.title}</span>
+                <span className={`task-chip task-chip--${assignment.task.status}`}>
+                  {assignment.task.taskNumber ?? assignment.task.title}
+                </span>
                 <span className="task-chip__summary">{assignment.task.summary ?? assignment.task.title}</span>
               </button>
             </li>
@@ -103,36 +144,40 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
         <span style={{ width: `${progress}%` }} />
       </span>
       <span className="slice-orbit__name">{slice.name}</span>
-      <span className="slice-orbit__value">{slice.completed}/{slice.total}</span>
+      <span className="slice-orbit__value">
+        {slice.completed}/{slice.total}
+      </span>
       {slice.tokens !== undefined && <span className="slice-orbit__tokens">{slice.tokens.toLocaleString()} tokens</span>}
     </button>
   );
 };
 
 interface OrbitNodeProps {
-  assignment: SliceAssignment;
-  index: number;
-  total: number;
+  position: OrbitPosition;
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
-const OrbitNode: React.FC<OrbitNodeProps> = ({ assignment, index, total, onSelectAgent }) => {
+const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
+  const { assignment, x, y, angleRad } = position;
   const agent = assignment.agent;
   if (!agent) {
     return null;
   }
 
-  const angle = (360 / total) * index;
-  const style = {
-    "--orbit-angle": `${angle}deg`,
-  } as CSSProperties;
-
   const locationLabel = assignment.task.location?.label ?? "Internal";
   const locationKind = assignment.task.location?.kind ?? "internal";
 
+  const quadrant = Math.cos(angleRad) >= 0 ? "east" : "west";
+  const vertical = Math.sin(angleRad) >= 0 ? "south" : "north";
+
   return (
-    <button type="button" className="slice-orbit__node" style={style} onClick={() => onSelectAgent(agent)}>
-      <span className={`slice-orbit__link slice-orbit__link--${locationKind}`} aria-hidden="true" />
+    <button
+      type="button"
+      className={`slice-orbit__node slice-orbit__node--${quadrant} slice-orbit__node--${vertical}`}
+      style={{ left: `${x}px`, top: `${y}px` }}
+      onClick={() => onSelectAgent(agent)}
+    >
+      <span className={`slice-orbit__halo slice-orbit__halo--${agent.tier.toLowerCase()}`} aria-hidden="true" />
       <img
         src={agent.icon || FALLBACK_ICON}
         alt={agent.name}
@@ -149,6 +194,26 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ assignment, index, total, onSelec
   );
 };
 
+function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
+  const activeAssignments = slice.assignments.filter((assignment) => ACTIVE_STATUSES.has(assignment.task.status) && assignment.agent);
+  if (activeAssignments.length > 0) {
+    return activeAssignments.slice(0, 10);
+  }
+
+  const fallbackTask: TaskSnapshot =
+    slice.tasks[0] ?? {
+      id: `${slice.id}-placeholder`,
+      title: slice.name,
+      status: "assigned",
+      confidence: 1,
+      updatedAt: slice.assignments[0]?.task.updatedAt ?? new Date().toISOString(),
+    };
+
+  if (slice.agents.length === 0) {
+    return [];
+  }
+
+  return slice.agents.slice(0, 10).map((agent) => ({ task: fallbackTask, agent, isBlocking: false }));
+}
+
 export default SliceHub;
-
-

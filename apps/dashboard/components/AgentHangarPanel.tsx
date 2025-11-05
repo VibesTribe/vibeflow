@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from "react";
+import React, { useMemo } from "react";
 import { MissionAgent } from "../utils/mission";
 import { FALLBACK_ICON } from "../utils/icons";
 
@@ -27,16 +27,23 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
       <div className="rail__scroll">
         {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
         {orderedAgents.map((agent) => (
-          <button key={agent.id} type="button" className={`agent-pill agent-pill--${normalizeStatus(agent.status)}`} onClick={() => onSelectAgent(agent)}>
-            <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-            <img
-              src={agent.icon || FALLBACK_ICON}
-              alt={agent.name}
-              className="agent-pill__avatar"
-              onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
-              loading="lazy"
-              decoding="async"
-            />
+          <button
+            key={agent.id}
+            type="button"
+            className={`agent-pill agent-pill--${normalizeStatus(agent.status)}`}
+            onClick={() => onSelectAgent(agent)}
+          >
+            <div className="agent-pill__avatar-wrap">
+              <img
+                src={agent.icon || FALLBACK_ICON}
+                alt={agent.name}
+                className="agent-pill__avatar"
+                loading="lazy"
+                decoding="async"
+                onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+              />
+              <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+            </div>
             <span className="agent-pill__name" title={agent.name}>
               {agent.name}
             </span>
