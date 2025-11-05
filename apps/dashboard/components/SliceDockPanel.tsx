@@ -1,7 +1,5 @@
-﻿import React, { CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 import { MissionSlice } from "../utils/mission";
-
-const SLICE_PLACEHOLDERS = [0, 1, 2];
 
 interface SliceDockPanelProps {
   slices: MissionSlice[];
@@ -13,27 +11,23 @@ interface SliceDockPanelProps {
 
 const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onViewDocs, onViewLogs, onSelectSlice }) => {
   return (
-    <aside className="mission-panel mission-panel--left">
-      <div className="mission-panel__sticky">
-        <div className="mission-panel__actions">
-          <button type="button" onClick={onViewLogs} className="mission-button mission-button--ghost">
-            View Logs
-          </button>
-          <button type="button" onClick={onViewDocs} className="mission-button mission-button--primary">
-            Docs
-          </button>
-        </div>
-        <h2 className="mission-panel__title">Slice Dock</h2>
+    <aside className="rail rail--left" aria-label="Slice dock">
+      <div className="rail__header">
+        <button type="button" onClick={onViewLogs} className="rail__button rail__button--ghost">
+          Logs
+        </button>
+        <button type="button" onClick={onViewDocs} className="rail__button rail__button--primary">
+          Docs
+        </button>
+        <span className="rail__title">Slices</span>
       </div>
-      <div className="mission-panel__scroll">
-        {loading && slices.length === 0 && <p className="mission-empty">Syncing telemetry.</p>}
+      <div className="rail__scroll">
+        {loading && slices.length === 0 && <p className="rail__empty">Syncing telemetry...</p>}
         {slices.map((slice) => {
           const progress = slice.total === 0 ? 0 : Math.round((slice.completed / slice.total) * 100);
-          const chipStyle = {
-            "--slice-accent": slice.accent,
-          } as CSSProperties;
+          const accent = slice.accent ?? "rgba(56, 189, 248, 0.95)";
           const ringStyle: CSSProperties = {
-            background: `conic-gradient(${slice.accent} ${progress}%, rgba(255, 255, 255, 0.08) ${progress}% 100%)`,
+            background: `conic-gradient(${accent} ${progress}%, rgba(12, 23, 42, 0.85) ${progress}% 100%)`,
           };
 
           return (
@@ -41,35 +35,22 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
               key={slice.id}
               type="button"
               onClick={() => onSelectSlice(slice)}
-              className="slice-chip"
-              style={chipStyle}
+              className="slice-dial"
+              aria-label={`Open ${slice.name}`}
             >
-              <span className="slice-chip__ring" style={ringStyle}>
-                <span>{progress}%</span>
-              </span>
-              <div className="slice-chip__body">
-                <strong>{slice.name}</strong>
-                <span>
-                  {slice.completed}/{slice.total} tasks
+              <span className="slice-dial__ring" style={ringStyle}>
+                <span className="slice-dial__inner">
+                  <span className="slice-dial__percent">{progress}%</span>
+                  <span className="slice-dial__tasks">
+                    {slice.completed}/{slice.total}
+                  </span>
                 </span>
-              </div>
+              </span>
+              <span className="slice-dial__label">{slice.name}</span>
             </button>
           );
         })}
-        {slices.length === 0 && !loading && (
-          <div className="slice-placeholder">
-            {SLICE_PLACEHOLDERS.map((index) => (
-              <div key={index} className="slice-placeholder__chip">
-                <span className="slice-placeholder__ring" />
-                <div className="slice-placeholder__text">
-                  <span />
-                  <span />
-                </div>
-              </div>
-            ))}
-            <p className="mission-empty">No slices yet - missions will populate here.</p>
-          </div>
-        )}
+        {slices.length === 0 && !loading && <p className="rail__empty">No slices yet.</p>}
       </div>
     </aside>
   );
