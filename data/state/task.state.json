@@ -1,74 +1,71 @@
-{
-  "updated_at": "2025-11-04T20:22:43.917Z",
+﻿{
+  "updated_at": "2025-11-04T20:31:39.201Z",
   "metrics": {
-    "tokens_used": 275000,
-    "active_tasks": 10
+    "tokens_used": 274000,
+    "active_tasks": 11
   },
   "agents": [
     {
+      "id": "agent.gpt5",
+      "name": "GPT-5 Turbo (OpenAI)",
+      "status": "in_progress",
+      "summary": "Working — shipping orchestrator task #184",
+      "updatedAt": "2025-10-31T04:55:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/openai.svg",
+      "tier": "W"
+    },
+    {
       "id": "agent.gemini",
-      "name": "Gemini",
-      "status": "in_progress",
-      "summary": "Finishing supabase telemetry wiring",
-      "updatedAt": "2025-10-31T04:55:00Z"
+      "name": "Gemini 1.5 Pro (Google)",
+      "status": "cooldown",
+      "summary": "Cooldown",
+      "updatedAt": "2025-10-31T04:52:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/google-gemini.svg",
+      "tier": "M"
     },
     {
-      "id": "agent.openai-gpt5",
-      "name": "OpenAI GPT-5",
-      "status": "received",
-      "summary": "Reviewing dashboard PRD refinements",
-      "updatedAt": "2025-10-31T04:52:00Z"
-    },
-    {
-      "id": "agent.claude-qc",
-      "name": "Claude QC",
-      "status": "testing",
-      "summary": "Running prompt regression suite",
-      "updatedAt": "2025-10-31T04:48:00Z"
-    },
-    {
-      "id": "agent.roo-ide",
-      "name": "Roo IDE",
-      "status": "approved",
-      "summary": "Published capability vector notes",
-      "updatedAt": "2025-10-31T04:46:00Z"
-    },
-    {
-      "id": "agent.cursor",
-      "name": "Cursor",
-      "status": "in_progress",
-      "summary": "Patching orchestration crash recovery",
-      "updatedAt": "2025-10-31T04:44:00Z"
-    },
-    {
-      "id": "agent.cline",
-      "name": "Cline",
-      "status": "received",
-      "summary": "Queued smoke tests for endpoints",
-      "updatedAt": "2025-10-31T04:42:00Z"
-    },
-    {
-      "id": "agent.opencode",
-      "name": "OpenCode",
-      "status": "testing",
-      "summary": "Auditing mission loop documentation",
-      "updatedAt": "2025-10-31T04:40:00Z"
-    },
-    {
-      "id": "agent.opentools",
-      "name": "OpenTools",
-      "status": "idle",
-      "summary": "Standing by for next assignment",
-      "updatedAt": "2025-10-31T04:10:00Z"
+      "id": "agent.deepseek",
+      "name": "DeepSeek Coder V2",
+      "status": "credit_needed",
+      "summary": "Credit Needed",
+      "updatedAt": "2025-10-31T04:48:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/deepseek.svg",
+      "tier": "Q"
     }
   ],
   "tasks": [
     {
+      "id": "task-184",
+      "title": "Ship orchestrator auto-run flow",
+      "status": "in_progress",
+      "confidence": 0.92,
+      "updatedAt": "2025-10-31T04:59:00Z",
+      "owner": "agent.gpt5",
+      "sliceId": "slice.orchestrator",
+      "taskNumber": "Task #184",
+      "location": { "kind": "platform", "label": "OpenAI" }
+    },
+    {
+      "id": "task-205",
+      "title": "Audit auth event stream",
+      "status": "testing",
+      "confidence": 0.88,
+      "updatedAt": "2025-10-31T04:50:00Z",
+      "owner": "agent.gemini",
+      "sliceId": "slice.auth",
+      "taskNumber": "Task #205",
+      "location": { "kind": "mcp", "label": "MCP Gateway" }
+    },
+    {
+      "id": "task-230",
+      "title": "Generate MCP bridge diagnostics",
       "status": "assigned",
-      "confidence": 1,
-      "updated_at": "2025-10-31T04:20:00Z",
-      "owner": null,
-      "lessons": []
+      "confidence": 0.7,
+      "updatedAt": "2025-10-31T04:20:00Z",
+      "owner": "agent.deepseek",
+      "sliceId": "slice.mcp",
+      "taskNumber": "Task #230",
+      "location": { "kind": "mcp", "label": "Diag Runner" }
     }
   ],
   "failures": [],

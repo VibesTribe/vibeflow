@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@core/types";
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
-import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent } from "../utils/mission";
+import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
 
 function resolveDashboardPath(path: string): string {
   const base = import.meta.env.BASE_URL ?? "/";
@@ -18,6 +18,7 @@ interface DashboardSnapshot {
   failures: FailureSnapshot[];
   mergeCandidates: MergeCandidate[];
   metrics: Record<string, number>;
+  sliceCatalog: SliceCatalog[];
   updatedAt: string;
 }
 
@@ -58,6 +59,7 @@ const initialSnapshot: DashboardSnapshot = {
   failures: [],
   mergeCandidates: [],
   metrics: {},
+  sliceCatalog: [],
   updatedAt: new Date().toISOString(),
 };
 
@@ -106,6 +108,7 @@ export function useMissionData(): MissionData {
         failures: parsed.failures ?? [],
         mergeCandidates: parsed.merge_candidates ?? [],
         metrics: parsed.metrics ?? {},
+        sliceCatalog: Array.isArray(parsed.slices) ? parsed.slices : [],
         updatedAt: parsed.updated_at ?? new Date().toISOString(),
       });
     } catch (error) {
@@ -188,7 +191,7 @@ export function useMissionData(): MissionData {
   }, [fetchEvents]);
 
   const mappedAgents = useMemo(() => snapshot.agents.map(mapAgent), [snapshot.agents]);
-  const slices = useMemo(() => deriveSlices(snapshot.tasks, events, snapshot.agents), [snapshot.tasks, events, snapshot.agents]);
+  const slices = useMemo(() => deriveSlices(snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog), [snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog]);
   const statusSummary = useMemo(() => buildStatusSummary(snapshot.tasks), [snapshot.tasks]);
   const qualityByTask = useMemo(() => deriveQualityMap(events), [events]);
   const tokenUsage = useMemo(() => {
@@ -218,3 +221,7 @@ export function useMissionData(): MissionData {
     refresh,
   };
 }
+
+
+
+
