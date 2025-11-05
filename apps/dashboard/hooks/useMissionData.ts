@@ -3,6 +3,15 @@ import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@c
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent } from "../utils/mission";
 
+function resolveDashboardPath(path: string): string {
+  const base = import.meta.env.BASE_URL ?? "/";
+  const normalized = path.startsWith("/") ? path.slice(1) : path;
+  if (base === "/") {
+    return `/${normalized}`;
+  }
+  return `${base.replace(/\/$/, "")}/${normalized}`;
+}
+
 interface DashboardSnapshot {
   tasks: TaskSnapshot[];
   agents: AgentSnapshot[];
@@ -80,7 +89,7 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, snapshot: true }));
     try {
-      const response = await fetch("/data/state/dashboard.mock.json", { cache: "no-store" });
+      const response = await fetch(resolveDashboardPath("data/state/dashboard.mock.json"), { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load snapshot (${response.status})`);
       }
@@ -112,7 +121,7 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, metrics: true }));
     try {
-      const response = await fetch("/data/metrics/run_metrics.json", { cache: "no-store" });
+      const response = await fetch(resolveDashboardPath("data/metrics/run_metrics.json"), { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load metrics (${response.status})`);
       }
@@ -140,7 +149,7 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, events: true }));
     try {
-      const response = await fetch("/data/state/events.log.jsonl", { cache: "no-store" });
+      const response = await fetch(resolveDashboardPath("data/state/events.log.jsonl"), { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load events (${response.status})`);
       }
