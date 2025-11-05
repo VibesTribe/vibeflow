@@ -1,6 +1,6 @@
-ï»¿import React, { FormEvent, useMemo, useState } from "react";
+import React, { FormEvent, useMemo, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
-import { MissionAgent, MissionSlice } from "../../utils/mission";
+import { MissionAgent, MissionSlice, SliceAssignment } from "../../utils/mission";
 import { TaskSnapshot } from "@core/types";
 
 export type MissionModalState =
@@ -17,6 +17,7 @@ interface MissionModalsProps {
   onClose: () => void;
   events: MissionEvent[];
   agents: MissionAgent[];
+  slices: MissionSlice[];
 }
 
 const DOC_LINKS = [
@@ -25,7 +26,16 @@ const DOC_LINKS = [
   { label: "Runbook", path: "/docs/runbook.html" },
 ];
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents }) => {
+const ACTIVE_STATUSES = new Set([
+  "assigned",
+  "in_progress",
+  "received",
+  "supervisor_review",
+  "testing",
+  "supervisor_approval",
+]);
+
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices }) => {
   if (modal.type === null) {
     return null;
   }
@@ -33,69 +43,19 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
   let content: React.ReactNode = null;
   switch (modal.type) {
     case "docs":
-      content = (
-        <div className="mission-modal__section">
-          <h3>Project Docs</h3>
-          <ul className="mission-list">
-            {DOC_LINKS.map((doc) => (
-              <li key={doc.label}>
-                <a href={doc.path} target="_blank" rel="noreferrer" className="mission-link">
-                  {doc.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
+      content = <DocumentList />;
       break;
     case "logs":
-      content = (
-        <div className="mission-modal__section">
-          <h3>Recent Logs</h3>
-          <ul className="mission-log-list">
-            {events.slice(0, 20).map((event) => {
-              const detailMessage = extractEventMessage(event);
-              return (
-                <li key={event.id}>
-                  <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
-                  <div>
-                    <strong>{event.type}</strong>
-                    <span>{new Date(event.timestamp).toLocaleString()}</span>
-                    {detailMessage && <p>{detailMessage}</p>}
-                  </div>
-                </li>
-              );
-            })}
-            {events.length === 0 && <li>No events yet.</li>}
-          </ul>
-        </div>
-      );
+      content = <LogList events={events} />;
       break;
     case "models":
-      content = (
-        <div className="mission-modal__section">
-          <h3>Models & Platforms</h3>
-          <ul className="mission-agent-list">
-            {agents.map((agent) => (
-              <li key={agent.id}>
-                <img src={agent.icon} alt="" />
-                <div>
-                  <strong>{agent.name}</strong>
-                  <span>Status: {agent.status ?? "idle"}</span>
-                </div>
-                <span className={`badge badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-              </li>
-            ))}
-            {agents.length === 0 && <li>No agents registered.</li>}
-          </ul>
-        </div>
-      );
+      content = <ModelOverview agents={agents} slices={slices} />;
       break;
     case "agent":
-      content = <AgentDetails agent={modal.agent} />;
+      content = <AgentDetails agent={modal.agent} events={events} slices={slices} />;
       break;
     case "slice":
-      content = <SliceDetails slice={modal.slice} />;
+      content = <SliceDetails slice={modal.slice} events={events} />;
       break;
     case "add":
       content = <AddAgentForm onClose={onClose} />;
@@ -108,7 +68,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
       <div className="mission-modal">
         <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
-          Ã—
+          ×
         </button>
         {content}
       </div>
@@ -118,47 +78,269 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
 
 export default MissionModals;
 
-const AgentDetails: React.FC<{ agent: MissionAgent }> = ({ agent }) => {
-  return (
-    <div className="mission-modal__section">
-      <h3>{agent.name}</h3>
-      <div className="agent-detail">
-        <img src={agent.icon} alt="" />
-        <div>
-          <p>Tier: {agent.tier}</p>
-          <p>Status: {agent.status ?? "idle"}</p>
-          <p>ID: {agent.id}</p>
-        </div>
-      </div>
-      <p className="mission-modal__hint">Detailed metrics will populate as missions run.</p>
-    </div>
-  );
-};
+const DocumentList: React.FC = () => (
+  <div className="mission-modal__section">
+    <h3>Project Docs</h3>
+    <ul className="mission-list">
+      {DOC_LINKS.map((doc) => (
+        <li key={doc.label}>
+          <a href={doc.path} target="_blank" rel="noreferrer" className="mission-link">
+            {doc.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
-const SliceDetails: React.FC<{ slice: MissionSlice }> = ({ slice }) => {
-  const tasks = useMemo(() => slice.tasks, [slice.tasks]);
+const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
+  <div className="mission-modal__section">
+    <h3>Recent Logs</h3>
+    <ul className="mission-log-list">
+      {events.slice(0, 40).map((event) => {
+        const detailMessage = extractEventMessage(event);
+        return (
+          <li key={event.id}>
+            <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
+            <div>
+              <strong>{event.type}</strong>
+              <span>{new Date(event.timestamp).toLocaleString()}</span>
+              {detailMessage && <p>{detailMessage}</p>}
+            </div>
+          </li>
+        );
+      })}
+      {events.length === 0 && <li>No events yet.</li>}
+    </ul>
+  </div>
+);
+
+const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
+  const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
+
   return (
-    <div className="mission-modal__section">
-      <h3>{slice.name}</h3>
-      <ul className="task-list">
-        {tasks.map((task) => (
-          <TaskRow key={task.id} task={task} />
+    <div className="mission-modal__section model-panel">
+      <header className="model-panel__legend">
+        <span className="status-dot status-dot--ready">Ready</span>
+        <span className="status-dot status-dot--cooldown">Cooldown</span>
+        <span className="status-dot status-dot--credit">Credit Needed</span>
+        <span className="status-dot status-dot--issue">Issue</span>
+      </header>
+      <ul className="model-panel__list">
+        {agentSummaries.map((summary) => (
+          <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
+            <div className="model-panel__header">
+              <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
+              <div>
+                <strong>{summary.agent.name}</strong>
+                <p>{summary.statusLabel}</p>
+              </div>
+            </div>
+            <div className="model-panel__metrics">
+              <p>
+                Assigned <strong>{summary.assigned}</strong> · Succeeded <strong>{summary.succeeded}</strong> · Failed <strong>{summary.failed}</strong>{ }
+                <span className={`model-panel__success model-panel__success--${summary.statusKey}`}>Success {summary.successRate}%</span>
+              </p>
+              {summary.primaryTask && (
+                <p className="model-panel__task">
+                  Working — {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
+                </p>
+              )}
+              {summary.agent.cooldownReason && <p className="model-panel__hint">{summary.agent.cooldownReason}</p>}
+              <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} · Avg response: {summary.avgRuntime}s</p>
+            </div>
+          </li>
         ))}
-        {tasks.length === 0 && <li>No tasks assigned yet.</li>}
+        {agentSummaries.length === 0 && <li className="model-panel__empty">No agents registered.</li>}
       </ul>
     </div>
   );
 };
 
-const TaskRow: React.FC<{ task: TaskSnapshot }> = ({ task }) => {
+const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[] }> = ({ agent, events, slices }) => {
+  const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
+
   return (
-    <li className="task-row">
-      <div>
-        <strong>{task.title}</strong>
-        <span className={`task-status task-status--${task.status}`}>{task.status}</span>
+    <div className="mission-modal__section agent-panel">
+      <header className="agent-panel__header">
+        <div>
+          <h3>{agent.name}</h3>
+          <p>{agent.summary ?? "No summary provided."}</p>
+        </div>
+        <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+      </header>
+      <dl className="agent-panel__stats">
+        <div>
+          <dt>Status</dt>
+          <dd>{agent.status}</dd>
+        </div>
+        <div>
+          <dt>Current tasks</dt>
+          <dd>{timeline.activeAssignments.length}</dd>
+        </div>
+        <div>
+          <dt>Success rate</dt>
+          <dd>{timeline.successRate}%</dd>
+        </div>
+        <div>
+          <dt>Tokens used</dt>
+          <dd>{timeline.tokensUsed.toLocaleString()}</dd>
+        </div>
+      </dl>
+      <div className="agent-panel__timeline">
+        {timeline.entries.map((entry) => (
+          <article key={entry.id} className={`agent-panel__event agent-panel__event--${entry.kind}`}>
+            <header>
+              <span>{entry.label}</span>
+              <time>{entry.timestamp}</time>
+            </header>
+            <p>{entry.message}</p>
+          </article>
+        ))}
+        {timeline.entries.length === 0 && <p>No recent activity for this agent.</p>}
       </div>
-      <span className="task-row__meta">Confidence {Math.round(task.confidence * 100)}%</span>
-    </li>
+    </div>
+  );
+};
+
+const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = ({ slice, events }) => {
+  const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
+
+  const assignmentsByTask = useMemo(() => {
+    const map = new Map<string, SliceAssignment>();
+    slice.assignments.forEach((assignment) => map.set(assignment.task.id, assignment));
+    return map;
+  }, [slice.assignments]);
+
+  const activeTask = selectedTask ?? slice.assignments[0]?.task ?? null;
+
+  return (
+    <div className="mission-modal__section slice-panel">
+      <header className="slice-panel__header">
+        <div>
+          <h3>{slice.name}</h3>
+          <p>
+            {slice.completed}/{slice.total} complete · {slice.active} active
+          </p>
+        </div>
+        <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
+          Collapse all
+        </button>
+      </header>
+      <div className="slice-panel__content">
+        <aside className="slice-panel__tasks">
+          <h4>Tasks</h4>
+          <ul>
+            {slice.assignments.map((assignment) => (
+              <li key={assignment.task.id}>
+                <button
+                  type="button"
+                  className={assignment.task.id === activeTask?.id ? "is-selected" : undefined}
+                  onClick={() => setSelectedTask(assignment.task)}
+                >
+                  <span className={`task-chip task-chip--${assignment.task.status}`}>
+                    {assignment.task.taskNumber ?? assignment.task.title}
+                  </span>
+                  <span className="task-chip__summary">{assignment.task.summary ?? assignment.task.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <section className="slice-panel__details">
+          {activeTask ? (
+            <TaskDetail
+              task={activeTask}
+              assignment={assignmentsByTask.get(activeTask.id) ?? null}
+              events={events.filter((event) => event.taskId === activeTask.id)}
+            />
+          ) : (
+            <p>Select a task to view details.</p>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+};
+
+const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[] }> = ({ task, assignment, events }) => {
+  const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
+
+  return (
+    <div className="task-detail">
+      <header>
+        <h4>{task.taskNumber ?? task.title}</h4>
+        <span className={`task-chip task-chip--${task.status}`}>{task.status}</span>
+      </header>
+      {assignment?.agent && (
+        <p className="task-detail__agent">
+          Assigned to <strong>{assignment.agent.name}</strong> ({assignment.agent.status})
+        </p>
+      )}
+      <dl className="task-detail__meta">
+        <div>
+          <dt>Confidence</dt>
+          <dd>{Math.round(task.confidence * 100)}%</dd>
+        </div>
+        <div>
+          <dt>Updated</dt>
+          <dd>{new Date(task.updatedAt).toLocaleString()}</dd>
+        </div>
+        {task.metrics?.tokensUsed !== undefined && (
+          <div>
+            <dt>Tokens</dt>
+            <dd>{task.metrics.tokensUsed.toLocaleString()}</dd>
+          </div>
+        )}
+        {task.metrics?.runtimeSeconds !== undefined && (
+          <div>
+            <dt>Runtime</dt>
+            <dd>{task.metrics.runtimeSeconds}s</dd>
+          </div>
+        )}
+      </dl>
+      {task.dependencies && task.dependencies.length > 0 && (
+        <div className="task-detail__deps">
+          <h5>Dependencies</h5>
+          <ul>
+            {task.dependencies.map((dep) => (
+              <li key={dep}>{dep}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="task-detail__prompt">
+        <h5>Prompt Packet</h5>
+        <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} />
+        {task.packet?.attachments && task.packet.attachments.length > 0 && (
+          <ul>
+            {task.packet.attachments.map((attachment) => (
+              <li key={attachment.href}>
+                <a href={attachment.href} target="_blank" rel="noreferrer">
+                  {attachment.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className="task-detail__events">
+        <h5>Recent activity</h5>
+        <ul>
+          {events.map((event) => (
+            <li key={event.id}>
+              <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
+              <div>
+                <strong>{event.type}</strong>
+                <span>{new Date(event.timestamp).toLocaleString()}</span>
+                {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
+              </div>
+            </li>
+          ))}
+          {events.length === 0 && <li>No activity recorded for this task yet.</li>}
+        </ul>
+      </div>
+    </div>
   );
 };
 
@@ -188,6 +370,95 @@ const AddAgentForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
+function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]) {
+  return agents.map((agent) => {
+    const assignments: SliceAssignment[] = [];
+    slices.forEach((slice) => {
+      slice.assignments.forEach((assignment) => {
+        if (assignment.agent?.id === agent.id) {
+          assignments.push(assignment);
+        }
+      });
+    });
+
+    const assigned = assignments.length;
+    const succeeded = assignments.filter((assignment) => isCompleted(assignment.task.status)).length;
+    const failed = assignments.filter((assignment) => assignment.isBlocking).length;
+    const successRate = assigned === 0 ? 100 : Math.max(0, Math.round((succeeded / assigned) * 100));
+    const tokensUsed = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+    const avgRuntime = (() => {
+      const samples = assignments.map((assignment) => assignment.task.metrics?.runtimeSeconds).filter((value): value is number => typeof value === "number");
+      if (samples.length === 0) return 0;
+      return Math.round(samples.reduce((acc, value) => acc + value, 0) / samples.length);
+    })();
+
+    const primaryTask = assignments.find((assignment) => ACTIVE_STATUSES.has(assignment.task.status))?.task ?? null;
+    const statusKey = normalizeStatus(agent.status);
+    const statusLabel = buildStatusLabel(agent.status, primaryTask);
+
+    return {
+      agent,
+      assigned,
+      succeeded,
+      failed,
+      successRate,
+      tokensUsed,
+      avgRuntime,
+      primaryTask,
+      statusKey,
+      statusLabel,
+    };
+  });
+}
+
+function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events: MissionEvent[]) {
+  const assignments: SliceAssignment[] = [];
+  slices.forEach((slice) => {
+    slice.assignments.forEach((assignment) => {
+      if (assignment.agent?.id === agent.id) {
+        assignments.push(assignment);
+      }
+    });
+  });
+
+  const taskIds = new Set(assignments.map((assignment) => assignment.task.id));
+  const timelineEvents = events
+    .filter((event) => (event.taskId ? taskIds.has(event.taskId) : false))
+    .map((event) => ({
+      id: event.id,
+      kind: inferLogTone(event),
+      label: event.type,
+      timestamp: new Date(event.timestamp).toLocaleString(),
+      message: extractEventMessage(event) ?? "",
+    }));
+
+  const successRate = assignments.length === 0 ? 100 : Math.round((assignments.filter((assignment) => isCompleted(assignment.task.status)).length / assignments.length) * 100);
+  const tokensUsed = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+
+  return {
+    entries: timelineEvents,
+    activeAssignments: assignments.filter((assignment) => ACTIVE_STATUSES.has(assignment.task.status)),
+    successRate,
+    tokensUsed,
+  };
+}
+
+function normalizeStatus(status: string) {
+  const lower = status.toLowerCase();
+  if (lower.includes("credit")) return "credit";
+  if (lower.includes("cooldown")) return "cooldown";
+  if (lower.includes("issue") || lower.includes("error") || lower.includes("blocked")) return "issue";
+  if (lower.includes("working") || lower.includes("in_progress") || lower.includes("running")) return "ready";
+  return "ready";
+}
+
+function buildStatusLabel(status: string, task: TaskSnapshot | null) {
+  if (task) {
+    return `${status} — Working on ${task.taskNumber ?? task.title}`;
+  }
+  return status;
+}
+
 function inferLogTone(event: MissionEvent): "success" | "warn" | "error" {
   if (event.reasonCode?.startsWith("E/")) {
     return "error";
@@ -214,3 +485,8 @@ function extractEventMessage(event: MissionEvent): string | null {
   }
   return null;
 }
+
+function isCompleted(status: TaskSnapshot["status"]) {
+  return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval";
+}
+

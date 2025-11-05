@@ -1,25 +1,190 @@
-{
+﻿{
+  "updated_at": "2025-11-04T20:31:39.201Z",
+  "metrics": {
+    "tokens_used": 274000,
+    "active_tasks": 11
+  },
   "agents": [
-    { "id": "gemini", "name": "Gemini", "logo": "/logos/gemini.png", "tier": "W", "status": "in progress", "tokens": 24000, "warnings": ["⏰ Timeout (refresh in 2h)"] },
-    { "id": "gpt5", "name": "OpenAI GPT-5", "logo": "/logos/openai.png", "tier": "W", "status": "received", "tokens": 19000, "warnings": ["💰 Out of credits"] },
-    { "id": "claude", "name": "Claude QC", "logo": "/logos/anthropic.png", "tier": "Q", "status": "testing", "tokens": 28000 },
-    { "id": "roo", "name": "Roo IDE", "logo": "/logos/vscode.png", "tier": "M", "status": "approved", "tokens": 15000 },
-    { "id": "cursor", "name": "Cursor", "logo": "/logos/cursor.png", "tier": "M", "status": "in progress", "tokens": 9000 },
-    { "id": "cline", "name": "Cline", "logo": "/logos/cline.png", "tier": "M", "status": "received", "tokens": 8000 },
-    { "id": "opencode", "name": "OpenCode", "logo": "/logos/opencode.png", "tier": "Q", "status": "testing", "tokens": 11000 }
+    {
+      "id": "agent.gpt5",
+      "name": "GPT-5 Turbo (OpenAI)",
+      "status": "in_progress",
+      "summary": "Dual-mode reasoning with live supabase sync",
+      "updatedAt": "2025-10-31T04:55:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/openai.svg",
+      "tier": "W",
+      "cooldownReason": null,
+      "costPerRunUsd": 0.22
+    },
+    {
+      "id": "agent.gemini",
+      "name": "Gemini 1.5 Pro (Google)",
+      "status": "cooldown",
+      "summary": "Streaming auth telemetry comparisons",
+      "updatedAt": "2025-10-31T04:52:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/google-gemini.svg",
+      "tier": "M",
+      "cooldownReason": "Waiting on long-context rerank budget",
+      "costPerRunUsd": 0.19
+    },
+    {
+      "id": "agent.deepseek",
+      "name": "DeepSeek Coder V2",
+      "status": "credit_needed",
+      "summary": "Deterministic structured code generation",
+      "updatedAt": "2025-10-31T04:48:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/deepseek.svg",
+      "tier": "Q",
+      "cooldownReason": "Requesting additional GPU quota",
+      "costPerRunUsd": 0.11
+    },
+    {
+      "id": "agent.roo",
+      "name": "Roo IDE",
+      "status": "working",
+      "summary": "Publishing capability vector updates",
+      "updatedAt": "2025-10-31T04:46:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/vscode.svg",
+      "tier": "M",
+      "cooldownReason": null,
+      "costPerRunUsd": 0.07
+    },
+    {
+      "id": "agent.cursor",
+      "name": "Cursor",
+      "status": "in_progress",
+      "summary": "Patching orchestration crash recovery",
+      "updatedAt": "2025-10-31T04:44:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/cursor.svg",
+      "tier": "M",
+      "cooldownReason": null,
+      "costPerRunUsd": 0.05
+    },
+    {
+      "id": "agent.cline",
+      "name": "Cline",
+      "status": "received",
+      "summary": "Queued smoke tests for endpoints",
+      "updatedAt": "2025-10-31T04:42:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/cli.svg",
+      "tier": "Q",
+      "cooldownReason": null,
+      "costPerRunUsd": 0.03
+    },
+    {
+      "id": "agent.inductor",
+      "name": "OpenSource Builder",
+      "status": "idle",
+      "summary": "Standing by for mission loop handoff",
+      "updatedAt": "2025-10-31T04:35:00Z",
+      "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/code.svg",
+      "tier": "Q",
+      "cooldownReason": null,
+      "costPerRunUsd": 0.02
+    }
   ],
   "slices": [
-    { "id": "S1", "name": "Data Ingestion", "tasksDone": 18, "tasksTotal": 25, "tokens": 40000 },
-    { "id": "S2", "name": "Data Analysis", "tasksDone": 12, "tasksTotal": 20, "tokens": 32000 },
-    { "id": "S3", "name": "Auth & RBAC", "tasksDone": 0, "tasksTotal": 14, "tokens": 2000 },
-    { "id": "S4", "name": "Orchestration", "tasksDone": 14, "tasksTotal": 14, "tokens": 51000 },
-    { "id": "S5", "name": "UI Polish", "tasksDone": 2, "tasksTotal": 10, "tokens": 3000 },
-    { "id": "S6", "name": "MCP Bridges", "tasksDone": 1, "tasksTotal": 18, "tokens": 1200 },
-    { "id": "S7", "name": "Observability", "tasksDone": 9, "tasksTotal": 12, "tokens": 18000 },
-    { "id": "S8", "name": "Billing", "tasksDone": 0, "tasksTotal": 8, "tokens": 0 },
-    { "id": "S9", "name": "Docs", "tasksDone": 8, "tasksTotal": 8, "tokens": 4000 },
-    { "id": "S10", "name": "CLI", "tasksDone": 3, "tasksTotal": 9, "tokens": 2200 },
-    { "id": "S11", "name": "Deploy", "tasksDone": 5, "tasksTotal": 11, "tokens": 7600 },
-    { "id": "S12", "name": "Benchmarks", "tasksDone": 0, "tasksTotal": 6, "tokens": 0 }
+    { "id": "slice.ingest", "name": "Data Ingestion", "tasksDone": 18, "tasksTotal": 25, "tokens": 40000, "accent": "#38bdf8" },
+    { "id": "slice.analysis", "name": "Signal Analysis", "tasksDone": 12, "tasksTotal": 20, "tokens": 32000, "accent": "#6366f1" },
+    { "id": "slice.auth", "name": "Auth & RBAC", "tasksDone": 0, "tasksTotal": 14, "tokens": 2000, "accent": "#f97316" },
+    { "id": "slice.orchestrator", "name": "Orchestration", "tasksDone": 14, "tasksTotal": 14, "tokens": 51000, "accent": "#22d3ee" },
+    { "id": "slice.ui", "name": "Experience Polish", "tasksDone": 2, "tasksTotal": 10, "tokens": 3000, "accent": "#c084fc" },
+    { "id": "slice.mcp", "name": "MCP Bridges", "tasksDone": 1, "tasksTotal": 18, "tokens": 1200, "accent": "#facc15" }
+  ],
+  "tasks": [
+    {
+      "id": "task-184",
+      "title": "Ship orchestrator auto-run flow",
+      "status": "in_progress",
+      "confidence": 0.92,
+      "updatedAt": "2025-10-31T04:59:00Z",
+      "owner": "agent.gpt5",
+      "sliceId": "slice.orchestrator",
+      "taskNumber": "Task #184",
+      "location": { "kind": "platform", "label": "OpenAI" },
+      "dependencies": ["task-118"],
+      "packet": {
+        "prompt": "Finalize mission loop auto-run, ensuring safe fallback to manual supervisor when tokens exceed 25k."
+      },
+      "summary": "Coordinating mission loop autop-run flows with live rollback hooks.",
+      "metrics": { "tokensUsed": 12600, "runtimeSeconds": 118, "costUsd": 4.8 }
+    },
+    {
+      "id": "task-205",
+      "title": "Audit auth event stream",
+      "status": "testing",
+      "confidence": 0.88,
+      "updatedAt": "2025-10-31T04:50:00Z",
+      "owner": "agent.gemini",
+      "sliceId": "slice.auth",
+      "taskNumber": "Task #205",
+      "location": { "kind": "mcp", "label": "MCP Gateway" },
+      "dependencies": ["task-203", "task-204"],
+      "packet": {
+        "prompt": "Run the auth event downsampler against nightly dataset and record anomalies.",
+        "attachments": [
+          { "label": "Auth Runbook", "href": "https://example.com/runbooks/auth-event-stream" }
+        ]
+      },
+      "summary": "Reviewing auth audit pipeline for missing MFA alerts.",
+      "metrics": { "tokensUsed": 8600, "runtimeSeconds": 202, "costUsd": 3.1 }
+    },
+    {
+      "id": "task-118",
+      "title": "Stabilize supabase telemetry",
+      "status": "received",
+      "confidence": 0.75,
+      "updatedAt": "2025-10-31T04:42:00Z",
+      "owner": "agent.cursor",
+      "sliceId": "slice.ingest",
+      "taskNumber": "Task #118",
+      "location": { "kind": "internal", "label": "Edge Workers" },
+      "dependencies": [],
+      "packet": {
+        "prompt": "Patch supabase telemetry ingestion to handle 429 gracefully and persist retries.",
+        "attachments": [
+          { "label": "Telemetry Schema", "href": "https://example.com/schemas/telemetry" }
+        ]
+      },
+      "summary": "Cursor agent applying back-off and idempotency to telemetry worker.",
+      "metrics": { "tokensUsed": 5400, "runtimeSeconds": 142, "costUsd": 1.8 }
+    },
+    {
+      "id": "task-221",
+      "title": "Revise UI orbit gradients",
+      "status": "in_progress",
+      "confidence": 0.81,
+      "updatedAt": "2025-10-31T04:33:00Z",
+      "owner": "agent.roo",
+      "sliceId": "slice.ui",
+      "taskNumber": "Task #221",
+      "location": { "kind": "platform", "label": "VSCode" },
+      "dependencies": ["task-215"],
+      "packet": {
+        "prompt": "Adjust orbit hub gradients to match Vibeflow spec and ensure AA contrast.",
+        "attachments": [
+          { "label": "Design Tokens", "href": "https://example.com/design/tokens" }
+        ]
+      },
+      "summary": "Refining mission control orbit gradient palette.",
+      "metrics": { "tokensUsed": 3200, "runtimeSeconds": 86, "costUsd": 1.1 }
+    },
+    {
+      "id": "task-230",
+      "title": "Generate MCP bridge diagnostics",
+      "status": "assigned",
+      "confidence": 0.7,
+      "updatedAt": "2025-10-31T04:20:00Z",
+      "owner": "agent.deepseek",
+      "sliceId": "slice.mcp",
+      "taskNumber": "Task #230",
+      "location": { "kind": "mcp", "label": "Diag Runner" },
+      "dependencies": ["task-205"],
+      "packet": {
+        "prompt": "Summarize MCP bridge latency anomalies and propose error budgets."
+      },
+      "summary": "Awaiting new credit allocation before continuing run.",
+      "metrics": { "tokensUsed": 0, "runtimeSeconds": 0, "costUsd": 0 }
+    }
   ]
 }

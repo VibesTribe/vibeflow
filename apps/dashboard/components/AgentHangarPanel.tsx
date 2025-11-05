@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React, { useMemo } from "react";
 import { MissionAgent } from "../utils/mission";
 import { FALLBACK_ICON } from "../utils/icons";
 
@@ -11,6 +11,8 @@ interface AgentHangarPanelProps {
 }
 
 const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, onViewAll, onAdd, onSelectAgent }) => {
+  const orderedAgents = useMemo(() => agents.slice().sort((a, b) => a.name.localeCompare(b.name)), [agents]);
+
   return (
     <aside className="rail rail--right" aria-label="Agent hangar">
       <div className="rail__header">
@@ -23,37 +25,46 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
         <span className="rail__title">Agents</span>
       </div>
       <div className="rail__scroll">
-        {loading && agents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
-        {agents.map((agent) => {
-          const tier = (agent.tier ?? "Q").toUpperCase();
-          const tierClass = `agent-pill__tier agent-pill__tier--${tier.toLowerCase()}`;
-          const statusLabel = agent.status ?? "idle";
-          const statusKey = statusLabel.toLowerCase().replace(/\s+/g, "_");
-
-          return (
-            <button key={agent.id} type="button" className="agent-pill" onClick={() => onSelectAgent(agent)}>
-              <span className={tierClass}>{tier}</span>
-              <img
-                src={agent.icon}
-                alt={agent.name}
-                className="agent-pill__avatar"
-                onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
-                loading="lazy"
-                decoding="async"
-              />
-              <span className="agent-pill__name" title={agent.name}>
-                {agent.name}
-              </span>
-              <span className={`agent-pill__status agent-pill__status--${statusKey}`}>
-                {statusLabel}
-              </span>
-            </button>
-          );
-        })}
-        {!loading && agents.length === 0 && <p className="rail__empty">No agents registered yet.</p>}
+        {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
+        {orderedAgents.map((agent) => (
+          <button key={agent.id} type="button" className={`agent-pill agent-pill--${normalizeStatus(agent.status)}`} onClick={() => onSelectAgent(agent)}>
+            <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+            <img
+              src={agent.icon || FALLBACK_ICON}
+              alt={agent.name}
+              className="agent-pill__avatar"
+              onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="agent-pill__name" title={agent.name}>
+              {agent.name}
+            </span>
+            <span className="agent-pill__status">{formatStatus(agent.status)}</span>
+            {agent.summary && <span className="agent-pill__summary">{agent.summary}</span>}
+          </button>
+        ))}
+        {!loading && orderedAgents.length === 0 && <p className="rail__empty">No agents registered yet.</p>}
       </div>
     </aside>
   );
 };
+
+function normalizeStatus(status: string) {
+  const lower = status.toLowerCase();
+  if (lower.includes("credit")) return "credit";
+  if (lower.includes("cooldown")) return "cooldown";
+  if (lower.includes("issue") || lower.includes("blocked")) return "issue";
+  if (lower.includes("working") || lower.includes("progress") || lower.includes("running")) return "ready";
+  return "ready";
+}
+
+function formatStatus(status: string) {
+  if (!status) return "Idle";
+  return status
+    .split(/[ _-]/)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
 
 export default AgentHangarPanel;

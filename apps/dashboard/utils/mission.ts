@@ -1,4 +1,4 @@
-import { AgentSnapshot, TaskSnapshot } from "@core/types";
+﻿import { AgentSnapshot, TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionEvent } from "../../../src/utils/events";
 import { SLICE_BLUEPRINTS, SliceBlueprint } from "../config/slices";
 import { resolveProviderIcon } from "./icons";
@@ -9,6 +9,15 @@ export interface MissionAgent {
   tier: AgentTier;
   icon: string;
   status: string;
+  summary?: string;
+  cooldownReason?: string | null;
+  costPerRunUsd?: number;
+}
+
+export interface SliceAssignment {
+  task: TaskSnapshot;
+  agent: MissionAgent | null;
+  isBlocking: boolean;
 }
 
 export interface MissionSlice {
@@ -19,11 +28,24 @@ export interface MissionSlice {
   completed: number;
   active: number;
   blocked: number;
+  tokens?: number;
+  expectedTotal?: number;
+  expectedCompleted?: number;
   agents: MissionAgent[];
   tasks: TaskSnapshot[];
+  assignments: SliceAssignment[];
 }
 
 export type AgentTier = "W" | "M" | "Q";
+
+export interface SliceCatalog {
+  id: string;
+  name: string;
+  accent?: string;
+  tokens?: number;
+  tasksTotal?: number;
+  tasksDone?: number;
+}
 
 const GENERAL_BLUEPRINT: SliceBlueprint = {
   id: "general",
@@ -32,52 +54,63 @@ const GENERAL_BLUEPRINT: SliceBlueprint = {
   accent: "#94a3b8",
 };
 
-export function deriveSlices(tasks: TaskSnapshot[], events: MissionEvent[], agents: AgentSnapshot[]): MissionSlice[] {
+export function deriveSlices(
+  tasks: TaskSnapshot[],
+  events: MissionEvent[],
+  agents: AgentSnapshot[],
+  catalog?: SliceCatalog[]
+): MissionSlice[] {
   if (!tasks || tasks.length === 0) {
     return [];
   }
 
   const agentMap = new Map(agents.map((agent) => [agent.id, mapAgent(agent)]));
   const eventByTask = new Map<string, MissionEvent>(events.map((event) => [event.taskId, event]));
+  const catalogMap = new Map((catalog ?? []).map((entry) => [entry.id, entry]));
 
   const sliceAccumulator = new Map<string, MissionSlice>();
 
   for (const task of tasks) {
-    const blueprint = resolveBlueprint(task);
-    const slice = sliceAccumulator.get(blueprint.id) ?? {
-      id: blueprint.id,
-      name: blueprint.name,
-      accent: blueprint.accent,
+    const sliceMeta = resolveSliceMeta(task, catalogMap);
+    const slice = sliceAccumulator.get(sliceMeta.id) ?? {
+      id: sliceMeta.id,
+      name: sliceMeta.name,
+      accent: sliceMeta.accent,
       total: 0,
       completed: 0,
       active: 0,
       blocked: 0,
+      tokens: sliceMeta.tokens,
+      expectedTotal: sliceMeta.tasksTotal,
+      expectedCompleted: sliceMeta.tasksDone,
       agents: [],
       tasks: [],
+      assignments: [],
     };
 
+    const associatedEvent = eventByTask.get(task.id);
+    const bucket = classifyTask(task.status, associatedEvent);
+
+    switch (bucket) {
+      case "completed":
+        slice.completed += 1;
+        break;
+      case "blocked":
+        slice.blocked += 1;
+        break;
+      default:
+        slice.active += 1;
+        break;
+    }
     slice.total += 1;
-    if (isCompleted(task.status)) {
-      slice.completed += 1;
-    } else if (task.status === "blocked") {
-      slice.blocked += 1;
-    } else {
-      slice.active += 1;
-    }
 
-    if (task.owner) {
-      const mappedAgent = agentMap.get(task.owner);
-      if (mappedAgent && !slice.agents.find((item) => item.id === mappedAgent.id)) {
-        slice.agents.push(mappedAgent);
-      }
-    }
-
-    const lastEvent = eventByTask.get(task.id);
-    if (lastEvent && lastEvent.reasonCode?.startsWith("E/")) {
-      slice.blocked += 1;
+    const mappedAgent = task.owner ? agentMap.get(task.owner) ?? null : null;
+    if (mappedAgent && !slice.agents.some((item) => item.id === mappedAgent.id)) {
+      slice.agents.push(mappedAgent);
     }
 
     slice.tasks.push(task);
+    slice.assignments.push({ task, agent: mappedAgent, isBlocking: bucket === "blocked" });
     sliceAccumulator.set(slice.id, slice);
   }
 
@@ -85,16 +118,45 @@ export function deriveSlices(tasks: TaskSnapshot[], events: MissionEvent[], agen
 }
 
 export function mapAgent(agent: AgentSnapshot): MissionAgent {
+  const tier = agent.tier ? normalizeTier(agent.tier) : inferTier(agent.name);
   return {
     id: agent.id,
     name: agent.name,
-    tier: inferTier(agent.name),
-    icon: resolveProviderIcon(agent.name),
+    tier,
+    icon: agent.logo ?? resolveProviderIcon(agent.name),
     status: agent.status,
+    summary: agent.summary,
+    cooldownReason: agent.cooldownReason ?? null,
+    costPerRunUsd: agent.costPerRunUsd,
   };
 }
 
-function resolveBlueprint(task: TaskSnapshot): SliceBlueprint {
+function resolveSliceMeta(task: TaskSnapshot, catalogMap: Map<string, SliceCatalog>) {
+  const catalogEntry = task.sliceId ? catalogMap.get(task.sliceId) : undefined;
+  if (catalogEntry) {
+    return {
+      id: catalogEntry.id,
+      name: catalogEntry.name,
+      accent: catalogEntry.accent ?? GENERAL_BLUEPRINT.accent,
+      tokens: catalogEntry.tokens,
+      tasksTotal: catalogEntry.tasksTotal,
+      tasksDone: catalogEntry.tasksDone,
+    };
+  }
+
+  const blueprint = inferBlueprint(task);
+  const fallbackCatalog = catalogMap.get(blueprint.id);
+  return {
+    id: task.sliceId ?? blueprint.id,
+    name: fallbackCatalog?.name ?? blueprint.name,
+    accent: fallbackCatalog?.accent ?? blueprint.accent,
+    tokens: fallbackCatalog?.tokens,
+    tasksTotal: fallbackCatalog?.tasksTotal,
+    tasksDone: fallbackCatalog?.tasksDone,
+  };
+}
+
+function inferBlueprint(task: TaskSnapshot): SliceBlueprint {
   const title = (task.title ?? "").toLowerCase();
 
   for (const blueprint of SLICE_BLUEPRINTS) {
@@ -104,6 +166,24 @@ function resolveBlueprint(task: TaskSnapshot): SliceBlueprint {
   }
 
   return GENERAL_BLUEPRINT;
+}
+
+function classifyTask(status: TaskStatus, event?: MissionEvent): "completed" | "blocked" | "active" {
+  if (status === "blocked" || event?.reasonCode?.startsWith("E/")) {
+    return "blocked";
+  }
+  if (isCompleted(status)) {
+    return "completed";
+  }
+  return "active";
+}
+
+function normalizeTier(input: string): AgentTier {
+  const normalized = input.toUpperCase();
+  if (normalized === "W" || normalized === "M" || normalized === "Q") {
+    return normalized;
+  }
+  return inferTier(input);
 }
 
 function inferTier(name: string): AgentTier {
@@ -117,7 +197,7 @@ function inferTier(name: string): AgentTier {
   return "Q";
 }
 
-function isCompleted(status: string): boolean {
+function isCompleted(status: TaskStatus): boolean {
   return ["ready_to_merge", "complete", "supervisor_approval"].includes(status);
 }
 
@@ -131,10 +211,11 @@ export interface StatusSummary {
 export function buildStatusSummary(tasks: TaskSnapshot[]): StatusSummary {
   return tasks.reduce<StatusSummary>(
     (acc, task) => {
+      const bucket = classifyTask(task.status);
       acc.total += 1;
-      if (isCompleted(task.status)) {
+      if (bucket === "completed") {
         acc.completed += 1;
-      } else if (task.status === "blocked") {
+      } else if (bucket === "blocked") {
         acc.blocked += 1;
       } else {
         acc.active += 1;

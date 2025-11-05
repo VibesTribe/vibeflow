@@ -1,15 +1,14 @@
-import React, { useMemo, useState } from "react";
+﻿import React, { useMemo, useState } from "react";
 import MissionHeader from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
 import SliceHub from "./SliceHub";
-import RunTaskButton from "./RunTaskButton";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
 import { MissionAgent, MissionSlice } from "../utils/mission";
 
 const VibesMissionControl: React.FC = () => {
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, loading, refresh } = useMissionData();
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage, loading } = useMissionData();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
 
   const snapshotTime = useMemo(() => {
@@ -37,10 +36,12 @@ const VibesMissionControl: React.FC = () => {
         onSelectSlice={handleSelectSlice}
       />
       <main className="mission-main">
-        <div className="mission-main__header">
-          <MissionHeader statusSummary={statusSummary} snapshotTime={snapshotTime} tokenUsage={tokenUsage} />
-          <RunTaskButton onQueued={refresh} />
-        </div>
+        <MissionHeader
+          statusSummary={statusSummary}
+          snapshotTime={snapshotTime}
+          tokenUsage={tokenUsage}
+          onOpenTokens={handleOpenModels}
+        />
         <SliceHub slices={slices} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
       </main>
       <AgentHangarPanel
@@ -50,7 +51,7 @@ const VibesMissionControl: React.FC = () => {
         onAdd={handleOpenAdd}
         onSelectAgent={handleSelectAgent}
       />
-      <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} />
+      <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} />
     </div>
   );
 };

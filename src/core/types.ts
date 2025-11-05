@@ -21,6 +21,21 @@ export type TaskStatus =
   | "complete"
   | "blocked";
 
+export type TaskLocation =
+  | { kind: "platform"; label: string; link?: string }
+  | { kind: "mcp"; label: string; endpoint?: string }
+  | { kind: "internal"; label: string };
+
+export interface TaskAssetLink {
+  label: string;
+  href: string;
+}
+
+export interface TaskPacketDetails {
+  prompt: string;
+  attachments?: TaskAssetLink[];
+}
+
 export interface TaskSnapshot {
   id: string;
   title: string;
@@ -29,6 +44,17 @@ export interface TaskSnapshot {
   updatedAt: string;
   owner?: string | null;
   lessons?: Array<{ title: string; summary: string }>;
+  sliceId?: string;
+  taskNumber?: string;
+  location?: TaskLocation;
+  dependencies?: string[];
+  packet?: TaskPacketDetails;
+  summary?: string;
+  metrics?: {
+    tokensUsed?: number;
+    runtimeSeconds?: number;
+    costUsd?: number;
+  };
 }
 
 export interface AgentSnapshot {
@@ -37,6 +63,10 @@ export interface AgentSnapshot {
   status: string;
   summary: string;
   updatedAt: string;
+  logo?: string;
+  tier?: string;
+  cooldownReason?: string | null;
+  costPerRunUsd?: number;
 }
 
 export interface FailureSnapshot {
