@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from "react";
+import React, { useMemo } from "react";
 import { StatusSummary } from "../utils/mission";
 
 interface MissionHeaderProps {
@@ -18,7 +18,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 
   return (
     <header className="mission-header">
-      <div className="mission-header__left">
+      <div className="mission-header__row">
         <div className="mission-header__identity">
           <span className="vibes-orb" aria-hidden="true">
             <span className="vibes-orb__inner">
@@ -35,22 +35,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
               <span className="mission-header__brand">Vibeflow</span>
             </p>
             <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
-          </div>
-        </div>
-        <div className="mission-header__progress">
-          <div className="mission-progress__label">
-            <span>Mission completion</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="mission-progress__bar" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
-            <span style={{ width: `${progress}%` }} />
+            <p className="mission-header__timestamp">Snapshot {snapshotTime}</p>
           </div>
         </div>
         <dl className="mission-header__meta" aria-label="Mission snapshot">
-          <div>
-            <dt>Snapshot</dt>
-            <dd>{snapshotTime}</dd>
-          </div>
           <div>
             <dt>Active</dt>
             <dd>{statusSummary.active}</dd>
@@ -68,14 +56,27 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
             <dd>{statusSummary.total}</dd>
           </div>
         </dl>
+        <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
+          <span className="token-pill__icon" aria-hidden="true" />
+          <div className="token-pill__copy">
+            <strong>{tokenUsage.toLocaleString()}</strong>
+            <small>mission tokens</small>
+          </div>
+        </button>
       </div>
-      <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
-        <span className="token-pill__icon" aria-hidden="true" />
-        <div className="token-pill__copy">
-          <strong>{tokenUsage.toLocaleString()}</strong>
-          <small>mission tokens</small>
+      <div
+        className="mission-progress"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Mission completion"
+      >
+        <div className="mission-progress__track">
+          <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
         </div>
-      </button>
+        <span className="mission-progress__value">{progress}%</span>
+      </div>
     </header>
   );
 };
