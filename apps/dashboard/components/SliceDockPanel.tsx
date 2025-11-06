@@ -47,3 +47,4 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
 };
 
 export default SliceDockPanel;
+
