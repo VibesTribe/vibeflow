@@ -38,7 +38,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
             <p className="mission-header__timestamp">Snapshot {snapshotTime}</p>
           </div>
         </div>
-        <dl className="mission-header__meta" aria-label="Mission snapshot">
+        <dl className="mission-header__stats" aria-label="Mission snapshot">
           <div>
             <dt>Active</dt>
             <dd>{statusSummary.active}</dd>
@@ -56,6 +56,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
             <dd>{statusSummary.total}</dd>
           </div>
         </dl>
+      </div>
+      <div className="mission-header__token">
         <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
           <span className="token-pill__icon" aria-hidden="true" />
           <div className="token-pill__copy">
@@ -82,3 +84,4 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 };
 
 export default MissionHeader;
+
