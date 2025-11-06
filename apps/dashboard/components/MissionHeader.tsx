@@ -18,7 +18,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 
   return (
     <header className="mission-header">
-      <div className="mission-header__row">
+      <div className="mission-header__top">
         <div className="mission-header__identity">
           <span className="vibes-orb" aria-hidden="true">
             <span className="vibes-orb__inner">
@@ -38,26 +38,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
             <p className="mission-header__timestamp">Snapshot {snapshotTime}</p>
           </div>
         </div>
-        <dl className="mission-header__stats" aria-label="Mission snapshot">
-          <div>
-            <dt>Active</dt>
-            <dd>{statusSummary.active}</dd>
-          </div>
-          <div>
-            <dt>Complete</dt>
-            <dd>{statusSummary.completed}</dd>
-          </div>
-          <div>
-            <dt>Blocked</dt>
-            <dd>{statusSummary.blocked}</dd>
-          </div>
-          <div>
-            <dt>Total</dt>
-            <dd>{statusSummary.total}</dd>
-          </div>
-        </dl>
-      </div>
-      <div className="mission-header__token">
         <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
           <span className="token-pill__icon" aria-hidden="true" />
           <div className="token-pill__copy">
@@ -66,6 +46,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           </div>
         </button>
       </div>
+      <dl className="mission-header__stats" aria-label="Mission snapshot">
+        <div>
+          <dt>Active</dt>
+          <dd>{statusSummary.active}</dd>
+        </div>
+        <div>
+          <dt>Complete</dt>
+          <dd>{statusSummary.completed}</dd>
+        </div>
+        <div>
+          <dt>Blocked</dt>
+          <dd>{statusSummary.blocked}</dd>
+        </div>
+        <div>
+          <dt>Total</dt>
+          <dd>{statusSummary.total}</dd>
+        </div>
+      </dl>
       <div
         className="mission-progress"
         role="progressbar"
@@ -84,4 +82,3 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 };
 
 export default MissionHeader;
-
