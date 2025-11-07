@@ -45,10 +45,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           <span className="token-pill__pacman" aria-hidden="true">
             <span className="token-pill__dots" />
           </span>
-          <div className="token-pill__copy">
-            <strong>{tokenUsage.toLocaleString()}</strong>
-            <span>tokens</span>
-          </div>
+          <span className="token-pill__value">{tokenUsage.toLocaleString()}</span>
+          <span className="token-pill__label">TOKENS</span>
         </button>
       </div>
       <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
