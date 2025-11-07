@@ -16,6 +16,13 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
     return Math.round((statusSummary.completed / statusSummary.total) * 100);
   }, [statusSummary.completed, statusSummary.total]);
 
+  const taskStats = [
+    { label: "Active", value: statusSummary.active },
+    { label: "Complete", value: statusSummary.completed },
+    { label: "Blocked", value: statusSummary.blocked },
+    { label: "Total", value: statusSummary.total },
+  ];
+
   return (
     <header className="mission-header">
       <div className="mission-header__top">
@@ -35,7 +42,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
               <span className="mission-header__brand">Vibeflow</span>
             </p>
             <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
-            <p className="mission-header__timestamp">Snapshot {snapshotTime}</p>
           </div>
         </div>
         <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
@@ -46,24 +52,19 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           </div>
         </button>
       </div>
-      <dl className="mission-header__stats" aria-label="Mission snapshot">
-        <div>
-          <dt>Active</dt>
-          <dd>{statusSummary.active}</dd>
+      <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
+        <span className="mission-header__stats-label">Tasks</span>
+        {taskStats.map((stat) => (
+          <div key={stat.label}>
+            <span>{stat.label}</span>
+            <strong>{stat.value}</strong>
+          </div>
+        ))}
+        <div className="mission-header__stats-snapshot">
+          <span>Snapshot</span>
+          <strong>{snapshotTime}</strong>
         </div>
-        <div>
-          <dt>Complete</dt>
-          <dd>{statusSummary.completed}</dd>
-        </div>
-        <div>
-          <dt>Blocked</dt>
-          <dd>{statusSummary.blocked}</dd>
-        </div>
-        <div>
-          <dt>Total</dt>
-          <dd>{statusSummary.total}</dd>
-        </div>
-      </dl>
+      </div>
       <div
         className="mission-progress"
         role="progressbar"

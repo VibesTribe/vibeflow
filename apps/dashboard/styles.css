@@ -3293,3 +3293,169 @@ a {
   background: rgba(9, 18, 36, 0.9);
   border-color: rgba(94, 234, 212, 0.5);
 }
+
+/* --- Mission control refinements (pass 3) --- */
+.mission-root {
+  grid-template-columns: 110px minmax(0, 1fr) 110px;
+}
+
+.mission-main {
+  padding: 18px 22px 26px;
+  gap: 18px;
+  margin: 0 8px;
+}
+
+.mission-header {
+  padding: 12px 16px 14px;
+  border-radius: 24px;
+  box-shadow: 0 18px 32px rgba(5, 11, 24, 0.4);
+  gap: 8px;
+}
+
+.mission-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.mission-header__titles {
+  gap: 4px;
+}
+
+.mission-header__stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.52rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.mission-header__stats-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.32em;
+  color: rgba(148, 163, 184, 0.65);
+}
+
+.mission-header__stats div,
+.mission-header__stats-snapshot {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.mission-header__stats div span,
+.mission-header__stats-snapshot span {
+  font-size: 0.45rem;
+  letter-spacing: 0.24em;
+  color: rgba(148, 163, 184, 0.6);
+}
+
+.mission-header__stats div strong,
+.mission-header__stats-snapshot strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
+}
+
+.token-pill {
+  padding: 4px 12px;
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(54, 109, 175, 0.6);
+  background: radial-gradient(circle at 15% 30%, rgba(242, 201, 76, 0.3), rgba(9, 16, 32, 0.92));
+  box-shadow: 0 10px 14px rgba(4, 10, 22, 0.45);
+}
+
+.token-pill__icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.token-pill__copy strong {
+  font-size: 0.78rem;
+}
+
+.token-pill__copy small {
+  letter-spacing: 0.18em;
+}
+
+.rail__button {
+  background: rgba(11, 19, 33, 0.85);
+  border: 1px solid rgba(60, 80, 120, 0.45);
+  color: rgba(226, 232, 240, 0.85);
+  opacity: 0.85;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.rail__button--primary {
+  background: rgba(14, 24, 44, 0.9);
+  border-color: rgba(94, 234, 212, 0.35);
+}
+
+.rail__button--ghost {
+  border-color: rgba(70, 92, 133, 0.45);
+}
+
+.rail__button:hover {
+  opacity: 1;
+  border-color: rgba(94, 234, 212, 0.65);
+  color: #f8fafc;
+}
+
+.rail__tabs .rail__button {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 0.48rem;
+}
+
+.slice-orbit {
+  width: 220px;
+  height: 220px;
+  border: none;
+  overflow: visible;
+}
+
+.slice-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), rgba(32, 52, 78, 0.25) var(--slice-progress, 0%));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 4px));
+  opacity: 0.9;
+}
+
+.slice-orbit__node {
+  min-width: 96px;
+  padding: 8px 10px;
+}
+
+.slice-orbit__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.slice-orbit__connector {
+  stroke-width: 1.1;
+}
+
+.mission-modal__close {
+  font-family: inherit;
+  background: rgba(5, 9, 21, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #f8fafc;
+}
+
+.mission-modal__close:hover {
+  background: rgba(9, 18, 36, 0.9);
+  border-color: rgba(94, 234, 212, 0.5);
+}
