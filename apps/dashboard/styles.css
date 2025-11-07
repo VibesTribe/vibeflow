@@ -3900,3 +3900,69 @@ a {
     stroke-dashoffset: -40;
   }
 }
+
+/* --- Mission control refinements (pass 6) --- */
+.mission-root {
+  grid-template-columns: 124px minmax(0, 1fr) 142px;
+  column-gap: 20px;
+  padding: 0 14px;
+}
+
+.mission-main {
+  max-width: none;
+  margin: 0;
+}
+
+.mission-header__top {
+  align-items: center;
+}
+
+.token-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 4px 10px;
+}
+
+.token-pill__pacman {
+  transform: rotate(170deg);
+}
+
+.token-pill__value {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+
+.token-pill__label {
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+}
+
+.slice-orbit {
+  min-height: auto !important;
+  display: block !important;
+  margin-left: 0;
+}
+
+.slice-orbit__ring,
+.slice-orbit__ring::before,
+.slice-orbit__ring::after {
+  display: none !important;
+}
+
+.slice-orbit__node::after {
+  display: none !important;
+}
+
+.slice-orbit__connector {
+  stroke: rgba(94, 234, 212, 0.9);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 6;
+  animation: orbitFlow 3s linear infinite;
+}
+
+@keyframes orbitFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -36; }
+}
