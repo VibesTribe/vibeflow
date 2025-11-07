@@ -4030,19 +4030,19 @@ a {
 /* --- Mission control refinements (pass 7) --- */
 .mission-root {
   grid-template-columns: 128px minmax(0, 1fr) 128px !important;
-  column-gap: 0 !important;
-  padding: 0 !important;
+  column-gap: 18px !important;
+  padding: 0 18px !important;
   align-items: stretch !important;
 }
 
 .mission-main {
-  margin: 0 !important;
+  margin: 0 auto !important;
   width: 100% !important;
-  max-width: none !important;
+  max-width: min(1280px, calc(100vw - 320px)) !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
-  z-index: 2;
+  z-index: 0;
 }
 
 .rail {
@@ -4050,7 +4050,7 @@ a {
   top: 0 !important;
   height: 100vh !important;
   padding: 18px 12px 20px !important;
-  z-index: 0;
+  z-index: 1;
 }
 
 .rail--left,
@@ -4106,8 +4106,8 @@ a {
 
 .token-chip__pacman {
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: conic-gradient(from -12deg, #facc15 0deg 320deg, transparent 320deg 360deg);
   display: inline-flex;
@@ -4115,6 +4115,8 @@ a {
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+  transform: rotate(205deg);
+  margin-right: 6px;
 }
 
 .token-chip__pacman::after {
@@ -4129,8 +4131,8 @@ a {
 }
 
 .token-chip__dots {
-  width: 3px;
-  height: 3px;
+  width: 2px;
+  height: 2px;
   border-radius: 50%;
   background: #020617;
 }
@@ -4170,6 +4172,7 @@ a {
   display: block !important;
   overflow: visible !important;
   min-height: auto !important;
+  z-index: 0 !important;
 }
 
 .slice-orbit::before,
@@ -4178,12 +4181,12 @@ a {
   position: absolute !important;
   inset: 14px !important;
   border-radius: 50% !important;
-  z-index: 0 !important;
 }
 
 .slice-orbit::before {
   border: 1px solid rgba(148, 163, 184, 0.25) !important;
   background: transparent !important;
+  z-index: 0 !important;
 }
 
 .slice-orbit::after {
@@ -4192,6 +4195,7 @@ a {
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
   mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
   opacity: 0.85 !important;
+  z-index: -1 !important;
 }
 
 .slice-orbit__progress {
@@ -4203,16 +4207,18 @@ a {
   inset: 0 !important;
   overflow: visible !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
 .slice-orbit__connector {
   stroke: rgba(94, 234, 212, 0.95) !important;
-  stroke-width: 1.6 !important;
-  stroke-dasharray: 4 7 !important;
+  stroke-width: 1.8 !important;
+  stroke-dasharray: 6 6 !important;
   stroke-linecap: round !important;
   vector-effect: non-scaling-stroke !important;
   animation: orbitFlowHighlight 2.6s linear infinite !important;
+  filter: drop-shadow(0 0 4px rgba(94, 234, 212, 0.6));
+  mix-blend-mode: screen;
 }
 
 .slice-orbit__connector--internal { stroke: rgba(148, 163, 184, 0.85) !important; }
@@ -4239,7 +4245,7 @@ a {
   padding: 12px !important;
   text-align: center !important;
   position: relative !important;
-  z-index: 2 !important;
+  z-index: 3 !important;
 }
 
 .slice-orbit__name {
@@ -4272,7 +4278,7 @@ a {
   transform: translate(-50%, -50%) !important;
   padding: 0 !important;
   box-shadow: 0 6px 16px rgba(2, 6, 23, 0.65);
-  z-index: 2 !important;
+  z-index: 4 !important;
 }
 
 .slice-orbit__node--west,

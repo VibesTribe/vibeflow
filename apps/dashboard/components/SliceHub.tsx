@@ -87,14 +87,6 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
 
   return (
     <article className="slice-orbit-card">
-      <header className="slice-orbit-card__header">
-        <div>
-          <h3>{slice.name}</h3>
-          <p>
-            {slice.active} active {"\u00B7"} {slice.completed} complete {"\u00B7"} {slice.total} total
-          </p>
-        </div>
-      </header>
       <div className="slice-orbit-card__body">
         <div
           className="slice-orbit"
