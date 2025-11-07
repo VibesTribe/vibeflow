@@ -4023,3 +4023,130 @@ a {
   from { stroke-dashoffset: 0; }
   to { stroke-dashoffset: -36; }
 }
+
+/* --- Mission control refinements (pass 7) --- */
+.mission-root {
+  grid-template-columns: 128px minmax(0, 1fr) 136px !important;
+  column-gap: 16px !important;
+  padding: 0 14px !important;
+}
+
+.mission-main {
+  margin: 0 auto !important;
+  border-radius: 0 !important;
+  max-width: min(1320px, calc(100vw - 250px)) !important;
+  position: relative;
+  z-index: 1;
+}
+
+.rail {
+  border-radius: 0 !important;
+  position: relative;
+  z-index: 2;
+}
+
+.rail--left,
+.rail--right {
+  border: none !important;
+}
+
+.token-pill {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  min-height: 26px;
+}
+
+.token-pill__pacman {
+  transform: rotate(195deg);
+}
+
+.token-pill__dots {
+  display: none;
+}
+
+.token-pill__value {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
+}
+
+.token-pill__label {
+  display: inline-block;
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.rail__button,
+.rail__button--primary,
+.rail__button--ghost {
+  background: rgba(11, 19, 33, 0.88) !important;
+  border: 1px solid rgba(60, 80, 120, 0.35) !important;
+  box-shadow: none !important;
+}
+
+.slice-orbit-card__body {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.slice-orbit {
+  width: 150px !important;
+  height: 150px !important;
+  min-height: auto !important;
+  background: none !important;
+  overflow: visible !important;
+  margin: 0 auto;
+}
+
+.slice-orbit::before,
+.slice-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+}
+
+.slice-orbit::before {
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.slice-orbit::after {
+  border: 2px solid transparent;
+  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
+  opacity: 0.55;
+}
+
+.slice-orbit__progress,
+.slice-orbit__ring,
+.slice-orbit__ring::before,
+.slice-orbit__ring::after,
+.slice-orbit__node::after {
+  display: none !important;
+}
+
+.slice-orbit__connections {
+  overflow: visible;
+}
+
+.slice-orbit__connector {
+  stroke: rgba(94, 234, 212, 0.95);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  animation: orbitFlowHighlight 2.6s linear infinite;
+}
+
+@keyframes orbitFlowHighlight {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -36; }
+}
