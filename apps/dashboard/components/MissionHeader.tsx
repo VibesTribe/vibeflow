@@ -47,7 +47,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           </span>
           <div className="token-pill__copy">
             <strong>{tokenUsage.toLocaleString()}</strong>
-            <small>mission tokens</small>
+            <span>tokens</span>
           </div>
         </button>
       </div>
@@ -82,3 +82,4 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 };
 
 export default MissionHeader;
+
