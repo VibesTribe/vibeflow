@@ -140,9 +140,9 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(14, 23, 42, 0.78);
-  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: rgba(18, 28, 52, 0.92);
+  color: #f8fafc;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -151,12 +151,12 @@ a {
 
 .rail__button:hover {
   transform: translateY(-1px);
-  border-color: rgba(125, 211, 252, 0.65);
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+  border-color: rgba(125, 211, 252, 0.85);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
 }
 
 .rail__button--primary {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(94, 234, 212, 0.9));
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(251, 191, 36, 0.9));
   border-color: transparent;
   color: #04121f;
   box-shadow: 0 12px 24px rgba(56, 189, 248, 0.25);
@@ -170,7 +170,8 @@ a {
   margin-top: 4px;
   font-size: 0.6rem;
   letter-spacing: 0.28em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(203, 213, 225, 0.9);
+  text-align: center;
 }
 
 .rail__scroll {
@@ -2509,9 +2510,9 @@ a {
 
 .slice-dial__meta,
 .slice-dial__tokens {
-  font-size: 0.48rem;
+  font-size: 0.52rem;
   letter-spacing: 0.14em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(226, 232, 240, 0.88);
 }
 
 .vibes-orb {
@@ -4029,20 +4030,21 @@ a {
 
 /* --- Mission control refinements (pass 7) --- */
 .mission-root {
-  grid-template-columns: 128px minmax(0, 1fr) 128px !important;
-  column-gap: 18px !important;
-  padding: 0 18px !important;
+  grid-template-columns: 124px minmax(0, 1fr) 124px !important;
+  column-gap: 0 !important;
+  padding: 0 !important;
   align-items: stretch !important;
 }
 
 .mission-main {
-  margin: 0 auto !important;
+  margin: 0 !important;
   width: 100% !important;
-  max-width: min(1280px, calc(100vw - 320px)) !important;
+  max-width: none !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
   z-index: 0;
+  padding: 0 20px;
 }
 
 .rail {
@@ -4051,6 +4053,8 @@ a {
   height: 100vh !important;
   padding: 18px 12px 20px !important;
   z-index: 1;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .rail--left,
@@ -4081,22 +4085,22 @@ a {
 
 .mission-header__stats div span,
 .mission-header__stats-snapshot span {
-  font-size: 0.48rem;
-  letter-spacing: 0.28em;
-  color: rgba(148, 163, 184, 0.6);
+  font-size: 0.5rem;
+  letter-spacing: 0.26em;
+  color: rgba(203, 213, 225, 0.85);
 }
 
 .mission-header__stats div strong,
 .mission-header__stats-snapshot strong {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: #f8fafc;
 }
 
 .token-chip {
   display: inline-flex !important;
   align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
+  gap: 8px;
+  padding: 4px 14px;
   border-radius: 999px;
   border: 1px solid rgba(250, 204, 21, 0.5);
   background: rgba(8, 14, 28, 0.92);
@@ -4104,55 +4108,22 @@ a {
   margin-left: auto;
 }
 
-.token-chip__pacman {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: conic-gradient(from -12deg, #facc15 0deg 320deg, transparent 320deg 360deg);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
-  transform: rotate(205deg);
-  margin-right: 6px;
-}
-
-.token-chip__pacman::after {
-  content: "";
-  position: absolute;
-  right: -10px;
-  width: 16px;
-  height: 2px;
-  border-radius: 999px;
-  background: repeating-linear-gradient(90deg, #fef9c3 0 4px, transparent 4px 6px);
-  opacity: 0.8;
-}
-
-.token-chip__dots {
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: #020617;
-}
-
 .token-chip__value {
   display: inline-flex;
   align-items: baseline;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: #fefad8;
 }
 
 .token-chip__label {
   display: inline-flex;
   align-items: baseline;
-  font-size: 0.5rem;
-  letter-spacing: 0.32em;
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.8);
+  color: rgba(248, 250, 252, 0.85);
 }
 
 .slice-orbit-card__body {
@@ -4211,9 +4182,9 @@ a {
 }
 
 .slice-orbit__connector {
-  stroke: rgba(94, 234, 212, 0.95) !important;
-  stroke-width: 1.8 !important;
-  stroke-dasharray: 6 6 !important;
+  stroke: rgba(92, 225, 230, 0.95) !important;
+  stroke-width: 2.2 !important;
+  stroke-dasharray: 5 4 !important;
   stroke-linecap: round !important;
   vector-effect: non-scaling-stroke !important;
   animation: orbitFlowHighlight 2.6s linear infinite !important;
@@ -4221,10 +4192,10 @@ a {
   mix-blend-mode: screen;
 }
 
-.slice-orbit__connector--internal { stroke: rgba(148, 163, 184, 0.85) !important; }
-.slice-orbit__connector--mcp { stroke: rgba(249, 168, 212, 0.9) !important; }
-.slice-orbit__connector--platform { stroke: rgba(96, 165, 250, 0.95) !important; }
-.slice-orbit__connector--edge { stroke: rgba(74, 222, 128, 0.85) !important; }
+.slice-orbit__connector--internal { stroke: rgba(226, 232, 240, 0.85) !important; }
+.slice-orbit__connector--mcp { stroke: rgba(249, 168, 212, 0.95) !important; }
+.slice-orbit__connector--platform { stroke: rgba(125, 211, 252, 0.95) !important; }
+.slice-orbit__connector--edge { stroke: rgba(52, 211, 153, 0.95) !important; }
 
 @keyframes orbitFlowHighlight {
   from { stroke-dashoffset: 0; }
@@ -4232,8 +4203,8 @@ a {
 }
 
 .slice-orbit__center {
-  width: 116px !important;
-  height: 116px !important;
+  width: 132px !important;
+  height: 132px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(71, 85, 105, 0.6) !important;
   background: radial-gradient(circle, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.96)) !important;
@@ -4279,6 +4250,10 @@ a {
   padding: 0 !important;
   box-shadow: 0 6px 16px rgba(2, 6, 23, 0.65);
   z-index: 4 !important;
+}
+
+.slice-orbit__node::after {
+  display: none !important;
 }
 
 .slice-orbit__node--west,
@@ -4345,10 +4320,7 @@ a {
 }
 
 .slice-orbit__location {
-  top: calc(100% + 16px);
-  font-size: 0.42rem !important;
-  letter-spacing: 0.18em !important;
-  color: rgba(148, 163, 184, 0.75) !important;
+  display: none !important;
 }
 
 .slice-orbit__location--mcp { color: rgba(249, 168, 212, 0.9); }
