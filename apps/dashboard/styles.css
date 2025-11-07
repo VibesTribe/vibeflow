@@ -4042,7 +4042,7 @@ a {
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
-  z-index: 0;
+  z-index: 2;
 }
 
 .rail {
@@ -4050,7 +4050,7 @@ a {
   top: 0 !important;
   height: 100vh !important;
   padding: 18px 12px 20px !important;
-  z-index: 1;
+  z-index: 0;
 }
 
 .rail--left,
@@ -4092,7 +4092,7 @@ a {
   color: #f8fafc;
 }
 
-.token-pill {
+.token-chip {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
@@ -4104,7 +4104,7 @@ a {
   margin-left: auto;
 }
 
-.token-pill__pacman {
+.token-chip__pacman {
   position: relative;
   width: 20px;
   height: 20px;
@@ -4117,7 +4117,7 @@ a {
   box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
 }
 
-.token-pill__pacman::after {
+.token-chip__pacman::after {
   content: "";
   position: absolute;
   right: -10px;
@@ -4128,14 +4128,14 @@ a {
   opacity: 0.8;
 }
 
-.token-pill__dots {
+.token-chip__dots {
   width: 3px;
   height: 3px;
   border-radius: 50%;
   background: #020617;
 }
 
-.token-pill__value {
+.token-chip__value {
   display: inline-flex;
   align-items: baseline;
   font-size: 0.78rem;
@@ -4144,7 +4144,7 @@ a {
   color: #fefad8;
 }
 
-.token-pill__label {
+.token-chip__label {
   display: inline-flex;
   align-items: baseline;
   font-size: 0.5rem;
@@ -4164,28 +4164,34 @@ a {
   width: 184px !important;
   height: 184px !important;
   background: none !important;
-  position: relative;
-  margin: 0 auto;
+  position: relative !important;
+  margin: 0 auto !important;
+  border: none !important;
+  display: block !important;
+  overflow: visible !important;
+  min-height: auto !important;
 }
 
 .slice-orbit::before,
 .slice-orbit::after {
-  content: "";
-  position: absolute;
-  inset: 14px;
-  border-radius: 50%;
+  content: "" !important;
+  position: absolute !important;
+  inset: 14px !important;
+  border-radius: 50% !important;
+  z-index: 0 !important;
 }
 
 .slice-orbit::before {
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  background: transparent !important;
 }
 
 .slice-orbit::after {
-  border: 2px solid transparent;
-  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), transparent 0);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
-  opacity: 0.85;
+  border: 2px solid transparent !important;
+  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), transparent 0) !important;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
+  opacity: 0.85 !important;
 }
 
 .slice-orbit__progress {
@@ -4193,25 +4199,26 @@ a {
 }
 
 .slice-orbit__connections {
-  position: absolute;
-  inset: 0;
-  overflow: visible;
-  pointer-events: none;
+  position: absolute !important;
+  inset: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
 }
 
 .slice-orbit__connector {
-  stroke: rgba(94, 234, 212, 0.95);
-  stroke-width: 1.6;
-  stroke-dasharray: 4 7;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  animation: orbitFlowHighlight 2.6s linear infinite;
+  stroke: rgba(94, 234, 212, 0.95) !important;
+  stroke-width: 1.6 !important;
+  stroke-dasharray: 4 7 !important;
+  stroke-linecap: round !important;
+  vector-effect: non-scaling-stroke !important;
+  animation: orbitFlowHighlight 2.6s linear infinite !important;
 }
 
-.slice-orbit__connector--internal { stroke: rgba(148, 163, 184, 0.85); }
-.slice-orbit__connector--mcp { stroke: rgba(249, 168, 212, 0.9); }
-.slice-orbit__connector--platform { stroke: rgba(96, 165, 250, 0.95); }
-.slice-orbit__connector--edge { stroke: rgba(74, 222, 128, 0.85); }
+.slice-orbit__connector--internal { stroke: rgba(148, 163, 184, 0.85) !important; }
+.slice-orbit__connector--mcp { stroke: rgba(249, 168, 212, 0.9) !important; }
+.slice-orbit__connector--platform { stroke: rgba(96, 165, 250, 0.95) !important; }
+.slice-orbit__connector--edge { stroke: rgba(74, 222, 128, 0.85) !important; }
 
 @keyframes orbitFlowHighlight {
   from { stroke-dashoffset: 0; }
@@ -4221,16 +4228,18 @@ a {
 .slice-orbit__center {
   width: 116px !important;
   height: 116px !important;
-  border-radius: 50%;
-  border: 1px solid rgba(71, 85, 105, 0.6);
-  background: radial-gradient(circle, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.96));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 12px;
-  text-align: center;
+  border-radius: 50% !important;
+  border: 1px solid rgba(71, 85, 105, 0.6) !important;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.96)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  padding: 12px !important;
+  text-align: center !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .slice-orbit__name {
@@ -4259,10 +4268,11 @@ a {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  position: absolute;
-  transform: translate(-50%, -50%);
+  position: absolute !important;
+  transform: translate(-50%, -50%) !important;
   padding: 0 !important;
   box-shadow: 0 6px 16px rgba(2, 6, 23, 0.65);
+  z-index: 2 !important;
 }
 
 .slice-orbit__node--west,

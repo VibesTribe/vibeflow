@@ -54,12 +54,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           <span>Snapshot</span>
           <strong>{snapshotTime}</strong>
         </div>
-        <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
-          <span className="token-pill__pacman" aria-hidden="true">
-            <span className="token-pill__dots" />
+        <button type="button" className="token-chip" title="Open ROI + token usage" onClick={onOpenTokens}>
+          <span className="token-chip__pacman" aria-hidden="true">
+            <span className="token-chip__dots" />
           </span>
-          <span className="token-pill__value">{tokenUsage.toLocaleString()}</span>
-          <span className="token-pill__label">TOKENS</span>
+          <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
+          <span className="token-chip__label">TOKENS</span>
         </button>
       </div>
       <div
