@@ -16,7 +16,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
     return Math.round((statusSummary.completed / statusSummary.total) * 100);
   }, [statusSummary.completed, statusSummary.total]);
 
-  const taskStats = [
+  const stats = [
     { label: "Active", value: statusSummary.active },
     { label: "Complete", value: statusSummary.completed },
     { label: "Blocked", value: statusSummary.blocked },
@@ -28,10 +28,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
       <div className="mission-header__top">
         <div className="mission-header__identity">
           <span className="vibes-orb" aria-hidden="true">
-            <span className="vibes-orb__inner">
-              Vibes
-              <span className="vibes-orb__note" aria-hidden="true" />
-            </span>
+            <span className="vibes-orb__label">Vibes</span>
           </span>
           <div className="mission-header__titles">
             <p className="mission-header__eyebrow">
@@ -54,7 +51,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
       </div>
       <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
         <span className="mission-header__stats-label">Tasks</span>
-        {taskStats.map((stat) => (
+        {stats.map((stat) => (
           <div key={stat.label}>
             <span>{stat.label}</span>
             <strong>{stat.value}</strong>

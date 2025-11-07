@@ -72,7 +72,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
       <div className="mission-modal">
         <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
-          �
+          {"\u00D7"}
         </button>
         {content}
       </div>
@@ -540,6 +540,7 @@ function extractEventMessage(event: MissionEvent): string | null {
 function isCompleted(status: TaskSnapshot["status"]) {
   return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval";
 }
+
 
 
 
