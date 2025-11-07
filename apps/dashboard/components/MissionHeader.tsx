@@ -41,13 +41,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
             <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
           </div>
         </div>
-        <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
-          <span className="token-pill__pacman" aria-hidden="true">
-            <span className="token-pill__dots" />
-          </span>
-          <span className="token-pill__value">{tokenUsage.toLocaleString()}</span>
-          <span className="token-pill__label">TOKENS</span>
-        </button>
       </div>
       <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
         <span className="mission-header__stats-label">Tasks</span>
@@ -61,6 +54,13 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           <span>Snapshot</span>
           <strong>{snapshotTime}</strong>
         </div>
+        <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
+          <span className="token-pill__pacman" aria-hidden="true">
+            <span className="token-pill__dots" />
+          </span>
+          <span className="token-pill__value">{tokenUsage.toLocaleString()}</span>
+          <span className="token-pill__label">TOKENS</span>
+        </button>
       </div>
       <div
         className="mission-progress"
