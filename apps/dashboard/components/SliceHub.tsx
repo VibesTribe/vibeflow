@@ -157,9 +157,6 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
     return null;
   }
 
-  const locationLabel = assignment.task.location?.label ?? "Internal";
-  const locationKind = assignment.task.location?.kind ?? "internal";
-
   const quadrant = Math.cos(angleRad) >= 0 ? "east" : "west";
   const vertical = Math.sin(angleRad) >= 0 ? "south" : "north";
 
@@ -181,7 +178,6 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
       />
       <span className={`slice-orbit__badge slice-orbit__badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
       <span className="slice-orbit__task">{assignment.task.taskNumber ?? assignment.task.title}</span>
-      <span className={`slice-orbit__location slice-orbit__location--${locationKind}`}>{locationLabel}</span>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
   );
