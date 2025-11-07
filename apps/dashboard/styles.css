@@ -3901,16 +3901,23 @@ a {
   }
 }
 
+
+
 /* --- Mission control refinements (pass 6) --- */
 .mission-root {
-  grid-template-columns: 124px minmax(0, 1fr) 142px;
-  column-gap: 20px;
-  padding: 0 14px;
+  grid-template-columns: 138px minmax(0, 1fr) 150px;
+  column-gap: 28px;
+  padding: 0 16px;
 }
 
 .mission-main {
-  max-width: none;
+  border-radius: 0;
   margin: 0;
+  max-width: min(1380px, calc(100vw - 260px));
+}
+
+.rail {
+  border-radius: 0;
 }
 
 .mission-header__top {
@@ -3926,39 +3933,79 @@ a {
 }
 
 .token-pill__pacman {
-  transform: rotate(170deg);
+  transform: rotate(200deg);
+}
+
+.token-pill__dots {
+  display: none;
 }
 
 .token-pill__value {
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
 }
 
 .token-pill__label {
   font-size: 0.5rem;
   letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.rail__button,
+.rail__button--primary,
+.rail__button--ghost {
+  background: rgba(11, 19, 33, 0.85);
+  border: 1px solid rgba(60, 80, 120, 0.35);
+  box-shadow: none;
+}
+
+.slice-orbit-card__body {
+  display: flex;
+  justify-content: center;
 }
 
 .slice-orbit {
-  min-height: auto !important;
-  display: block !important;
-  margin-left: 0;
+  width: 160px;
+  height: 160px;
+  border: none;
+  background: none;
+  overflow: visible;
+}
+
+.slice-orbit::before,
+.slice-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+}
+
+.slice-orbit::before {
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+.slice-orbit::after {
+  border: 2px solid transparent;
+  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), transparent 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
+  opacity: 0.55;
 }
 
 .slice-orbit__ring,
 .slice-orbit__ring::before,
-.slice-orbit__ring::after {
-  display: none !important;
-}
-
-.slice-orbit__node::after {
+.slice-orbit__ring::after,
+.slice-orbit__node::after,
+.slice-orbit__progress {
   display: none !important;
 }
 
 .slice-orbit__connector {
   stroke: rgba(94, 234, 212, 0.9);
-  stroke-width: 1.4;
+  stroke-width: 1.2;
   stroke-dasharray: 3 6;
+  stroke-linecap: round;
   animation: orbitFlow 3s linear infinite;
 }
 

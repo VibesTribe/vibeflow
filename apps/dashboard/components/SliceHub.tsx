@@ -93,9 +93,6 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
             {slice.active} active {"\u00B7"} {slice.completed} complete {"\u00B7"} {slice.total} total
           </p>
         </div>
-        <button type="button" className="slice-orbit-card__cta" onClick={() => onSelectSlice(slice)}>
-          View slice
-        </button>
       </header>
       <div className="slice-orbit-card__body">
         <div
@@ -220,4 +217,6 @@ function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
 }
 
 export default SliceHub;
+
+
 
