@@ -98,7 +98,10 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
         </button>
       </header>
       <div className="slice-orbit-card__body">
-        <div className="slice-orbit" style={{ "--slice-accent": slice.accent } as CSSProperties}>
+        <div
+          className="slice-orbit"
+          style={{ "--slice-accent": slice.accent, "--slice-progress": `${progress}%` } as CSSProperties}
+        >
           <svg className="slice-orbit__connections" viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`} aria-hidden="true">
             {orbitPositions.map(({ assignment, x, y }) => {
               const locationKind = assignment.task.location?.kind ?? "internal";

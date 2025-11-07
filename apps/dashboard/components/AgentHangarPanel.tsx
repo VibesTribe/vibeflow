@@ -22,7 +22,7 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
         <button type="button" onClick={onAdd} className="rail__button rail__button--ghost">
           Add
         </button>
-        <span className="rail__title">Agents</span>
+        <span className="rail__title">Agent Hangar</span>
       </div>
       <div className="rail__scroll">
         {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}

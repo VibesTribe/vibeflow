@@ -19,7 +19,7 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
         <button type="button" onClick={onViewDocs} className="rail__button rail__button--primary">
           Docs
         </button>
-        <span className="rail__title">Slices</span>
+        <span className="rail__title">Slice Dock</span>
       </div>
       <div className="rail__scroll">
         {loading && slices.length === 0 && <p className="rail__empty">Syncing telemetry...</p>}
