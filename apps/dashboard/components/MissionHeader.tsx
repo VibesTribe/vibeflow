@@ -42,7 +42,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
           </div>
         </div>
         <button type="button" className="token-pill" title="Open ROI + token usage" onClick={onOpenTokens}>
-          <span className="token-pill__icon" aria-hidden="true" />
+          <span className="token-pill__pacman" aria-hidden="true">
+            <span className="token-pill__dots" />
+          </span>
           <div className="token-pill__copy">
             <strong>{tokenUsage.toLocaleString()}</strong>
             <small>mission tokens</small>
