@@ -140,20 +140,23 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1.5px solid rgba(226, 232, 240, 0.8);
-  background: rgba(9, 14, 26, 0.94);
+  border: 1.7px solid rgba(236, 244, 255, 0.9);
+  background: radial-gradient(circle at 20% 20%, rgba(28, 44, 78, 0.95), rgba(6, 11, 22, 0.96));
   color: #f8fafc;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 12px rgba(15, 23, 42, 0.75), 0 6px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 14px rgba(15, 23, 42, 0.85), 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+.rail__header::after {
+  display: none;
 }
 
 .rail__button:hover {
   transform: translateY(-1px);
   border-color: rgba(125, 211, 252, 1);
-  box-shadow: inset 0 0 16px rgba(56, 189, 248, 0.35), 0 14px 28px rgba(37, 99, 235, 0.4);
+  box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.45), 0 16px 30px rgba(37, 99, 235, 0.45);
 }
 
 .rail__button--primary {
@@ -2627,7 +2630,8 @@ a {
   border-radius: 999px;
   overflow: hidden;
   background: rgba(8, 15, 29, 0.92);
-  box-shadow: inset 0 0 8px rgba(8, 15, 29, 0.7), 0 0 14px rgba(14, 165, 233, 0.28);
+  border: 1px solid rgba(94, 234, 212, 0.45);
+  box-shadow: inset 0 0 8px rgba(8, 15, 29, 0.7), 0 0 18px rgba(14, 165, 233, 0.35);
 }
 
 .mission-progress__fill {
@@ -4050,14 +4054,14 @@ a {
 }
 
 .mission-main {
-  margin: 0 8px !important;
-  width: calc(100% - 16px) !important;
+  margin: 0 22px !important;
+  width: calc(100% - 44px) !important;
   max-width: none !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
   z-index: 0;
-  padding: 0 28px 0 20px;
+  padding: 0 30px 0 18px;
 }
 
 .rail {
@@ -4119,7 +4123,7 @@ a {
   background: rgba(8, 14, 28, 0.92);
   box-shadow: 0 6px 14px rgba(4, 10, 22, 0.45);
   margin-left: auto;
-  margin-right: 36px;
+  margin-right: 56px;
 }
 
 .token-chip__value {
@@ -4192,24 +4196,24 @@ a {
   inset: 0 !important;
   overflow: visible !important;
   pointer-events: none !important;
-  z-index: 2 !important;
+  z-index: 5 !important;
 }
 
 .slice-orbit__connector {
-  stroke: rgba(92, 225, 230, 0.95) !important;
-  stroke-width: 2.2 !important;
-  stroke-dasharray: 5 4 !important;
+  stroke: rgba(137, 255, 255, 0.95) !important;
+  stroke-width: 2.8 !important;
+  stroke-dasharray: 6 4 !important;
   stroke-linecap: round !important;
   vector-effect: non-scaling-stroke !important;
   animation: orbitFlowHighlight 2.6s linear infinite !important;
-  filter: drop-shadow(0 0 4px rgba(94, 234, 212, 0.6));
-  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 6px rgba(94, 234, 212, 0.75));
+  mix-blend-mode: normal;
 }
 
-.slice-orbit__connector--internal { stroke: rgba(226, 232, 240, 0.85) !important; }
-.slice-orbit__connector--mcp { stroke: rgba(249, 168, 212, 0.95) !important; }
-.slice-orbit__connector--platform { stroke: rgba(125, 211, 252, 0.95) !important; }
-.slice-orbit__connector--edge { stroke: rgba(52, 211, 153, 0.95) !important; }
+.slice-orbit__connector--internal { stroke: rgba(236, 248, 255, 0.95) !important; }
+.slice-orbit__connector--mcp { stroke: rgba(255, 189, 222, 0.98) !important; }
+.slice-orbit__connector--platform { stroke: rgba(147, 197, 253, 0.98) !important; }
+.slice-orbit__connector--edge { stroke: rgba(74, 222, 128, 0.98) !important; }
 
 @keyframes orbitFlowHighlight {
   from { stroke-dashoffset: 0; }
