@@ -12,9 +12,10 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 160;
+const CANVAS_SIZE = 184;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RADIUS = 54;
+const ORBIT_RADIUS = 64;
+const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
   slices: MissionSlice[];
@@ -197,7 +198,7 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
 function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
   const activeAssignments = slice.assignments.filter((assignment) => ACTIVE_STATUSES.has(assignment.task.status) && assignment.agent);
   if (activeAssignments.length > 0) {
-    return activeAssignments.slice(0, 10);
+    return activeAssignments.slice(0, MAX_ORBIT_AGENTS);
   }
 
   const fallbackTask: TaskSnapshot =
@@ -213,7 +214,7 @@ function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
     return [];
   }
 
-  return slice.agents.slice(0, 10).map((agent) => ({ task: fallbackTask, agent, isBlocking: false }));
+  return slice.agents.slice(0, MAX_ORBIT_AGENTS).map((agent) => ({ task: fallbackTask, agent, isBlocking: false }));
 }
 
 export default SliceHub;
