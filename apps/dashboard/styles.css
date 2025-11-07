@@ -21,9 +21,9 @@ a {
 
 .mission-root {
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr) 140px;
-  column-gap: 0;
-  padding: 0 8px;
+  grid-template-columns: 128px minmax(0, 1fr) 128px;
+  column-gap: 24px;
+  padding: 0 24px;
   align-items: stretch;
   min-height: 100vh;
   overflow: hidden;
@@ -2398,14 +2398,6 @@ a {
   backdrop-filter: none;
 }
 
-.rail--left {
-  border-right: 1px solid rgba(26, 49, 82, 0.6);
-}
-
-.rail--right {
-  border-left: 1px solid rgba(26, 49, 82, 0.6);
-}
-
 .rail__header {
   position: sticky;
   top: 0;
@@ -4047,21 +4039,21 @@ a {
 
 /* --- Mission control refinements (pass 7) --- */
 .mission-root {
-  grid-template-columns: 124px minmax(0, 1fr) 124px !important;
-  column-gap: 0 !important;
-  padding: 0 8px !important;
+  grid-template-columns: 128px minmax(0, 1fr) 128px !important;
+  column-gap: 26px !important;
+  padding: 0 24px !important;
   align-items: stretch !important;
 }
 
 .mission-main {
-  margin: 0 22px !important;
-  width: calc(100% - 44px) !important;
+  margin: 0 !important;
+  width: 100% !important;
   max-width: none !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
   z-index: 0;
-  padding: 0 30px 0 18px;
+  padding: 0 18px;
 }
 
 .rail {
@@ -4123,7 +4115,7 @@ a {
   background: rgba(8, 14, 28, 0.92);
   box-shadow: 0 6px 14px rgba(4, 10, 22, 0.45);
   margin-left: auto;
-  margin-right: 56px;
+  margin-right: 18px;
 }
 
 .token-chip__value {
@@ -4152,8 +4144,8 @@ a {
 }
 
 .slice-orbit {
-  width: 184px !important;
-  height: 184px !important;
+  width: 216px !important;
+  height: 216px !important;
   background: none !important;
   position: relative !important;
   margin: 0 auto !important;
@@ -4168,23 +4160,23 @@ a {
 .slice-orbit::after {
   content: "" !important;
   position: absolute !important;
-  inset: 14px !important;
+  inset: 18px !important;
   border-radius: 50% !important;
 }
 
 .slice-orbit::before {
-  border: 1px solid rgba(148, 163, 184, 0.25) !important;
-  background: transparent !important;
+  border: 3px solid rgba(30, 54, 94, 0.75) !important;
+  background: radial-gradient(circle, rgba(8, 18, 36, 0.85), rgba(2, 6, 18, 0.95)) !important;
   z-index: 0 !important;
 }
 
 .slice-orbit::after {
-  border: 2px solid transparent !important;
-  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), transparent 0) !important;
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
-  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px)) !important;
-  opacity: 0.85 !important;
-  z-index: -1 !important;
+  border: 0 solid transparent !important;
+  background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), rgba(12, 20, 36, 0.4) 0) !important;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 2px)) !important;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 2px)) !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
 }
 
 .slice-orbit__progress {
@@ -4221,8 +4213,8 @@ a {
 }
 
 .slice-orbit__center {
-  width: 132px !important;
-  height: 132px !important;
+  width: 150px !important;
+  height: 150px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(71, 85, 105, 0.6) !important;
   background: radial-gradient(circle, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.96)) !important;
@@ -4255,8 +4247,8 @@ a {
 }
 
 .slice-orbit__node {
-  width: 44px !important;
-  height: 44px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(94, 234, 212, 0.35) !important;
   background: rgba(3, 7, 18, 0.95) !important;
@@ -4305,10 +4297,10 @@ a {
 
 .slice-orbit__badge {
   position: absolute;
-  bottom: -2px !important;
-  right: -2px !important;
-  width: 16px !important;
-  height: 16px !important;
+  bottom: -4px !important;
+  right: -4px !important;
+  width: 14px !important;
+  height: 14px !important;
   border-radius: 50%;
   font-size: 0.55rem;
   display: grid;
