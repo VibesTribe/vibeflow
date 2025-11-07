@@ -3903,21 +3903,27 @@ a {
 
 
 
+
 /* --- Mission control refinements (pass 6) --- */
 .mission-root {
-  grid-template-columns: 138px minmax(0, 1fr) 150px;
-  column-gap: 28px;
-  padding: 0 16px;
+  grid-template-columns: 120px minmax(0, 1fr) 140px;
+  column-gap: 12px;
+  padding: 0 12px;
+}
+
+.rail {
+  border-radius: 0;
+}
+
+.rail--left,
+.rail--right {
+  border: none;
 }
 
 .mission-main {
   border-radius: 0;
   margin: 0;
-  max-width: min(1380px, calc(100vw - 260px));
-}
-
-.rail {
-  border-radius: 0;
+  max-width: min(1360px, calc(100vw - 240px));
 }
 
 .mission-header__top {
@@ -3929,11 +3935,11 @@ a {
   align-items: center;
   gap: 6px;
   min-height: 26px;
-  padding: 4px 10px;
+  padding: 4px 12px;
 }
 
 .token-pill__pacman {
-  transform: rotate(200deg);
+  transform: rotate(195deg);
 }
 
 .token-pill__dots {
@@ -3942,6 +3948,7 @@ a {
 
 .token-pill__value {
   font-size: 0.7rem;
+  font-weight: 600;
   letter-spacing: 0.04em;
   color: #f8fafc;
 }
@@ -3957,13 +3964,15 @@ a {
 .rail__button--primary,
 .rail__button--ghost {
   background: rgba(11, 19, 33, 0.85);
-  border: 1px solid rgba(60, 80, 120, 0.35);
+  border: 1px solid rgba(60, 80, 120, 0.3);
   box-shadow: none;
 }
 
 .slice-orbit-card__body {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
 
 .slice-orbit {
@@ -3972,6 +3981,7 @@ a {
   border: none;
   background: none;
   overflow: visible;
+  margin: 0 auto;
 }
 
 .slice-orbit::before,
@@ -4003,7 +4013,7 @@ a {
 
 .slice-orbit__connector {
   stroke: rgba(94, 234, 212, 0.9);
-  stroke-width: 1.2;
+  stroke-width: 1.4;
   stroke-dasharray: 3 6;
   stroke-linecap: round;
   animation: orbitFlow 3s linear infinite;
