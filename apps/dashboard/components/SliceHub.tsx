@@ -12,9 +12,11 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 184;
+const CANVAS_SIZE = 216;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RADIUS = 64;
+const ORBIT_RADIUS = 78;
+const NODE_OFFSET = 18;
+const NODE_RADIUS = ORBIT_RADIUS + NODE_OFFSET;
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
@@ -79,8 +81,8 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
       const angleFraction = total === 1 ? 0 : index / total;
       const angleDeg = angleFraction * 360 - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
-      const x = CANVAS_CENTER + ORBIT_RADIUS * Math.cos(angleRad);
-      const y = CANVAS_CENTER + ORBIT_RADIUS * Math.sin(angleRad);
+      const x = CANVAS_CENTER + NODE_RADIUS * Math.cos(angleRad);
+      const y = CANVAS_CENTER + NODE_RADIUS * Math.sin(angleRad);
       return { assignment, angleDeg, angleRad, x, y };
     });
   }, [orbitAssignments]);
