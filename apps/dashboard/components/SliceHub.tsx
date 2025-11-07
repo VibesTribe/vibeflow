@@ -12,9 +12,9 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 180;
+const CANVAS_SIZE = 160;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RADIUS = 60;
+const ORBIT_RADIUS = 54;
 
 interface SliceHubProps {
   slices: MissionSlice[];
