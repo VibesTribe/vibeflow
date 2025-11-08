@@ -158,14 +158,14 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 2px solid rgba(132, 246, 255, 0.95);
-  background: radial-gradient(circle at 32% 45%, rgba(12, 22, 40, 0.96), rgba(1, 4, 10, 0.98));
+  border: 2px solid rgba(0, 214, 255, 0.95);
+  background: radial-gradient(circle at 36% 48%, rgba(14, 24, 44, 0.95), rgba(2, 5, 11, 0.98));
   color: #f8fafc;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 12px rgba(16, 32, 56, 0.8), 0 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 10px rgba(22, 40, 74, 0.8), 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 .rail__header::after {
   display: none !important;
@@ -174,7 +174,7 @@ a {
 .rail__button:hover {
   transform: translateY(-1px);
   border-color: rgba(125, 211, 252, 1);
-  box-shadow: inset 0 0 14px rgba(56, 189, 248, 0.35), 0 6px 14px rgba(37, 99, 235, 0.25);
+  box-shadow: inset 0 0 16px rgba(56, 189, 248, 0.4), 0 6px 14px rgba(37, 99, 235, 0.25);
 }
 
 .rail__button--primary {
@@ -2389,7 +2389,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -4068,21 +4068,21 @@ a {
 
 /* --- Mission control refinements (pass 7) --- */
 .mission-root {
-  grid-template-columns: 136px minmax(0, 1fr) 136px !important;
-  column-gap: 20px !important;
-  padding: 0 20px !important;
+  grid-template-columns: 132px minmax(0, 1fr) 132px !important;
+  column-gap: 12px !important;
+  padding: 0 14px !important;
   align-items: stretch !important;
 }
 
 .mission-main {
   margin: 0 auto !important;
   width: 100% !important;
-  max-width: min(1120px, calc(100vw - 340px)) !important;
+  max-width: min(1040px, calc(100vw - 380px)) !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
   z-index: 0;
-  padding: 0 8px;
+  padding: 0 6px;
   border: none !important;
   border-inline: none !important;
   box-shadow: none !important;
@@ -4282,11 +4282,11 @@ a {
 }
 
 .slice-orbit__node {
-  width: 34px !important;
-  height: 34px !important;
+  width: 32px !important;
+  height: 32px !important;
   border-radius: 50% !important;
-  border: 1.5px solid rgba(147, 232, 255, 0.65) !important;
-  background: radial-gradient(circle, rgba(6, 12, 24, 0.95), rgba(2, 5, 12, 0.98)) !important;
+  border: 1.5px solid rgba(140, 236, 255, 0.65) !important;
+  background: radial-gradient(circle, rgba(8, 15, 30, 0.95), rgba(1, 4, 10, 0.98)) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
