@@ -113,6 +113,8 @@ a {
   border-radius: 32px;
   box-shadow: 0 18px 40px rgba(8, 15, 35, 0.45);
   backdrop-filter: blur(14px);
+  border-inline: none !important;
+  background-clip: padding-box;
 }
 
 
