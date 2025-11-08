@@ -158,14 +158,14 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 2px solid rgba(168, 247, 255, 0.95);
-  background: radial-gradient(circle at 30% 30%, rgba(13, 26, 48, 0.96), rgba(2, 6, 12, 0.98));
+  border: 2px solid rgba(111, 237, 255, 0.95);
+  background: radial-gradient(circle at 30% 40%, rgba(10, 20, 36, 0.96), rgba(2, 6, 12, 0.98));
   color: #f8fafc;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 20px rgba(20, 37, 68, 0.95), 0 9px 18px rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 0 14px rgba(16, 32, 56, 0.9), 0 6px 14px rgba(0, 0, 0, 0.45);
 }
 .rail__header::after {
   display: none !important;
@@ -174,7 +174,7 @@ a {
 .rail__button:hover {
   transform: translateY(-1px);
   border-color: rgba(125, 211, 252, 1);
-  box-shadow: inset 0 0 22px rgba(56, 189, 248, 0.5), 0 11px 20px rgba(37, 99, 235, 0.4);
+  box-shadow: inset 0 0 18px rgba(56, 189, 248, 0.4), 0 9px 16px rgba(37, 99, 235, 0.3);
 }
 
 .rail__button--primary {
@@ -2377,15 +2377,15 @@ a {
 
 .mission-main {
   position: relative;
-  padding: 28px 32px 32px;
+  padding: 20px 16px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: rgba(8, 13, 26, 0.96);
-  border-inline: 1px solid rgba(26, 49, 82, 0.55);
+  background: transparent;
+  border-inline: none;
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: inset 0 0 0 1px rgba(15, 44, 78, 0.25), 0 24px 60px rgba(2, 6, 23, 0.5);
+  box-shadow: none;
 }
 
 .mission-main::-webkit-scrollbar {
@@ -4194,7 +4194,7 @@ a {
 .slice-orbit::after {
   content: "" !important;
   position: absolute !important;
-  inset: 20px !important;
+  inset: 14px !important;
   border-radius: 50% !important;
 }
 
@@ -4208,8 +4208,8 @@ a {
 .slice-orbit::after {
   border: 0 solid transparent !important;
   background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), rgba(6, 13, 28, 0.25) 0) !important;
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 2px)) !important;
-  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 2px)) !important;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 2px)) !important;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 2px)) !important;
   opacity: 1 !important;
   z-index: 1 !important;
 }
