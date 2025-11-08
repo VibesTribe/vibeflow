@@ -21,9 +21,9 @@ a {
 
 .mission-root {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr) 128px;
-  column-gap: 24px;
-  padding: 0 24px;
+  grid-template-columns: 132px minmax(0, 1fr) 132px;
+  column-gap: 18px;
+  padding: 0 20px;
   align-items: stretch;
   min-height: 100vh;
   overflow: hidden;
@@ -84,10 +84,10 @@ a {
 }
 
 .mission-main {
-  background: rgba(8, 11, 22, 0.96);
-  border: 1px solid rgba(79, 129, 255, 0.18);
+  background: transparent;
+  border: none;
   border-radius: 0;
-  padding: 24px;
+  padding: 0 12px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -96,7 +96,23 @@ a {
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45);
+  box-shadow: none;
+}
+
+.rail {
+  position: sticky;
+  top: 28px;
+  height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 12px 28px;
+  background: linear-gradient(180deg, rgba(11, 18, 36, 0.95) 0%, rgba(4, 9, 21, 0.94) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 32px;
+  box-shadow: 0 18px 40px rgba(8, 15, 35, 0.45);
+  backdrop-filter: blur(14px);
 }
 
 
@@ -4307,8 +4323,9 @@ a {
 
 .slice-orbit__badge {
   position: absolute;
-  bottom: -6px !important;
-  right: -6px !important;
+  top: 50% !important;
+  right: -10px !important;
+  transform: translateY(-50%);
   width: 16px !important;
   height: 16px !important;
   border-radius: 50%;
