@@ -12,11 +12,10 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 216;
+const CANVAS_SIZE = 240;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RADIUS = 78;
-const NODE_OFFSET = 18;
-const NODE_RADIUS = ORBIT_RADIUS + NODE_OFFSET;
+const ORBIT_RING_RADIUS = 78;
+const NODE_RADIUS = ORBIT_RING_RADIUS + 26;
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
@@ -64,6 +63,8 @@ type OrbitPosition = {
   y: number;
   angleDeg: number;
   angleRad: number;
+  startX: number;
+  startY: number;
 };
 
 const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectAgent }) => {
@@ -81,9 +82,11 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
       const angleFraction = total === 1 ? 0 : index / total;
       const angleDeg = angleFraction * 360 - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
+      const connectorStartX = CANVAS_CENTER + ORBIT_RING_RADIUS * Math.cos(angleRad);
+      const connectorStartY = CANVAS_CENTER + ORBIT_RING_RADIUS * Math.sin(angleRad);
       const x = CANVAS_CENTER + NODE_RADIUS * Math.cos(angleRad);
       const y = CANVAS_CENTER + NODE_RADIUS * Math.sin(angleRad);
-      return { assignment, angleDeg, angleRad, x, y };
+      return { assignment, angleDeg, angleRad, x, y, startX: connectorStartX, startY: connectorStartY };
     });
   }, [orbitAssignments]);
 
@@ -95,14 +98,14 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
           style={{ "--slice-accent": slice.accent, "--slice-progress": `${progress}%` } as CSSProperties}
         >
           <svg className="slice-orbit__connections" viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`} aria-hidden="true">
-            {orbitPositions.map(({ assignment, x, y }) => {
+            {orbitPositions.map(({ assignment, x, y, startX, startY }) => {
               const locationKind = assignment.task.location?.kind ?? "internal";
               const connectorKey = `${assignment.task.id}-${assignment.agent?.id ?? "connector"}`;
               return (
                 <line
                   key={connectorKey}
-                  x1={CANVAS_CENTER}
-                  y1={CANVAS_CENTER}
+                  x1={startX}
+                  y1={startY}
                   x2={x}
                   y2={y}
                   className={`slice-orbit__connector slice-orbit__connector--${locationKind}`}
