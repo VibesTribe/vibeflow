@@ -16,7 +16,7 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
         <button type="button" onClick={onViewLogs} className="rail__button rail__button--ghost">
           Logs
         </button>
-        <button type="button" onClick={onViewDocs} className="rail__button rail__button--primary">
+        <button type="button" onClick={onViewDocs} className="rail__button rail__button--ghost">
           Docs
         </button>
         <span className="rail__title">Slice Dock</span>

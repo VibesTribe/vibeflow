@@ -16,7 +16,7 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
   return (
     <aside className="rail rail--right" aria-label="Agent hangar">
       <div className="rail__header">
-        <button type="button" onClick={onViewAll} className="rail__button rail__button--primary">
+        <button type="button" onClick={onViewAll} className="rail__button rail__button--ghost">
           Models
         </button>
         <button type="button" onClick={onAdd} className="rail__button rail__button--ghost">
