@@ -90,12 +90,13 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
     });
   }, [orbitAssignments]);
 
+  const accent = slice.total > 0 && slice.completed >= slice.total ? "#22c55e" : slice.accent;
   return (
     <article className="slice-orbit-card">
       <div className="slice-orbit-card__body">
         <div
           className="slice-orbit"
-          style={{ "--slice-accent": slice.accent, "--slice-progress": `${progress}%` } as CSSProperties}
+          style={{ "--slice-accent": accent, "--slice-progress": `${progress}%` } as CSSProperties}
         >
           <svg className="slice-orbit__connections" viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`} aria-hidden="true">
             {orbitPositions.map(({ assignment, x, y, startX, startY }) => {
