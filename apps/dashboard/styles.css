@@ -4040,20 +4040,21 @@ a {
 /* --- Mission control refinements (pass 7) --- */
 .mission-root {
   grid-template-columns: 128px minmax(0, 1fr) 128px !important;
-  column-gap: 0 !important;
-  padding: 0 !important;
+  column-gap: 40px !important;
+  padding: 0 32px !important;
   align-items: stretch !important;
 }
 
 .mission-main {
   margin: 0 !important;
   width: 100% !important;
-  max-width: none !important;
+  max-width: 1260px !important;
   height: 100vh !important;
   border-radius: 0 !important;
   position: relative;
   z-index: 0;
-  padding: 0 28px;
+  padding: 0 24px;
+  justify-self: center;
   border: none !important;
   box-shadow: none !important;
 }
@@ -4267,11 +4268,7 @@ a {
 }
 
 .slice-orbit__node::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: 4px !important;
-  border-radius: 50% !important;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: none !important;
 }
 
 .slice-orbit__node--west,
