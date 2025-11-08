@@ -12,10 +12,10 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 260;
+const CANVAS_SIZE = 280;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RING_RADIUS = 104;
-const NODE_RADIUS = 124;
+const ORBIT_RING_RADIUS = 110;
+const NODE_RADIUS = 136;
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
