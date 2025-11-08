@@ -851,25 +851,9 @@ a {
   flex-direction: column;
   gap: 32px;
   flex: 1;
-  overflow-y: auto;
-  padding-right: 6px;
+  overflow: visible;
+  padding-right: 0;
   min-height: 360px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.5) transparent;
-}
-
-.slice-hub::-webkit-scrollbar {
-  width: 4px;
-}
-
-.slice-hub::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.slice-hub::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.5), rgba(14, 165, 233, 0.55));
-  border-radius: 999px;
-  border: 1px solid rgba(56, 189, 248, 0.25);
 }
 
 .slice-hub__grid {
@@ -2271,7 +2255,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2279,9 +2263,9 @@ a {
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(14, 165, 233, 0.6));
+  background: rgba(248, 250, 252, 0.9);
   border-radius: 999px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.65);
 }
 
 .mission-root {
@@ -2397,7 +2381,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2405,9 +2389,9 @@ a {
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(14, 165, 233, 0.6));
+  background: rgba(248, 250, 252, 0.9);
   border-radius: 999px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.65);
 }
 
 .mission-main {
@@ -4209,9 +4193,9 @@ a {
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-ring-gap: 14px;
-  --slice-ring-thickness: 5px;
-  --slice-core-padding: 36px;
+  --slice-ring-gap: 30px;
+  --slice-ring-thickness: 6px;
+  --slice-core-padding: 32px;
 }
 
 .slice-orbit::before,
