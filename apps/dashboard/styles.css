@@ -8,6 +8,7 @@ body {
   margin: 0;
   background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
   min-height: 100vh;
+  overflow: hidden;
 }
 
 button {
@@ -1953,12 +1954,14 @@ a {
 }
 
 .slice-orbit-card__tasks button {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
   text-align: left;
   align-items: center;
   width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
   box-sizing: border-box;
   border: 1px solid rgba(56, 189, 248, 0.16);
   border-radius: 14px;
@@ -2254,18 +2257,23 @@ a {
   overflow-y: auto;
 }
 
+.mission-main {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(248, 250, 252, 0.9) transparent;
+}
+
 .mission-main::-webkit-scrollbar {
-  width: 5px;
+  width: 4px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: rgba(248, 250, 252, 0.9);
-  border-radius: 999px;
-  border: 1px solid rgba(226, 232, 240, 0.65);
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(226, 232, 240, 0.65) !important;
 }
 
 .mission-root {
@@ -2381,17 +2389,17 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 5px;
+  width: 4px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: rgba(248, 250, 252, 0.9);
-  border-radius: 999px;
-  border: 1px solid rgba(226, 232, 240, 0.65);
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(226, 232, 240, 0.65) !important;
 }
 
 .mission-main {
@@ -4184,8 +4192,8 @@ a {
 }
 
 .slice-orbit {
-  width: 240px !important;
-  height: 240px !important;
+  width: 260px !important;
+  height: 260px !important;
   position: relative !important;
   margin: 0 auto !important;
   border: none !important;
@@ -4193,9 +4201,9 @@ a {
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-ring-gap: 30px;
-  --slice-ring-thickness: 6px;
-  --slice-core-padding: 32px;
+  --slice-ring-gap: 22px;
+  --slice-ring-thickness: 5px;
+  --slice-core-padding: 48px;
 }
 
 .slice-orbit::before,
