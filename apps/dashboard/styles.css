@@ -2264,16 +2264,17 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 .mission-main::-webkit-scrollbar-track {
-  background: rgba(10, 15, 28, 0.82);
+  background: transparent;
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: rgba(240, 244, 255, 0.85);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(14, 165, 233, 0.6));
   border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .mission-root {
@@ -2393,12 +2394,13 @@ a {
 }
 
 .mission-main::-webkit-scrollbar-track {
-  background: rgba(7, 12, 24, 0.7);
+  background: transparent;
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(14, 165, 233, 0.6));
   border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .mission-main {
@@ -4005,9 +4007,20 @@ a {
 .rail__button,
 .rail__button--primary,
 .rail__button--ghost {
-  background: rgba(11, 19, 33, 0.85);
-  border: 1px solid rgba(60, 80, 120, 0.3);
-  box-shadow: none;
+  background: rgba(5, 12, 24, 0.92);
+  border: 2px solid rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.28), inset 0 0 10px rgba(3, 8, 18, 0.85);
+  color: #f8fafc;
+  letter-spacing: 0.2em;
+}
+
+.rail__button--primary {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(251, 191, 36, 0.9)) !important;
+  color: #04121f;
+}
+
+.rail__button--ghost {
+  background: rgba(7, 15, 30, 0.95) !important;
 }
 
 .slice-orbit-card__body {
@@ -4188,13 +4201,15 @@ a {
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
+  --slice-ring-gap: 6px;
+  --slice-ring-thickness: 3px;
 }
 
 .slice-orbit::before,
 .slice-orbit::after {
   content: "" !important;
   position: absolute !important;
-  inset: 12px !important;
+  inset: var(--slice-ring-gap) !important;
   border-radius: 50% !important;
 }
 
@@ -4208,8 +4223,8 @@ a {
 .slice-orbit::after {
   border: 0 solid transparent !important;
   background: conic-gradient(var(--slice-accent) var(--slice-progress, 0%), rgba(6, 13, 28, 0.25) 0) !important;
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 1px)) !important;
-  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 1px)) !important;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--slice-ring-thickness)), #000 calc(100% - 1px)) !important;
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--slice-ring-thickness)), #000 calc(100% - 1px)) !important;
   opacity: 1 !important;
   z-index: 1 !important;
 }
@@ -4248,8 +4263,8 @@ a {
 }
 
 .slice-orbit__center {
-  width: 160px !important;
-  height: 160px !important;
+  width: calc(100% - (var(--slice-ring-gap) * 2) - 2px) !important;
+  height: calc(100% - (var(--slice-ring-gap) * 2) - 2px) !important;
   border-radius: 50% !important;
   border: 1px solid rgba(71, 85, 105, 0.7) !important;
   background: radial-gradient(circle at 35% 20%, rgba(18, 35, 66, 0.8), rgba(3, 6, 18, 0.95)) !important;
