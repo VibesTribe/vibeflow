@@ -140,14 +140,14 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 2px solid rgba(135, 248, 255, 0.95);
-  background: radial-gradient(circle at 28% 32%, rgba(16, 30, 58, 0.95), rgba(3, 6, 14, 0.98));
+  border: 2px solid rgba(168, 247, 255, 0.95);
+  background: radial-gradient(circle at 30% 30%, rgba(13, 26, 48, 0.96), rgba(2, 6, 12, 0.98));
   color: #f8fafc;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 16px rgba(15, 23, 42, 0.85), 0 8px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 20px rgba(20, 37, 68, 0.95), 0 9px 18px rgba(0, 0, 0, 0.55);
 }
 .rail__header::after {
   display: none !important;
@@ -156,7 +156,7 @@ a {
 .rail__button:hover {
   transform: translateY(-1px);
   border-color: rgba(125, 211, 252, 1);
-  box-shadow: inset 0 0 18px rgba(56, 189, 248, 0.4), 0 10px 20px rgba(37, 99, 235, 0.35);
+  box-shadow: inset 0 0 22px rgba(56, 189, 248, 0.5), 0 11px 20px rgba(37, 99, 235, 0.4);
 }
 
 .rail__button--primary {
@@ -2396,6 +2396,7 @@ a {
   padding: 18px 12px 24px;
   overflow: hidden;
   border: none !important;
+  border-inline: none !important;
   border-radius: 0;
   box-shadow: none;
   backdrop-filter: none;
@@ -2404,6 +2405,7 @@ a {
 .rail--left,
 .rail--right {
   border: none !important;
+  border-inline: none !important;
   box-shadow: none !important;
 }
 
@@ -4064,7 +4066,9 @@ a {
   z-index: 0;
   padding: 0 12px;
   border: none !important;
+  border-inline: none !important;
   box-shadow: none !important;
+  background: rgba(4, 7, 14, 0.96) !important;
 }
 
 .rail {
@@ -4260,17 +4264,19 @@ a {
 }
 
 .slice-orbit__node {
-  width: 36px !important;
-  height: 36px !important;
+  width: 34px !important;
+  height: 34px !important;
   border-radius: 50% !important;
-  border: 1px solid rgba(148, 210, 255, 0.5) !important;
-  background: radial-gradient(circle, rgba(8, 14, 28, 0.95), rgba(3, 6, 14, 0.98)) !important;
+  border: 1.5px solid rgba(147, 232, 255, 0.65) !important;
+  background: radial-gradient(circle, rgba(6, 12, 24, 0.95), rgba(2, 5, 12, 0.98)) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   position: absolute !important;
   transform: translate(-50%, -50%) !important;
   padding: 0 !important;
+  min-width: auto !important;
+  min-height: auto !important;
   box-shadow: 0 6px 16px rgba(2, 6, 23, 0.65);
   z-index: 4 !important;
 }
