@@ -130,6 +130,20 @@
       "metrics": { "tokensUsed": 8600, "runtimeSeconds": 202, "costUsd": 3.1 }
     },
     {
+      "id": "task-206",
+      "title": "Patch MFA callback loop",
+      "status": "in_progress",
+      "confidence": 0.8,
+      "updatedAt": "2025-10-31T04:55:00Z",
+      "owner": "agent.cursor",
+      "sliceId": "slice.auth",
+      "taskNumber": "Task #206",
+      "location": { "kind": "platform", "label": "Cursor" },
+      "dependencies": ["task-205"],
+      "summary": "Hardening callback handlers for Auth & RBAC slice.",
+      "metrics": { "tokensUsed": 4100, "runtimeSeconds": 76, "costUsd": 1.2 }
+    },
+    {
       "id": "task-118",
       "title": "Stabilize supabase telemetry",
       "status": "received",
@@ -150,9 +164,23 @@
       "metrics": { "tokensUsed": 5400, "runtimeSeconds": 142, "costUsd": 1.8 }
     },
     {
+      "id": "task-119",
+      "title": "Replay ingestion backlog",
+      "status": "in_progress",
+      "confidence": 0.78,
+      "updatedAt": "2025-10-31T04:38:00Z",
+      "owner": "agent.deepseek",
+      "sliceId": "slice.ingest",
+      "taskNumber": "Task #119",
+      "location": { "kind": "internal", "label": "Edge Workers" },
+      "dependencies": ["task-118"],
+      "summary": "Replaying missed backlog events to validate ingestion stability.",
+      "metrics": { "tokensUsed": 2600, "runtimeSeconds": 54, "costUsd": 0.9 }
+    },
+    {
       "id": "task-221",
       "title": "Revise UI orbit gradients",
-      "status": "in_progress",
+      "status": "supervisor_approval",
       "confidence": 0.81,
       "updatedAt": "2025-10-31T04:33:00Z",
       "owner": "agent.roo",
@@ -170,6 +198,20 @@
       "metrics": { "tokensUsed": 3200, "runtimeSeconds": 86, "costUsd": 1.1 }
     },
     {
+      "id": "task-222",
+      "title": "Audit orbit hub copy",
+      "status": "ready_to_merge",
+      "confidence": 0.74,
+      "updatedAt": "2025-10-31T04:31:00Z",
+      "owner": "agent.roo",
+      "sliceId": "slice.ui",
+      "taskNumber": "Task #222",
+      "location": { "kind": "platform", "label": "VSCode" },
+      "dependencies": [],
+      "summary": "Cleaning up inline copy + headers for orbit hubs.",
+      "metrics": { "tokensUsed": 900, "runtimeSeconds": 22, "costUsd": 0.3 }
+    },
+    {
       "id": "task-230",
       "title": "Generate MCP bridge diagnostics",
       "status": "assigned",
@@ -184,6 +226,34 @@
         "prompt": "Summarize MCP bridge latency anomalies and propose error budgets."
       },
       "summary": "Awaiting new credit allocation before continuing run.",
+      "metrics": { "tokensUsed": 0, "runtimeSeconds": 0, "costUsd": 0 }
+    },
+    {
+      "id": "task-235",
+      "title": "Wrap mission loop QA",
+      "status": "ready_to_merge",
+      "confidence": 0.94,
+      "updatedAt": "2025-10-31T04:28:00Z",
+      "owner": "agent.inductor",
+      "sliceId": "slice.orchestrator",
+      "taskNumber": "Task #235",
+      "location": { "kind": "internal", "label": "Supervisor Bench" },
+      "dependencies": ["task-184"],
+      "summary": "Final QA sweep before orchestrator release.",
+      "metrics": { "tokensUsed": 4800, "runtimeSeconds": 96, "costUsd": 1.6 }
+    },
+    {
+      "id": "task-231",
+      "title": "Plan MCP smoke tests",
+      "status": "in_progress",
+      "confidence": 0.69,
+      "updatedAt": "2025-10-31T04:15:00Z",
+      "owner": "agent.cline",
+      "sliceId": "slice.mcp",
+      "taskNumber": "Task #231",
+      "location": { "kind": "mcp", "label": "Diag Runner" },
+      "dependencies": ["task-230"],
+      "summary": "Drafting automated MCP smoke test coverage.",
       "metrics": { "tokensUsed": 0, "runtimeSeconds": 0, "costUsd": 0 }
     }
   ]
