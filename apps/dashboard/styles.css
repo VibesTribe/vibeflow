@@ -854,15 +854,22 @@ a {
   overflow-y: auto;
   padding-right: 6px;
   min-height: 360px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.5) transparent;
 }
 
 .slice-hub::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+}
+
+.slice-hub::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .slice-hub::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.5), rgba(14, 165, 233, 0.55));
   border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
 }
 
 .slice-hub__grid {
@@ -4008,15 +4015,16 @@ a {
 .rail__button--primary,
 .rail__button--ghost {
   background: rgba(5, 12, 24, 0.92);
-  border: 2px solid rgba(56, 189, 248, 0.85);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.28), inset 0 0 10px rgba(3, 8, 18, 0.85);
+  border: 1.5px solid rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2), inset 0 0 8px rgba(3, 8, 18, 0.9);
   color: #f8fafc;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
 }
 
 .rail__button--primary {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(251, 191, 36, 0.9)) !important;
-  color: #04121f;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.95), rgba(56, 189, 248, 0.85)) !important;
+  color: #032030;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
 }
 
 .rail__button--ghost {
@@ -4201,8 +4209,9 @@ a {
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-ring-gap: 6px;
-  --slice-ring-thickness: 3px;
+  --slice-ring-gap: 14px;
+  --slice-ring-thickness: 5px;
+  --slice-core-padding: 36px;
 }
 
 .slice-orbit::before,
@@ -4263,8 +4272,8 @@ a {
 }
 
 .slice-orbit__center {
-  width: calc(100% - (var(--slice-ring-gap) * 2) - 2px) !important;
-  height: calc(100% - (var(--slice-ring-gap) * 2) - 2px) !important;
+  width: calc(100% - (var(--slice-core-padding) * 2)) !important;
+  height: calc(100% - (var(--slice-core-padding) * 2)) !important;
   border-radius: 50% !important;
   border: 1px solid rgba(71, 85, 105, 0.7) !important;
   background: radial-gradient(circle at 35% 20%, rgba(18, 35, 66, 0.8), rgba(3, 6, 18, 0.95)) !important;
