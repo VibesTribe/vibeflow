@@ -23,12 +23,15 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
       </div>
       <div className="rail__scroll">
         {loading && slices.length === 0 && <p className="rail__empty">Syncing telemetry...</p>}
-        {slices.map((slice) => (
-          <button key={slice.id} type="button" onClick={() => onSelectSlice(slice)} className="slice-dial" aria-label={`Open ${slice.name}`}>
-            <span className="slice-dial__ring" style={{ background: `conic-gradient(${slice.accent} ${Math.round((slice.completed / Math.max(slice.total, 1)) * 100)}%, rgba(12, 23, 42, 0.85) 0)` }}>
+        {slices.map((slice) => {
+          const completion = slice.total === 0 ? 0 : Math.round((slice.completed / slice.total) * 100);
+          const accent = slice.total > 0 && slice.completed >= slice.total ? "#22c55e" : slice.accent;
+          return (
+            <button key={slice.id} type="button" onClick={() => onSelectSlice(slice)} className="slice-dial" aria-label={`Open ${slice.name}`}>
+              <span className="slice-dial__ring" style={{ background: `conic-gradient(${accent} ${completion}%, rgba(12, 23, 42, 0.85) 0)` }}>
               <span className="slice-dial__inner">
                 <span className="slice-dial__percent">
-                  {slice.total === 0 ? 0 : Math.round((slice.completed / slice.total) * 100)}%
+                  {completion}%
                 </span>
                 <span className="slice-dial__tasks">
                   {slice.completed}/{slice.total}
@@ -39,7 +42,8 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
             <span className="slice-dial__meta">{slice.active} active {"\u00B7"} {slice.blocked} blocked</span>
             {slice.tokens !== undefined && <span className="slice-dial__tokens">{slice.tokens.toLocaleString()} tokens</span>}
           </button>
-        ))}
+          );
+        })}
         {slices.length === 0 && !loading && <p className="rail__empty">No slices yet.</p>}
       </div>
     </aside>
