@@ -2250,11 +2250,11 @@ a {
 .mission-main {
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.9) rgba(8, 12, 24, 0.9);
+  scrollbar-color: rgba(248, 250, 252, 0.85) rgba(6, 10, 22, 0.85);
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 5px !important;
+  width: 3px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2381,7 +2381,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 5px !important;
+  width: 3px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2397,7 +2397,7 @@ a {
 
 .mission-main {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.9) rgba(8, 12, 24, 0.9);
+  scrollbar-color: rgba(248, 250, 252, 0.85) rgba(6, 10, 22, 0.85);
 }
 
 .rail {
