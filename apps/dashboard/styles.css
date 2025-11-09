@@ -4595,34 +4595,47 @@ a {
 }
 /* --- Final mission layout overrides --- */
 .mission-root {
-  grid-template-columns: clamp(96px, 12vw, 160px) minmax(0, 1fr) clamp(96px, 12vw, 160px) !important;
-  column-gap: clamp(12px, 2vw, 28px) !important;
-  padding: 0 clamp(12px, 2vw, 32px) !important;
+  grid-template-columns: clamp(110px, 12vw, 170px) minmax(0, 1fr) clamp(110px, 12vw, 170px) !important;
+  column-gap: clamp(12px, 2vw, 32px) !important;
+  padding: 0 clamp(16px, 2.5vw, 48px) !important;
+  min-height: 100vh;
 }
 
 .mission-main {
   width: 100% !important;
   max-width: none !important;
+  padding: 0 clamp(16px, 2vw, 32px) !important;
   height: auto !important;
   min-height: calc(100vh - 64px) !important;
-  padding: 0 clamp(12px, 2vw, 24px) !important;
 }
 
 .mission-header {
-  display: grid !important;
-  grid-template-columns: auto minmax(0, 1fr) !important;
-  gap: clamp(16px, 4vw, 48px) !important;
-  align-items: flex-start !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (min-width: 1100px) {
+  .mission-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .mission-header__content {
+    flex: 1;
+  }
 }
 
 .mission-header__content {
   padding-left: 0 !important;
+  width: 100%;
 }
 
 .mission-header__tasks-row {
   display: flex !important;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -4630,10 +4643,10 @@ a {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(94, 234, 212, 0.35);
-  background: rgba(6, 10, 22, 0.8);
+  border: 1px solid rgba(94, 234, 212, 0.4);
+  background: rgba(6, 10, 22, 0.82);
   font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -4658,36 +4671,95 @@ a {
   color: rgba(148, 163, 184, 0.75);
 }
 
+.mission-progress {
+  width: 100%;
+}
+
+.mission-mobile-nav {
+  display: none;
+}
+
+.mission-mobile-nav__group {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  justify-content: center;
+}
+
+.mission-mobile-nav__button {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(94, 234, 212, 0.3);
+  background: rgba(6, 11, 22, 0.92);
+  color: #f1f5f9;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.mission-mobile-nav__button:hover {
+  border-color: rgba(180, 250, 255, 0.9);
+  box-shadow: 0 14px 28px rgba(4, 10, 24, 0.65);
+}
+
+.mobile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 4, 10, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  z-index: 20;
+}
+
+.mobile-panel-overlay__close {
+  align-self: flex-end;
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 1.5rem;
+}
+
+.mobile-panel-overlay__body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.mobile-panel-overlay .rail {
+  display: block;
+  position: static;
+  width: 100%;
+  height: auto;
+  padding: 12px;
+  border-radius: 24px;
+  background: rgba(6, 11, 22, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: none;
+}
+
+.mobile-panel-overlay .rail__scroll {
+  display: block;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 @media (max-width: 900px) {
   .mission-root {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
-    padding: 0 12px !important;
   }
 
-  .rail {
-    position: static !important;
-    height: auto !important;
-    padding: 10px 16px !important;
-  }
-
-  .rail__scroll {
+  .rail--left,
+  .rail--right {
     display: none !important;
   }
 
-  .rail__header {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+  .mission-mobile-nav {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-  }
-
-  .rail__title {
-    display: none;
-  }
-
-  .mission-main {
-    padding: 0 8px !important;
-    min-height: auto !important;
+    padding: 6px 0 12px;
   }
 }
