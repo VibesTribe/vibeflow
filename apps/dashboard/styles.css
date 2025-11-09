@@ -9,39 +9,27 @@
   overflow: hidden;
 }
 
-html {
-  height: 100%;
-  overflow: hidden !important;
-  scrollbar-width: none;
-  overscroll-behavior: none;
-}
-
-html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-body {
+html,
+body,
+body#dummybodyid {
   margin: 0;
-  background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
-  min-height: 100vh;
   height: 100%;
   width: 100%;
-  position: fixed;
-  inset: 0;
   overflow: hidden !important;
   scrollbar-width: none;
   overscroll-behavior: none;
 }
 
-body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+body#dummybodyid::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
 }
 
-#root {
-  height: 100%;
-  overflow: hidden;
+body,
+body#dummybodyid {
+  background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
 }
 
 button {
@@ -1660,6 +1648,9 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
+  justify-content: flex-start;
+  width: fit-content;
+  margin-left: 118px;
 }
 
 .mission-header__stats div {
@@ -2657,6 +2648,7 @@ a {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
+  margin-left: 118px;
 }
 
 .mission-progress__track {
@@ -2683,6 +2675,18 @@ a {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(203, 213, 225, 0.8);
+  margin-left: 118px;
+}
+
+@media (max-width: 1100px) {
+  .mission-header__stats,
+  .mission-progress,
+  .mission-progress__value {
+    margin-left: 0;
+  }
+  .mission-progress__track {
+    margin-left: 0;
+  }
 }
 
 .agent-pill {
@@ -4470,4 +4474,21 @@ a {
 #root {
   height: 100%;
   overflow: hidden;
+}
+.mission-root .rail__button,
+.mission-root .rail__button--primary,
+.mission-root .rail__button--ghost {
+  background: rgba(6, 11, 22, 0.95) !important;
+  border: 2px solid rgba(120, 230, 255, 0.35) !important;
+  color: #f1f5f9 !important;
+  box-shadow: inset 0 0 12px rgba(3, 6, 14, 0.85), 0 10px 24px rgba(3, 8, 18, 0.6) !important;
+}
+
+.mission-root .rail__button--primary {
+  background: linear-gradient(150deg, rgba(23, 98, 150, 0.6), rgba(4, 8, 18, 0.96)) !important;
+}
+
+.mission-root .rail__button:hover {
+  border-color: rgba(162, 244, 255, 0.85) !important;
+  box-shadow: inset 0 0 24px rgba(56, 189, 248, 0.5), 0 20px 34px rgba(3, 10, 24, 0.75) !important;
 }

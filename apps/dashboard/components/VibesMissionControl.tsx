@@ -9,14 +9,18 @@ import { MissionAgent, MissionSlice } from "../utils/mission";
 
 const VibesMissionControl: React.FC = () => {
   useEffect(() => {
+    if (typeof document === "undefined") return;
     const html = document.documentElement;
-    const body = document.body;
+    const targetBody = document.querySelector("body#dummybodyid") || document.body;
+
     const originalHtmlOverflow = html.style.getPropertyValue("overflow");
     const originalHtmlPriority = html.style.getPropertyPriority("overflow");
-    const originalBodyOverflow = body.style.getPropertyValue("overflow");
-    const originalBodyPriority = body.style.getPropertyPriority("overflow");
+    const originalBodyOverflow = targetBody.style.getPropertyValue("overflow");
+    const originalBodyPriority = targetBody.style.getPropertyPriority("overflow");
+
     html.style.setProperty("overflow", "hidden", "important");
-    body.style.setProperty("overflow", "hidden", "important");
+    targetBody.style.setProperty("overflow", "hidden", "important");
+
     return () => {
       if (originalHtmlOverflow) {
         html.style.setProperty("overflow", originalHtmlOverflow, originalHtmlPriority);
@@ -24,9 +28,9 @@ const VibesMissionControl: React.FC = () => {
         html.style.removeProperty("overflow");
       }
       if (originalBodyOverflow) {
-        body.style.setProperty("overflow", originalBodyOverflow, originalBodyPriority);
+        targetBody.style.setProperty("overflow", originalBodyOverflow, originalBodyPriority);
       } else {
-        body.style.removeProperty("overflow");
+        targetBody.style.removeProperty("overflow");
       }
     };
   }, []);
