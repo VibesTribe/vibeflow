@@ -4,6 +4,11 @@
   color: #e2e8f0;
 }
 
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
 html {
   height: 100%;
   overflow: hidden;
@@ -21,6 +26,9 @@ body {
   background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
   min-height: 100vh;
   height: 100%;
+  width: 100%;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
   scrollbar-width: none;
   overscroll-behavior: none;
@@ -4396,4 +4404,8 @@ a {
   right: -4px;
   font-size: 0.65rem;
   color: #f87171;
+}
+#root {
+  height: 100%;
+  overflow: hidden;
 }
