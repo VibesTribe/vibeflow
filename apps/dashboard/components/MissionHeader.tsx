@@ -96,3 +96,4 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
 };
 
 export default MissionHeader;
+
