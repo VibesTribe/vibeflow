@@ -63,7 +63,7 @@ const VibesMissionControl: React.FC = () => {
     return new Date(snapshot.updatedAt).toLocaleTimeString();
   }, [snapshot.updatedAt]);
 
-  const taskStats = useMemo(() => {
+  const taskStats = useMemo<MissionTaskStats>(() => {
     const tasks = snapshot.tasks ?? [];
     const flaggedStatuses = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
     let flagged = 0;
@@ -148,7 +148,7 @@ const VibesMissionControl: React.FC = () => {
       {isMobile && mobilePanel && (
         <div className="mobile-panel-overlay">
           <button type="button" className="mobile-panel-overlay__close" aria-label="Close panel" onClick={handleCloseMobilePanel}>
-            ×
+            {"\u00D7"}
           </button>
           <div className="mobile-panel-overlay__body">
             {mobilePanel === "slices" ? (
@@ -170,4 +170,5 @@ const VibesMissionControl: React.FC = () => {
 };
 
 export default VibesMissionControl;
+
 
