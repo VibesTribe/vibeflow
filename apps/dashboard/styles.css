@@ -16,11 +16,17 @@ body {
   height: 100%;
   overflow: hidden;
   scrollbar-width: none;
+  overscroll-behavior: none;
 }
 
 body::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
 }
 
 button {
@@ -2254,7 +2260,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 3px !important;
+  width: 2px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2381,7 +2387,7 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 3px !important;
+  width: 2px !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
