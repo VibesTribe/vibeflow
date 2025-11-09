@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { TaskStatus } from "@core/types";
 import MissionHeader from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
@@ -45,6 +46,24 @@ const VibesMissionControl: React.FC = () => {
     return new Date(snapshot.updatedAt).toLocaleTimeString();
   }, [snapshot.updatedAt]);
 
+  const taskStats = useMemo(() => {
+    const tasks = snapshot.tasks ?? [];
+    const flaggedStatuses = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
+    let flagged = 0;
+    tasks.forEach((task) => {
+      if (flaggedStatuses.has(task.status)) {
+        flagged += 1;
+      }
+    });
+    return {
+      total: statusSummary.total,
+      completed: statusSummary.completed,
+      active: statusSummary.active,
+      flagged,
+      locked: statusSummary.blocked,
+    };
+  }, [snapshot.tasks, statusSummary]);
+
   const handleOpenDocs = () => setModal({ type: "docs" });
   const handleOpenLogs = () => setModal({ type: "logs" });
   const handleOpenModels = () => setModal({ type: "models" });
@@ -66,6 +85,7 @@ const VibesMissionControl: React.FC = () => {
       <main className="mission-main">
         <MissionHeader
           statusSummary={statusSummary}
+          taskStats={taskStats}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
           onOpenTokens={handleOpenRoi}
