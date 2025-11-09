@@ -4593,3 +4593,101 @@ a {
     grid-row: 3;
   }
 }
+/* --- Final mission layout overrides --- */
+.mission-root {
+  grid-template-columns: clamp(96px, 12vw, 160px) minmax(0, 1fr) clamp(96px, 12vw, 160px) !important;
+  column-gap: clamp(12px, 2vw, 28px) !important;
+  padding: 0 clamp(12px, 2vw, 32px) !important;
+}
+
+.mission-main {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: calc(100vh - 64px) !important;
+  padding: 0 clamp(12px, 2vw, 24px) !important;
+}
+
+.mission-header {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  gap: clamp(16px, 4vw, 48px) !important;
+  align-items: flex-start !important;
+}
+
+.mission-header__content {
+  padding-left: 0 !important;
+}
+
+.mission-header__tasks-row {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.mission-header__stat-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  background: rgba(6, 10, 22, 0.8);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.mission-header__stat-pill strong {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  color: #f8fafc;
+}
+
+.mission-header__stat-icon {
+  font-size: 0.72rem;
+}
+
+.mission-header__timestamp {
+  margin-left: auto;
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+@media (max-width: 900px) {
+  .mission-root {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px !important;
+    padding: 0 12px !important;
+  }
+
+  .rail {
+    position: static !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+  }
+
+  .rail__scroll {
+    display: none !important;
+  }
+
+  .rail__header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .rail__title {
+    display: none;
+  }
+
+  .mission-main {
+    padding: 0 8px !important;
+    min-height: auto !important;
+  }
+}
