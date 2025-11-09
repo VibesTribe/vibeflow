@@ -25,52 +25,52 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 
   return (
     <header className="mission-header">
-      <div className="mission-header__top">
-        <div className="mission-header__identity">
-          <span className="vibes-orb" aria-hidden="true">
-            <span className="vibes-orb__label">Vibes</span>
-          </span>
-          <div className="mission-header__titles">
-            <p className="mission-header__eyebrow">
-              <span>Mission Control</span>
-              <span className="mission-header__separator" aria-hidden="true">
-                {"\u00B7"}
-              </span>
-              <span className="mission-header__brand">Vibeflow</span>
-            </p>
-            <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
-          </div>
+      <div className="mission-header__identity">
+        <span className="vibes-orb" aria-hidden="true">
+          <span className="vibes-orb__label">Vibes</span>
+        </span>
+        <div className="mission-header__titles">
+          <p className="mission-header__eyebrow">
+            <span>Mission Control</span>
+            <span className="mission-header__separator" aria-hidden="true">
+              {"\u00B7"}
+            </span>
+            <span className="mission-header__brand">Vibeflow</span>
+          </p>
+          <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
         </div>
       </div>
-      <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
-        <span className="mission-header__stats-label">Tasks</span>
-        {stats.map((stat) => (
-          <div key={stat.label}>
-            <span>{stat.label}</span>
-            <strong>{stat.value}</strong>
+      <div className="mission-header__content">
+        <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
+          <span className="mission-header__stats-label">Tasks</span>
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <span>{stat.label}</span>
+              <strong>{stat.value}</strong>
+            </div>
+          ))}
+          <div className="mission-header__stats-snapshot">
+            <span>Snapshot</span>
+            <strong>{snapshotTime}</strong>
           </div>
-        ))}
-        <div className="mission-header__stats-snapshot">
-          <span>Snapshot</span>
-          <strong>{snapshotTime}</strong>
+          <button type="button" className="token-chip" title="Open ROI + token usage" onClick={onOpenTokens}>
+            <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
+            <span className="token-chip__label">TOKENS</span>
+          </button>
         </div>
-        <button type="button" className="token-chip" title="Open ROI + token usage" onClick={onOpenTokens}>
-          <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
-          <span className="token-chip__label">TOKENS</span>
-        </button>
-      </div>
-      <div
-        className="mission-progress"
-        role="progressbar"
-        aria-valuenow={progress}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Mission completion"
-      >
-        <div className="mission-progress__track">
-          <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
+        <div
+          className="mission-progress"
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Mission completion"
+        >
+          <div className="mission-progress__track">
+            <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
+          </div>
+          <span className="mission-progress__value">{progress}%</span>
         </div>
-        <span className="mission-progress__value">{progress}%</span>
       </div>
     </header>
   );

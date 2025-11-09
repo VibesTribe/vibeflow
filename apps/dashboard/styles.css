@@ -193,14 +193,14 @@ a {
   width: 100%;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1.5px solid rgba(63, 87, 134, 0.5);
-  background: rgba(8, 14, 28, 0.92);
-  color: #e2e8f0;
+  border: 2px solid rgba(120, 230, 255, 0.35);
+  background: rgba(6, 11, 22, 0.95);
+  color: #f1f5f9;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 8px rgba(3, 6, 14, 0.8);
+  box-shadow: inset 0 0 10px rgba(3, 6, 14, 0.85);
 }
 .rail__header::after {
   display: none !important;
@@ -208,19 +208,19 @@ a {
 
 .rail__button:hover {
   transform: translateY(-1px);
-  border-color: rgba(125, 211, 252, 1);
-  box-shadow: inset 0 0 18px rgba(56, 189, 248, 0.4), 0 6px 14px rgba(37, 99, 235, 0.25);
+  border-color: rgba(162, 244, 255, 0.85);
+  box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.45), 0 12px 24px rgba(4, 12, 26, 0.65);
 }
 
 .rail__button--primary {
-  background: linear-gradient(145deg, rgba(23, 96, 160, 0.55), rgba(7, 13, 26, 0.95));
-  border-color: rgba(63, 87, 134, 0.5);
+  background: linear-gradient(150deg, rgba(23, 98, 150, 0.6), rgba(4, 8, 18, 0.96));
+  border-color: rgba(120, 230, 255, 0.35);
   color: #f8fafc;
-  box-shadow: 0 8px 18px rgba(5, 11, 24, 0.55);
+  box-shadow: inset 0 0 12px rgba(4, 10, 22, 0.85);
 }
 
 .rail__button--ghost {
-  background: rgba(6, 12, 24, 0.92);
+  background: rgba(5, 10, 21, 0.95);
 }
 
 .rail__title {
@@ -4148,6 +4148,29 @@ a {
   color: rgba(148, 163, 184, 0.65) !important;
 }
 
+.mission-header__identity {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.mission-header__titles {
+  margin-left: 6px;
+}
+
+.mission-header__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 120px;
+}
+
+@media (max-width: 1100px) {
+  .mission-header__content {
+    padding-left: 0;
+  }
+}
+
 .mission-header__stats div,
 .mission-header__stats-snapshot {
   background: transparent !important;
@@ -4179,6 +4202,12 @@ a {
   box-shadow: 0 6px 14px rgba(4, 10, 22, 0.45);
   margin-left: auto;
   margin-right: 6px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.token-chip:hover {
+  transform: translateX(6px);
+  box-shadow: 0 12px 22px rgba(14, 165, 233, 0.35), 0 0 12px rgba(14, 165, 233, 0.25);
 }
 
 .token-chip__value {
