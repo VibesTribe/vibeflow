@@ -1,14 +1,30 @@
 import React, { useMemo } from "react";
 import { StatusSummary } from "../utils/mission";
 
+export interface MissionTaskStats {
+  total: number;
+  completed: number;
+  active: number;
+  flagged: number;
+  locked: number;
+}
+
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
+  taskStats: MissionTaskStats;
   snapshotTime: string;
   tokenUsage: number;
   onOpenTokens: () => void;
 }
 
-const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTime, tokenUsage, onOpenTokens }) => {
+const MISSION_PILLS: Array<{ key: "completeRatio" | keyof MissionTaskStats; label: string; icon: string }> = [
+  { key: "completeRatio", label: "Complete", icon: "✓" },
+  { key: "active", label: "Active", icon: "●" },
+  { key: "flagged", label: "Flagged", icon: "⚑" },
+  { key: "locked", label: "Locked", icon: "🔒" },
+];
+
+const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
       return 0;
@@ -16,12 +32,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
     return Math.round((statusSummary.completed / statusSummary.total) * 100);
   }, [statusSummary.completed, statusSummary.total]);
 
-  const stats = [
-    { label: "Active", value: statusSummary.active },
-    { label: "Complete", value: statusSummary.completed },
-    { label: "Blocked", value: statusSummary.blocked },
-    { label: "Total", value: statusSummary.total },
-  ];
+  const pills = useMemo(() => {
+    return MISSION_PILLS.map((pill) => {
+      if (pill.key === "completeRatio") {
+        return { ...pill, value: `${taskStats.completed}/${Math.max(taskStats.total, 1)}` };
+      }
+      return { ...pill, value: taskStats[pill.key] ?? 0 };
+    });
+  }, [taskStats]);
 
   return (
     <header className="mission-header">
@@ -41,22 +59,23 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
         </div>
       </div>
       <div className="mission-header__content">
-        <div className="mission-header__stats" role="group" aria-label="Mission snapshot">
-          <span className="mission-header__stats-label">Tasks</span>
-          {stats.map((stat) => (
-            <div key={stat.label}>
-              <span>{stat.label}</span>
-              <strong>{stat.value}</strong>
-            </div>
+        <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
+          {pills.map((pill) => (
+            <span key={pill.label} className="mission-header__stat-pill">
+              <span className="mission-header__stat-icon" aria-hidden="true">
+                {pill.icon}
+              </span>
+              <strong>{pill.value}</strong>
+              <span>{pill.label}</span>
+            </span>
           ))}
-          <div className="mission-header__stats-snapshot">
-            <span>Snapshot</span>
-            <strong>{snapshotTime}</strong>
-          </div>
-          <button type="button" className="token-chip" title="Open ROI + token usage" onClick={onOpenTokens}>
+          <button type="button" className="token-chip mission-header__tokens" title="Open ROI + token usage" onClick={onOpenTokens}>
             <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
-            <span className="token-chip__label">TOKENS</span>
+            <span className="token-chip__label">Tokens</span>
           </button>
+          <span className="mission-header__timestamp" aria-label="Last snapshot time">
+            <strong>{snapshotTime}</strong>
+          </span>
         </div>
         <div
           className="mission-progress"
@@ -77,4 +96,3 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, snapshotTi
 };
 
 export default MissionHeader;
-
