@@ -1959,29 +1959,10 @@ a {
 }
 
 .slice-orbit-card__tasks {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 8px;
+  display: none !important;
 }
 
-.slice-orbit-card__tasks button {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
-  text-align: left;
-  align-items: center;
-  width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  border: 1px solid rgba(56, 189, 248, 0.16);
-  border-radius: 14px;
-  padding: 10px 12px;
-  background: rgba(10, 16, 32, 0.85);
-  color: #e2e8f0;
-}
+.slice-orbit-card__tasks button { display: none !important; }
 
 .task-chip {
   display: inline-flex;
@@ -2268,22 +2249,12 @@ a {
 
 .mission-main {
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(248, 250, 252, 0.9) transparent;
+  scrollbar-width: none;
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 4px !important;
-}
-
-.mission-main::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-
-.mission-main::-webkit-scrollbar-thumb {
-  background: rgba(248, 250, 252, 0.95) !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(12, 20, 38, 0.35) !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .mission-root {
@@ -2399,7 +2370,8 @@ a {
 }
 
 .mission-main::-webkit-scrollbar {
-  width: 4px !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .mission-main::-webkit-scrollbar-track {
@@ -2407,14 +2379,12 @@ a {
 }
 
 .mission-main::-webkit-scrollbar-thumb {
-  background: rgba(248, 250, 252, 0.95) !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(12, 20, 38, 0.35) !important;
+  background: transparent !important;
+  border: none !important;
 }
 
 .mission-main {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(248, 250, 252, 0.9) transparent;
+  scrollbar-width: none;
 }
 
 .rail {
@@ -4199,22 +4169,22 @@ a {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: 20px !important;
-  padding-bottom: 20px !important;
+  gap: 24px !important;
+  padding: 18px 0 28px !important;
 }
 
 .slice-orbit {
-  width: 140px !important;
-  height: 140px !important;
+  width: 200px !important;
+  height: 200px !important;
   position: relative !important;
-  margin: 0 auto 8px !important;
+  margin: 0 auto 12px !important;
   border: none !important;
   display: block !important;
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-core-size: 95px;
-  --slice-ring-thickness: 5px;
+  --slice-core-size: 120px;
+  --slice-ring-thickness: 6px;
   --slice-ring-offset: calc((100% - var(--slice-core-size)) / 2);
 }
 

@@ -12,10 +12,10 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
-const CANVAS_SIZE = 140;
+const CANVAS_SIZE = 200;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RING_RADIUS = 52;
-const NODE_RADIUS = 74;
+const ORBIT_RING_RADIUS = 62;
+const NODE_RADIUS = 88;
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
@@ -119,18 +119,6 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
             <OrbitNode key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`} position={position} onSelectAgent={onSelectAgent} />
           ))}
         </div>
-        <ul className="slice-orbit-card__tasks">
-          {slice.assignments.slice(0, 3).map((assignment) => (
-            <li key={`detail-${assignment.task.id}`}>
-              <button type="button" onClick={() => onSelectSlice(slice)}>
-                <span className={`task-chip task-chip--${assignment.task.status}`}>
-                  {assignment.task.taskNumber ?? assignment.task.title}
-                </span>
-                <span className="task-chip__summary">{assignment.task.summary ?? assignment.task.title}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
     </article>
   );
