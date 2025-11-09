@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MissionHeader from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
@@ -8,6 +8,17 @@ import { useMissionData } from "../hooks/useMissionData";
 import { MissionAgent, MissionSlice } from "../utils/mission";
 
 const VibesMissionControl: React.FC = () => {
+  useEffect(() => {
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+    };
+  }, []);
+
   const { snapshot, events, slices, agents, statusSummary, tokenUsage, loading } = useMissionData();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
 
