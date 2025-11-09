@@ -10,8 +10,8 @@ import { MissionAgent, MissionSlice } from "../utils/mission";
 const VibesMissionControl: React.FC = () => {
   useEffect(() => {
     if (typeof document === "undefined") return;
-    const html = document.documentElement;
-    const targetBody = document.querySelector("body#dummybodyid") || document.body;
+    const html = document.documentElement as HTMLElement;
+    const targetBody = (document.querySelector("body#dummybodyid") as HTMLElement | null) || document.body;
 
     const originalHtmlOverflow = html.style.getPropertyValue("overflow");
     const originalHtmlPriority = html.style.getPropertyPriority("overflow");
