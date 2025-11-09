@@ -9,13 +9,25 @@ import { MissionAgent, MissionSlice } from "../utils/mission";
 
 const VibesMissionControl: React.FC = () => {
   useEffect(() => {
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    const originalBodyOverflow = document.body.style.overflow;
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    const html = document.documentElement;
+    const body = document.body;
+    const originalHtmlOverflow = html.style.getPropertyValue("overflow");
+    const originalHtmlPriority = html.style.getPropertyPriority("overflow");
+    const originalBodyOverflow = body.style.getPropertyValue("overflow");
+    const originalBodyPriority = body.style.getPropertyPriority("overflow");
+    html.style.setProperty("overflow", "hidden", "important");
+    body.style.setProperty("overflow", "hidden", "important");
     return () => {
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      document.body.style.overflow = originalBodyOverflow;
+      if (originalHtmlOverflow) {
+        html.style.setProperty("overflow", originalHtmlOverflow, originalHtmlPriority);
+      } else {
+        html.style.removeProperty("overflow");
+      }
+      if (originalBodyOverflow) {
+        body.style.setProperty("overflow", originalBodyOverflow, originalBodyPriority);
+      } else {
+        body.style.removeProperty("overflow");
+      }
     };
   }, []);
 
