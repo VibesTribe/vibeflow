@@ -13,13 +13,13 @@ html,
 body,
 body#dummybodyid {
   margin: 0;
-  height: 100%;
-  width: 100%;
+  height: 100% !important;
+  width: 100% !important;
   overflow: hidden !important;
   scrollbar-width: none;
   overscroll-behavior: none;
-  position: fixed;
-  inset: 0;
+  position: fixed !important;
+  inset: 0 !important;
 }
 
 html::-webkit-scrollbar,
@@ -190,7 +190,7 @@ a {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: inset 0 0 10px rgba(3, 6, 14, 0.85), 0 8px 22px rgba(3, 8, 18, 0.55);
+  box-shadow: 0 8px 24px rgba(3, 8, 18, 0.55);
 }
 .rail__header::after {
   display: none !important;
@@ -199,7 +199,7 @@ a {
 .rail__button:hover {
   transform: translateY(-1px);
   border-color: rgba(162, 244, 255, 0.85);
-  box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.45), 0 18px 32px rgba(3, 10, 24, 0.7);
+  box-shadow: 0 24px 40px rgba(4, 10, 24, 0.75);
 }
 
 .rail__button--primary {
@@ -4168,8 +4168,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-left: 0;
-  margin-left: 0;
+  padding-left: 118px;
   width: 100%;
 }
 
@@ -4215,9 +4214,9 @@ a {
 
 .token-chip:hover {
   transform: translateX(2px);
-  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.2), 0 0 6px rgba(14, 165, 233, 0.25);
+  box-shadow: 0 16px 26px rgba(14, 165, 233, 0.25);
   border-color: rgba(250, 204, 21, 0.65);
-  background: rgba(10, 18, 32, 0.95);
+  background: rgba(8, 14, 28, 0.94);
 }
 
 .token-chip__value {
@@ -4469,7 +4468,7 @@ a {
   background: rgba(6, 11, 22, 0.95) !important;
   border: 2px solid rgba(120, 230, 255, 0.35) !important;
   color: #f1f5f9 !important;
-  box-shadow: inset 0 0 12px rgba(3, 6, 14, 0.85), 0 10px 28px rgba(3, 8, 18, 0.65) !important;
+  box-shadow: 0 12px 28px rgba(3, 8, 18, 0.65) !important;
 }
 
 .mission-root .rail__button--primary {
@@ -4478,6 +4477,6 @@ a {
 
 .mission-root .rail__button:hover {
   border-color: rgba(180, 250, 255, 0.95) !important;
-  box-shadow: inset 0 0 26px rgba(56, 189, 248, 0.6), 0 26px 40px rgba(3, 10, 24, 0.85) !important;
+  box-shadow: 0 28px 44px rgba(3, 10, 24, 0.85) !important;
   background: rgba(8, 14, 28, 0.98) !important;
 }
