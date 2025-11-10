@@ -17,11 +17,11 @@ interface MissionHeaderProps {
   onOpenTokens: () => void;
 }
 
-const MISSION_PILLS: Array<{ key: "completeRatio" | keyof MissionTaskStats; label: string; icon: string }> = [
-  { key: "completeRatio", label: "Complete", icon: "✓" },
-  { key: "active", label: "Active", icon: "●" },
-  { key: "flagged", label: "Flagged", icon: "⚑" },
-  { key: "locked", label: "Locked", icon: "🔒" },
+const MISSION_PILLS: Array<{ key: "completeRatio" | keyof MissionTaskStats; label: string; icon: string; tone: "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked" }> = [
+  { key: "completeRatio", label: "Complete", icon: "✓", tone: "pill-complete" },
+  { key: "active", label: "Active", icon: "●", tone: "pill-active" },
+  { key: "flagged", label: "Flagged", icon: "⚑", tone: "pill-flagged" },
+  { key: "locked", label: "Locked", icon: "🔒", tone: "pill-locked" },
 ];
 
 const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
@@ -61,12 +61,11 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
       <div className="mission-header__content">
         <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
           {pills.map((pill) => (
-            <span key={pill.label} className="mission-header__stat-pill">
+            <span key={pill.label} className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`} title={pill.label}>
               <span className="mission-header__stat-icon" aria-hidden="true">
                 {pill.icon}
               </span>
               <strong>{pill.value}</strong>
-              <span>{pill.label}</span>
             </span>
           ))}
           <button type="button" className="token-chip mission-header__tokens" title="Open ROI + token usage" onClick={onOpenTokens}>
@@ -96,4 +95,5 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
 };
 
 export default MissionHeader;
+
 
