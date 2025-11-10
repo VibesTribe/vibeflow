@@ -4004,13 +4004,13 @@ a {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(248, 248, 248, 0.6);
+  background: transparent;
   object-fit: contain;
-  padding: 4px;
-  filter: brightness(0) invert(1);
-  mix-blend-mode: normal;
-  box-shadow: inset 0 0 8px rgba(15, 23, 42, 0.65);
+  padding: 0;
+  filter: brightness(3.2);
+  mix-blend-mode: lighten;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier,
@@ -4655,6 +4655,20 @@ a {
 .slice-orbit__badge--q { background: #facc15; }
 
 .slice-orbit__task,
+
+.slice-orbit__avatar,
+.agent-pill__avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(248, 248, 248, 0.65) !important;
+  background: transparent !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  filter: brightness(3.2) !important;
+  mix-blend-mode: lighten !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.25) !important;
+}
 .slice-orbit__location {
   position: absolute;
   left: 50%;
