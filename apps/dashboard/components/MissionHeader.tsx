@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { StatusSummary } from "../utils/mission";
 
 export interface MissionTaskStats {
@@ -37,7 +37,6 @@ const MISSION_PILLS: MissionPillConfig[] = [
 
 const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
   const [activePill, setActivePill] = useState<string | null>(null);
-  const pillRowRef = useRef<HTMLDivElement | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -54,31 +53,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
       return { ...pill, value: taskStats[pill.key] ?? 0 };
     });
   }, [taskStats]);
-
-  useEffect(() => {
-    if (!activePill) {
-      return;
-    }
-
-    const handleGlobalPointer = (event: PointerEvent) => {
-      const pillsRowNode = pillRowRef.current;
-      if (!pillsRowNode) {
-        setActivePill(null);
-        return;
-      }
-      const target = event.target as HTMLElement | null;
-      if (target && pillsRowNode.contains(target)) {
-        const pill = target.closest(".mission-header__stat-pill");
-        if (pill) {
-          return;
-        }
-      }
-      setActivePill(null);
-    };
-
-    window.addEventListener("pointerdown", handleGlobalPointer);
-    return () => window.removeEventListener("pointerdown", handleGlobalPointer);
-  }, [activePill]);
 
   return (
     <header className="mission-header">
@@ -107,7 +81,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
             <strong>{snapshotTime}</strong>
           </span>
         </div>
-        <div ref={pillRowRef} className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
+        <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
           {pills.map((pill) => (
             <button
               key={pill.label}
@@ -115,6 +89,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
               title={`${pill.label}: ${pill.value}`}
               aria-label={`${pill.label}: ${pill.value}`}
+              aria-expanded={activePill === pill.label}
               data-active={activePill === pill.label ? "true" : "false"}
               onClick={() => setActivePill((prev) => (prev === pill.label ? null : pill.label))}
             >
