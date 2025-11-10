@@ -1,7 +1,7 @@
 import React, { FormEvent, useMemo, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../../utils/mission";
-import { TaskSnapshot } from "@core/types";
+import { TaskSnapshot, TaskStatus } from "@core/types";
 
 export type MissionModalState =
   | { type: null }
@@ -254,6 +254,25 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   );
 };
 
+const STATUS_META: Record<
+  TaskStatus,
+  {
+    label: string;
+    tone: "complete" | "active" | "flagged" | "locked" | "default";
+    icon: string;
+  }
+> = {
+  assigned: { label: "Assigned", tone: "active", icon: "\u21BB" },
+  in_progress: { label: "In Progress", tone: "active", icon: "\u21BB" },
+  received: { label: "Received", tone: "active", icon: "\u21BB" },
+  testing: { label: "Testing", tone: "active", icon: "\u2699" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691" },
+  supervisor_approval: { label: "Awaiting Approval", tone: "flagged", icon: "\u2691" },
+  ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713" },
+  complete: { label: "Completed", tone: "complete", icon: "\u2713" },
+  blocked: { label: "Blocked", tone: "locked", icon: "\u{1F512}" },
+};
+
 const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = ({ slice, events }) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
 
@@ -281,18 +300,27 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
       <div className="slice-panel__content">
         <aside className="slice-panel__tasks">
           <h4>Tasks</h4>
-          <ul>
+          <ul className="slice-task-list">
             {slice.assignments.map((assignment) => (
               <li key={assignment.task.id}>
                 <button
                   type="button"
                   className={assignment.task.id === activeTask?.id ? "is-selected" : undefined}
                   onClick={() => setSelectedTask(assignment.task)}
+                  aria-expanded={assignment.task.id === activeTask?.id}
                 >
-                  <span className={`task-chip task-chip--${assignment.task.status}`}>
-                    {assignment.task.taskNumber ?? assignment.task.title}
+                  <span className={`slice-task-list__status slice-task-list__status--${STATUS_META[assignment.task.status]?.tone ?? "default"}`}>
+                    {STATUS_META[assignment.task.status]?.icon ?? "\u2022"}
                   </span>
-                  <span className="task-chip__summary">{assignment.task.summary ?? assignment.task.title}</span>
+                  <div className="slice-task-list__copy">
+                    <span className="slice-task-list__title">
+                      {assignment.task.taskNumber ?? assignment.task.title ?? "Task"}
+                    </span>
+                    <span className="slice-task-list__meta">
+                      {STATUS_META[assignment.task.status]?.label ?? assignment.task.status.replace(/_/g, " ")}
+                    </span>
+                  </div>
+                  <span className="slice-task-list__summary">{assignment.task.summary ?? assignment.task.title}</span>
                 </button>
               </li>
             ))}
