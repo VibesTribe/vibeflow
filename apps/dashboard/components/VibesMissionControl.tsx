@@ -27,22 +27,26 @@ const VibesMissionControl: React.FC = () => {
   const isMobile = usePrefersMobile();
   useEffect(() => {
     if (typeof document === "undefined") return;
-    const html = document.documentElement as HTMLElement;
-    const targetBody = (document.querySelector("body#dummybodyid") as HTMLElement | null) || document.body;
+    const htmlElement = document.documentElement;
+    const fallbackBody = document.body;
+    if (!(htmlElement instanceof HTMLElement) || !(fallbackBody instanceof HTMLElement)) {
+      return;
+    }
 
-    const originalHtmlOverflow = html.style.getPropertyValue("overflow");
-    const originalHtmlPriority = html.style.getPropertyPriority("overflow");
+    const targetBody = (document.querySelector("body#dummybodyid") as HTMLElement | null) ?? fallbackBody;
+    const originalHtmlOverflow = htmlElement.style.getPropertyValue("overflow");
+    const originalHtmlPriority = htmlElement.style.getPropertyPriority("overflow");
     const originalBodyOverflow = targetBody.style.getPropertyValue("overflow");
     const originalBodyPriority = targetBody.style.getPropertyPriority("overflow");
 
-    html.style.setProperty("overflow", "hidden", "important");
+    htmlElement.style.setProperty("overflow", "hidden", "important");
     targetBody.style.setProperty("overflow", "hidden", "important");
 
     return () => {
       if (originalHtmlOverflow) {
-        html.style.setProperty("overflow", originalHtmlOverflow, originalHtmlPriority);
+        htmlElement.style.setProperty("overflow", originalHtmlOverflow, originalHtmlPriority);
       } else {
-        html.style.removeProperty("overflow");
+        htmlElement.style.removeProperty("overflow");
       }
       if (originalBodyOverflow) {
         targetBody.style.setProperty("overflow", originalBodyOverflow, originalBodyPriority);
