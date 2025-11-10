@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useState } from "react";
-import { TaskSnapshot } from "@core/types";
+import { TaskSnapshot, TaskStatus } from "@core/types";
 import { StatusSummary } from "../utils/mission";
 
 export interface MissionTaskStats {
@@ -33,10 +33,10 @@ interface MissionPillConfig {
   taskFilter?: TaskFilter;
 }
 
-const COMPLETED_STATUSES = new Set<TaskSnapshot["status"]>(["complete", "ready_to_merge", "supervisor_approval"]);
-const ACTIVE_STATUSES = new Set<TaskSnapshot["status"]>(["assigned", "in_progress", "received", "testing", "supervisor_review"]);
-const FLAGGED_STATUSES = new Set<TaskSnapshot["status"]>(["supervisor_review", "supervisor_approval", "received"]);
-const LOCKED_STATUSES = new Set<TaskSnapshot["status"]>(["blocked", "awaiting_dependency", "paused"]);
+const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval"]);
+const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing", "supervisor_review"]);
+const FLAGGED_STATUSES = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
+const LOCKED_STATUSES = new Set<TaskStatus>(["blocked"]);
 
 const MISSION_PILLS: MissionPillConfig[] = [
   {
@@ -178,8 +178,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               </div>
               <ul className="mission-header__pill-detail-list">
                 {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
-                {activeDetail.tasks.slice(0, 5).map((task) => (
-                  <li key={`${task.taskNumber ?? task.id ?? task.title ?? Math.random()}`} className="mission-header__pill-detail-item">
+                {activeDetail.tasks.slice(0, 5).map((task, index) => (
+                  <li key={task.id ?? task.taskNumber ?? task.title ?? `task-${index}`} className="mission-header__pill-detail-item">
                     <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
                     <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
                   </li>
