@@ -1642,12 +1642,42 @@ a {
   white-space: nowrap;
   justify-content: center;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 0;
 }
 
 .mission-header__stat-pill strong {
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   color: #f8fafc;
+}
+
+.mission-header__stat-pill::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translate(-50%, 6px);
+  padding: 6px 10px;
+  background: rgba(6, 11, 22, 0.95);
+  border-radius: 10px;
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  color: #e2e8f0;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 12px 28px rgba(3, 7, 18, 0.45);
+}
+
+.mission-header__stat-pill:hover::after,
+.mission-header__stat-pill:focus-visible::after,
+.mission-header__stat-pill:focus::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .mission-header__stat-icon {
@@ -1663,7 +1693,7 @@ a {
 }
 
 .mission-header__stat-pill--pill-flagged .mission-header__stat-icon {
-  color: #fb923c;
+  color: #f87171;
 }
 
 .mission-header__stat-pill--pill-locked .mission-header__stat-icon {
@@ -4626,14 +4656,14 @@ a {
 .mission-root {
   grid-template-columns: clamp(110px, 12vw, 170px) minmax(0, 1fr) clamp(110px, 12vw, 170px) !important;
   column-gap: clamp(12px, 2vw, 32px) !important;
-  padding: 0 clamp(10px, 2vw, 36px) !important;
+  padding: 0 clamp(18px, 2.8vw, 44px) 0 clamp(4px, 1.4vw, 20px) !important;
   min-height: 100vh;
 }
 
 .mission-main {
   width: 100% !important;
   max-width: none !important;
-  padding: 0 clamp(10px, 2vw, 28px) !important;
+  padding: 0 clamp(16px, 2.4vw, 32px) 0 clamp(6px, 1.1vw, 16px) !important;
   height: auto !important;
   min-height: calc(100vh - 64px) !important;
   gap: clamp(18px, 2vw, 28px) !important;
@@ -4701,6 +4731,8 @@ a {
   white-space: nowrap;
   justify-content: center;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 0;
 }
 
 .mission-header__stat-pill strong {
@@ -4817,7 +4849,7 @@ a {
   .mission-root {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
-    padding: 0 clamp(6px, 3vw, 18px) !important;
+    padding: 0 clamp(10px, 5vw, 24px) 0 clamp(2px, 2.5vw, 12px) !important;
   }
 
   .rail--left,
@@ -4826,7 +4858,7 @@ a {
   }
 
   .mission-main {
-    padding: 0 clamp(6px, 4vw, 14px) !important;
+    padding: 0 clamp(10px, 5vw, 20px) 0 clamp(2px, 3vw, 10px) !important;
     gap: 16px !important;
   }
 
@@ -4843,12 +4875,12 @@ a {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 4px 0 10px;
+    padding: 2px 0 10px;
   }
 }
 .mission-mobile-nav {
   display: none;
-  margin: 4px 0 8px;
+  margin: 2px 0 8px;
   gap: 6px;
   flex-direction: column;
 }

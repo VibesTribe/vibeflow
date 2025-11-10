@@ -23,15 +23,16 @@ type MissionPillKey = "completeRatio" | keyof MissionTaskStats;
 interface MissionPillConfig {
   key: MissionPillKey;
   label: string;
+  description: string;
   icon: ReactNode;
   tone: MissionPillTone;
 }
 
 const MISSION_PILLS: MissionPillConfig[] = [
-  { key: "completeRatio", label: "Complete", icon: "\u2713", tone: "pill-complete" },
-  { key: "active", label: "In Progress", icon: "\u21BB", tone: "pill-active" },
-  { key: "flagged", label: "Requires Review", icon: "\u26A0", tone: "pill-flagged" },
-  { key: "locked", label: "Awaiting Dependency", icon: "\u26D4", tone: "pill-locked" },
+  { key: "completeRatio", label: "Complete", description: "Completed tasks vs mission total", icon: "\u2713", tone: "pill-complete" },
+  { key: "active", label: "In Progress", description: "Currently active mission tasks", icon: "\u21BB", tone: "pill-active" },
+  { key: "flagged", label: "Flagged", description: "Tasks needing review or attention", icon: "\u2691", tone: "pill-flagged" },
+  { key: "locked", label: "Locked", description: "Tasks waiting on dependencies", icon: "\u{1F512}", tone: "pill-locked" },
 ];
 
 const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
@@ -86,6 +87,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
               title={`${pill.label}: ${pill.value}`}
               aria-label={`${pill.label}: ${pill.value}`}
+              data-tooltip={`${pill.label}: ${pill.description}`}
             >
               <span className="mission-header__stat-icon" aria-hidden="true">
                 {pill.icon}
