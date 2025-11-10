@@ -3143,8 +3143,7 @@ a {
   border: none;
   background: transparent;
   object-fit: contain;
-  margin-top: -2px;
-  margin-bottom: -4px;
+  transform: translateY(6px);
 }
 
 .slice-orbit__badge {
@@ -3163,9 +3162,9 @@ a {
   box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
 }
 
-.slice-orbit__badge--w { color: var(--status-ready); }
-.slice-orbit__badge--m { color: var(--status-active); }
-.slice-orbit__badge--q { color: var(--status-credit); }
+.slice-orbit__badge--w { color: #7dd3fc; }
+.slice-orbit__badge--m { color: #c084fc; }
+.slice-orbit__badge--q { color: #fde047; }
 
 .slice-orbit__task {
   margin-top: 4px;
@@ -5503,6 +5502,21 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.3);
   background: rgba(7, 12, 22, 0.92);
   color: rgba(248, 250, 252, 0.9);
+}
+
+.agent-chip__tier--w {
+  border-color: #7dd3fc;
+  color: #7dd3fc;
+}
+
+.agent-chip__tier--m {
+  border-color: #c084fc;
+  color: #c084fc;
+}
+
+.agent-chip__tier--q {
+  border-color: #fde047;
+  color: #fde047;
 }
 
 .agent-chip__name {
