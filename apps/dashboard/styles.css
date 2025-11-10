@@ -2262,6 +2262,12 @@ a {
   gap: 18px;
 }
 
+.slice-panel__content--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .slice-panel__tasks ul {
   list-style: none;
   padding: 0;
@@ -2298,12 +2304,27 @@ a {
   gap: 8px;
 }
 
+.slice-task-list li {
+  border-radius: 16px;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  background: rgba(6, 10, 20, 0.85);
+  padding: 10px 12px;
+}
+
+.slice-task-list li.is-open {
+  border-color: rgba(125, 211, 252, 0.4);
+  box-shadow: 0 16px 32px rgba(3, 7, 18, 0.4);
+}
+
 .slice-task-list li button {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   align-items: center;
   width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .slice-task-list__status {
@@ -2357,6 +2378,18 @@ a {
   grid-column: span 2;
   font-size: 0.7rem;
   color: rgba(148, 163, 184, 0.9);
+}
+
+.slice-task-list__accordion {
+  margin-top: 10px;
+  border-top: 1px solid rgba(56, 189, 248, 0.15);
+  padding-top: 10px;
+}
+
+.slice-task-list__accordion .task-detail {
+  background: rgba(8, 13, 26, 0.9);
+  border-radius: 14px;
+  padding: 12px;
 }
 
 .slice-panel__details {
@@ -4690,6 +4723,15 @@ a {
 .mission-modal__close:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(4, 8, 18, 0.4);
+}
+
+.mission-modal--models {
+  padding-top: 48px;
+}
+
+.mission-modal--models .mission-modal__close {
+  top: 20px;
+  right: 20px;
 }
 
 @media (max-width: 900px) {
