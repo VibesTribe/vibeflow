@@ -43,9 +43,9 @@ a {
 
 .mission-root {
   display: grid;
-  grid-template-columns: clamp(96px, 12vw, 160px) minmax(0, 1fr) clamp(96px, 12vw, 160px);
-  column-gap: clamp(12px, 2vw, 28px);
-  padding: 0 clamp(12px, 2vw, 32px);
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr) clamp(110px, 12vw, 180px);
+  column-gap: clamp(12px, 2vw, 32px);
+  padding: 0 clamp(16px, 2vw, 48px);
   align-items: stretch;
   min-height: 100vh;
   height: 100vh;
@@ -110,7 +110,7 @@ a {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0 12px;
+  padding: 0 clamp(12px, 2vw, 24px);
   display: flex;
   flex-direction: column;
   gap: 24px;
