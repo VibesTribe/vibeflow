@@ -1,29 +1,39 @@
-const geminiIcon = new URL("../assets/agents/gemini.svg", import.meta.url).href;
-const claudeIcon = new URL("../assets/agents/claude.svg", import.meta.url).href;
-const deepseekIcon = new URL("../assets/agents/deepseek.svg", import.meta.url).href;
-const openaiIcon = new URL("../assets/agents/openai.svg", import.meta.url).href;
-const kimiIcon = new URL("../assets/agents/kimi.svg", import.meta.url).href;
-const chatglmIcon = new URL("../assets/agents/chatglm.svg", import.meta.url).href;
-const minimaxIcon = new URL("../assets/agents/minimax.svg", import.meta.url).href;
-const mistralIcon = new URL("../assets/agents/mistral.svg", import.meta.url).href;
-const grokIcon = new URL("../assets/agents/grok.svg", import.meta.url).href;
-const metaIcon = new URL("../assets/agents/meta.svg", import.meta.url).href;
-const qwenIcon = new URL("../assets/agents/qwen.svg", import.meta.url).href;
+import geminiIconRaw from "../assets/agents/gemini.svg?url";
+import claudeIconRaw from "../assets/agents/claude.svg?url";
+import deepseekIconRaw from "../assets/agents/deepseek.svg?url";
+import openaiIconRaw from "../assets/agents/openai.svg?url";
+import kimiIconRaw from "../assets/agents/kimi.svg?url";
+import chatglmIconRaw from "../assets/agents/chatglm.svg?url";
+import minimaxIconRaw from "../assets/agents/minimax.svg?url";
+import mistralIconRaw from "../assets/agents/mistral.svg?url";
+import grokIconRaw from "../assets/agents/grok.svg?url";
+import metaIconRaw from "../assets/agents/meta.svg?url";
+import qwenIconRaw from "../assets/agents/qwen.svg?url";
 
 const ICON_BASE = "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@latest/assets";
 
+function withBase(url: string): string {
+  if (/^(https?:|data:)/.test(url)) {
+    return url;
+  }
+  const base = import.meta.env.BASE_URL ?? "/";
+  const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
+  return `${normalizedBase}${normalizedUrl}`;
+}
+
 const LOCAL_ICON_MAP: Array<{ match: RegExp; path: string }> = [
-  { match: /gemini|google/i, path: geminiIcon },
-  { match: /claude|anthropic/i, path: claudeIcon },
-  { match: /deepseek/i, path: deepseekIcon },
-  { match: /openai|gpt|turbo|oai/i, path: openaiIcon },
-  { match: /moonshot|kimi/i, path: kimiIcon },
-  { match: /glm|chatglm|zhipu/i, path: chatglmIcon },
-  { match: /minimax/i, path: minimaxIcon },
-  { match: /mistral/i, path: mistralIcon },
-  { match: /grok/i, path: grokIcon },
-  { match: /meta|llama|facebook/i, path: metaIcon },
-  { match: /qwen|gwen|alibaba/i, path: qwenIcon },
+  { match: /gemini|google/i, path: withBase(geminiIconRaw) },
+  { match: /claude|anthropic/i, path: withBase(claudeIconRaw) },
+  { match: /deepseek/i, path: withBase(deepseekIconRaw) },
+  { match: /openai|gpt|turbo|oai/i, path: withBase(openaiIconRaw) },
+  { match: /moonshot|kimi/i, path: withBase(kimiIconRaw) },
+  { match: /glm|chatglm|zhipu/i, path: withBase(chatglmIconRaw) },
+  { match: /minimax/i, path: withBase(minimaxIconRaw) },
+  { match: /mistral/i, path: withBase(mistralIconRaw) },
+  { match: /grok/i, path: withBase(grokIconRaw) },
+  { match: /meta|llama|facebook/i, path: withBase(metaIconRaw) },
+  { match: /qwen|gwen|alibaba/i, path: withBase(qwenIconRaw) },
 ];
 
 const REMOTE_FALLBACK_MAP: Array<{ match: RegExp; path: string }> = [
