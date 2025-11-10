@@ -28,32 +28,32 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
         {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
         {orderedAgents.map((agent) => {
           const tone = normalizeStatus(agent.status);
-          const indicator = STATUS_INDICATORS[tone] ?? STATUS_INDICATORS.ready;
+          const indicator = STATUS_META[tone] ?? STATUS_META.ready;
           return (
-            <button key={agent.id} type="button" className={`agent-pill agent-pill--${tone}`} onClick={() => onSelectAgent(agent)}>
-              <div className="agent-pill__logo">
+            <button
+              key={agent.id}
+              type="button"
+              className={`agent-pill agent-pill--${tone}`}
+              aria-label={`${agent.name} · ${indicator.label}`}
+              onClick={() => onSelectAgent(agent)}
+            >
+              <div className="agent-pill__circle">
                 <img
                   src={agent.icon || FALLBACK_ICON}
-                  alt={agent.name}
+                  alt=""
                   className="agent-pill__avatar"
                   loading="lazy"
                   decoding="async"
                   onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
                 />
+                <span className={`agent-pill__status-dot agent-pill__status-dot--${tone}`} aria-hidden="true">
+                  {indicator.icon}
+                </span>
                 <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
               </div>
-              <div className="agent-pill__meta">
-                <div className="agent-pill__title-row">
-                  <span className="agent-pill__name" title={agent.name}>
-                    {agent.name}
-                  </span>
-                  <span className={`agent-pill__indicator agent-pill__indicator--${tone}`} aria-label={indicator.label}>
-                    {indicator.icon}
-                  </span>
-                </div>
-                <span className="agent-pill__status">{indicator.label}</span>
-                {agent.summary && <span className="agent-pill__summary">{agent.summary}</span>}
-              </div>
+              <span className="agent-pill__name" title={agent.name}>
+                {agent.name}
+              </span>
             </button>
           );
         })}
@@ -66,16 +66,17 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
 function normalizeStatus(status: string) {
   const lower = status.toLowerCase();
   if (lower.includes("credit")) return "credit";
-  if (lower.includes("cooldown")) return "cooldown";
-  if (lower.includes("issue") || lower.includes("blocked")) return "issue";
-  if (lower.includes("working") || lower.includes("progress") || lower.includes("running")) return "ready";
+  if (lower.includes("cooldown") || lower.includes("timeout")) return "cooldown";
+  if (lower.includes("issue") || lower.includes("blocked") || lower.includes("error")) return "issue";
+  if (lower.includes("working") || lower.includes("progress") || lower.includes("running")) return "active";
   return "ready";
 }
 
-const STATUS_INDICATORS: Record<string, { label: string; icon: string }> = {
+const STATUS_META: Record<string, { label: string; icon: string }> = {
   ready: { label: "Ready", icon: "✓" },
+  active: { label: "Active", icon: "↻" },
   cooldown: { label: "Cooldown", icon: "⏳" },
-  credit: { label: "Credit", icon: "💰" },
+  credit: { label: "Credit Needed", icon: "💰" },
   issue: { label: "Issue", icon: "⚠" },
 };
 

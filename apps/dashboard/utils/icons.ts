@@ -12,28 +12,18 @@ import qwenIconUrl from "../assets/agents/qwen.svg?url";
 
 const ICON_BASE = "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@latest/assets";
 
-function withBase(url: string): string {
-  if (/^(https?:|data:)/.test(url)) {
-    return url;
-  }
-  const base = import.meta.env.BASE_URL ?? "/";
-  const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
-  const normalizedUrl = url.startsWith("/") ? url : `/${url}`;
-  return `${normalizedBase}${normalizedUrl}`;
-}
-
 const LOCAL_ICON_MAP: Array<{ match: RegExp; path: string }> = [
-  { match: /gemini|google/i, path: withBase(geminiIconUrl) },
-  { match: /claude|anthropic/i, path: withBase(claudeIconUrl) },
-  { match: /deepseek/i, path: withBase(deepseekIconUrl) },
-  { match: /openai|gpt|turbo|oai/i, path: withBase(openaiIconUrl) },
-  { match: /moonshot|kimi/i, path: withBase(kimiIconUrl) },
-  { match: /glm|chatglm|zhipu/i, path: withBase(chatglmIconUrl) },
-  { match: /minimax/i, path: withBase(minimaxIconUrl) },
-  { match: /mistral/i, path: withBase(mistralIconUrl) },
-  { match: /grok/i, path: withBase(grokIconUrl) },
-  { match: /meta|llama|facebook/i, path: withBase(metaIconUrl) },
-  { match: /qwen|gwen|alibaba/i, path: withBase(qwenIconUrl) },
+  { match: /gemini|google/i, path: geminiIconUrl },
+  { match: /claude|anthropic/i, path: claudeIconUrl },
+  { match: /deepseek/i, path: deepseekIconUrl },
+  { match: /openai|gpt|turbo|oai/i, path: openaiIconUrl },
+  { match: /moonshot|kimi/i, path: kimiIconUrl },
+  { match: /glm|chatglm|zhipu/i, path: chatglmIconUrl },
+  { match: /minimax/i, path: minimaxIconUrl },
+  { match: /mistral/i, path: mistralIconUrl },
+  { match: /grok/i, path: grokIconUrl },
+  { match: /meta|llama|facebook/i, path: metaIconUrl },
+  { match: /qwen|gwen|alibaba/i, path: qwenIconUrl },
 ];
 
 const REMOTE_FALLBACK_MAP: Array<{ match: RegExp; path: string }> = [
@@ -59,4 +49,3 @@ export function resolveProviderIcon(name: string): string {
   }
   return FALLBACK_ICON;
 }
-
