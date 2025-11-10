@@ -10,6 +10,20 @@ interface AgentHangarPanelProps {
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
+const STATUS_META: Record<
+  string,
+  {
+    label: string;
+    icon: string;
+  }
+> = {
+  ready: { label: "Ready", icon: "\u2713" },
+  active: { label: "Active", icon: "\u21BB" },
+  cooldown: { label: "Cooldown", icon: "\u23F3" },
+  credit: { label: "Credit Needed", icon: "\u{1F4B0}" },
+  issue: { label: "Issue", icon: "\u26A0" },
+};
+
 const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, onViewAll, onAdd, onSelectAgent }) => {
   const orderedAgents = useMemo(() => agents.slice().sort((a, b) => a.name.localeCompare(b.name)), [agents]);
 
@@ -33,25 +47,25 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
             <button
               key={agent.id}
               type="button"
-              className={`agent-pill agent-pill--${tone}`}
+              className={`agent-chip agent-chip--${tone}`}
               aria-label={`${agent.name} · ${indicator.label}`}
               onClick={() => onSelectAgent(agent)}
             >
-              <div className="agent-pill__circle">
+              <div className="agent-chip__logo">
                 <img
                   src={agent.icon || FALLBACK_ICON}
-                  alt=""
-                  className="agent-pill__avatar"
+                  alt={agent.name}
+                  className="agent-chip__avatar"
                   loading="lazy"
                   decoding="async"
                   onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
                 />
-                <span className={`agent-pill__status-dot agent-pill__status-dot--${tone}`} aria-hidden="true">
+                <span className={`agent-chip__status agent-chip__status--${tone}`} aria-hidden="true">
                   {indicator.icon}
                 </span>
-                <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+                <span className={`agent-chip__tier agent-chip__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
               </div>
-              <span className="agent-pill__name" title={agent.name}>
+              <span className="agent-chip__name" title={agent.name}>
                 {agent.name}
               </span>
             </button>
@@ -72,12 +86,5 @@ function normalizeStatus(status: string) {
   return "ready";
 }
 
-const STATUS_META: Record<string, { label: string; icon: string }> = {
-  ready: { label: "Ready", icon: "✓" },
-  active: { label: "Active", icon: "↻" },
-  cooldown: { label: "Cooldown", icon: "⏳" },
-  credit: { label: "Credit Needed", icon: "💰" },
-  issue: { label: "Issue", icon: "⚠" },
-};
-
 export default AgentHangarPanel;
+
