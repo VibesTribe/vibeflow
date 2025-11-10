@@ -26,31 +26,37 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, on
       </div>
       <div className="rail__scroll">
         {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
-        {orderedAgents.map((agent) => (
-          <button
-            key={agent.id}
-            type="button"
-            className={`agent-pill agent-pill--${normalizeStatus(agent.status)}`}
-            onClick={() => onSelectAgent(agent)}
-          >
-            <div className="agent-pill__avatar-wrap">
-              <img
-                src={agent.icon || FALLBACK_ICON}
-                alt={agent.name}
-                className="agent-pill__avatar"
-                loading="lazy"
-                decoding="async"
-                onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
-              />
-              <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-            </div>
-            <span className="agent-pill__name" title={agent.name}>
-              {agent.name}
-            </span>
-            <span className="agent-pill__status">{formatStatus(agent.status)}</span>
-            {agent.summary && <span className="agent-pill__summary">{agent.summary}</span>}
-          </button>
-        ))}
+        {orderedAgents.map((agent) => {
+          const tone = normalizeStatus(agent.status);
+          const indicator = STATUS_INDICATORS[tone] ?? STATUS_INDICATORS.ready;
+          return (
+            <button key={agent.id} type="button" className={`agent-pill agent-pill--${tone}`} onClick={() => onSelectAgent(agent)}>
+              <div className="agent-pill__logo">
+                <img
+                  src={agent.icon || FALLBACK_ICON}
+                  alt={agent.name}
+                  className="agent-pill__avatar"
+                  loading="lazy"
+                  decoding="async"
+                  onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+                />
+                <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+              </div>
+              <div className="agent-pill__meta">
+                <div className="agent-pill__title-row">
+                  <span className="agent-pill__name" title={agent.name}>
+                    {agent.name}
+                  </span>
+                  <span className={`agent-pill__indicator agent-pill__indicator--${tone}`} aria-label={indicator.label}>
+                    {indicator.icon}
+                  </span>
+                </div>
+                <span className="agent-pill__status">{indicator.label}</span>
+                {agent.summary && <span className="agent-pill__summary">{agent.summary}</span>}
+              </div>
+            </button>
+          );
+        })}
         {!loading && orderedAgents.length === 0 && <p className="rail__empty">No agents registered yet.</p>}
       </div>
     </aside>
@@ -66,13 +72,11 @@ function normalizeStatus(status: string) {
   return "ready";
 }
 
-function formatStatus(status: string) {
-  if (!status) return "Idle";
-  return status
-    .split(/[ _-]/)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-}
+const STATUS_INDICATORS: Record<string, { label: string; icon: string }> = {
+  ready: { label: "Ready", icon: "✓" },
+  cooldown: { label: "Cooldown", icon: "⏳" },
+  credit: { label: "Credit", icon: "💰" },
+  issue: { label: "Issue", icon: "⚠" },
+};
 
 export default AgentHangarPanel;
-

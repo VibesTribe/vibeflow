@@ -27,6 +27,13 @@ body#dummybodyid::-webkit-scrollbar {
   height: 0 !important;
 }
 
+:root {
+  --status-ready: #2dd4bf;
+  --status-cooldown: #60a5fa;
+  --status-credit: #fcd34d;
+  --status-issue: #fb7185;
+}
+
 body,
 body#dummybodyid {
   background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
@@ -352,18 +359,21 @@ a {
 }
 
 .agent-pill__tier--w {
-  border-color: rgba(59, 130, 246, 0.6);
-  color: rgba(96, 165, 250, 0.95);
+  border-color: var(--status-ready);
+  color: #052022;
+  background: var(--status-ready);
 }
 
 .agent-pill__tier--m {
-  border-color: rgba(168, 85, 247, 0.55);
-  color: rgba(233, 196, 253, 0.9);
+  border-color: var(--status-cooldown);
+  color: #041425;
+  background: var(--status-cooldown);
 }
 
 .agent-pill__tier--q {
-  border-color: rgba(251, 191, 36, 0.55);
-  color: rgba(253, 230, 138, 0.85);
+  border-color: var(--status-credit);
+  color: #422c02;
+  background: var(--status-credit);
 }
 
 .agent-pill__avatar {
@@ -1022,17 +1032,9 @@ a {
   box-shadow: 0 0 6px rgba(15, 23, 42, 0.4);
 }
 
-.slice-orbit__badge--w {
-  background: #38bdf8;
-}
-
-.slice-orbit__badge--m {
-  background: #a855f7;
-}
-
-.slice-orbit__badge--q {
-  background: #facc15;
-}
+.slice-orbit__badge--w { background: var(--status-ready); }
+.slice-orbit__badge--m { background: var(--status-cooldown); }
+.slice-orbit__badge--q { background: var(--status-credit); }
 
 .slice-hub__list {
   display: grid;
@@ -3185,17 +3187,9 @@ a {
   box-shadow: 0 0 8px rgba(7, 14, 26, 0.55);
 }
 
-.slice-orbit__badge--w {
-  background: #38bdf8;
-}
-
-.slice-orbit__badge--m {
-  background: #a855f7;
-}
-
-.slice-orbit__badge--q {
-  background: #facc15;
-}
+.slice-orbit__badge--w { background: var(--status-ready); }
+.slice-orbit__badge--m { background: var(--status-cooldown); }
+.slice-orbit__badge--q { background: var(--status-credit); }
 
 .slice-orbit__task {
   margin-top: 6px;
@@ -5269,6 +5263,134 @@ a {
   filter: none;
   mix-blend-mode: normal;
   box-shadow: none;
+}
+
+.agent-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 12px;
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(5, 9, 21, 0.65);
+  box-shadow: inset 0 0 0 1px rgba(12, 20, 40, 0.45), 0 12px 24px rgba(2, 5, 12, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.agent-pill:hover {
+  border-color: rgba(94, 234, 212, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.35), 0 16px 26px rgba(3, 8, 18, 0.45);
+}
+
+.agent-pill__logo {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 30%, rgba(248, 250, 252, 0.12), rgba(8, 12, 24, 0.85));
+}
+
+.agent-pill__logo img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.agent-pill__logo .agent-pill__tier {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  left: auto;
+  bottom: auto;
+  padding: 4px;
+  border-radius: 50%;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+}
+
+.agent-pill__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.agent-pill__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.agent-pill__name {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f8fafc;
+  flex: 1;
+}
+
+.agent-pill__indicator {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  display: grid;
+  place-items: center;
+  color: #041221;
+  box-shadow: 0 8px 18px rgba(5, 12, 24, 0.45);
+}
+
+.agent-pill__indicator--ready {
+  background: var(--status-ready);
+}
+.agent-pill__indicator--cooldown {
+  background: var(--status-cooldown);
+}
+.agent-pill__indicator--credit {
+  background: var(--status-credit);
+}
+.agent-pill__indicator--issue {
+  background: var(--status-issue);
+}
+
+.agent-pill__status {
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.agent-pill__summary {
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.75);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.agent-pill--ready {
+  border-color: rgba(45, 212, 191, 0.45);
+}
+
+.agent-pill--cooldown {
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+.agent-pill--credit {
+  border-color: rgba(252, 211, 77, 0.6);
+}
+
+.agent-pill--issue {
+  border-color: rgba(248, 113, 113, 0.55);
 }
 
 @media (max-width: 900px) {
