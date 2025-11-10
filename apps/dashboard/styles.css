@@ -373,6 +373,7 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: rgba(12, 20, 38, 0.85);
   object-fit: contain;
+  padding: 6px;
 }
 
 .agent-pill__name {
@@ -2514,8 +2515,12 @@ a {
 }
 
 .agent-pill__avatar {
+  width: 44px;
+  height: 44px;
   background: transparent;
   border: none;
+  object-fit: contain;
+  padding: 6px;
 }
 
 .slice-orbit__node {
@@ -2934,6 +2939,8 @@ a {
   height: 40px;
   border: none;
   background: rgba(6, 13, 26, 0.9);
+  object-fit: contain;
+  padding: 5px;
 }
 
 .agent-pill__name {
@@ -3300,6 +3307,8 @@ a {
   border-radius: 50%;
   border: none;
   background: rgba(10, 20, 38, 0.9);
+  object-fit: contain;
+  padding: 6px;
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier {
@@ -3782,6 +3791,7 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.3);
   background: rgba(8, 15, 29, 0.9);
   object-fit: contain;
+  padding: 4px;
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier {
@@ -3997,6 +4007,7 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(8, 15, 29, 0.9);
   object-fit: contain;
+  padding: 4px;
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier,
