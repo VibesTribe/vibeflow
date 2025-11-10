@@ -1,17 +1,24 @@
 const ICON_BASE = "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@latest/assets";
 
+function withBase(path: string): string {
+  const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
+  const sanitizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const sanitizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${sanitizedBase}${sanitizedPath}`;
+}
+
 const LOCAL_ICON_MAP: Array<{ match: RegExp; path: string }> = [
-  { match: /gemini|google/i, path: "/agents/gemini.svg" },
-  { match: /openai|gpt|turbo/i, path: "/agents/openai.svg" },
-  { match: /claude|anthropic/i, path: "/agents/claude.svg" },
-  { match: /deepseek/i, path: "/agents/deepseek.svg" },
-  { match: /moonshot|kimi/i, path: "/agents/kimi.svg" },
-  { match: /glm|chatglm|zhipu/i, path: "/agents/chatglm.svg" },
-  { match: /minimax/i, path: "/agents/minimax.svg" },
-  { match: /mistral/i, path: "/agents/mistral.svg" },
-  { match: /grok/i, path: "/agents/grok.svg" },
-  { match: /meta|llama|facebook/i, path: "/agents/meta.svg" },
-  { match: /qwen|gwen|alibaba/i, path: "/agents/qwen.svg" },
+  { match: /gemini|google/i, path: withBase("agents/gemini.svg") },
+  { match: /openai|gpt|turbo/i, path: withBase("agents/openai.svg") },
+  { match: /claude|anthropic/i, path: withBase("agents/claude.svg") },
+  { match: /deepseek/i, path: withBase("agents/deepseek.svg") },
+  { match: /moonshot|kimi/i, path: withBase("agents/kimi.svg") },
+  { match: /glm|chatglm|zhipu/i, path: withBase("agents/chatglm.svg") },
+  { match: /minimax/i, path: withBase("agents/minimax.svg") },
+  { match: /mistral/i, path: withBase("agents/mistral.svg") },
+  { match: /grok/i, path: withBase("agents/grok.svg") },
+  { match: /meta|llama|facebook/i, path: withBase("agents/meta.svg") },
+  { match: /qwen|gwen|alibaba/i, path: withBase("agents/qwen.svg") },
 ];
 
 const REMOTE_FALLBACK_MAP: Array<{ match: RegExp; path: string }> = [
@@ -37,3 +44,4 @@ export function resolveProviderIcon(name: string): string {
   }
   return FALLBACK_ICON;
 }
+
