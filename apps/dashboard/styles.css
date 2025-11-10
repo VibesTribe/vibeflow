@@ -881,6 +881,12 @@ a {
   min-height: 360px;
 }
 
+@media (max-width: 900px) {
+  .slice-hub {
+    gap: 22px;
+  }
+}
+
 .slice-hub__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -2139,7 +2145,17 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.75);
-  margin-bottom: 16px;
+  margin: 8px 0 16px;
+  padding-top: 6px;
+}
+
+@media (max-width: 900px) {
+  .model-panel__legend {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 10px;
+  }
 }
 
 .status-dot {
@@ -2765,7 +2781,7 @@ a {
   gap: 14px;
   align-items: center;
   margin-left: 0;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 
 .mission-progress__track {
@@ -4742,8 +4758,8 @@ a {
   gap: 10px;
   align-items: center;
   overflow-x: auto;
-  padding: 2px 4px 6px;
-  margin-bottom: 2px;
+  padding: 1px 4px 3px;
+  margin-bottom: 0;
   scrollbar-width: none;
   touch-action: pan-x;
 }
@@ -4862,22 +4878,28 @@ a {
   flex: 1;
   overflow-y: auto;
   margin-top: 12px;
+  padding-inline: clamp(6px, 2vw, 12px);
 }
 
 .mobile-panel-overlay .rail {
-  display: block;
+  display: block !important;
   position: static;
   width: 100%;
   height: auto;
-  padding: 12px;
+  padding: 14px;
   border-radius: 24px;
   background: rgba(6, 11, 22, 0.92);
   border: 1px solid rgba(56, 189, 248, 0.2);
   box-shadow: none;
 }
 
+.mobile-panel-overlay .rail--left,
+.mobile-panel-overlay .rail--right {
+  display: block !important;
+}
+
 .mobile-panel-overlay .rail__scroll {
-  display: block;
+  display: block !important;
   max-height: 60vh;
   overflow-y: auto;
 }
@@ -4890,7 +4912,7 @@ a {
   .mission-root {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
-    padding: 0 clamp(10px, 5vw, 24px) 0 clamp(2px, 1.8vw, 9px) !important;
+    padding: 0 clamp(8px, 4vw, 18px) 0 clamp(1px, 1.4vw, 8px) !important;
   }
 
   .rail--left,
@@ -4899,8 +4921,8 @@ a {
   }
 
   .mission-main {
-    padding: 0 clamp(10px, 5vw, 20px) 0 clamp(2px, 2.2vw, 8px) !important;
-    gap: 16px !important;
+    padding: 0 clamp(8px, 4.2vw, 16px) 0 clamp(1px, 1.6vw, 6px) !important;
+    gap: 12px !important;
   }
 
   .mission-header__meta {
@@ -4910,24 +4932,23 @@ a {
 
   .mission-header__tasks-row {
     justify-content: flex-start;
-    margin-bottom: 2px;
   }
 
   .mission-progress {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .mission-mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 2px 0 8px;
+    gap: 4px;
+    padding: 0 0 6px;
   }
 }
 .mission-mobile-nav {
   display: none;
-  margin: 0 0 4px;
-  gap: 5px;
+  margin: 0 0 2px;
+  gap: 4px;
   flex-direction: column;
 }
 
