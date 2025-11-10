@@ -1,24 +1,29 @@
+import claudeIcon from "../assets/agents/claude.svg?url";
+import deepseekIcon from "../assets/agents/deepseek.svg?url";
+import geminiIcon from "../assets/agents/gemini.svg?url";
+import openaiIcon from "../assets/agents/openai.svg?url";
+import kimiIcon from "../assets/agents/kimi.svg?url";
+import chatglmIcon from "../assets/agents/chatglm.svg?url";
+import minimaxIcon from "../assets/agents/minimax.svg?url";
+import mistralIcon from "../assets/agents/mistral.svg?url";
+import grokIcon from "../assets/agents/grok.svg?url";
+import metaIcon from "../assets/agents/meta.svg?url";
+import qwenIcon from "../assets/agents/qwen.svg?url";
+
 const ICON_BASE = "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@latest/assets";
 
-function withBase(path: string): string {
-  const base = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
-  const sanitizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
-  const sanitizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `${sanitizedBase}${sanitizedPath}`;
-}
-
 const LOCAL_ICON_MAP: Array<{ match: RegExp; path: string }> = [
-  { match: /gemini|google/i, path: withBase("agents/gemini.svg") },
-  { match: /openai|gpt|turbo/i, path: withBase("agents/openai.svg") },
-  { match: /claude|anthropic/i, path: withBase("agents/claude.svg") },
-  { match: /deepseek/i, path: withBase("agents/deepseek.svg") },
-  { match: /moonshot|kimi/i, path: withBase("agents/kimi.svg") },
-  { match: /glm|chatglm|zhipu/i, path: withBase("agents/chatglm.svg") },
-  { match: /minimax/i, path: withBase("agents/minimax.svg") },
-  { match: /mistral/i, path: withBase("agents/mistral.svg") },
-  { match: /grok/i, path: withBase("agents/grok.svg") },
-  { match: /meta|llama|facebook/i, path: withBase("agents/meta.svg") },
-  { match: /qwen|gwen|alibaba/i, path: withBase("agents/qwen.svg") },
+  { match: /claude|anthropic/i, path: claudeIcon },
+  { match: /deepseek/i, path: deepseekIcon },
+  { match: /gemini|google/i, path: geminiIcon },
+  { match: /openai|gpt|turbo/i, path: openaiIcon },
+  { match: /moonshot|kimi/i, path: kimiIcon },
+  { match: /glm|chatglm|zhipu/i, path: chatglmIcon },
+  { match: /minimax/i, path: minimaxIcon },
+  { match: /mistral/i, path: mistralIcon },
+  { match: /grok/i, path: grokIcon },
+  { match: /meta|llama|facebook/i, path: metaIcon },
+  { match: /qwen|gwen|alibaba/i, path: qwenIcon },
 ];
 
 const REMOTE_FALLBACK_MAP: Array<{ match: RegExp; path: string }> = [
