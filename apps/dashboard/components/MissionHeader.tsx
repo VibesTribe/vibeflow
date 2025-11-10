@@ -1,4 +1,5 @@
 import React, { ReactNode, useMemo, useState } from "react";
+import { TaskSnapshot } from "@core/types";
 import { StatusSummary } from "../utils/mission";
 
 export interface MissionTaskStats {
@@ -12,6 +13,7 @@ export interface MissionTaskStats {
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
   taskStats: MissionTaskStats;
+  tasks: TaskSnapshot[];
   snapshotTime: string;
   tokenUsage: number;
   onOpenTokens: () => void;
@@ -20,22 +22,58 @@ interface MissionHeaderProps {
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
 type MissionPillKey = "completeRatio" | keyof MissionTaskStats;
 
+type TaskFilter = (tasks: TaskSnapshot[]) => TaskSnapshot[];
+
 interface MissionPillConfig {
   key: MissionPillKey;
   label: string;
   description: string;
   icon: ReactNode;
   tone: MissionPillTone;
+  taskFilter?: TaskFilter;
 }
 
+const COMPLETED_STATUSES = new Set<TaskSnapshot["status"]>(["complete", "ready_to_merge", "supervisor_approval"]);
+const ACTIVE_STATUSES = new Set<TaskSnapshot["status"]>(["assigned", "in_progress", "received", "testing", "supervisor_review"]);
+const FLAGGED_STATUSES = new Set<TaskSnapshot["status"]>(["supervisor_review", "supervisor_approval", "received"]);
+const LOCKED_STATUSES = new Set<TaskSnapshot["status"]>(["blocked", "awaiting_dependency", "paused"]);
+
 const MISSION_PILLS: MissionPillConfig[] = [
-  { key: "completeRatio", label: "Complete", description: "Completed tasks vs mission total", icon: "\u2713", tone: "pill-complete" },
-  { key: "active", label: "In Progress", description: "Currently active mission tasks", icon: "\u21BB", tone: "pill-active" },
-  { key: "flagged", label: "Flagged", description: "Tasks needing review or attention", icon: "\u2691", tone: "pill-flagged" },
-  { key: "locked", label: "Locked", description: "Tasks waiting on dependencies", icon: "\u{1F512}", tone: "pill-locked" },
+  {
+    key: "completeRatio",
+    label: "Complete",
+    description: "Completed tasks vs mission total",
+    icon: "\u2713",
+    tone: "pill-complete",
+    taskFilter: (tasks) => tasks.filter((task) => COMPLETED_STATUSES.has(task.status)),
+  },
+  {
+    key: "active",
+    label: "In Progress",
+    description: "Currently active mission tasks",
+    icon: "\u21BB",
+    tone: "pill-active",
+    taskFilter: (tasks) => tasks.filter((task) => ACTIVE_STATUSES.has(task.status)),
+  },
+  {
+    key: "flagged",
+    label: "Flagged",
+    description: "Tasks needing review or attention",
+    icon: "\u2691",
+    tone: "pill-flagged",
+    taskFilter: (tasks) => tasks.filter((task) => FLAGGED_STATUSES.has(task.status)),
+  },
+  {
+    key: "locked",
+    label: "Locked",
+    description: "Tasks waiting on dependencies",
+    icon: "\u{1F512}",
+    tone: "pill-locked",
+    taskFilter: (tasks) => tasks.filter((task) => LOCKED_STATUSES.has(task.status)),
+  },
 ];
 
-const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
+const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, tasks, snapshotTime, tokenUsage, onOpenTokens }) => {
   const [activePill, setActivePill] = useState<string | null>(null);
 
   const progress = useMemo(() => {
@@ -53,6 +91,32 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
       return { ...pill, value: taskStats[pill.key] ?? 0 };
     });
   }, [taskStats]);
+
+  const activeDetail = useMemo(() => {
+    if (!activePill) return null;
+    const pill = MISSION_PILLS.find((candidate) => candidate.label === activePill);
+    if (!pill) return null;
+    const detailedTasks = pill.taskFilter ? pill.taskFilter(tasks) : [];
+    return {
+      pill,
+      tasks: detailedTasks,
+    };
+  }, [activePill, tasks]);
+
+  const formatTaskLabel = (task: TaskSnapshot) => {
+    const label = task.taskNumber ? `Task #${task.taskNumber}` : task.title ?? task.id ?? "Task";
+    return label;
+  };
+
+  const formatTaskInfo = (task: TaskSnapshot) => {
+    if (task.title && task.taskNumber) {
+      return task.title;
+    }
+    if (task.summary) {
+      return task.summary;
+    }
+    return task.status.replace(/_/g, " ");
+  };
 
   return (
     <header className="mission-header">
@@ -97,18 +161,36 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
                 {pill.icon}
               </span>
               <strong>{pill.value}</strong>
-              <span
-                className="mission-header__stat-pill-tooltip"
-                role="status"
-                aria-live="polite"
-                aria-hidden={activePill === pill.label ? undefined : true}
-              >
-                <strong>{pill.label}</strong>
-                <span>{pill.description}</span>
-              </span>
             </button>
           ))}
         </div>
+        {activeDetail && (
+          <div className="mission-header__pill-detail" role="region" aria-live="polite">
+            <div className={`mission-header__pill-detail-card mission-header__pill-detail-card--${activeDetail.pill.tone}`}>
+              <div className="mission-header__pill-detail-header">
+                <div>
+                  <p>{activeDetail.pill.label}</p>
+                  <strong>{activeDetail.pill.description}</strong>
+                </div>
+                <button type="button" className="mission-header__pill-detail-close" onClick={() => setActivePill(null)} aria-label="Hide task details">
+                  {"\u00D7"}
+                </button>
+              </div>
+              <ul className="mission-header__pill-detail-list">
+                {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
+                {activeDetail.tasks.slice(0, 5).map((task) => (
+                  <li key={`${task.taskNumber ?? task.id ?? task.title ?? Math.random()}`} className="mission-header__pill-detail-item">
+                    <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
+                    <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
+                  </li>
+                ))}
+                {activeDetail.tasks.length > 5 && (
+                  <li className="mission-header__pill-detail-more">+{activeDetail.tasks.length - 5} more</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        )}
         <div
           className="mission-progress"
           role="progressbar"

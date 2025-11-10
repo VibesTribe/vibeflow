@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { TaskStatus } from "@core/types";
+import { TaskStatus, TaskSnapshot } from "@core/types";
 import MissionHeader, { MissionTaskStats } from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
@@ -109,6 +109,7 @@ const VibesMissionControl: React.FC = () => {
         <MissionHeader
           statusSummary={statusSummary}
           taskStats={taskStats}
+          tasks={(snapshot.tasks as TaskSnapshot[] | undefined) ?? []}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
           onOpenTokens={handleOpenRoi}
