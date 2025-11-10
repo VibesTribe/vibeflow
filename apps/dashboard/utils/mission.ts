@@ -123,7 +123,7 @@ export function mapAgent(agent: AgentSnapshot): MissionAgent {
     id: agent.id,
     name: agent.name,
     tier,
-    icon: agent.logo ?? resolveProviderIcon(agent.name),
+    icon: resolveProviderIcon(agent.name),
     status: agent.status,
     summary: agent.summary,
     cooldownReason: agent.cooldownReason ?? null,
