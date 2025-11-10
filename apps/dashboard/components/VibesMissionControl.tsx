@@ -119,7 +119,7 @@ const VibesMissionControl: React.FC = () => {
                 Docs
               </button>
               <button type="button" className="mission-mobile-nav__button" onClick={() => handleOpenMobilePanel("slices")}>
-                Slice Dock
+                Tasks
               </button>
             </div>
             <div className="mission-mobile-nav__group">
@@ -130,7 +130,7 @@ const VibesMissionControl: React.FC = () => {
                 Add
               </button>
               <button type="button" className="mission-mobile-nav__button" onClick={() => handleOpenMobilePanel("agents")}>
-                Agent Hangar
+                Agents
               </button>
             </div>
           </div>
