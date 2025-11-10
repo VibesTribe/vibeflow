@@ -2112,7 +2112,8 @@ a {
 }
 
 .model-panel {
-  padding-top: 12px;
+  padding-top: 18px;
+  margin-top: 18px;
 }
 
 @media (max-width: 900px) {
@@ -2123,7 +2124,8 @@ a {
     padding-top: 10px;
   }
   .model-panel {
-    padding-top: 18px;
+    padding-top: 26px;
+    margin-top: 28px;
   }
 }
 
@@ -2264,8 +2266,9 @@ a {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .slice-panel__tasks button {
@@ -2276,10 +2279,84 @@ a {
   background: rgba(9, 14, 26, 0.85);
   color: #e2e8f0;
   padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .slice-panel__tasks button.is-selected {
   border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(39, 39, 95, 0.65);
+}
+
+.slice-task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slice-task-list li button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.slice-task-list__status {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  color: rgba(226, 232, 240, 0.9);
+}
+.slice-task-list__status--complete {
+  border-color: rgba(52, 211, 153, 0.5);
+  color: #22c55e;
+}
+.slice-task-list__status--active {
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #38bdf8;
+}
+.slice-task-list__status--flagged {
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #f87171;
+}
+.slice-task-list__status--locked {
+  border-color: rgba(250, 204, 21, 0.5);
+  color: #facc15;
+}
+
+.slice-task-list__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.slice-task-list__title {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f8fafc;
+}
+
+.slice-task-list__meta {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.slice-task-list__summary {
+  grid-column: span 2;
+  font-size: 0.7rem;
+  color: rgba(148, 163, 184, 0.9);
 }
 
 .slice-panel__details {
