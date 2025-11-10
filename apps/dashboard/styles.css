@@ -1658,44 +1658,6 @@ a {
   color: #f8fafc;
 }
 
-.mission-header__stat-pill-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 6px);
-  transform: translate(-50%, 6px);
-  padding: 6px 10px;
-  background: rgba(6, 11, 22, 0.95);
-  border-radius: 12px;
-  border: 1px solid rgba(94, 234, 212, 0.35);
-  color: #e2e8f0;
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  text-transform: none;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 12px 28px rgba(3, 7, 18, 0.45);
-  display: inline-flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: center;
-  min-width: 140px;
-}
-
-.mission-header__stat-pill-tooltip strong {
-  letter-spacing: 0.18em;
-  font-size: 0.58rem;
-  color: #f8fafc;
-}
-
-.mission-header__stat-pill[data-active="true"] .mission-header__stat-pill-tooltip,
-.mission-header__stat-pill:hover .mission-header__stat-pill-tooltip,
-.mission-header__stat-pill:focus-visible .mission-header__stat-pill-tooltip {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
 .mission-header__stat-icon {
   font-size: 0.72rem;
 }
@@ -2149,12 +2111,19 @@ a {
   padding-top: 6px;
 }
 
+.model-panel {
+  padding-top: 12px;
+}
+
 @media (max-width: 900px) {
   .model-panel__legend {
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 14px;
     padding-top: 10px;
+  }
+  .model-panel {
+    padding-top: 18px;
   }
 }
 
@@ -4765,6 +4734,106 @@ a {
 }
 .mission-header__tasks-row::-webkit-scrollbar {
   display: none;
+}
+
+.mission-header__pill-detail {
+  width: 100%;
+  margin: 4px 0 6px;
+}
+
+.mission-header__pill-detail-card {
+  padding: 10px 14px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  background: rgba(5, 9, 18, 0.9);
+  box-shadow: 0 18px 40px rgba(4, 8, 18, 0.5);
+}
+
+.mission-header__pill-detail-card--pill-active {
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.mission-header__pill-detail-card--pill-flagged {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+.mission-header__pill-detail-card--pill-locked {
+  border-color: rgba(250, 204, 21, 0.4);
+}
+.mission-header__pill-detail-card--pill-complete {
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+.mission-header__pill-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mission-header__pill-detail-header p {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.58rem;
+  color: rgba(148, 163, 184, 0.85);
+  margin: 0 0 2px;
+}
+.mission-header__pill-detail-header strong {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #f8fafc;
+}
+
+.mission-header__pill-detail-close {
+  border: none;
+  background: rgba(12, 18, 32, 0.9);
+  color: #f8fafc;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mission-header__pill-detail-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mission-header__pill-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  background: rgba(10, 18, 34, 0.7);
+}
+.mission-header__pill-detail-task {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fef9c3;
+}
+.mission-header__pill-detail-meta {
+  font-size: 0.7rem;
+  color: rgba(226, 232, 240, 0.8);
+}
+.mission-header__pill-detail-empty,
+.mission-header__pill-detail-more {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.75);
+  padding: 2px 8px;
+}
+
+@media (max-width: 900px) {
+  .mission-header__pill-detail-card {
+    padding: 10px 12px 12px;
+  }
+  .mission-header__pill-detail-list {
+    max-height: 180px;
+    overflow-y: auto;
+  }
 }
 
 .mission-header__stat-pill {
