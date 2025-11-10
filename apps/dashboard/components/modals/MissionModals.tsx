@@ -70,7 +70,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
 
   return (
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
-      <div className="mission-modal">
+      <div className={`mission-modal ${modal.type === "models" ? "mission-modal--models" : ""}`}>
         <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
           {"\u00D7"}
         </button>
@@ -282,8 +282,6 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
     return map;
   }, [slice.assignments]);
 
-  const activeTask = selectedTask ?? slice.assignments[0]?.task ?? null;
-
   return (
     <div className="mission-modal__section slice-panel">
       <header className="slice-panel__header">
@@ -297,46 +295,41 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
           Collapse all
         </button>
       </header>
-      <div className="slice-panel__content">
-        <aside className="slice-panel__tasks">
-          <h4>Tasks</h4>
-          <ul className="slice-task-list">
-            {slice.assignments.map((assignment) => (
-              <li key={assignment.task.id}>
+      <div className="slice-panel__content slice-panel__content--stacked">
+        <ul className="slice-task-list">
+          {slice.assignments.map((assignment) => {
+            const isOpen = selectedTask?.id === assignment.task.id;
+            const assignmentRecord = assignmentsByTask.get(assignment.task.id) ?? null;
+            return (
+              <li key={assignment.task.id} className={isOpen ? "is-open" : undefined}>
                 <button
                   type="button"
-                  className={assignment.task.id === activeTask?.id ? "is-selected" : undefined}
-                  onClick={() => setSelectedTask(assignment.task)}
-                  aria-expanded={assignment.task.id === activeTask?.id}
+                  className={isOpen ? "is-selected" : undefined}
+                  onClick={() => setSelectedTask((prev) => (prev?.id === assignment.task.id ? null : assignment.task))}
+                  aria-expanded={isOpen}
                 >
                   <span className={`slice-task-list__status slice-task-list__status--${STATUS_META[assignment.task.status]?.tone ?? "default"}`}>
                     {STATUS_META[assignment.task.status]?.icon ?? "\u2022"}
                   </span>
                   <div className="slice-task-list__copy">
-                    <span className="slice-task-list__title">
-                      {assignment.task.taskNumber ?? assignment.task.title ?? "Task"}
-                    </span>
-                    <span className="slice-task-list__meta">
-                      {STATUS_META[assignment.task.status]?.label ?? assignment.task.status.replace(/_/g, " ")}
-                    </span>
+                    <span className="slice-task-list__title">{assignment.task.taskNumber ?? assignment.task.title ?? "Task"}</span>
+                    <span className="slice-task-list__meta">{STATUS_META[assignment.task.status]?.label ?? assignment.task.status.replace(/_/g, " ")}</span>
                   </div>
                   <span className="slice-task-list__summary">{assignment.task.summary ?? assignment.task.title}</span>
                 </button>
+                {isOpen && (
+                  <div className="slice-task-list__accordion">
+                    <TaskDetail
+                      task={assignment.task}
+                      assignment={assignmentRecord}
+                      events={events.filter((event) => event.taskId === assignment.task.id)}
+                    />
+                  </div>
+                )}
               </li>
-            ))}
-          </ul>
-        </aside>
-        <section className="slice-panel__details">
-          {activeTask ? (
-            <TaskDetail
-              task={activeTask}
-              assignment={assignmentsByTask.get(activeTask.id) ?? null}
-              events={events.filter((event) => event.taskId === activeTask.id)}
-            />
-          ) : (
-            <p>Select a task to view details.</p>
-          )}
-        </section>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
