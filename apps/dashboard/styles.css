@@ -4008,6 +4008,8 @@ a {
   background: rgba(8, 15, 29, 0.9);
   object-fit: contain;
   padding: 4px;
+  filter: brightness(0) invert(0.92);
+  mix-blend-mode: screen;
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier,
