@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { StatusSummary } from "../utils/mission";
 
 export interface MissionTaskStats {
@@ -36,6 +36,8 @@ const MISSION_PILLS: MissionPillConfig[] = [
 ];
 
 const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, snapshotTime, tokenUsage, onOpenTokens }) => {
+  const [activePill, setActivePill] = useState<string | null>(null);
+
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
       return 0;
@@ -87,12 +89,27 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
               title={`${pill.label}: ${pill.value}`}
               aria-label={`${pill.label}: ${pill.value}`}
-              data-tooltip={`${pill.label}: ${pill.description}`}
+              data-active={activePill === pill.label ? "true" : "false"}
+              onClick={() => setActivePill((prev) => (prev === pill.label ? null : pill.label))}
+              onBlur={() => {
+                if (activePill === pill.label) {
+                  setActivePill(null);
+                }
+              }}
             >
               <span className="mission-header__stat-icon" aria-hidden="true">
                 {pill.icon}
               </span>
               <strong>{pill.value}</strong>
+              <span
+                className="mission-header__stat-pill-tooltip"
+                role="status"
+                aria-live="polite"
+                aria-hidden={activePill === pill.label ? undefined : true}
+              >
+                <strong>{pill.label}</strong>
+                <span>{pill.description}</span>
+              </span>
             </button>
           ))}
         </div>
