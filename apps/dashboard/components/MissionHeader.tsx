@@ -60,6 +60,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
       </div>
       <div className="mission-header__content">
         <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
+          <button type="button" className="token-chip mission-header__tokens" title="Open ROI + token usage" onClick={onOpenTokens}>
+            <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
+            <span className="token-chip__label">Tokens</span>
+          </button>
           {pills.map((pill) => (
             <span key={pill.label} className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`} title={pill.label}>
               <span className="mission-header__stat-icon" aria-hidden="true">
@@ -68,10 +72,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               <strong>{pill.value}</strong>
             </span>
           ))}
-          <button type="button" className="token-chip mission-header__tokens" title="Open ROI + token usage" onClick={onOpenTokens}>
-            <span className="token-chip__value">{tokenUsage.toLocaleString()}</span>
-            <span className="token-chip__label">Tokens</span>
-          </button>
           <span className="mission-header__timestamp" aria-label="Last snapshot time">
             <strong>{snapshotTime}</strong>
           </span>
