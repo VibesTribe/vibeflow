@@ -3107,8 +3107,8 @@ a {
 .slice-orbit__node {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   margin: 0;
   border-radius: 50%;
   background: transparent;
@@ -3123,8 +3123,8 @@ a {
 
 .slice-orbit__core {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: radial-gradient(circle at 32% 28%, rgba(248, 250, 252, 0.16), rgba(6, 12, 26, 0.95));
@@ -3150,8 +3150,8 @@ a {
 
 .slice-orbit__avatar {
   z-index: 1;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -3160,11 +3160,11 @@ a {
 
 .slice-orbit__badge {
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 50%;
   transform: translate(-50%, 0);
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -3182,15 +3182,18 @@ a {
 
 .slice-orbit__task {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-size: 0.5rem;
+  font-size: 0.46rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.95);
+  color: #f8fafc;
+  white-space: nowrap;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(2, 6, 23, 0.85);
 }
 
 .slice-orbit__location {
@@ -4583,8 +4586,8 @@ a {
 .slice-orbit__node {
   position: absolute !important;
   transform: translate(-50%, -50%) !important;
-  width: 52px !important;
-  height: 52px !important;
+  width: 44px !important;
+  height: 44px !important;
   margin: 0 !important;
   border-radius: 50% !important;
   background: transparent !important;
@@ -4604,8 +4607,8 @@ a {
 
 .slice-orbit__core {
   position: relative !important;
-  width: 44px !important;
-  height: 44px !important;
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(148, 163, 184, 0.35) !important;
   background: radial-gradient(circle at 32% 28%, rgba(248, 250, 252, 0.16), rgba(6, 12, 26, 0.95)) !important;
@@ -4633,8 +4636,8 @@ a {
 
 .slice-orbit__avatar {
   z-index: 1;
-  width: 30px !important;
-  height: 30px !important;
+  width: 26px !important;
+  height: 26px !important;
   border-radius: 50%;
   border: none !important;
   background: transparent !important;
@@ -4643,11 +4646,11 @@ a {
 
 .slice-orbit__badge {
   position: absolute;
-  bottom: -8px !important;
+  bottom: -4px !important;
   left: 50% !important;
   transform: translate(-50%, 0) !important;
-  width: 18px !important;
-  height: 18px !important;
+  width: 14px !important;
+  height: 14px !important;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -4685,13 +4688,16 @@ a {
 
 .slice-orbit__task {
   position: absolute !important;
-  top: calc(100% + 6px) !important;
+  top: calc(100% + 2px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
-  font-size: 0.5rem !important;
-  letter-spacing: 0.14em !important;
-  color: rgba(226, 232, 240, 0.95) !important;
+  font-size: 0.46rem !important;
+  letter-spacing: 0.1em !important;
+  color: #f8fafc !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 6px rgba(2, 6, 23, 0.85) !important;
 }
 
 .slice-orbit__location {
