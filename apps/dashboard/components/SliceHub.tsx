@@ -79,7 +79,6 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
       return [];
     }
     const total = withAgents.length;
-    const total = withAgents.length;
     const boost =
       total >= 7 ? FAR_ORBIT_BOOST.dense : total >= 5 ? FAR_ORBIT_BOOST.medium : 0;
     const ringRadius = ORBIT_RING_RADIUS + boost;
