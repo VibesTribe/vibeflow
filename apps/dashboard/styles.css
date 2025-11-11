@@ -4563,20 +4563,20 @@ a {
 }
 
 .slice-orbit__node {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50% !important;
-  border: 1.5px solid rgba(140, 236, 255, 0.65) !important;
-  background: radial-gradient(circle, rgba(8, 15, 30, 0.95), rgba(1, 4, 10, 0.98)) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   position: absolute !important;
   transform: translate(-50%, -50%) !important;
-  padding: 0 !important;
-  min-width: auto !important;
-  min-height: auto !important;
-  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.65);
+  min-width: 64px !important;
+  padding: 22px 0 10px !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 16px !important;
+  text-align: center !important;
+  cursor: pointer !important;
   z-index: 4 !important;
 }
 
@@ -4597,35 +4597,37 @@ a {
 }
 
 .slice-orbit__avatar {
-  width: 32px !important;
-  height: 32px !important;
+  z-index: 1;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
-  border: 1px solid rgba(15, 23, 42, 0.6);
-  background: #0f172a;
+  border: none !important;
+  background: transparent !important;
+  object-fit: contain;
+  transform: translateY(26px) !important;
 }
 
 .slice-orbit__badge {
   position: absolute;
-  top: 50% !important;
-  right: -10px !important;
-  transform: translateY(-50%);
-  width: 16px !important;
-  height: 16px !important;
+  top: -2px !important;
+  right: -4px !important;
+  width: 20px !important;
+  height: 20px !important;
   border-radius: 50%;
-  font-size: 0.55rem;
   display: grid;
   place-items: center;
-  background: #38bdf8;
-  color: #021024;
+  font-size: 0.62rem !important;
   font-weight: 700;
+  color: #020a16;
+  background: #f8fafc;
+  box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
 }
 
-.slice-orbit__badge--m { background: #a855f7; }
-.slice-orbit__badge--q { background: #facc15; }
+.slice-orbit__badge--w { background: #7dd3fc; color: #020a16; }
+.slice-orbit__badge--m { background: #c084fc; color: #020a16; }
+.slice-orbit__badge--q { background: #fde047; color: #020a16; }
 
 .slice-orbit__task,
-
-.slice-orbit__avatar,
 .agent-pill__avatar {
   width: 32px;
   height: 32px;
@@ -4647,10 +4649,10 @@ a {
 }
 
 .slice-orbit__task {
-  top: calc(100% + 4px);
-  font-size: 0.52rem !important;
-  letter-spacing: 0.12em !important;
-  color: rgba(248, 250, 252, 0.95) !important;
+  margin-top: 20px !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.18em !important;
+  color: rgba(226, 232, 240, 0.95) !important;
 }
 
 .slice-orbit__location {
