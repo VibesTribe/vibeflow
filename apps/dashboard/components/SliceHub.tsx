@@ -16,6 +16,7 @@ const CANVAS_SIZE = 220;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
 const ORBIT_RING_RADIUS = 72;
 const NODE_RADIUS = 108;
+const FAR_ORBIT_BOOST = { medium: 12, dense: 24 };
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
@@ -78,14 +79,19 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
       return [];
     }
     const total = withAgents.length;
+    const total = withAgents.length;
+    const boost =
+      total >= 7 ? FAR_ORBIT_BOOST.dense : total >= 5 ? FAR_ORBIT_BOOST.medium : 0;
+    const ringRadius = ORBIT_RING_RADIUS + boost;
+    const nodeRadius = NODE_RADIUS + boost;
     return withAgents.map((assignment, index) => {
       const angleFraction = total === 1 ? 0 : index / total;
       const angleDeg = angleFraction * 360 - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
-      const connectorStartX = CANVAS_CENTER + ORBIT_RING_RADIUS * Math.cos(angleRad);
-      const connectorStartY = CANVAS_CENTER + ORBIT_RING_RADIUS * Math.sin(angleRad);
-      const x = CANVAS_CENTER + NODE_RADIUS * Math.cos(angleRad);
-      const y = CANVAS_CENTER + NODE_RADIUS * Math.sin(angleRad);
+      const connectorStartX = CANVAS_CENTER + ringRadius * Math.cos(angleRad);
+      const connectorStartY = CANVAS_CENTER + ringRadius * Math.sin(angleRad);
+      const x = CANVAS_CENTER + nodeRadius * Math.cos(angleRad);
+      const y = CANVAS_CENTER + nodeRadius * Math.sin(angleRad);
       return { assignment, angleDeg, angleRad, x, y, startX: connectorStartX, startY: connectorStartY };
     });
   }, [orbitAssignments]);
