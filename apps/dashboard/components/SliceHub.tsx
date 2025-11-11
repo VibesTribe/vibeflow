@@ -14,9 +14,9 @@ const ACTIVE_STATUSES = new Set([
 
 const CANVAS_SIZE = 220;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RING_RADIUS = 72;
-const NODE_RADIUS = 108;
-const FAR_ORBIT_BOOST = { medium: 12, dense: 24 };
+const ORBIT_RING_RADIUS = 64;
+const NODE_RADIUS = 96;
+const FAR_ORBIT_BOOST = { medium: 6, dense: 10 };
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
