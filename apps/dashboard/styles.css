@@ -3119,6 +3119,23 @@ a {
   gap: 16px;
   text-align: center;
   cursor: pointer;
+  z-index: 3;
+}
+
+.slice-orbit__node::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: radial-gradient(circle at 30% 25%, rgba(248, 250, 252, 0.12), rgba(6, 12, 26, 0.95));
+  box-shadow: 0 12px 24px rgba(2, 6, 15, 0.55);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .slice-orbit__node--west,
@@ -3136,6 +3153,7 @@ a {
 }
 
 .slice-orbit__avatar {
+  position: relative;
   z-index: 1;
   width: 40px;
   height: 40px;
@@ -3160,6 +3178,7 @@ a {
   color: #020a16;
   background: #f8fafc;
   box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
+  z-index: 2;
 }
 
 .slice-orbit__badge--w { background: #7dd3fc; color: #020a16; }
@@ -4504,7 +4523,7 @@ a {
   inset: 0 !important;
   overflow: visible !important;
   pointer-events: none !important;
-  z-index: 5 !important;
+  z-index: 1 !important;
 }
 
 .slice-orbit__connector {
@@ -4580,6 +4599,22 @@ a {
   z-index: 4 !important;
 }
 
+.slice-orbit__node::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  background: radial-gradient(circle at 30% 25%, rgba(248, 250, 252, 0.12), rgba(6, 12, 26, 0.95)) !important;
+  box-shadow: 0 12px 24px rgba(2, 6, 15, 0.55) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
 .slice-orbit__node::after {
   display: none !important;
 }
@@ -4597,6 +4632,7 @@ a {
 }
 
 .slice-orbit__avatar {
+  position: relative;
   z-index: 1;
   width: 40px !important;
   height: 40px !important;
@@ -4621,6 +4657,7 @@ a {
   color: #020a16;
   background: #f8fafc;
   box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
+  z-index: 2;
 }
 
 .slice-orbit__badge--w { background: #7dd3fc; color: #020a16; }
