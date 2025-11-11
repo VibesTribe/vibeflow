@@ -161,16 +161,18 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
       style={{ left: `${x}px`, top: `${y}px` }}
       onClick={() => onSelectAgent(agent)}
     >
-      <span className={`slice-orbit__halo slice-orbit__halo--${agent.tier.toLowerCase()}`} aria-hidden="true" />
-      <img
-        src={agent.icon || FALLBACK_ICON}
-        alt={agent.name}
-        className="slice-orbit__avatar"
-        loading="lazy"
-        decoding="async"
-        onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
-      />
-      <span className={`slice-orbit__badge slice-orbit__badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+      <span className="slice-orbit__core">
+        <span className={`slice-orbit__halo slice-orbit__halo--${agent.tier.toLowerCase()}`} />
+        <img
+          src={agent.icon || FALLBACK_ICON}
+          alt={agent.name}
+          className="slice-orbit__avatar"
+          loading="lazy"
+          decoding="async"
+          onError={(event) => (event.currentTarget.src = FALLBACK_ICON)}
+        />
+        <span className={`slice-orbit__badge slice-orbit__badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+      </span>
       <span className="slice-orbit__task">{assignment.task.taskNumber ?? assignment.task.title}</span>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
