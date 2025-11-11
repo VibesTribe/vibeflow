@@ -3109,6 +3109,7 @@ a {
   transform: translate(-50%, -50%);
   width: 52px;
   height: 52px;
+  margin: 0;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -4584,6 +4585,7 @@ a {
   transform: translate(-50%, -50%) !important;
   width: 52px !important;
   height: 52px !important;
+  margin: 0 !important;
   border-radius: 50% !important;
   background: transparent !important;
   border: none !important;
