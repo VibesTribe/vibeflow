@@ -14,9 +14,9 @@ const ACTIVE_STATUSES = new Set([
 
 const CANVAS_SIZE = 220;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RING_RADIUS = 64;
-const NODE_RADIUS = 96;
-const FAR_ORBIT_BOOST = { medium: 6, dense: 10 };
+const ORBIT_RING_RADIUS = 70;
+const NODE_RADIUS = 102;
+const FAR_ORBIT_BOOST = { small: 8, medium: 6, dense: 10 };
 const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
@@ -80,7 +80,7 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
     }
     const total = withAgents.length;
     const boost =
-      total >= 7 ? FAR_ORBIT_BOOST.dense : total >= 5 ? FAR_ORBIT_BOOST.medium : 0;
+      total >= 7 ? FAR_ORBIT_BOOST.dense : total >= 5 ? FAR_ORBIT_BOOST.medium : total <= 3 ? FAR_ORBIT_BOOST.small : 0;
     const ringRadius = ORBIT_RING_RADIUS + boost;
     const nodeRadius = NODE_RADIUS + boost;
     return withAgents.map((assignment, index) => {

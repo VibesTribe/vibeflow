@@ -3182,7 +3182,7 @@ a {
 
 .slice-orbit__task {
   position: absolute;
-  top: calc(100% + 2px);
+  top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
@@ -3198,15 +3198,19 @@ a {
 
 .slice-orbit__model {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 14px);
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
+  max-width: 92px;
   font-size: 0.42rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: rgba(226, 232, 240, 0.85);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
   line-height: 1.2;
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85);
 }
@@ -4703,7 +4707,7 @@ a {
 
 .slice-orbit__task {
   position: absolute !important;
-  top: calc(100% + 2px) !important;
+  top: calc(100% + 4px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
@@ -4717,14 +4721,18 @@ a {
 
 .slice-orbit__model {
   position: absolute !important;
-  top: calc(100% + 10px) !important;
+  top: calc(100% + 14px) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
+  max-width: 92px !important;
   font-size: 0.42rem !important;
-  letter-spacing: 0.06em !important;
+  letter-spacing: 0.05em !important;
   color: rgba(226, 232, 240, 0.85) !important;
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: center !important;
   line-height: 1.2 !important;
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85) !important;
 }
