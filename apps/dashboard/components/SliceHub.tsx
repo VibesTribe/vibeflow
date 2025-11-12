@@ -179,6 +179,9 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
         <span className={`slice-orbit__badge slice-orbit__badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
       </span>
       <span className="slice-orbit__task">{assignment.task.taskNumber ?? assignment.task.title}</span>
+      <span className="slice-orbit__model" aria-hidden="true">
+        {agent.name}
+      </span>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
   );
