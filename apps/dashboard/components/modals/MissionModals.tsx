@@ -103,11 +103,12 @@ const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
     <ul className="mission-log-list">
       {events.slice(0, 40).map((event) => {
         const detailMessage = extractEventMessage(event);
+        const eventLabel = formatEventLabel(event.type);
         return (
           <li key={event.id}>
             <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
             <div>
-              <strong>{event.type}</strong>
+              <strong>{eventLabel}</strong>
               <span>{new Date(event.timestamp).toLocaleString()}</span>
               {detailMessage && <p>{detailMessage}</p>}
             </div>
@@ -445,9 +446,11 @@ const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | n
           {events.map((event) => (
             <li key={event.id}>
               <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
-              <div>
-                <strong>{event.type}</strong>
-                <span>{new Date(event.timestamp).toLocaleString()}</span>
+              <div className="mission-log__entry">
+                <div className="mission-log__header">
+                  <strong>{formatEventLabel(event.type)}</strong>
+                  <span>{new Date(event.timestamp).toLocaleString()}</span>
+                </div>
                 {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
               </div>
             </li>
@@ -599,6 +602,13 @@ function extractEventMessage(event: MissionEvent): string | null {
     return typeof value === "string" ? value : JSON.stringify(value);
   }
   return null;
+}
+
+function formatEventLabel(value?: string) {
+  if (!value) return "Update";
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function isCompleted(status: TaskSnapshot["status"]) {
