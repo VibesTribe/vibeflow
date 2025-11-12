@@ -1892,6 +1892,12 @@ a {
   gap: 28px;
 }
 
+@media (min-width: 1360px) and (max-width: 1680px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 1fr));
+  }
+}
+
 .slice-orbit-card {
   background: rgba(9, 14, 26, 0.78);
   border-radius: 28px;
