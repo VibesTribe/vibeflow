@@ -3045,8 +3045,8 @@ a {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 146px;
-  height: 146px;
+  width: 142px;
+  height: 142px;
   border-radius: 50%;
   background: radial-gradient(circle at top, rgba(56, 189, 248, 0.35), rgba(6, 12, 27, 0.9));
   border: 1px solid rgba(56, 189, 248, 0.32);
@@ -3083,7 +3083,7 @@ a {
 }
 
 .slice-orbit__name {
-  margin-top: 24px;
+  margin: 0;
   font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -3091,6 +3091,7 @@ a {
 }
 
 .slice-orbit__value {
+  margin: 0;
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -3098,6 +3099,7 @@ a {
 }
 
 .slice-orbit__tokens {
+  margin: 0;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.7);
@@ -3201,7 +3203,7 @@ a {
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  max-width: 92px;
+  max-width: 96px;
   font-size: 0.42rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3212,6 +3214,12 @@ a {
   text-align: center;
   line-height: 1.2;
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85);
+}
+
+.slice-orbit__node--west .slice-orbit__model,
+.slice-orbit__node--north.slice-orbit__node--west .slice-orbit__model {
+  transform: translateX(-60%);
+  text-align: right;
 }
 
 .slice-orbit__location {
@@ -4724,7 +4732,7 @@ a {
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
-  max-width: 92px !important;
+  max-width: 96px !important;
   font-size: 0.42rem !important;
   letter-spacing: 0.05em !important;
   color: rgba(226, 232, 240, 0.85) !important;
@@ -4734,6 +4742,12 @@ a {
   text-align: center !important;
   line-height: 1.2 !important;
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85) !important;
+}
+
+.slice-orbit__node--west .slice-orbit__model,
+.slice-orbit__node--north.slice-orbit__node--west .slice-orbit__model {
+  transform: translateX(-60%) !important;
+  text-align: right !important;
 }
 
 .slice-orbit__location {
