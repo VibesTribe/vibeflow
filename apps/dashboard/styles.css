@@ -305,16 +305,16 @@ a {
 }
 
 .slice-dial__percent {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
   color: #f8fafc;
 }
 
 .slice-dial__tasks {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: #fefefe;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #ffffff;
   text-transform: uppercase;
 }
 
@@ -1831,19 +1831,19 @@ a {
 
 .slice-dial__meta {
   display: block;
-  font-size: 0.64rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.85);
+  color: rgba(248, 250, 252, 0.92);
 }
 
 .slice-dial__tokens {
   display: block;
   margin-top: 2px;
-  font-size: 0.64rem;
-  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.9);
+  color: rgba(248, 250, 252, 0.92);
 }
 
 .agent-pill__status {
@@ -2370,21 +2370,21 @@ a {
 }
 
 .slice-task-list__title {
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #f8fafc;
 }
 
 .slice-task-list__meta {
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   letter-spacing: 0.08em;
   color: rgba(226, 232, 240, 0.75);
 }
 
 .slice-task-list__summary {
   grid-column: span 2;
-  font-size: 0.76rem;
+  font-size: 0.84rem;
   color: rgba(203, 213, 225, 0.92);
 }
 
