@@ -3052,12 +3052,11 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.32);
   box-shadow: inset 0 0 0 1px rgba(12, 38, 68, 0.55), 0 18px 32px rgba(6, 13, 27, 0.6);
   color: #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  display: grid;
+  place-items: center;
+  gap: 6px;
   padding: 20px;
+  text-align: center;
 }
 
 .slice-orbit__center:hover {

@@ -526,7 +526,7 @@
       "taskNumber": "Task #211",
       "sliceId": "slice.auth",
       "status": "testing",
-      "owner": "agent.claude",
+      "owner": "agent.mistral",
       "summary": "Claude compiling structured risk notes for auth reviewers.",
       "confidence": 0.81,
       "dependencies": [
@@ -553,7 +553,7 @@
       "taskNumber": "Task #212",
       "sliceId": "slice.auth",
       "status": "supervisor_review",
-      "owner": "agent.mistral",
+      "owner": "agent.claude",
       "summary": "Mistral Large rehearsing supervisor hand-off for auth fixes.",
       "confidence": 0.76,
       "dependencies": [
