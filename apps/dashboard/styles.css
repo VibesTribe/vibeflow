@@ -305,18 +305,19 @@ a {
 }
 
 .slice-dial__percent {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 1.25rem;
+  font-weight: 900;
   color: #ffffff;
-  text-shadow: 0 0 8px rgba(5, 12, 28, 0.75);
+  text-shadow: 0 0 12px rgba(4, 10, 24, 0.85);
+  -webkit-font-smoothing: antialiased;
 }
 
 .slice-dial__tasks {
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  color: #fefbf6;
-  text-shadow: 0 0 8px rgba(5, 12, 28, 0.65);
+  font-size: 1.08rem;
+  font-weight: 900;
+  letter-spacing: 0.26em;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(4, 10, 24, 0.78);
   text-transform: uppercase;
 }
 
@@ -1833,21 +1834,21 @@ a {
 
 .slice-dial__meta {
   display: block;
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
+  font-size: 0.9rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.95);
-  text-shadow: 0 0 6px rgba(5, 11, 24, 0.6);
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: 0 0 8px rgba(5, 11, 24, 0.7);
 }
 
 .slice-dial__tokens {
   display: block;
   margin-top: 2px;
-  font-size: 0.82rem;
-  letter-spacing: 0.26em;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.95);
-  text-shadow: 0 0 6px rgba(5, 11, 24, 0.6);
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: 0 0 8px rgba(5, 11, 24, 0.7);
 }
 
 .agent-pill__status {
