@@ -3196,6 +3196,21 @@ a {
   text-shadow: 0 0 6px rgba(2, 6, 23, 0.85);
 }
 
+.slice-orbit__model {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 0.42rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
+  white-space: nowrap;
+  line-height: 1.2;
+  text-shadow: 0 0 8px rgba(2, 6, 23, 0.85);
+}
+
 .slice-orbit__location {
   font-size: 0.52rem;
   letter-spacing: 0.16em;
@@ -4698,6 +4713,20 @@ a {
   white-space: nowrap !important;
   line-height: 1 !important;
   text-shadow: 0 0 6px rgba(2, 6, 23, 0.85) !important;
+}
+
+.slice-orbit__model {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  font-size: 0.42rem !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(226, 232, 240, 0.85) !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+  text-shadow: 0 0 8px rgba(2, 6, 23, 0.85) !important;
 }
 
 .slice-orbit__location {
