@@ -1553,6 +1553,18 @@ a {
   }
 }
 
+@media (min-width: 1200px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(360px, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr)) !important;
+  }
+}
+
 .slice-orbit--placeholder {
   min-height: 320px;
   display: flex;
