@@ -305,16 +305,18 @@ a {
 }
 
 .slice-dial__percent {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(5, 12, 28, 0.75);
 }
 
 .slice-dial__tasks {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: 0.2em;
-  color: #ffffff;
+  letter-spacing: 0.22em;
+  color: #fefbf6;
+  text-shadow: 0 0 8px rgba(5, 12, 28, 0.65);
   text-transform: uppercase;
 }
 
@@ -1831,19 +1833,21 @@ a {
 
 .slice-dial__meta {
   display: block;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.92);
+  color: rgba(248, 250, 252, 0.95);
+  text-shadow: 0 0 6px rgba(5, 11, 24, 0.6);
 }
 
 .slice-dial__tokens {
   display: block;
   margin-top: 2px;
-  font-size: 0.72rem;
-  letter-spacing: 0.24em;
+  font-size: 0.82rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.92);
+  color: rgba(248, 250, 252, 0.95);
+  text-shadow: 0 0 6px rgba(5, 11, 24, 0.6);
 }
 
 .agent-pill__status {
@@ -2434,20 +2438,20 @@ a {
 
 .task-detail__deps button {
   border-radius: 999px;
-  border: 1px solid rgba(94, 234, 212, 0.35);
-  background: rgba(15, 23, 42, 0.85);
-  color: #cbd5f5;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
+  border: 1px solid rgba(94, 234, 212, 0.6);
+  background: rgba(12, 24, 44, 0.92);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 6px 14px;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .task-detail__deps button:hover {
-  border-color: rgba(125, 211, 252, 0.65);
-  color: #e0f2fe;
+  border-color: rgba(125, 211, 252, 0.85);
+  color: #f0fdfa;
 }
 
 .task-detail__events ul {
