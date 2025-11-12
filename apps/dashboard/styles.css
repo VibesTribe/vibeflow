@@ -3195,14 +3195,14 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.92);
+  color: rgba(255, 255, 255, 0.96);
 }
 
 .slice-orbit__tokens {
   margin: 0;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
-  color: rgba(248, 250, 252, 0.86);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .slice-orbit__node {
