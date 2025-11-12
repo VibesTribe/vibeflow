@@ -3083,7 +3083,7 @@ a {
 }
 
 .slice-orbit__name {
-  margin-top: 24px;
+  margin: 0;
   font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -3091,6 +3091,7 @@ a {
 }
 
 .slice-orbit__value {
+  margin: 0;
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -3098,6 +3099,7 @@ a {
 }
 
 .slice-orbit__tokens {
+  margin: 0;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.7);
@@ -3201,7 +3203,7 @@ a {
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  max-width: 92px;
+  max-width: 96px;
   font-size: 0.42rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3214,8 +3216,9 @@ a {
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85);
 }
 
-.slice-orbit__node--west .slice-orbit__model {
-  transform: translateX(-55%);
+.slice-orbit__node--west .slice-orbit__model,
+.slice-orbit__node--north.slice-orbit__node--west .slice-orbit__model {
+  transform: translateX(-60%);
   text-align: right;
 }
 
@@ -4729,7 +4732,7 @@ a {
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
-  max-width: 92px !important;
+  max-width: 96px !important;
   font-size: 0.42rem !important;
   letter-spacing: 0.05em !important;
   color: rgba(226, 232, 240, 0.85) !important;
@@ -4741,8 +4744,9 @@ a {
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85) !important;
 }
 
-.slice-orbit__node--west .slice-orbit__model {
-  transform: translateX(-55%) !important;
+.slice-orbit__node--west .slice-orbit__model,
+.slice-orbit__node--north.slice-orbit__node--west .slice-orbit__model {
+  transform: translateX(-60%) !important;
   text-align: right !important;
 }
 
