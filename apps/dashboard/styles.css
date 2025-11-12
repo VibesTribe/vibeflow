@@ -305,15 +305,16 @@ a {
 }
 
 .slice-dial__percent {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
 }
 
 .slice-dial__tasks {
-  font-size: 0.74rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #f8fafc;
+  letter-spacing: 0.16em;
+  color: #fefefe;
   text-transform: uppercase;
 }
 
