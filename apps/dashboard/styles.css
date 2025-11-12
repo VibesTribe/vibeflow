@@ -1888,13 +1888,19 @@ a {
 
 .slice-hub__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 32px;
 }
 
-@media (min-width: 1360px) and (max-width: 1680px) {
+@media (min-width: 1200px) {
   .slice-hub__grid {
-    grid-template-columns: repeat(3, minmax(320px, 1fr));
+    grid-template-columns: repeat(3, minmax(360px, 1fr));
+  }
+}
+
+@media (min-width: 1820px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
   }
 }
 
@@ -2001,12 +2007,13 @@ a {
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(248, 250, 252, 0.95);
 }
 
 .slice-orbit__tokens {
   font-size: 0.6rem;
-  color: rgba(148, 163, 184, 0.7);
+  letter-spacing: 0.16em;
+  color: rgba(248, 250, 252, 0.9);
 }
 
 .slice-orbit__node {
