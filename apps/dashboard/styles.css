@@ -305,19 +305,19 @@ a {
 }
 
 .slice-dial__percent {
-  font-size: 1.25rem;
+  font-size: 1.32rem;
   font-weight: 900;
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(4, 10, 24, 0.85);
+  text-shadow: 0 0 14px rgba(4, 10, 24, 0.9);
   -webkit-font-smoothing: antialiased;
 }
 
 .slice-dial__tasks {
-  font-size: 1.08rem;
+  font-size: 1.1rem;
   font-weight: 900;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.28em;
   color: #ffffff;
-  text-shadow: 0 0 10px rgba(4, 10, 24, 0.78);
+  text-shadow: 0 0 12px rgba(4, 10, 24, 0.82);
   text-transform: uppercase;
 }
 
@@ -1834,21 +1834,21 @@ a {
 
 .slice-dial__meta {
   display: block;
-  font-size: 0.9rem;
-  letter-spacing: 0.24em;
+  font-size: 0.96rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.97);
-  text-shadow: 0 0 8px rgba(5, 11, 24, 0.7);
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 0 10px rgba(5, 11, 24, 0.78);
 }
 
 .slice-dial__tokens {
   display: block;
   margin-top: 2px;
-  font-size: 0.95rem;
-  letter-spacing: 0.32em;
+  font-size: 1rem;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.97);
-  text-shadow: 0 0 8px rgba(5, 11, 24, 0.7);
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 0 10px rgba(5, 11, 24, 0.78);
 }
 
 .agent-pill__status {
@@ -2273,6 +2273,33 @@ a {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 18px;
+}
+
+.slice-panel__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.slice-panel__stats {
+  margin-top: 4px;
+  display: flex;
+  gap: 14px;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.slice-panel__stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slice-panel__stats-icon {
+  font-size: 0.8rem;
 }
 
 .slice-panel__content--stacked {
@@ -3168,14 +3195,14 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(248, 250, 252, 0.92);
 }
 
 .slice-orbit__tokens {
   margin: 0;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(248, 250, 252, 0.86);
 }
 
 .slice-orbit__node {
@@ -4674,12 +4701,13 @@ a {
 .slice-orbit__value {
   font-size: 0.76rem !important;
   letter-spacing: 0.08em;
+  color: rgba(248, 250, 252, 0.92) !important;
 }
 
 .slice-orbit__tokens {
-  font-size: 0.5rem !important;
+  font-size: 0.58rem !important;
   letter-spacing: 0.2em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(248, 250, 252, 0.86) !important;
 }
 
 .slice-orbit__node {

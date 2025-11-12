@@ -317,6 +317,15 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
           <p>
             {slice.completed}/{slice.total} complete {"\u00B7"} {slice.active} active
           </p>
+          <div className="slice-panel__stats">
+            <span>
+              <span className="slice-panel__stats-icon" aria-hidden="true">
+                {"\u{1F512}"}
+              </span>
+              {slice.blocked} blocked
+            </span>
+            {slice.tokens !== undefined && <span>{slice.tokens.toLocaleString()} tokens</span>}
+          </div>
         </div>
         <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
           Collapse all
