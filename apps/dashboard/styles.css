@@ -2381,14 +2381,14 @@ a {
 }
 
 .slice-task-list__meta {
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
-  color: rgba(226, 232, 240, 0.75);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: rgba(226, 232, 240, 0.9);
 }
 
 .slice-task-list__summary {
   grid-column: span 2;
-  font-size: 0.84rem;
+  font-size: 0.95rem;
   color: rgba(203, 213, 225, 0.92);
 }
 
@@ -2421,10 +2421,18 @@ a {
   background: rgba(7, 12, 23, 0.85);
   color: #e2e8f0;
   font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.45;
-  padding: 12px 14px;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 14px 16px;
   resize: vertical;
+}
+
+.task-detail h5 {
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.92);
+  margin: 12px 0 6px;
 }
 
 .task-detail__deps ul {
@@ -2452,6 +2460,34 @@ a {
 .task-detail__deps button:hover {
   border-color: rgba(125, 211, 252, 0.85);
   color: #f0fdfa;
+}
+
+.task-detail__events ul li strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.9);
+}
+
+.mission-log__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mission-log__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mission-log__header span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(148, 163, 184, 0.85);
 }
 
 .task-detail__events ul {
