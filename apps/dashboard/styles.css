@@ -906,8 +906,20 @@ a {
 
 .slice-hub__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
   gap: 32px;
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
 }
 
 .slice-orbit {
@@ -1525,8 +1537,20 @@ a {
 .slice-hub__grid--placeholder {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
   gap: 32px;
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid--placeholder {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  .slice-hub__grid--placeholder {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
 }
 
 .slice-orbit--placeholder {
@@ -1888,8 +1912,20 @@ a {
 
 .slice-hub__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
   gap: 32px;
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 1800px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
 }
 
 @media (min-width: 1200px) {
