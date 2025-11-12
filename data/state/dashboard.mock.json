@@ -204,7 +204,7 @@
         "attachments": [
           {
             "label": "Auth Runbook",
-            "href": "https://example.com/runbooks/auth-event-stream"
+          "href": "/docs/runbooks/auth-event-stream.html"
           }
         ]
       },
@@ -257,7 +257,7 @@
         "attachments": [
           {
             "label": "Telemetry Schema",
-            "href": "https://example.com/schemas/telemetry"
+          "href": "/docs/data/telemetry-schema.html"
           }
         ]
       },
@@ -312,7 +312,7 @@
         "attachments": [
           {
             "label": "Design Tokens",
-            "href": "https://example.com/design/tokens"
+          "href": "/docs/design/tokens.html"
           }
         ]
       },

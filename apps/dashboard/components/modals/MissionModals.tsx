@@ -254,24 +254,38 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   );
 };
 
-const STATUS_META: Record<
-  TaskStatus,
-  {
-    label: string;
-    tone: "complete" | "active" | "flagged" | "locked" | "default";
-    icon: string;
-  }
+const STATUS_META: Partial<
+  Record<
+    TaskStatus,
+    {
+      label: string;
+      tone: "complete" | "active" | "flagged" | "locked" | "default";
+      icon: string;
+      accent: string;
+    }
+  >
 > = {
-  assigned: { label: "Assigned", tone: "active", icon: "\u21BB" },
-  in_progress: { label: "In Progress", tone: "active", icon: "\u21BB" },
-  received: { label: "Received", tone: "active", icon: "\u21BB" },
-  testing: { label: "Testing", tone: "active", icon: "\u2699" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691" },
-  supervisor_approval: { label: "Awaiting Approval", tone: "flagged", icon: "\u2691" },
-  ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713" },
-  complete: { label: "Completed", tone: "complete", icon: "\u2713" },
-  blocked: { label: "Blocked", tone: "locked", icon: "\u{1F512}" },
+  assigned: { label: "Assigned", tone: "active", icon: "\u21BB", accent: "#60a5fa" },
+  in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
+  received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
+  testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#fb923c" },
+  supervisor_approval: { label: "Awaiting Approval", tone: "flagged", icon: "\u2691", accent: "#fbbf24" },
+  ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  blocked: { label: "Blocked", tone: "locked", icon: "\u{1F512}", accent: "#f87171" },
 };
+
+const DEFAULT_STATUS_META = {
+  label: "Queued",
+  tone: "default",
+  icon: "\u2022",
+  accent: "#a5b4fc",
+} as const;
+
+function resolveStatusMeta(status?: TaskStatus | null) {
+  return (status ? STATUS_META[status] : undefined) ?? DEFAULT_STATUS_META;
+}
 
 const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = ({ slice, events }) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
@@ -282,13 +296,25 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
     return map;
   }, [slice.assignments]);
 
+  const handleJumpToTask = (taskId: string) => {
+    const assignmentMatch = slice.assignments.find((assignment) => assignment.task.id === taskId);
+    if (assignmentMatch) {
+      setSelectedTask(assignmentMatch.task);
+      return;
+    }
+    const fallback = slice.tasks.find((task) => task.id === taskId);
+    if (fallback) {
+      setSelectedTask(fallback);
+    }
+  };
+
   return (
     <div className="mission-modal__section slice-panel">
       <header className="slice-panel__header">
         <div>
           <h3>{slice.name}</h3>
           <p>
-            {slice.completed}/{slice.total} complete � {slice.active} active
+            {slice.completed}/{slice.total} complete {"\u00B7"} {slice.active} active
           </p>
         </div>
         <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
@@ -300,6 +326,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
           {slice.assignments.map((assignment) => {
             const isOpen = selectedTask?.id === assignment.task.id;
             const assignmentRecord = assignmentsByTask.get(assignment.task.id) ?? null;
+            const statusMeta = resolveStatusMeta(assignment.task.status);
             return (
               <li key={assignment.task.id} className={isOpen ? "is-open" : undefined}>
                 <button
@@ -308,12 +335,17 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
                   onClick={() => setSelectedTask((prev) => (prev?.id === assignment.task.id ? null : assignment.task))}
                   aria-expanded={isOpen}
                 >
-                  <span className={`slice-task-list__status slice-task-list__status--${STATUS_META[assignment.task.status]?.tone ?? "default"}`}>
-                    {STATUS_META[assignment.task.status]?.icon ?? "\u2022"}
+                  <span
+                    className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
+                    style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
+                  >
+                    {statusMeta.icon}
                   </span>
                   <div className="slice-task-list__copy">
                     <span className="slice-task-list__title">{assignment.task.taskNumber ?? assignment.task.title ?? "Task"}</span>
-                    <span className="slice-task-list__meta">{STATUS_META[assignment.task.status]?.label ?? assignment.task.status.replace(/_/g, " ")}</span>
+                    <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                      {statusMeta.label ?? assignment.task.status.replace(/_/g, " ")}
+                    </span>
                   </div>
                   <span className="slice-task-list__summary">{assignment.task.summary ?? assignment.task.title}</span>
                 </button>
@@ -323,6 +355,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
                       task={assignment.task}
                       assignment={assignmentRecord}
                       events={events.filter((event) => event.taskId === assignment.task.id)}
+                      onJumpToTask={handleJumpToTask}
                     />
                   </div>
                 )}
@@ -335,14 +368,20 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
   );
 };
 
-const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[] }> = ({ task, assignment, events }) => {
+const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[]; onJumpToTask: (taskId: string) => void }> = ({ task, assignment, events, onJumpToTask }) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
+  const statusMeta = resolveStatusMeta(task.status);
 
   return (
     <div className="task-detail">
       <header>
         <h4>{task.taskNumber ?? task.title}</h4>
-        <span className={`task-chip task-chip--${task.status}`}>{task.status}</span>
+        <span
+          className="task-chip"
+          style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
+        >
+          {statusMeta.label}
+        </span>
       </header>
       {assignment?.agent && (
         <p className="task-detail__agent">
@@ -376,7 +415,11 @@ const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | n
           <h5>Dependencies</h5>
           <ul>
             {task.dependencies.map((dep) => (
-              <li key={dep}>{dep}</li>
+              <li key={dep}>
+                <button type="button" onClick={() => onJumpToTask(dep)}>
+                  {dep}
+                </button>
+              </li>
             ))}
           </ul>
         </div>

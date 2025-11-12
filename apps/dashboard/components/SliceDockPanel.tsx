@@ -39,8 +39,10 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
               </span>
             </span>
             <span className="slice-dial__label">{slice.name}</span>
-            <span className="slice-dial__meta">{slice.active} active {"\u00B7"} {slice.blocked} blocked</span>
-            {slice.tokens !== undefined && <span className="slice-dial__tokens">{slice.tokens.toLocaleString()} tokens</span>}
+            <span className="slice-dial__meta">
+              {slice.active} active {"\u00B7"} {slice.blocked} blocked
+            </span>
+            {slice.tokens !== undefined && <span className="slice-dial__tokens">{slice.tokens.toLocaleString()} TOKENS</span>}
           </button>
           );
         })}

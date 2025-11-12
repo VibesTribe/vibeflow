@@ -310,9 +310,10 @@ a {
 }
 
 .slice-dial__tasks {
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  color: #94a3b8;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #f8fafc;
   text-transform: uppercase;
 }
 
@@ -1829,17 +1830,19 @@ a {
 
 .slice-dial__meta {
   display: block;
-  font-size: 0.58rem;
-  letter-spacing: 0.16em;
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(248, 250, 252, 0.85);
 }
 
 .slice-dial__tokens {
   display: block;
   margin-top: 2px;
-  font-size: 0.6rem;
-  color: rgba(148, 163, 184, 0.7);
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.9);
 }
 
 .agent-pill__status {
@@ -2366,22 +2369,22 @@ a {
 }
 
 .slice-task-list__title {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #f8fafc;
 }
 
 .slice-task-list__meta {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   color: rgba(226, 232, 240, 0.75);
 }
 
 .slice-task-list__summary {
   grid-column: span 2;
-  font-size: 0.7rem;
-  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.76rem;
+  color: rgba(203, 213, 225, 0.92);
 }
 
 .slice-task-list__accordion {
@@ -2413,9 +2416,37 @@ a {
   background: rgba(7, 12, 23, 0.85);
   color: #e2e8f0;
   font-family: "Inter", sans-serif;
-  font-size: 0.72rem;
-  padding: 10px 12px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  padding: 12px 14px;
   resize: vertical;
+}
+
+.task-detail__deps ul {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-detail__deps button {
+  border-radius: 999px;
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  background: rgba(15, 23, 42, 0.85);
+  color: #cbd5f5;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.task-detail__deps button:hover {
+  border-color: rgba(125, 211, 252, 0.65);
+  color: #e0f2fe;
 }
 
 .task-detail__events ul {
