@@ -3045,8 +3045,8 @@ a {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 156px;
-  height: 156px;
+  width: 146px;
+  height: 146px;
   border-radius: 50%;
   background: radial-gradient(circle at top, rgba(56, 189, 248, 0.35), rgba(6, 12, 27, 0.9));
   border: 1px solid rgba(56, 189, 248, 0.32);
@@ -4487,7 +4487,7 @@ a {
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-core-size: 118px;
+  --slice-core-size: 110px;
   --slice-ring-thickness: 6px;
   --slice-ring-offset: calc((100% - var(--slice-core-size)) / 2);
 }
