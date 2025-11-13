@@ -197,9 +197,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     return map;
   }, [events]);
 
-  const formatTaskLabel = (task: TaskSnapshot, sliceName?: string) => {
-    const base = task.taskNumber ? `Task #${task.taskNumber}` : task.title ?? task.id ?? "Task";
-    return sliceName ? `${base} \u00B7 ${sliceName}` : base;
+  const formatTaskLabel = (task: TaskSnapshot) => {
+    if (task.taskNumber) {
+      const cleaned = String(task.taskNumber).replace(/task\s*#/i, "").replace(/^#/i, "").trim();
+      return cleaned ? `Task #${cleaned}` : "Task";
+    }
+    return task.title ?? task.id ?? "Task";
   };
 
   const formatTaskInfo = (task: TaskSnapshot) => {
@@ -278,6 +281,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   const isOpen = selectedTaskId === task.id;
                   const tokenLabel =
                     typeof task.metrics?.tokensUsed === "number" ? `${formatTokenCount(task.metrics.tokensUsed)} tokens` : null;
+                  const subtitle = [sliceName, tokenLabel].filter(Boolean).join(" · ");
                   return (
                     <li
                       key={task.id ?? task.taskNumber ?? task.title ?? `task-${task.updatedAt}`}
@@ -292,27 +296,34 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                             {statusMeta.icon}
                           </span>
                           <div className="mission-header__pill-detail-text">
-                            <span className="slice-task-list__title">{formatTaskLabel(task, sliceName)}</span>
-                            <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                              {statusMeta.label}
-                              {tokenLabel ? ` · ${tokenLabel}` : ""}
-                            </span>
+                            <span className="slice-task-list__title">{formatTaskLabel(task)}</span>
+                            {subtitle && <span className="mission-header__pill-detail-subtitle">{subtitle}</span>}
                           </div>
                         </div>
                         <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                       </button>
-                      {isReviewTask && onOpenReviewTask && task.id && (
-                        <button
-                          type="button"
-                          className="mission-header__review-link"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            onOpenReviewTask(task.id!);
-                          }}
-                        >
-                          Open Review
-                        </button>
-                      )}
+                      <div className="mission-header__pill-detail-meta-row">
+                        <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                          {statusMeta.label}
+                        </span>
+                        {isReviewTask && onOpenReviewTask && task.id && (
+                          <>
+                            <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
+                              {"\u00B7"}
+                            </span>
+                            <button
+                              type="button"
+                              className="mission-header__review-link"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                onOpenReviewTask(task.id!);
+                              }}
+                            >
+                              Open Review
+                            </button>
+                          </>
+                        )}
+                      </div>
                       {isOpen && (
                         <div className="slice-task-list__accordion mission-header__task-detail">
                           {task.id && (
