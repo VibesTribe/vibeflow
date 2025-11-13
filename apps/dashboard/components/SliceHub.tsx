@@ -129,6 +129,16 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
   );
 };
 
+function formatTokenCount(tokens: number): string {
+  if (tokens >= 1_000_000) {
+    return `${(tokens / 1_000_000).toFixed(tokens % 1_000_000 === 0 ? 0 : 1)}M`;
+  }
+  if (tokens >= 10_000) {
+    return `${Math.round(tokens / 1_000)}K`;
+  }
+  return tokens.toLocaleString();
+}
+
 const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: () => void }> = ({ slice, progress, onClick }) => {
   return (
     <button type="button" className="slice-orbit__center" onClick={onClick}>
@@ -139,7 +149,7 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
       <span className="slice-orbit__value">
         {slice.completed}/{slice.total}
       </span>
-      {slice.tokens !== undefined && <span className="slice-orbit__tokens">{slice.tokens.toLocaleString()} tokens</span>}
+      {slice.tokens !== undefined && <span className="slice-orbit__tokens">{formatTokenCount(slice.tokens)} tokens</span>}
     </button>
   );
 };
