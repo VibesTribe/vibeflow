@@ -8,8 +8,6 @@ interface AgentHangarPanelProps {
   onViewAll: () => void;
   onAdd: () => void;
   onSelectAgent: (agent: MissionAgent) => void;
-  onShowReviewQueue?: () => void;
-  reviewPendingCount?: number;
 }
 
 const STATUS_META: Record<
@@ -26,15 +24,7 @@ const STATUS_META: Record<
   issue: { label: "Issue", icon: "\u26A0" },
 };
 
-const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({
-  agents,
-  loading,
-  onViewAll,
-  onAdd,
-  onSelectAgent,
-  onShowReviewQueue,
-  reviewPendingCount = 0,
-}) => {
+const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({ agents, loading, onViewAll, onAdd, onSelectAgent }) => {
   const orderedAgents = useMemo(() => agents.slice().sort((a, b) => a.name.localeCompare(b.name)), [agents]);
 
   return (
@@ -48,17 +38,6 @@ const AgentHangarPanel: React.FC<AgentHangarPanelProps> = ({
         </button>
         <span className="rail__title">Agent Hangar</span>
       </div>
-      {onShowReviewQueue && (
-        <div className="rail__tabs" role="tablist" aria-label="Sidebar tabs">
-          <button type="button" className="rail__tab rail__tab--active" role="tab" aria-selected="true">
-            Agents
-          </button>
-          <button type="button" className="rail__tab" role="tab" aria-selected="false" onClick={onShowReviewQueue}>
-            🧾 Review Queue
-            {reviewPendingCount > 0 && <span className="rail__tab-badge">{reviewPendingCount}</span>}
-          </button>
-        </div>
-      )}
       <div className="rail__scroll">
         {loading && orderedAgents.length === 0 && <p className="rail__empty">Syncing agents...</p>}
         {orderedAgents.map((agent) => {
@@ -108,3 +87,4 @@ function normalizeStatus(status: string) {
 }
 
 export default AgentHangarPanel;
+

@@ -5304,6 +5304,22 @@ a {
   border-radius: 12px;
   background: rgba(10, 18, 34, 0.7);
 }
+
+.mission-header__pill-detail-item button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mission-header__pill-detail-item.is-review button {
+  color: #fb923c;
+}
 .mission-header__pill-detail-task {
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -5407,23 +5423,6 @@ a {
 .mission-mobile-nav__button:hover {
   border-color: rgba(180, 250, 255, 0.9);
   box-shadow: 0 14px 28px rgba(4, 10, 24, 0.65);
-}
-
-.mission-mobile-nav__button--review {
-  gap: 4px;
-}
-
-.mission-mobile-nav__badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: rgba(248, 113, 113, 0.28);
-  color: #ffe4e6;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
 }
 
 .mobile-panel-overlay {
@@ -5750,24 +5749,39 @@ a {
 
   .mission-header__tasks-row {
     justify-content: flex-start;
-    gap: 4px;
-    margin-bottom: 2px;
+    gap: 2px;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .mission-header__stat-pill {
+    padding: 4px 8px;
+    font-size: 0.5rem;
   }
 
   .mission-progress {
     margin-bottom: 0;
+    gap: 6px;
+  }
+
+  .mission-progress__track {
+    height: 6px;
   }
 
   .mission-mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 0;
     padding: 0;
     margin-top: 0;
   }
 
   .mission-mobile-nav__group {
     gap: 4px;
+  }
+
+  .mission-mobile-nav__button {
+    padding: 4px 6px;
   }
 }
 .mission-mobile-nav {

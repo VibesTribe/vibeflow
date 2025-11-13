@@ -19,6 +19,7 @@ interface MissionModalsProps {
   events: MissionEvent[];
   agents: MissionAgent[];
   slices: MissionSlice[];
+  onOpenReview?: (taskId: string) => void;
 }
 
 const DOC_LINKS = [
@@ -75,7 +76,7 @@ const SLICE_FILTER_META: Record<
   },
 };
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview }) => {
   if (modal.type === null) {
     return null;
   }
@@ -98,7 +99,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <AgentDetails agent={modal.agent} events={events} slices={slices} />;
       break;
     case "slice":
-      content = <SliceDetails slice={modal.slice} events={events} />;
+      content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
       break;
     case "add":
       content = <AddAgentForm onClose={onClose} />;
@@ -327,7 +328,11 @@ function resolveStatusMeta(status?: TaskStatus | null) {
   return (status ? STATUS_META[status] : undefined) ?? DEFAULT_STATUS_META;
 }
 
-const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = ({ slice, events }) => {
+const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOpenReview?: (taskId: string) => void }> = ({
+  slice,
+  events,
+  onOpenReview,
+}) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
   const [filterKey, setFilterKey] = useState<SliceFilterKey | null>(null);
 
@@ -421,6 +426,13 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
               matchesFilter && filterKey && !isOpen ? { borderColor: `${SLICE_FILTER_META[filterKey].color}66` } : undefined;
             const assignmentRecord = assignmentsByTask.get(assignment.task.id) ?? null;
             const statusMeta = resolveStatusMeta(assignment.task.status);
+            const isReviewTask = REVIEW_STATUSES.has(assignment.task.status);
+            const handleTaskClick = () => {
+              setSelectedTask((prev) => (prev?.id === assignment.task.id ? null : assignment.task));
+              if (isReviewTask && onOpenReview) {
+                onOpenReview(assignment.task.id);
+              }
+            };
             return (
               <li
                 key={assignment.task.id}
@@ -430,7 +442,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
                 <button
                   type="button"
                   className={isOpen ? "is-selected" : undefined}
-                  onClick={() => setSelectedTask((prev) => (prev?.id === assignment.task.id ? null : assignment.task))}
+                  onClick={handleTaskClick}
                   aria-expanded={isOpen}
                 >
                   <span
