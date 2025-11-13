@@ -1,12 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { TaskStatus, TaskSnapshot } from "@core/types";
 import MissionHeader, { MissionTaskStats } from "./MissionHeader";
 import SliceDockPanel from "./SliceDockPanel";
 import AgentHangarPanel from "./AgentHangarPanel";
 import SliceHub from "./SliceHub";
+import ReviewQueue from "./ReviewQueue";
+import ReviewPanel from "./ReviewPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
 import { MissionAgent, MissionSlice } from "../utils/mission";
+import { useReviewData } from "../hooks/useReviewData";
+import { ReviewQueueItem } from "../types/review";
+import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
 
 function usePrefersMobile(breakpoint = 900) {
   const [isMobile, setIsMobile] = useState<boolean>(() => (typeof window === "undefined" ? false : window.innerWidth <= breakpoint));
@@ -22,6 +27,8 @@ function usePrefersMobile(breakpoint = 900) {
 
   return isMobile;
 }
+
+type MobilePanelView = "slices" | "agents" | "review" | null;
 
 const VibesMissionControl: React.FC = () => {
   const isMobile = usePrefersMobile();
@@ -57,8 +64,12 @@ const VibesMissionControl: React.FC = () => {
   }, []);
 
   const { snapshot, events, slices, agents, statusSummary, tokenUsage, loading } = useMissionData();
+  const { reviews, restores, loading: reviewLoading, refresh: refreshReviews } = useReviewData();
+  const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
-  const [mobilePanel, setMobilePanel] = useState<"slices" | "agents" | null>(null);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanelView>(null);
+  const [rightPanelView, setRightPanelView] = useState<"agents" | "review">("agents");
+  const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
 
   const snapshotTime = useMemo(() => {
     if (!snapshot.updatedAt) {
@@ -93,8 +104,71 @@ const VibesMissionControl: React.FC = () => {
   const handleSelectAgent = (agent: MissionAgent) => setModal({ type: "agent", agent });
   const handleSelectSlice = (slice: MissionSlice) => setModal({ type: "slice", slice });
   const handleCloseModal = () => setModal({ type: null });
-  const handleOpenMobilePanel = (panel: "slices" | "agents") => setMobilePanel(panel);
+  const handleOpenMobilePanel = (panel: MobilePanelView) => setMobilePanel(panel);
   const handleCloseMobilePanel = () => setMobilePanel(null);
+
+  const reviewItems = useMemo<ReviewQueueItem[]>(() => {
+    if (!reviews || reviews.length === 0) {
+      return [];
+    }
+    const sliceNameById = new Map(slices.map((slice) => [slice.id, slice.name]));
+    return reviews.map((review) => {
+      const task = snapshot.tasks.find((entry) => entry.id === review.task_id);
+      const sliceName = task?.sliceId ? sliceNameById.get(task.sliceId) : undefined;
+      return {
+        taskId: review.task_id,
+        title: task?.title ?? `Task ${review.task_id}`,
+        taskNumber: task?.taskNumber,
+        sliceName,
+        owner: task?.owner ?? null,
+        summary: task?.summary,
+        updatedAt: review.updated_at,
+        status: review.review,
+        notes: review.notes,
+        reviewer: review.reviewer,
+        diffUrl: review.diff_url,
+        comparisonUrl: review.comparison_url,
+        entry: review,
+        task,
+        restore: restores[review.task_id],
+      };
+    });
+  }, [reviews, snapshot.tasks, slices, restores]);
+
+  const pendingReviewItems = useMemo(
+    () => reviewItems.filter((item) => item.status === "pending" || item.status === "changes_requested"),
+    [reviewItems],
+  );
+  const pendingCount = pendingReviewItems.length;
+
+  const selectedReview = useMemo(
+    () => reviewItems.find((item) => item.taskId === activeReviewId),
+    [reviewItems, activeReviewId],
+  );
+
+  const handleShowReviewQueue = () => {
+    setRightPanelView("review");
+    if (isMobile) {
+      setMobilePanel("review");
+    }
+  };
+
+  const handleShowAgentHangar = () => {
+    setRightPanelView("agents");
+  };
+
+  const handleSelectReview = (item: ReviewQueueItem) => {
+    setActiveReviewId(item.taskId);
+    setRightPanelView("review");
+    if (isMobile) {
+      setMobilePanel(null);
+    }
+  };
+
+  const handleReviewActionComplete = useCallback(() => {
+    refreshReviews();
+    workflowDispatch.reset();
+  }, [refreshReviews, workflowDispatch]);
 
   return (
     <div className="mission-root">
@@ -137,18 +211,35 @@ const VibesMissionControl: React.FC = () => {
               <button type="button" className="mission-mobile-nav__button" onClick={() => handleOpenMobilePanel("agents")}>
                 Agents
               </button>
+              <button type="button" className="mission-mobile-nav__button mission-mobile-nav__button--review" onClick={() => handleOpenMobilePanel("review")}>
+                Review
+                {pendingCount > 0 && <span className="mission-mobile-nav__badge">{pendingCount}</span>}
+              </button>
             </div>
           </div>
         )}
         <SliceHub slices={slices} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
       </main>
-      <AgentHangarPanel
-        agents={agents}
-        loading={loading.snapshot}
-        onViewAll={handleOpenModels}
-        onAdd={handleOpenAdd}
-        onSelectAgent={handleSelectAgent}
-      />
+      {rightPanelView === "review" ? (
+        <ReviewQueue
+          items={pendingReviewItems}
+          loading={reviewLoading}
+          onSelect={handleSelectReview}
+          onShowAgents={handleShowAgentHangar}
+          onRefresh={refreshReviews}
+          activeTaskId={activeReviewId}
+        />
+      ) : (
+        <AgentHangarPanel
+          agents={agents}
+          loading={loading.snapshot}
+          onViewAll={handleOpenModels}
+          onAdd={handleOpenAdd}
+          onSelectAgent={handleSelectAgent}
+          onShowReviewQueue={handleShowReviewQueue}
+          reviewPendingCount={pendingCount}
+        />
+      )}
       <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} />
       {isMobile && mobilePanel && (
         <div className="mobile-panel-overlay">
@@ -164,11 +255,35 @@ const VibesMissionControl: React.FC = () => {
                 onViewLogs={handleOpenLogs}
                 onSelectSlice={handleSelectSlice}
               />
+            ) : mobilePanel === "agents" ? (
+              <AgentHangarPanel
+                agents={agents}
+                loading={loading.snapshot}
+                onViewAll={handleOpenModels}
+                onAdd={handleOpenAdd}
+                onSelectAgent={handleSelectAgent}
+                onShowReviewQueue={handleShowReviewQueue}
+                reviewPendingCount={pendingCount}
+              />
             ) : (
-              <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
+              <ReviewQueue
+                items={pendingReviewItems}
+                loading={reviewLoading}
+                onSelect={handleSelectReview}
+                onShowAgents={() => {
+                  handleShowAgentHangar();
+                  setMobilePanel("agents");
+                }}
+                onRefresh={refreshReviews}
+                activeTaskId={activeReviewId}
+                layout="plain"
+              />
             )}
           </div>
         </div>
+      )}
+      {selectedReview && (
+        <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />
       )}
     </div>
   );
