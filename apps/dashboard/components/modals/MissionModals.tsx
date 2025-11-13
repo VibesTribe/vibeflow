@@ -27,19 +27,12 @@ const DOC_LINKS = [
   { label: "Runbook", path: "/docs/runbook.html" },
 ];
 
-const ACTIVE_STATUSES = new Set([
-  "assigned",
-  "in_progress",
-  "received",
-  "supervisor_review",
-  "testing",
-  "supervisor_approval",
-]);
+const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing"]);
 
 type SliceFilterKey = "complete" | "active" | "pending" | "review";
 
 const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval"]);
-const REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
+const REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
 const PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
 
 const SLICE_FILTER_META: Record<
@@ -317,7 +310,7 @@ const STATUS_META: Partial<
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
   supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#fb923c" },
-  supervisor_approval: { label: "Awaiting Approval", tone: "flagged", icon: "\u2691", accent: "#fbbf24" },
+  supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
   blocked: { label: "Blocked", tone: "locked", icon: "\u{1F512}", accent: "#f87171" },
@@ -728,6 +721,8 @@ function formatTokenCount(value: number): string {
   }
   return value.toLocaleString();
 }
+
+
 
 
 
