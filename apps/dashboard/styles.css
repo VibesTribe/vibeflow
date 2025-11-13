@@ -5343,10 +5343,25 @@ a {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 100%;
+  min-width: 0;
+}
+
+.mission-header__pill-detail-primary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.mission-header__pill-detail-text .slice-task-list__title {
+  flex: 0 1 auto;
 }
 
 .mission-header__pill-detail-subtitle {
-  display: block;
+  display: inline-flex;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -5370,6 +5385,7 @@ a {
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  width: 100%;
 }
 
 .mission-header__pill-detail-meta-divider {
