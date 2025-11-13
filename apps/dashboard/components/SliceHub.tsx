@@ -14,7 +14,7 @@ const ACTIVE_STATUSES = new Set([
 
 const CANVAS_SIZE = 220;
 const CANVAS_CENTER = CANVAS_SIZE / 2;
-const ORBIT_RING_RADIUS = 70;
+const ORBIT_RING_RADIUS = 55;
 const NODE_RADIUS = 102;
 const FAR_ORBIT_BOOST = { small: 8, medium: 6, dense: 10 };
 const MAX_ORBIT_AGENTS = 8;
