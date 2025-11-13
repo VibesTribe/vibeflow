@@ -42,7 +42,7 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
             <span className="slice-dial__meta">
               {slice.active} active {"\u00B7"} {slice.blocked} blocked
             </span>
-            {slice.tokens !== undefined && <span className="slice-dial__tokens">{slice.tokens.toLocaleString()} TOKENS</span>}
+            {slice.tokens !== undefined && <span className="slice-dial__tokens">{formatTokenCount(slice.tokens)} TOKENS</span>}
           </button>
           );
         })}
@@ -53,4 +53,14 @@ const SliceDockPanel: React.FC<SliceDockPanelProps> = ({ slices, loading, onView
 };
 
 export default SliceDockPanel;
+
+function formatTokenCount(tokens: number): string {
+  if (tokens >= 1_000_000) {
+    return `${(tokens / 1_000_000).toFixed(tokens % 1_000_000 === 0 ? 0 : 1)}M`;
+  }
+  if (tokens >= 10_000) {
+    return `${Math.round(tokens / 1_000)}K`;
+  }
+  return tokens.toLocaleString();
+}
 

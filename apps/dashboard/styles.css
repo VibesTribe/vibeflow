@@ -120,10 +120,10 @@ a {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0 clamp(12px, 2vw, 24px);
+  padding: 0 clamp(10px, 1.8vw, 22px);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   backdrop-filter: blur(12px);
   height: calc(100vh - 64px);
   position: relative;
