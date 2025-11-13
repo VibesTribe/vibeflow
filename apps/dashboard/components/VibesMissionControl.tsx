@@ -150,6 +150,8 @@ const VibesMissionControl: React.FC = () => {
         <MissionHeader
           statusSummary={statusSummary}
           tasks={(snapshot.tasks as TaskSnapshot[] | undefined) ?? []}
+          slices={slices}
+          events={events}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
           onOpenTokens={handleOpenRoi}

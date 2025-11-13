@@ -478,7 +478,12 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   );
 };
 
-const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[]; onJumpToTask: (taskId: string) => void }> = ({ task, assignment, events, onJumpToTask }) => {
+export const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[]; onJumpToTask: (taskId: string) => void }> = ({
+  task,
+  assignment,
+  events,
+  onJumpToTask,
+}) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
   const statusMeta = resolveStatusMeta(task.status);
 
