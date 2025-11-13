@@ -5295,6 +5295,8 @@ a {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
 }
 .mission-header__pill-detail-item {
   display: flex;
@@ -5319,6 +5321,10 @@ a {
 
 .mission-header__pill-detail-item.is-review button {
   color: #fb923c;
+}
+
+.mission-header__pill-detail-item button:disabled {
+  cursor: default;
 }
 .mission-header__pill-detail-task {
   font-size: 0.72rem;

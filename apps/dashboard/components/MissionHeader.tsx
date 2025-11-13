@@ -28,6 +28,37 @@ const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
 const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
 
+type HeaderStatusMeta = {
+  label: string;
+  tone: "complete" | "active" | "flagged" | "locked" | "default";
+  icon: string;
+  accent: string;
+};
+
+const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
+  assigned: { label: "Assigned", tone: "active", icon: "\u21BB", accent: "#60a5fa" },
+  in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
+  received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
+  testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#fb923c" },
+  ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  blocked: { label: "Pending", tone: "locked", icon: "\u23F0", accent: "#facc15" },
+};
+
+const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
+  label: "Queued",
+  tone: "default",
+  icon: "\u2022",
+  accent: "#a5b4fc",
+};
+
+function resolveStatusMeta(status?: TaskStatus | null): HeaderStatusMeta {
+  if (!status) return DEFAULT_HEADER_STATUS_META;
+  return HEADER_STATUS_META[status] ?? DEFAULT_HEADER_STATUS_META;
+}
+
 const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
   {
     key: "complete",
@@ -184,37 +215,48 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {"\u00D7"}
                 </button>
               </div>
-              <ul className="mission-header__pill-detail-list">
+              <ul className="mission-header__pill-detail-list slice-task-list slice-task-list--inline">
                 {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
-                {activeDetail.tasks.slice(0, 5).map((task, index) => {
+                {activeDetail.tasks.map((task) => {
+                  const statusMeta = resolveStatusMeta(task.status);
                   const isReviewTask = HEADER_REVIEW_STATUSES.has(task.status);
                   const handleDetailClick = () => {
                     if (isReviewTask && onOpenReviewTask && task.id) {
                       onOpenReviewTask(task.id);
                     }
                   };
+                  const content = (
+                    <>
+                      <span
+                        className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
+                        style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
+                      >
+                        {statusMeta.icon}
+                      </span>
+                      <div className="slice-task-list__copy">
+                        <span className="slice-task-list__title">{formatTaskLabel(task)}</span>
+                        <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                          {statusMeta.label}
+                        </span>
+                      </div>
+                      <span className="slice-task-list__summary">{formatTaskInfo(task)}</span>
+                    </>
+                  );
                   return (
                     <li
-                      key={task.id ?? task.taskNumber ?? task.title ?? `task-${index}`}
+                      key={task.id ?? task.taskNumber ?? task.title ?? `task-${task.updatedAt}`}
                       className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""}`}
                     >
                       {isReviewTask ? (
                         <button type="button" onClick={handleDetailClick}>
-                          <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
-                          <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
+                          {content}
                         </button>
                       ) : (
-                        <>
-                          <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
-                          <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
-                        </>
+                        content
                       )}
                     </li>
                   );
                 })}
-                {activeDetail.tasks.length > 5 && (
-                  <li className="mission-header__pill-detail-more">+{activeDetail.tasks.length - 5} more</li>
-                )}
               </ul>
             </div>
           </div>
