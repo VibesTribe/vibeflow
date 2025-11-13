@@ -2,79 +2,76 @@ import React, { ReactNode, useMemo, useState } from "react";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 import { StatusSummary } from "../utils/mission";
 
-export interface MissionTaskStats {
-  total: number;
-  completed: number;
-  active: number;
-  flagged: number;
-  locked: number;
-}
-
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
-  taskStats: MissionTaskStats;
   tasks: TaskSnapshot[];
   snapshotTime: string;
   tokenUsage: number;
   onOpenTokens: () => void;
+  onOpenReviewTask?: (taskId: string) => void;
 }
 
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
-type MissionPillKey = "completeRatio" | keyof MissionTaskStats;
+type HeaderPillKey = "complete" | "active" | "pending" | "review";
 
-type TaskFilter = (tasks: TaskSnapshot[]) => TaskSnapshot[];
-
-interface MissionPillConfig {
-  key: MissionPillKey;
+interface HeaderPillConfig {
+  key: HeaderPillKey;
   label: string;
   description: string;
   icon: ReactNode;
   tone: MissionPillTone;
-  taskFilter?: TaskFilter;
+  filter: (task: TaskSnapshot) => boolean;
 }
 
-const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval"]);
-const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing", "supervisor_review"]);
-const FLAGGED_STATUSES = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
-const LOCKED_STATUSES = new Set<TaskStatus>(["blocked"]);
+const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval"]);
+const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing"]);
+const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
+const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
 
-const MISSION_PILLS: MissionPillConfig[] = [
+const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
   {
-    key: "completeRatio",
+    key: "complete",
     label: "Complete",
     description: "Completed tasks vs mission total",
     icon: "\u2713",
     tone: "pill-complete",
-    taskFilter: (tasks) => tasks.filter((task) => COMPLETED_STATUSES.has(task.status)),
+    filter: (task) => HEADER_COMPLETE_STATUSES.has(task.status),
   },
   {
     key: "active",
-    label: "In Progress",
+    label: "Active",
     description: "Currently active mission tasks",
     icon: "\u21BB",
     tone: "pill-active",
-    taskFilter: (tasks) => tasks.filter((task) => ACTIVE_STATUSES.has(task.status)),
+    filter: (task) => HEADER_ACTIVE_STATUSES.has(task.status),
   },
   {
-    key: "flagged",
-    label: "Flagged",
-    description: "Tasks needing review or attention",
+    key: "pending",
+    label: "Pending",
+    description: "Waiting on dependencies",
+    icon: "\u23F3",
+    tone: "pill-locked",
+    filter: (task) => HEADER_PENDING_STATUSES.has(task.status),
+  },
+  {
+    key: "review",
+    label: "Review",
+    description: "Needs human approval",
     icon: "\u2691",
     tone: "pill-flagged",
-    taskFilter: (tasks) => tasks.filter((task) => FLAGGED_STATUSES.has(task.status)),
-  },
-  {
-    key: "locked",
-    label: "Locked",
-    description: "Tasks waiting on dependencies",
-    icon: "\u{1F512}",
-    tone: "pill-locked",
-    taskFilter: (tasks) => tasks.filter((task) => LOCKED_STATUSES.has(task.status)),
+    filter: (task) => HEADER_REVIEW_STATUSES.has(task.status),
   },
 ];
 
-const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats, tasks, snapshotTime, tokenUsage, onOpenTokens }) => {
-  const [activePill, setActivePill] = useState<string | null>(null);
+const MissionHeader: React.FC<MissionHeaderProps> = ({
+  statusSummary,
+  tasks,
+  snapshotTime,
+  tokenUsage,
+  onOpenTokens,
+  onOpenReviewTask,
+}) => {
+  const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -83,25 +80,36 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
     return Math.round((statusSummary.completed / statusSummary.total) * 100);
   }, [statusSummary.completed, statusSummary.total]);
 
-  const pills = useMemo(() => {
-    return MISSION_PILLS.map((pill) => {
-      if (pill.key === "completeRatio") {
-        return { ...pill, value: `${taskStats.completed}/${Math.max(taskStats.total, 1)}` };
-      }
-      return { ...pill, value: taskStats[pill.key] ?? 0 };
+  const taskBuckets = useMemo<Record<HeaderPillKey, number>>(() => {
+    const counts: Record<HeaderPillKey, number> = { complete: 0, active: 0, pending: 0, review: 0 };
+    tasks.forEach((task) => {
+      const status = task.status;
+      if (HEADER_COMPLETE_STATUSES.has(status)) counts.complete += 1;
+      if (HEADER_ACTIVE_STATUSES.has(status)) counts.active += 1;
+      if (HEADER_PENDING_STATUSES.has(status)) counts.pending += 1;
+      if (HEADER_REVIEW_STATUSES.has(status)) counts.review += 1;
     });
-  }, [taskStats]);
+    return counts;
+  }, [tasks]);
+
+  const pills = useMemo(() => {
+    const totalTasks = Math.max(statusSummary.total, 1);
+    return HEADER_PILL_CONFIGS.map((pill) => ({
+      ...pill,
+      value: pill.key === "complete" ? `${taskBuckets.complete}/${totalTasks}` : taskBuckets[pill.key],
+    }));
+  }, [statusSummary.total, taskBuckets]);
 
   const activeDetail = useMemo(() => {
     if (!activePill) return null;
-    const pill = MISSION_PILLS.find((candidate) => candidate.label === activePill);
+    const pill = pills.find((candidate) => candidate.key === activePill);
     if (!pill) return null;
-    const detailedTasks = pill.taskFilter ? pill.taskFilter(tasks) : [];
+    const detailedTasks = tasks.filter(pill.filter);
     return {
       pill,
       tasks: detailedTasks,
     };
-  }, [activePill, tasks]);
+  }, [activePill, pills, tasks]);
 
   const formatTaskLabel = (task: TaskSnapshot) => {
     const label = task.taskNumber ? `Task #${task.taskNumber}` : task.title ?? task.id ?? "Task";
@@ -148,14 +156,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
         <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
           {pills.map((pill) => (
             <button
-              key={pill.label}
+              key={pill.key}
               type="button"
               className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
               title={`${pill.label}: ${pill.value}`}
               aria-label={`${pill.label}: ${pill.value}`}
-              aria-expanded={activePill === pill.label}
-              data-active={activePill === pill.label ? "true" : "false"}
-              onClick={() => setActivePill((prev) => (prev === pill.label ? null : pill.label))}
+              aria-expanded={activePill === pill.key}
+              data-active={activePill === pill.key ? "true" : "false"}
+              onClick={() => setActivePill((prev) => (prev === pill.key ? null : pill.key))}
             >
               <span className="mission-header__stat-icon" aria-hidden="true">
                 {pill.icon}
@@ -178,12 +186,32 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({ statusSummary, taskStats,
               </div>
               <ul className="mission-header__pill-detail-list">
                 {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
-                {activeDetail.tasks.slice(0, 5).map((task, index) => (
-                  <li key={task.id ?? task.taskNumber ?? task.title ?? `task-${index}`} className="mission-header__pill-detail-item">
-                    <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
-                    <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
-                  </li>
-                ))}
+                {activeDetail.tasks.slice(0, 5).map((task, index) => {
+                  const isReviewTask = HEADER_REVIEW_STATUSES.has(task.status);
+                  const handleDetailClick = () => {
+                    if (isReviewTask && onOpenReviewTask && task.id) {
+                      onOpenReviewTask(task.id);
+                    }
+                  };
+                  return (
+                    <li
+                      key={task.id ?? task.taskNumber ?? task.title ?? `task-${index}`}
+                      className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""}`}
+                    >
+                      {isReviewTask ? (
+                        <button type="button" onClick={handleDetailClick}>
+                          <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
+                          <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
+                        </button>
+                      ) : (
+                        <>
+                          <span className="mission-header__pill-detail-task">{formatTaskLabel(task)}</span>
+                          <span className="mission-header__pill-detail-meta">{formatTaskInfo(task)}</span>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
                 {activeDetail.tasks.length > 5 && (
                   <li className="mission-header__pill-detail-more">+{activeDetail.tasks.length - 5} more</li>
                 )}
