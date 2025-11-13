@@ -2422,24 +2422,45 @@ a {
   align-items: flex-start;
 }
 
-.slice-panel__stats {
-  margin-top: 4px;
+.slice-panel__summary {
+  margin-top: 6px;
   display: flex;
-  gap: 14px;
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(226, 232, 240, 0.85);
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
 
-.slice-panel__stats span {
+.slice-panel__summary-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(6, 10, 20, 0.82);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.9);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.slice-panel__stats-icon {
-  font-size: 0.8rem;
+.slice-panel__summary-pill span:first-child {
+  font-size: 0.78rem;
+}
+
+.slice-panel__summary-pill.is-active {
+  box-shadow: 0 0 18px rgba(148, 163, 184, 0.35);
+  transform: translateY(-1px);
+}
+
+.slice-panel__summary-token {
+  margin-left: auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.85);
 }
 
 .slice-panel__content--stacked {
@@ -2494,6 +2515,10 @@ a {
 .slice-task-list li.is-open {
   border-color: rgba(125, 211, 252, 0.4);
   box-shadow: 0 16px 32px rgba(3, 7, 18, 0.4);
+}
+
+.slice-task-list li.is-highlight:not(.is-open) {
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.2);
 }
 
 .slice-task-list li button {
@@ -5725,19 +5750,24 @@ a {
 
   .mission-header__tasks-row {
     justify-content: flex-start;
-    margin-bottom: 4px;
+    gap: 4px;
+    margin-bottom: 2px;
   }
 
   .mission-progress {
-    margin-bottom: 1px;
+    margin-bottom: 0;
   }
 
   .mission-mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 0 0 4px;
-    margin-top: 2px;
+    gap: 1px;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .mission-mobile-nav__group {
+    gap: 4px;
   }
 }
 .mission-mobile-nav {

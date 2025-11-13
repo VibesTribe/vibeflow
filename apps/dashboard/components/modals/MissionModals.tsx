@@ -36,6 +36,52 @@ const ACTIVE_STATUSES = new Set([
   "supervisor_approval",
 ]);
 
+type SliceFilterKey = "complete" | "active" | "pending" | "review";
+
+const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval"]);
+const REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review", "supervisor_approval", "received"]);
+const PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
+
+const SLICE_FILTER_META: Record<
+  SliceFilterKey,
+  {
+    label: string;
+    icon: string;
+    tone: string;
+    color: string;
+    match: (status: TaskStatus) => boolean;
+  }
+> = {
+  complete: {
+    label: "Complete",
+    icon: "\u2713",
+    tone: "complete",
+    color: "#22c55e",
+    match: (status) => COMPLETED_STATUSES.has(status),
+  },
+  active: {
+    label: "Active",
+    icon: "\u21BB",
+    tone: "active",
+    color: "#38bdf8",
+    match: (status) => ACTIVE_STATUSES.has(status),
+  },
+  pending: {
+    label: "Pending",
+    icon: "\u23F3",
+    tone: "pending",
+    color: "#facc15",
+    match: (status) => PENDING_STATUSES.has(status),
+  },
+  review: {
+    label: "Review",
+    icon: "\u2691",
+    tone: "review",
+    color: "#fb923c",
+    match: (status) => REVIEW_STATUSES.has(status),
+  },
+};
+
 const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices }) => {
   if (modal.type === null) {
     return null;
@@ -290,12 +336,36 @@ function resolveStatusMeta(status?: TaskStatus | null) {
 
 const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = ({ slice, events }) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
+  const [filterKey, setFilterKey] = useState<SliceFilterKey | null>(null);
 
   const assignmentsByTask = useMemo(() => {
     const map = new Map<string, SliceAssignment>();
     slice.assignments.forEach((assignment) => map.set(assignment.task.id, assignment));
     return map;
   }, [slice.assignments]);
+
+  const statusCounts = useMemo<Record<SliceFilterKey, number>>(() => {
+    const counts: Record<SliceFilterKey, number> = { complete: 0, active: 0, pending: 0, review: 0 };
+    slice.assignments.forEach((assignment) => {
+      const status = assignment.task.status;
+      if (COMPLETED_STATUSES.has(status)) counts.complete += 1;
+      if (ACTIVE_STATUSES.has(status)) counts.active += 1;
+      if (PENDING_STATUSES.has(status)) counts.pending += 1;
+      if (REVIEW_STATUSES.has(status)) counts.review += 1;
+    });
+    return counts;
+  }, [slice.assignments]);
+
+  const filterPredicate = filterKey ? SLICE_FILTER_META[filterKey].match : null;
+
+  const orderedAssignments = useMemo(() => {
+    if (!filterPredicate) {
+      return slice.assignments;
+    }
+    return slice.assignments
+      .slice()
+      .sort((a, b) => Number(filterPredicate(b.task.status)) - Number(filterPredicate(a.task.status)));
+  }, [slice.assignments, filterPredicate]);
 
   const handleJumpToTask = (taskId: string) => {
     const assignmentMatch = slice.assignments.find((assignment) => assignment.task.id === taskId);
@@ -314,17 +384,35 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
       <header className="slice-panel__header">
         <div>
           <h3>{slice.name}</h3>
-          <p>
-            {slice.completed}/{slice.total} complete {"\u00B7"} {slice.active} active
-          </p>
-          <div className="slice-panel__stats">
-            <span>
-              <span className="slice-panel__stats-icon" aria-hidden="true">
-                {"\u{1F512}"}
-              </span>
-              {slice.blocked} blocked
-            </span>
-            {slice.tokens !== undefined && <span>{slice.tokens.toLocaleString()} tokens</span>}
+          <div className="slice-panel__summary">
+            {(["complete", "active", "pending", "review"] as SliceFilterKey[]).map((key) => {
+              const pillMeta = SLICE_FILTER_META[key];
+              const value =
+                key === "complete"
+                  ? `${slice.completed}/${slice.total}`
+                  : (statusCounts as Record<SliceFilterKey, number>)[key].toString();
+              const isActive = filterKey === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={`slice-panel__summary-pill slice-panel__summary-pill--${pillMeta.tone} ${
+                    isActive ? "is-active" : ""
+                  }`}
+                  style={{ borderColor: `${pillMeta.color}66`, color: pillMeta.color }}
+                  onClick={() => setFilterKey((prev) => (prev === key ? null : key))}
+                  aria-pressed={isActive}
+                >
+                  <span aria-hidden="true">{pillMeta.icon}</span>
+                  <span>
+                    {pillMeta.label} {value}
+                  </span>
+                </button>
+              );
+            })}
+            {slice.tokens !== undefined && (
+              <span className="slice-panel__summary-token">{formatTokenCount(slice.tokens)} tokens</span>
+            )}
           </div>
         </div>
         <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
@@ -333,12 +421,19 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[] }> = 
       </header>
       <div className="slice-panel__content slice-panel__content--stacked">
         <ul className="slice-task-list">
-          {slice.assignments.map((assignment) => {
+          {orderedAssignments.map((assignment) => {
             const isOpen = selectedTask?.id === assignment.task.id;
+            const matchesFilter = Boolean(filterPredicate?.(assignment.task.status));
+            const highlightStyle =
+              matchesFilter && filterKey && !isOpen ? { borderColor: `${SLICE_FILTER_META[filterKey].color}66` } : undefined;
             const assignmentRecord = assignmentsByTask.get(assignment.task.id) ?? null;
             const statusMeta = resolveStatusMeta(assignment.task.status);
             return (
-              <li key={assignment.task.id} className={isOpen ? "is-open" : undefined}>
+              <li
+                key={assignment.task.id}
+                className={`${isOpen ? "is-open" : ""} ${matchesFilter ? "is-highlight" : ""}`.trim()}
+                style={highlightStyle}
+              >
                 <button
                   type="button"
                   className={isOpen ? "is-selected" : undefined}
@@ -622,6 +717,16 @@ function formatEventLabel(value?: string) {
 
 function isCompleted(status: TaskSnapshot["status"]) {
   return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval";
+}
+
+function formatTokenCount(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}M`;
+  }
+  if (value >= 10_000) {
+    return `${Math.round(value / 1_000)}K`;
+  }
+  return value.toLocaleString();
 }
 
 
