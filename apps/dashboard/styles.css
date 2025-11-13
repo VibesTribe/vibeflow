@@ -5725,17 +5725,19 @@ a {
 
   .mission-header__tasks-row {
     justify-content: flex-start;
+    margin-bottom: 4px;
   }
 
   .mission-progress {
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .mission-mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0 0 6px;
+    gap: 2px;
+    padding: 0 0 4px;
+    margin-top: 2px;
   }
 }
 .mission-mobile-nav {
