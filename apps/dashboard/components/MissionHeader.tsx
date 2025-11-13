@@ -296,34 +296,44 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                             {statusMeta.icon}
                           </span>
                           <div className="mission-header__pill-detail-text">
-                            <span className="slice-task-list__title">{formatTaskLabel(task)}</span>
-                            {subtitle && <span className="mission-header__pill-detail-subtitle">{subtitle}</span>}
+                            <div className="mission-header__pill-detail-primary">
+                              <span className="slice-task-list__title">{formatTaskLabel(task)}</span>
+                              {subtitle && <span className="mission-header__pill-detail-subtitle">{subtitle}</span>}
+                            </div>
                           </div>
+                        </div>
+                        <div className="mission-header__pill-detail-meta-row">
+                          <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                            {statusMeta.label}
+                          </span>
+                          {isReviewTask && onOpenReviewTask && task.id && (
+                            <>
+                              <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
+                                {"\u00B7"}
+                              </span>
+                              <span
+                                role="button"
+                                tabIndex={0}
+                                className="mission-header__review-link"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  onOpenReviewTask(task.id!);
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    onOpenReviewTask(task.id!);
+                                  }
+                                }}
+                              >
+                                Open Review
+                              </span>
+                            </>
+                          )}
                         </div>
                         <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                       </button>
-                      <div className="mission-header__pill-detail-meta-row">
-                        <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                          {statusMeta.label}
-                        </span>
-                        {isReviewTask && onOpenReviewTask && task.id && (
-                          <>
-                            <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
-                              {"\u00B7"}
-                            </span>
-                            <button
-                              type="button"
-                              className="mission-header__review-link"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                onOpenReviewTask(task.id!);
-                              }}
-                            >
-                              Open Review
-                            </button>
-                          </>
-                        )}
-                      </div>
                       {isOpen && (
                         <div className="slice-task-list__accordion mission-header__task-detail">
                           {task.id && (
