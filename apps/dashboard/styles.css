@@ -5345,7 +5345,7 @@ a {
 .mission-header__pill-detail-text {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
   min-width: 0;
 }
@@ -5378,7 +5378,7 @@ a {
   font-size: 0.78rem;
   line-height: 1.4;
   color: rgba(226, 232, 240, 0.92);
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .mission-header__pill-detail-meta-row {
