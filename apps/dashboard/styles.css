@@ -5301,6 +5301,7 @@ a {
   gap: 6px;
   max-height: 320px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .mission-header__pill-detail-item {
   display: flex;
@@ -5337,12 +5338,14 @@ a {
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  min-width: 0;
+  width: 100%;
 }
 
 .mission-header__pill-detail-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
   width: 100%;
   min-width: 0;
 }
@@ -5358,6 +5361,7 @@ a {
 
 .mission-header__pill-detail-text .slice-task-list__title {
   flex: 0 1 auto;
+  min-width: 0;
 }
 
 .mission-header__pill-detail-subtitle {
@@ -5365,14 +5369,15 @@ a {
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.9);
+  color: #f8fafc;
 }
 
 .mission-header__pill-detail-summary {
   display: block;
   width: 100%;
-  font-size: 0.68rem;
-  color: rgba(226, 232, 240, 0.85);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: rgba(226, 232, 240, 0.92);
   margin-top: 4px;
 }
 
@@ -5381,7 +5386,8 @@ a {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  justify-content: flex-start;
+  margin-top: 2px;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
