@@ -330,9 +330,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                 </>
                               )}
                             </div>
+                            <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                           </div>
                         </div>
-                        <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                       </button>
                       {isOpen && (
                         <div className="slice-task-list__accordion mission-header__task-detail">
