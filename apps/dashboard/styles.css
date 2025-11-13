@@ -120,10 +120,10 @@ a {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: 0 clamp(10px, 1.8vw, 22px);
+  padding: 0 clamp(8px, 1.6vw, 18px);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   backdrop-filter: blur(12px);
   height: calc(100vh - 64px);
   position: relative;
@@ -937,10 +937,11 @@ a {
 .slice-hub {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
   flex: 1;
   overflow: visible;
   padding-right: 0;
+  padding-bottom: 12px;
   min-height: 360px;
 }
 
@@ -958,7 +959,7 @@ a {
 
 @media (min-width: 1024px) and (max-width: 2099px) {
   .slice-hub__grid {
-    gap: 22px;
+    gap: 18px;
   }
 }
 
@@ -1983,8 +1984,8 @@ a {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-bottom: 24px;
+  gap: 16px;
+  padding-bottom: 12px;
   overflow-y: auto;
 }
 
@@ -1992,6 +1993,12 @@ a {
   display: grid;
   grid-template-columns: repeat(3, minmax(360px, 1fr));
   gap: 32px;
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 18px;
+  }
 }
 
 @media (max-width: 1150px) {
@@ -2031,7 +2038,7 @@ a {
 
 @media (min-width: 1024px) and (max-width: 2099px) {
   .slice-orbit-card {
-    padding: 18px;
+    padding: 14px;
   }
 }
 
