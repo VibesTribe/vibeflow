@@ -64,6 +64,16 @@ function resolveStatusMeta(status?: TaskStatus | null): HeaderStatusMeta {
   return HEADER_STATUS_META[status] ?? DEFAULT_HEADER_STATUS_META;
 }
 
+function formatTokenCount(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}M`;
+  }
+  if (value >= 10_000) {
+    return `${Math.round(value / 1_000)}K`;
+  }
+  return value.toLocaleString();
+}
+
 const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
   {
     key: "complete",
@@ -266,40 +276,45 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   const sliceName = assignmentInfo?.sliceName;
                   const taskEvents = task.id ? eventsByTask.get(task.id) ?? [] : [];
                   const isOpen = selectedTaskId === task.id;
+                  const tokenLabel =
+                    typeof task.metrics?.tokensUsed === "number" ? `${formatTokenCount(task.metrics.tokensUsed)} tokens` : null;
                   return (
                     <li
                       key={task.id ?? task.taskNumber ?? task.title ?? `task-${task.updatedAt}`}
                       className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""} ${isOpen ? "is-open" : ""}`}
                     >
                       <button type="button" onClick={() => setSelectedTaskId((prev) => (prev === task.id ? null : task.id ?? null))} aria-expanded={isOpen}>
-                        <span
-                          className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
-                          style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
-                        >
-                          {statusMeta.icon}
-                        </span>
-                        <div className="slice-task-list__copy">
-                          <span className="slice-task-list__title">{formatTaskLabel(task, sliceName)}</span>
-                          <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                            {statusMeta.label}
+                        <div className="mission-header__pill-detail-headline">
+                          <span
+                            className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
+                            style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
+                          >
+                            {statusMeta.icon}
                           </span>
+                          <div className="mission-header__pill-detail-text">
+                            <span className="slice-task-list__title">{formatTaskLabel(task, sliceName)}</span>
+                            <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                              {statusMeta.label}
+                              {tokenLabel ? ` · ${tokenLabel}` : ""}
+                            </span>
+                          </div>
                         </div>
-                        <span className="slice-task-list__summary">{formatTaskInfo(task)}</span>
+                        <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                       </button>
+                      {isReviewTask && onOpenReviewTask && task.id && (
+                        <button
+                          type="button"
+                          className="mission-header__review-link"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onOpenReviewTask(task.id!);
+                          }}
+                        >
+                          Open Review
+                        </button>
+                      )}
                       {isOpen && (
-                        <div className="slice-task-list__accordion">
-                          {isReviewTask && onOpenReviewTask && task.id && (
-                            <button
-                              type="button"
-                              className="mission-header__review-link"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                onOpenReviewTask(task.id!);
-                              }}
-                            >
-                              Open Review
-                            </button>
-                          )}
+                        <div className="slice-task-list__accordion mission-header__task-detail">
                           {task.id && (
                             <TaskDetail
                               task={task}

@@ -5327,6 +5327,25 @@ a {
   cursor: default;
 }
 
+.mission-header__pill-detail-headline {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mission-header__pill-detail-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mission-header__pill-detail-summary {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(226, 232, 240, 0.85);
+  margin-top: 4px;
+}
+
 .mission-header__review-link {
   align-self: flex-end;
   margin-bottom: 6px;
@@ -5339,6 +5358,15 @@ a {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.mission-header__task-detail {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.mission-header__task-detail .task-detail {
+  padding-top: 10px;
 }
 .mission-header__pill-detail-task {
   font-size: 0.72rem;
