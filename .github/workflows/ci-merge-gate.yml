@@ -16,4 +16,5 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run generate:manifest
+      - run: node scripts/verify_restorability.mjs
       - run: node scripts/validate_code_conventions.mjs

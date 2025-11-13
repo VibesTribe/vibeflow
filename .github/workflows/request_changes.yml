@@ -1,0 +1,59 @@
+name: review-plane-request-changes
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: "Task identifier"
+        required: true
+      notes:
+        description: "Reviewer notes"
+        required: true
+      branch:
+        description: "Target branch"
+        required: false
+        default: task/mission-control-layout
+
+jobs:
+  request:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+
+      - name: Update review file
+        env:
+          TASK_ID: ${{ inputs.task_id }}
+          REVIEW_NOTES: ${{ inputs.notes }}
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+          const file = path.join("data", "state", "reviews", `${process.env.TASK_ID}.json`);
+          let payload = {};
+          if (fs.existsSync(file)) {
+            payload = JSON.parse(fs.readFileSync(file, "utf8"));
+          }
+          payload.task_id = process.env.TASK_ID;
+          payload.review = "changes_requested";
+          payload.notes = process.env.REVIEW_NOTES || "";
+          payload.updated_at = new Date().toISOString();
+          fs.mkdirSync(path.dirname(file), { recursive: true });
+          fs.writeFileSync(file, JSON.stringify(payload, null, 2));
+          NODE
+
+      - name: Commit changes
+        run: |
+          if git status --short | grep -q "data/state/reviews"; then
+            git config user.name "vibeflow-bot"
+            git config user.email "bot@vibeflow.ai"
+            git add data/state/reviews
+            git commit -m "review: changes requested for ${{ inputs.task_id }}"
+            git push origin HEAD:${{ inputs.branch }}
+          else
+            echo "No review changes detected."
+          fi
