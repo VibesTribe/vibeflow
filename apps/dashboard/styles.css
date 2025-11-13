@@ -5326,6 +5326,20 @@ a {
 .mission-header__pill-detail-item button:disabled {
   cursor: default;
 }
+
+.mission-header__review-link {
+  align-self: flex-end;
+  margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 146, 60, 0.5);
+  background: rgba(31, 13, 3, 0.6);
+  color: #fed7aa;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
 .mission-header__pill-detail-task {
   font-size: 0.72rem;
   letter-spacing: 0.12em;

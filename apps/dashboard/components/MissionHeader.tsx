@@ -1,10 +1,14 @@
 import React, { ReactNode, useMemo, useState } from "react";
 import { TaskSnapshot, TaskStatus } from "@core/types";
-import { StatusSummary } from "../utils/mission";
+import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
+import { MissionEvent } from "../../../src/utils/events";
+import { TaskDetail } from "./modals/MissionModals";
 
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
   tasks: TaskSnapshot[];
+  slices: MissionSlice[];
+  events: MissionEvent[];
   snapshotTime: string;
   tokenUsage: number;
   onOpenTokens: () => void;
@@ -18,6 +22,7 @@ interface HeaderPillConfig {
   key: HeaderPillKey;
   label: string;
   description: string;
+  subtitle: string;
   icon: ReactNode;
   tone: MissionPillTone;
   filter: (task: TaskSnapshot) => boolean;
@@ -64,6 +69,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     key: "complete",
     label: "Complete",
     description: "Completed tasks vs mission total",
+    subtitle: "Complete to date",
     icon: "\u2713",
     tone: "pill-complete",
     filter: (task) => HEADER_COMPLETE_STATUSES.has(task.status),
@@ -72,6 +78,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     key: "active",
     label: "Active",
     description: "Currently active mission tasks",
+    subtitle: "Currently active",
     icon: "\u21BB",
     tone: "pill-active",
     filter: (task) => HEADER_ACTIVE_STATUSES.has(task.status),
@@ -80,7 +87,8 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     key: "pending",
     label: "Pending",
     description: "Waiting on dependencies",
-    icon: "\u23F3",
+    subtitle: "Awaiting dependencies",
+    icon: "\u23F0",
     tone: "pill-locked",
     filter: (task) => HEADER_PENDING_STATUSES.has(task.status),
   },
@@ -88,6 +96,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     key: "review",
     label: "Review",
     description: "Needs human approval",
+    subtitle: "Needs review",
     icon: "\u2691",
     tone: "pill-flagged",
     filter: (task) => HEADER_REVIEW_STATUSES.has(task.status),
@@ -97,12 +106,15 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
 const MissionHeader: React.FC<MissionHeaderProps> = ({
   statusSummary,
   tasks,
+  slices,
+  events,
   snapshotTime,
   tokenUsage,
   onOpenTokens,
   onOpenReviewTask,
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -142,18 +154,47 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     };
   }, [activePill, pills, tasks]);
 
-  const formatTaskLabel = (task: TaskSnapshot) => {
-    const label = task.taskNumber ? `Task #${task.taskNumber}` : task.title ?? task.id ?? "Task";
-    return label;
+  const assignmentInfoByTask = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        assignment: SliceAssignment | null;
+        sliceName: string;
+      }
+    >();
+    slices.forEach((slice) => {
+      slice.assignments.forEach((assignment) => {
+        map.set(assignment.task.id, { assignment, sliceName: slice.name });
+      });
+      slice.tasks.forEach((task) => {
+        if (!map.has(task.id)) {
+          map.set(task.id, { assignment: null, sliceName: slice.name });
+        }
+      });
+    });
+    return map;
+  }, [slices]);
+
+  const eventsByTask = useMemo(() => {
+    const map = new Map<string, MissionEvent[]>();
+    events.forEach((event) => {
+      if (!event.taskId) return;
+      if (!map.has(event.taskId)) {
+        map.set(event.taskId, []);
+      }
+      map.get(event.taskId)!.push(event);
+    });
+    return map;
+  }, [events]);
+
+  const formatTaskLabel = (task: TaskSnapshot, sliceName?: string) => {
+    const base = task.taskNumber ? `Task #${task.taskNumber}` : task.title ?? task.id ?? "Task";
+    return sliceName ? `${base} \u00B7 ${sliceName}` : base;
   };
 
   const formatTaskInfo = (task: TaskSnapshot) => {
-    if (task.title && task.taskNumber) {
-      return task.title;
-    }
-    if (task.summary) {
-      return task.summary;
-    }
+    if (task.summary) return task.summary;
+    if (task.title) return task.title;
     return task.status.replace(/_/g, " ");
   };
 
@@ -209,50 +250,65 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               <div className="mission-header__pill-detail-header">
                 <div>
                   <p>{activeDetail.pill.label}</p>
-                  <strong>{activeDetail.pill.description}</strong>
+                  <strong>{activeDetail.pill.subtitle}</strong>
                 </div>
                 <button type="button" className="mission-header__pill-detail-close" onClick={() => setActivePill(null)} aria-label="Hide task details">
                   {"\u00D7"}
                 </button>
               </div>
-              <ul className="mission-header__pill-detail-list slice-task-list slice-task-list--inline">
+              <ul className="mission-header__pill-detail-list slice-task-list">
                 {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
                 {activeDetail.tasks.map((task) => {
                   const statusMeta = resolveStatusMeta(task.status);
                   const isReviewTask = HEADER_REVIEW_STATUSES.has(task.status);
-                  const handleDetailClick = () => {
-                    if (isReviewTask && onOpenReviewTask && task.id) {
-                      onOpenReviewTask(task.id);
-                    }
-                  };
-                  const content = (
-                    <>
-                      <span
-                        className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
-                        style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
-                      >
-                        {statusMeta.icon}
-                      </span>
-                      <div className="slice-task-list__copy">
-                        <span className="slice-task-list__title">{formatTaskLabel(task)}</span>
-                        <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                          {statusMeta.label}
-                        </span>
-                      </div>
-                      <span className="slice-task-list__summary">{formatTaskInfo(task)}</span>
-                    </>
-                  );
+                  const assignmentInfo = task.id ? assignmentInfoByTask.get(task.id) : undefined;
+                  const assignmentRecord = assignmentInfo?.assignment ?? null;
+                  const sliceName = assignmentInfo?.sliceName;
+                  const taskEvents = task.id ? eventsByTask.get(task.id) ?? [] : [];
+                  const isOpen = selectedTaskId === task.id;
                   return (
                     <li
                       key={task.id ?? task.taskNumber ?? task.title ?? `task-${task.updatedAt}`}
-                      className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""}`}
+                      className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""} ${isOpen ? "is-open" : ""}`}
                     >
-                      {isReviewTask ? (
-                        <button type="button" onClick={handleDetailClick}>
-                          {content}
-                        </button>
-                      ) : (
-                        content
+                      <button type="button" onClick={() => setSelectedTaskId((prev) => (prev === task.id ? null : task.id ?? null))} aria-expanded={isOpen}>
+                        <span
+                          className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
+                          style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}
+                        >
+                          {statusMeta.icon}
+                        </span>
+                        <div className="slice-task-list__copy">
+                          <span className="slice-task-list__title">{formatTaskLabel(task, sliceName)}</span>
+                          <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                            {statusMeta.label}
+                          </span>
+                        </div>
+                        <span className="slice-task-list__summary">{formatTaskInfo(task)}</span>
+                      </button>
+                      {isOpen && (
+                        <div className="slice-task-list__accordion">
+                          {isReviewTask && onOpenReviewTask && task.id && (
+                            <button
+                              type="button"
+                              className="mission-header__review-link"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                onOpenReviewTask(task.id!);
+                              }}
+                            >
+                              Open Review
+                            </button>
+                          )}
+                          {task.id && (
+                            <TaskDetail
+                              task={task}
+                              assignment={assignmentRecord}
+                              events={taskEvents}
+                              onJumpToTask={(targetId) => setSelectedTaskId(targetId)}
+                            />
+                          )}
+                        </div>
                       )}
                     </li>
                   );
@@ -280,3 +336,4 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 };
 
 export default MissionHeader;
+
