@@ -1,4 +1,4 @@
-import React, { FormEvent, useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
@@ -71,7 +71,7 @@ const SLICE_FILTER_META: Record<
     label: "Review",
     icon: "\u2691",
     tone: "review",
-    color: "#fb923c",
+    color: "#ff3b6f",
     match: (status) => REVIEW_STATUSES.has(status),
   },
 };
@@ -138,7 +138,7 @@ const DocumentList: React.FC = () => (
 );
 
 const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
-  <div className="mission-modal__section">
+  <div className="mission-modal__section mission-modal__section--sticky">
     <h3>Recent Logs</h3>
     <ul className="mission-log-list">
       {events.slice(0, 40).map((event) => {
@@ -164,7 +164,7 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
 
   return (
-    <div className="mission-modal__section model-panel">
+    <div className="mission-modal__section mission-modal__section--sticky model-panel">
       <header className="model-panel__legend">
         <span className="status-dot status-dot--ready">Ready</span>
         <span className="status-dot status-dot--cooldown">Cooldown</span>
@@ -310,7 +310,7 @@ const STATUS_META: Partial<
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#fb923c" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#ff3b6f" },
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
@@ -335,6 +335,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
 }) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
   const [filterKey, setFilterKey] = useState<SliceFilterKey | null>(null);
+  const slicePanelRef = useRef<HTMLDivElement | null>(null);
 
   const assignmentsByTask = useMemo(() => {
     const map = new Map<string, SliceAssignment>();
@@ -377,8 +378,14 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
     }
   };
 
+  useEffect(() => {
+    if (!selectedTask?.id || !slicePanelRef.current) return;
+    const target = slicePanelRef.current.querySelector<HTMLElement>(`[data-slice-task="${selectedTask.id}"]`);
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedTask]);
+
   return (
-    <div className="mission-modal__section slice-panel">
+    <div className="mission-modal__section mission-modal__section--sticky slice-panel" ref={slicePanelRef}>
       <header className="slice-panel__header">
         <div>
           <h3>{slice.name}</h3>
@@ -438,6 +445,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                 key={assignment.task.id}
                 className={`${isOpen ? "is-open" : ""} ${matchesFilter ? "is-highlight" : ""}`.trim()}
                 style={highlightStyle}
+                data-slice-task={assignment.task.id}
               >
                 <button
                   type="button"
@@ -466,6 +474,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                       assignment={assignmentRecord}
                       events={events.filter((event) => event.taskId === assignment.task.id)}
                       onJumpToTask={handleJumpToTask}
+                      onCollapse={() => setSelectedTask(null)}
                     />
                   </div>
                 )}
@@ -478,11 +487,18 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   );
 };
 
-export const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignment | null; events: MissionEvent[]; onJumpToTask: (taskId: string) => void }> = ({
+export const TaskDetail: React.FC<{
+  task: TaskSnapshot;
+  assignment: SliceAssignment | null;
+  events: MissionEvent[];
+  onJumpToTask: (taskId: string) => void;
+  onCollapse?: () => void;
+}> = ({
   task,
   assignment,
   events,
   onJumpToTask,
+  onCollapse,
 }) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
   const statusMeta = resolveStatusMeta(task.status);
@@ -572,6 +588,13 @@ export const TaskDetail: React.FC<{ task: TaskSnapshot; assignment: SliceAssignm
           {events.length === 0 && <li>No activity recorded for this task yet.</li>}
         </ul>
       </div>
+      {onCollapse && (
+        <div className="task-detail__actions">
+          <button type="button" className="task-detail__collapse" onClick={onCollapse}>
+            Collapse Detail
+          </button>
+        </div>
+      )}
     </div>
   );
 };
