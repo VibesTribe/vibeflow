@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
@@ -335,7 +335,8 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
 }) => {
   const [selectedTask, setSelectedTask] = useState<TaskSnapshot | null>(null);
   const [filterKey, setFilterKey] = useState<SliceFilterKey | null>(null);
-  const slicePanelRef = useRef<HTMLDivElement | null>(null);
+  const sliceListRef = useRef<HTMLUListElement | null>(null);
+  const lastCollapsedTaskRef = useRef<string | null>(null);
 
   const assignmentsByTask = useMemo(() => {
     const map = new Map<string, SliceAssignment>();
@@ -378,14 +379,38 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
     }
   };
 
+  const scrollSliceTaskIntoView = useCallback(
+    (taskId: string, behavior: ScrollBehavior = "smooth") => {
+      if (!sliceListRef.current) return;
+      const target = sliceListRef.current.querySelector<HTMLElement>(`[data-slice-task="${taskId}"]`);
+      target?.scrollIntoView({ behavior, block: "start" });
+    },
+    []
+  );
+
   useEffect(() => {
-    if (!selectedTask?.id || !slicePanelRef.current) return;
-    const target = slicePanelRef.current.querySelector<HTMLElement>(`[data-slice-task="${selectedTask.id}"]`);
-    target?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [selectedTask]);
+    if (!selectedTask?.id) return;
+    scrollSliceTaskIntoView(selectedTask.id);
+  }, [selectedTask, scrollSliceTaskIntoView]);
+
+  useEffect(() => {
+    if (selectedTask || !lastCollapsedTaskRef.current) return;
+    const taskId = lastCollapsedTaskRef.current;
+    lastCollapsedTaskRef.current = null;
+    if (taskId) {
+      requestAnimationFrame(() => scrollSliceTaskIntoView(taskId, "auto"));
+    }
+  }, [selectedTask, scrollSliceTaskIntoView]);
+
+  const handleCollapseTask = (taskId?: string) => {
+    if (taskId) {
+      lastCollapsedTaskRef.current = taskId;
+    }
+    setSelectedTask(null);
+  };
 
   return (
-    <div className="mission-modal__section mission-modal__section--sticky slice-panel" ref={slicePanelRef}>
+    <div className="mission-modal__section mission-modal__section--sticky slice-panel">
       <header className="slice-panel__header">
         <div>
           <h3>{slice.name}</h3>
@@ -420,12 +445,12 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
             )}
           </div>
         </div>
-        <button type="button" className="slice-panel__cta" onClick={() => setSelectedTask(null)}>
+        <button type="button" className="slice-panel__cta" onClick={() => handleCollapseTask()}>
           Collapse all
         </button>
       </header>
       <div className="slice-panel__content slice-panel__content--stacked">
-        <ul className="slice-task-list">
+        <ul className="slice-task-list" ref={sliceListRef}>
           {orderedAssignments.map((assignment) => {
             const isOpen = selectedTask?.id === assignment.task.id;
             const matchesFilter = Boolean(filterPredicate?.(assignment.task.status));
@@ -435,7 +460,13 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
             const statusMeta = resolveStatusMeta(assignment.task.status);
             const isReviewTask = REVIEW_STATUSES.has(assignment.task.status);
             const handleTaskClick = () => {
-              setSelectedTask((prev) => (prev?.id === assignment.task.id ? null : assignment.task));
+              setSelectedTask((prev) => {
+                if (prev?.id === assignment.task.id) {
+                  lastCollapsedTaskRef.current = assignment.task.id;
+                  return null;
+                }
+                return assignment.task;
+              });
               if (isReviewTask && onOpenReview) {
                 onOpenReview(assignment.task.id);
               }
@@ -461,9 +492,36 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                   </span>
                   <div className="slice-task-list__copy">
                     <span className="slice-task-list__title">{assignment.task.taskNumber ?? assignment.task.title ?? "Task"}</span>
-                    <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                      {statusMeta.label ?? assignment.task.status.replace(/_/g, " ")}
-                    </span>
+                    <div className="slice-task-list__meta-row">
+                      <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                        {statusMeta.label ?? assignment.task.status.replace(/_/g, " ")}
+                      </span>
+                      {isReviewTask && onOpenReview && (
+                        <>
+                          <span className="slice-task-list__meta-divider" aria-hidden="true">
+                            {"\u00B7"}
+                          </span>
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            className="slice-task-list__review-link"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              onOpenReview(assignment.task.id);
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                onOpenReview(assignment.task.id);
+                              }
+                            }}
+                          >
+                            Review Now
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                   <span className="slice-task-list__summary">{assignment.task.summary ?? assignment.task.title}</span>
                 </button>
@@ -474,7 +532,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                       assignment={assignmentRecord}
                       events={events.filter((event) => event.taskId === assignment.task.id)}
                       onJumpToTask={handleJumpToTask}
-                      onCollapse={() => setSelectedTask(null)}
+                      onCollapse={() => handleCollapseTask(assignment.task.id)}
                     />
                   </div>
                 )}

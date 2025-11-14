@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
 import { MissionEvent } from "../../../src/utils/events";
@@ -126,6 +126,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
+  const lastCollapsedTaskRef = useRef<string | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -198,11 +199,49 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     return map;
   }, [events]);
 
+  const scrollTaskIntoView = useCallback(
+    (taskId: string, behavior: ScrollBehavior = "smooth") => {
+      if (!pillListRef.current) return;
+      const target = pillListRef.current.querySelector<HTMLElement>(`[data-task-accordion="${taskId}"]`);
+      target?.scrollIntoView({ behavior, block: "start" });
+    },
+    []
+  );
+
+  const handleTaskToggle = (taskId?: string | null) => {
+    if (!taskId) {
+      setSelectedTaskId(null);
+      return;
+    }
+    setSelectedTaskId((prev) => {
+      if (prev === taskId) {
+        lastCollapsedTaskRef.current = taskId;
+        return null;
+      }
+      return taskId;
+    });
+  };
+
   useEffect(() => {
     if (!selectedTaskId || !pillListRef.current) return;
-    const target = pillListRef.current.querySelector<HTMLElement>(`[data-task-accordion="${selectedTaskId}"]`);
-    target?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [selectedTaskId]);
+    scrollTaskIntoView(selectedTaskId);
+  }, [selectedTaskId, scrollTaskIntoView]);
+
+  useEffect(() => {
+    if (selectedTaskId !== null || !lastCollapsedTaskRef.current) return;
+    const taskId = lastCollapsedTaskRef.current;
+    lastCollapsedTaskRef.current = null;
+    if (taskId) {
+      requestAnimationFrame(() => scrollTaskIntoView(taskId, "auto"));
+    }
+  }, [selectedTaskId, scrollTaskIntoView]);
+
+  const handleCollapseTask = (taskId?: string | null) => {
+    if (taskId) {
+      lastCollapsedTaskRef.current = taskId;
+    }
+    setSelectedTaskId(null);
+  };
 
   const formatTaskLabel = (task: TaskSnapshot) => {
     if (task.taskNumber) {
@@ -297,7 +336,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                     >
                       <button
                         type="button"
-                        onClick={() => setSelectedTaskId((prev) => (prev === task.id ? null : task.id ?? null))}
+                        onClick={() => handleTaskToggle(task.id ?? null)}
                         aria-expanded={isOpen}
                       >
                         <div className="mission-header__pill-detail-headline">
@@ -317,30 +356,30 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                 {statusMeta.label}
                               </span>
                               {isReviewTask && onOpenReviewTask && task.id && (
-                                <>
-                                  <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
-                                    {"\u00B7"}
-                                  </span>
-                                  <span
-                                    role="button"
-                                    tabIndex={0}
-                                    className="mission-header__review-link"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      onOpenReviewTask(task.id!);
-                                    }}
-                                    onKeyDown={(event) => {
-                                      if (event.key === "Enter" || event.key === " ") {
-                                        event.preventDefault();
-                                        event.stopPropagation();
-                                        onOpenReviewTask(task.id!);
-                                      }
-                                    }}
-                                  >
-                                    Open Review
-                                  </span>
-                                </>
-                              )}
+                            <>
+                              <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
+                                {"\u00B7"}
+                              </span>
+                              <span
+                                role="button"
+                                tabIndex={0}
+                                className="mission-header__review-link"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  onOpenReviewTask(task.id!);
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    onOpenReviewTask(task.id!);
+                                  }
+                                }}
+                              >
+                                Review Now
+                              </span>
+                            </>
+                          )}
                             </div>
                             <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                           </div>
@@ -354,7 +393,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                               assignment={assignmentRecord}
                               events={taskEvents}
                               onJumpToTask={(targetId) => setSelectedTaskId(targetId)}
-                              onCollapse={() => setSelectedTaskId(null)}
+                              onCollapse={() => handleCollapseTask(task.id)}
                             />
                           )}
                         </div>
