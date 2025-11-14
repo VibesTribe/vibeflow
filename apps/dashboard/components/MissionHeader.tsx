@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
 import { MissionEvent } from "../../../src/utils/events";
@@ -45,7 +45,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#f43f5e" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#ff3b6f" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
@@ -125,6 +125,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const pillListRef = useRef<HTMLUListElement | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -196,6 +197,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     });
     return map;
   }, [events]);
+
+  useEffect(() => {
+    if (!selectedTaskId || !pillListRef.current) return;
+    const target = pillListRef.current.querySelector<HTMLElement>(`[data-task-accordion="${selectedTaskId}"]`);
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedTaskId]);
 
   const formatTaskLabel = (task: TaskSnapshot) => {
     if (task.taskNumber) {
@@ -269,7 +276,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {"\u00D7"}
                 </button>
               </div>
-              <ul className="mission-header__pill-detail-list slice-task-list">
+              <ul className="mission-header__pill-detail-list slice-task-list" ref={pillListRef}>
                 {activeDetail.tasks.length === 0 && <li className="mission-header__pill-detail-empty">No tasks currently in this state.</li>}
                 {activeDetail.tasks.map((task) => {
                   const statusMeta = resolveStatusMeta(task.status);
@@ -286,8 +293,13 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                     <li
                       key={task.id ?? task.taskNumber ?? task.title ?? `task-${task.updatedAt}`}
                       className={`mission-header__pill-detail-item ${isReviewTask ? "is-review" : ""} ${isOpen ? "is-open" : ""}`}
+                      data-task-accordion={task.id ?? undefined}
                     >
-                      <button type="button" onClick={() => setSelectedTaskId((prev) => (prev === task.id ? null : task.id ?? null))} aria-expanded={isOpen}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTaskId((prev) => (prev === task.id ? null : task.id ?? null))}
+                        aria-expanded={isOpen}
+                      >
                         <div className="mission-header__pill-detail-headline">
                           <span
                             className={`slice-task-list__status slice-task-list__status--${statusMeta.tone}`}
@@ -342,6 +354,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                               assignment={assignmentRecord}
                               events={taskEvents}
                               onJumpToTask={(targetId) => setSelectedTaskId(targetId)}
+                              onCollapse={() => setSelectedTaskId(null)}
                             />
                           )}
                         </div>
