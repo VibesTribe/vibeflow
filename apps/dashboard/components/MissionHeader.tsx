@@ -45,11 +45,11 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#fb923c" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#f43f5e" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
-  blocked: { label: "Pending", tone: "locked", icon: "\u23F0", accent: "#facc15" },
+  blocked: { label: "Pending", tone: "locked", icon: "\u23F3", accent: "#facc15" },
 };
 
 const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
@@ -98,7 +98,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     label: "Pending",
     description: "Waiting on dependencies",
     subtitle: "Awaiting dependencies",
-    icon: "\u23F0",
+    icon: "\u23F3",
     tone: "pill-locked",
     filter: (task) => HEADER_PENDING_STATUSES.has(task.status),
   },
