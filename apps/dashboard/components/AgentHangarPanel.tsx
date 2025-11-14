@@ -19,7 +19,7 @@ const STATUS_META: Record<
 > = {
   ready: { label: "Ready", icon: "\u2713" },
   active: { label: "Active", icon: "\u21BB" },
-  cooldown: { label: "Cooldown", icon: "\u23F0" },
+  cooldown: { label: "Cooldown", icon: "\u23F2" },
   credit: { label: "Credit Needed", icon: "\u{1F4B0}" },
   issue: { label: "Issue", icon: "\u26A0" },
 };
@@ -87,4 +87,3 @@ function normalizeStatus(status: string) {
 }
 
 export default AgentHangarPanel;
-

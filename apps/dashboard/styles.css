@@ -2552,8 +2552,8 @@ a {
   color: #38bdf8;
 }
 .slice-task-list__status--flagged {
-  border-color: rgba(248, 113, 113, 0.5);
-  color: #f87171;
+  border-color: rgba(244, 63, 94, 0.55);
+  color: #f43f5e;
 }
 .slice-task-list__status--locked {
   border-color: rgba(250, 204, 21, 0.5);
@@ -5327,7 +5327,7 @@ a {
 }
 
 .mission-header__pill-detail-item.is-review button {
-  color: #fb923c;
+  color: #f43f5e;
 }
 
 .mission-header__pill-detail-item button:disabled {
