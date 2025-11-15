@@ -1262,7 +1262,7 @@ a {
 .mission-modal__section--sticky > header,
 .mission-modal__section--sticky > h3 {
   position: sticky;
-  top: 76px;
+  top: 84px;
   background: rgba(8, 11, 22, 1);
   z-index: 11;
   margin-top: 0;
@@ -2524,7 +2524,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 88px;
+  padding-top: 96px;
 }
 
 .slice-panel__tasks ul {
@@ -2569,6 +2569,10 @@ a {
   background: rgba(6, 10, 20, 0.85);
   padding: 10px 12px;
   scroll-margin-top: 180px;
+}
+
+.slice-task-list li:first-child {
+  margin-top: 18px;
 }
 
 .slice-task-list li.is-open {
