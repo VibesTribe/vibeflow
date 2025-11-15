@@ -1245,10 +1245,15 @@ a {
   gap: 16px;
 }
 
+.mission-modal__section--sticky {
+  position: relative;
+  background: rgba(8, 11, 22, 1);
+}
+
 .mission-modal__section--sticky > header,
 .mission-modal__section--sticky > h3 {
   position: sticky;
-  top: 56px;
+  top: 64px;
   background: rgba(8, 11, 22, 1);
   z-index: 5;
   margin-top: 0;
@@ -1264,9 +1269,10 @@ a {
 .mission-modal__section--sticky::before {
   content: "";
   position: sticky;
-  top: 56px;
+  top: 0;
   display: block;
-  height: 12px;
+  height: 64px;
+  margin-bottom: -64px;
   background: rgba(8, 11, 22, 1);
   z-index: 4;
 }

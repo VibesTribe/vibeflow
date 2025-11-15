@@ -338,6 +338,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   const sliceListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
+  const pendingAccordionResetRef = useRef<string | null>(null);
 
   const assignmentsByTask = useMemo(() => {
     const map = new Map<string, SliceAssignment>();
@@ -396,6 +397,15 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
     if (pendingScrollTaskRef.current === selectedTask.id) {
       scrollSliceTaskIntoView(selectedTask.id, "smooth", "start");
       pendingScrollTaskRef.current = null;
+    }
+    if (pendingAccordionResetRef.current === selectedTask.id) {
+      requestAnimationFrame(() => {
+        const accordion = sliceListRef.current?.querySelector<HTMLElement>(
+          `[data-slice-task="${selectedTask.id}"] .slice-task-list__accordion`
+        );
+        accordion?.scrollTo({ top: 0 });
+        pendingAccordionResetRef.current = null;
+      });
     }
   }, [selectedTask, scrollSliceTaskIntoView]);
 
@@ -471,6 +481,8 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                   lastCollapsedTaskRef.current = assignment.task.id;
                   return null;
                 }
+                pendingScrollTaskRef.current = assignment.task.id;
+                pendingAccordionResetRef.current = assignment.task.id;
                 return assignment.task;
               });
               if (isReviewTask && onOpenReview) {
@@ -487,15 +499,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                 <button
                   type="button"
                   className={isOpen ? "is-selected" : undefined}
-                  onClick={() => {
-                    handleTaskClick();
-                    if (sliceListRef.current) {
-                      const detail = sliceListRef.current.querySelector<HTMLElement>(
-                        `[data-task-accordion="${assignment.task.id}"] .slice-task-list__accordion`
-                      );
-                      detail?.scrollTo({ top: 0 });
-                    }
-                  }}
+                  onClick={handleTaskClick}
                   aria-expanded={isOpen}
                 >
                   <span
