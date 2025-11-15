@@ -2563,6 +2563,7 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.12);
   background: rgba(6, 10, 20, 0.85);
   padding: 10px 12px;
+  scroll-margin-top: 180px;
 }
 
 .slice-task-list li.is-open {
@@ -5423,6 +5424,7 @@ a {
   padding: 6px 8px;
   border-radius: 12px;
   background: rgba(10, 18, 34, 0.7);
+  scroll-margin-top: 110px;
 }
 
 .mission-header__pill-detail-item button {

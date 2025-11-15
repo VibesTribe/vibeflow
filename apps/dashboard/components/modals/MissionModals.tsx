@@ -404,7 +404,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
     const taskId = lastCollapsedTaskRef.current;
     lastCollapsedTaskRef.current = null;
     if (taskId) {
-      requestAnimationFrame(() => scrollSliceTaskIntoView(taskId, "auto", "nearest"));
+      requestAnimationFrame(() => scrollSliceTaskIntoView(taskId, "auto", "start"));
     }
   }, [selectedTask, scrollSliceTaskIntoView]);
 

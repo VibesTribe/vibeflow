@@ -236,7 +236,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const taskId = lastCollapsedTaskRef.current;
     lastCollapsedTaskRef.current = null;
     if (taskId) {
-      requestAnimationFrame(() => scrollTaskIntoView(taskId, "auto", "nearest"));
+      requestAnimationFrame(() => scrollTaskIntoView(taskId, "auto", "start"));
     }
   }, [selectedTaskId, scrollTaskIntoView]);
 
