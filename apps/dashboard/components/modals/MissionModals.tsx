@@ -487,7 +487,15 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                 <button
                   type="button"
                   className={isOpen ? "is-selected" : undefined}
-                  onClick={handleTaskClick}
+                  onClick={() => {
+                    handleTaskClick();
+                    if (sliceListRef.current) {
+                      const detail = sliceListRef.current.querySelector<HTMLElement>(
+                        `[data-task-accordion="${assignment.task.id}"] .slice-task-list__accordion`
+                      );
+                      detail?.scrollTo({ top: 0 });
+                    }
+                  }}
                   aria-expanded={isOpen}
                 >
                   <span
