@@ -383,10 +383,10 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   };
 
   const scrollSliceTaskIntoView = useCallback(
-    (taskId: string, behavior: ScrollBehavior = "smooth") => {
+    (taskId: string, behavior: ScrollBehavior = "smooth", block: ScrollLogicalPosition = "nearest") => {
       if (!sliceListRef.current) return;
       const target = sliceListRef.current.querySelector<HTMLElement>(`[data-slice-task="${taskId}"]`);
-      target?.scrollIntoView({ behavior, block: "start" });
+      target?.scrollIntoView({ behavior, block });
     },
     []
   );
@@ -394,7 +394,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   useEffect(() => {
     if (!selectedTask?.id) return;
     if (pendingScrollTaskRef.current === selectedTask.id) {
-      scrollSliceTaskIntoView(selectedTask.id);
+      scrollSliceTaskIntoView(selectedTask.id, "smooth", "start");
       pendingScrollTaskRef.current = null;
     }
   }, [selectedTask, scrollSliceTaskIntoView]);
@@ -404,7 +404,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
     const taskId = lastCollapsedTaskRef.current;
     lastCollapsedTaskRef.current = null;
     if (taskId) {
-      requestAnimationFrame(() => scrollSliceTaskIntoView(taskId, "auto"));
+      requestAnimationFrame(() => scrollSliceTaskIntoView(taskId, "auto", "nearest"));
     }
   }, [selectedTask, scrollSliceTaskIntoView]);
 

@@ -201,10 +201,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   }, [events]);
 
   const scrollTaskIntoView = useCallback(
-    (taskId: string, behavior: ScrollBehavior = "smooth") => {
+    (taskId: string, behavior: ScrollBehavior = "smooth", block: ScrollLogicalPosition = "nearest") => {
       if (!pillListRef.current) return;
       const target = pillListRef.current.querySelector<HTMLElement>(`[data-task-accordion="${taskId}"]`);
-      target?.scrollIntoView({ behavior, block: "start" });
+      target?.scrollIntoView({ behavior, block });
     },
     []
   );
@@ -226,7 +226,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   useEffect(() => {
     if (!selectedTaskId || !pillListRef.current) return;
     if (pendingScrollTaskRef.current === selectedTaskId) {
-      scrollTaskIntoView(selectedTaskId);
+      scrollTaskIntoView(selectedTaskId, "smooth", "start");
       pendingScrollTaskRef.current = null;
     }
   }, [selectedTaskId, scrollTaskIntoView]);
@@ -236,7 +236,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const taskId = lastCollapsedTaskRef.current;
     lastCollapsedTaskRef.current = null;
     if (taskId) {
-      requestAnimationFrame(() => scrollTaskIntoView(taskId, "auto"));
+      requestAnimationFrame(() => scrollTaskIntoView(taskId, "auto", "nearest"));
     }
   }, [selectedTaskId, scrollTaskIntoView]);
 
