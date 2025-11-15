@@ -69,7 +69,7 @@ const SLICE_FILTER_META: Record<
   },
   review: {
     label: "Review",
-    icon: "\u2691",
+    icon: "\u{1F6A9}",
     tone: "review",
     color: "#ff3b6f",
     match: (status) => REVIEW_STATUSES.has(status),
@@ -310,7 +310,7 @@ const STATUS_META: Partial<
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#ff3b6f" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u{1F6A9}", accent: "#ff3b6f" },
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
@@ -337,6 +337,7 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   const [filterKey, setFilterKey] = useState<SliceFilterKey | null>(null);
   const sliceListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
+  const pendingScrollTaskRef = useRef<string | null>(null);
 
   const assignmentsByTask = useMemo(() => {
     const map = new Map<string, SliceAssignment>();
@@ -370,11 +371,13 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   const handleJumpToTask = (taskId: string) => {
     const assignmentMatch = slice.assignments.find((assignment) => assignment.task.id === taskId);
     if (assignmentMatch) {
+      pendingScrollTaskRef.current = assignmentMatch.task.id;
       setSelectedTask(assignmentMatch.task);
       return;
     }
     const fallback = slice.tasks.find((task) => task.id === taskId);
     if (fallback) {
+      pendingScrollTaskRef.current = fallback.id;
       setSelectedTask(fallback);
     }
   };
@@ -390,7 +393,10 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
 
   useEffect(() => {
     if (!selectedTask?.id) return;
-    scrollSliceTaskIntoView(selectedTask.id);
+    if (pendingScrollTaskRef.current === selectedTask.id) {
+      scrollSliceTaskIntoView(selectedTask.id);
+      pendingScrollTaskRef.current = null;
+    }
   }, [selectedTask, scrollSliceTaskIntoView]);
 
   useEffect(() => {
@@ -493,7 +499,10 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                   <div className="slice-task-list__copy">
                     <span className="slice-task-list__title">{assignment.task.taskNumber ?? assignment.task.title ?? "Task"}</span>
                     <div className="slice-task-list__meta-row">
-                      <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
+                      <span
+                        className={`slice-task-list__meta ${isReviewTask ? "slice-task-list__meta--review" : ""}`}
+                        style={{ color: statusMeta.accent }}
+                      >
                         {statusMeta.label ?? assignment.task.status.replace(/_/g, " ")}
                       </span>
                       {isReviewTask && onOpenReview && (

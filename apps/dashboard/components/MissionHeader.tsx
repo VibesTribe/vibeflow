@@ -45,7 +45,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u2691", accent: "#ff3b6f" },
+  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u{1F6A9}", accent: "#ff3b6f" },
   ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
@@ -107,7 +107,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     label: "Review",
     description: "Needs human approval",
     subtitle: "Needs review",
-    icon: "\u2691",
+    icon: "\u{1F6A9}",
     tone: "pill-flagged",
     filter: (task) => HEADER_REVIEW_STATUSES.has(task.status),
   },
@@ -127,6 +127,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
+  const pendingScrollTaskRef = useRef<string | null>(null);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -224,7 +225,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 
   useEffect(() => {
     if (!selectedTaskId || !pillListRef.current) return;
-    scrollTaskIntoView(selectedTaskId);
+    if (pendingScrollTaskRef.current === selectedTaskId) {
+      scrollTaskIntoView(selectedTaskId);
+      pendingScrollTaskRef.current = null;
+    }
   }, [selectedTaskId, scrollTaskIntoView]);
 
   useEffect(() => {
@@ -241,6 +245,11 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       lastCollapsedTaskRef.current = taskId;
     }
     setSelectedTaskId(null);
+  };
+
+  const handleJumpToTask = (targetId: string) => {
+    pendingScrollTaskRef.current = targetId;
+    setSelectedTaskId(targetId);
   };
 
   const formatTaskLabel = (task: TaskSnapshot) => {
@@ -352,9 +361,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                               {subtitle && <span className="mission-header__pill-detail-subtitle">{subtitle}</span>}
                             </div>
                             <div className="mission-header__pill-detail-meta-row">
-                              <span className="slice-task-list__meta" style={{ color: statusMeta.accent }}>
-                                {statusMeta.label}
-                              </span>
+                          <span
+                            className={`slice-task-list__meta ${isReviewTask ? "slice-task-list__meta--review" : ""}`}
+                            style={{ color: statusMeta.accent }}
+                          >
+                            {statusMeta.label}
+                          </span>
                               {isReviewTask && onOpenReviewTask && task.id && (
                             <>
                               <span className="mission-header__pill-detail-meta-divider" aria-hidden="true">
@@ -392,7 +404,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                               task={task}
                               assignment={assignmentRecord}
                               events={taskEvents}
-                              onJumpToTask={(targetId) => setSelectedTaskId(targetId)}
+                              onJumpToTask={handleJumpToTask}
                               onCollapse={() => handleCollapseTask(task.id)}
                             />
                           )}
