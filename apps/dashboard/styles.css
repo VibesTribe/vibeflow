@@ -1223,7 +1223,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 96px;
 }
 
 .mission-modal::before {
@@ -1231,11 +1231,11 @@ a {
   position: sticky;
   top: 0;
   display: block;
-  height: 80px;
-  margin-bottom: -80px;
+  height: 96px;
+  margin-bottom: -96px;
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
-  z-index: 4;
+  z-index: 10;
   pointer-events: none;
 }
 
@@ -1262,9 +1262,9 @@ a {
 .mission-modal__section--sticky > header,
 .mission-modal__section--sticky > h3 {
   position: sticky;
-  top: 68px;
+  top: 76px;
   background: rgba(8, 11, 22, 1);
-  z-index: 5;
+  z-index: 11;
   margin-top: 0;
   padding-top: 8px;
   padding-bottom: 12px;
@@ -2524,8 +2524,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 56px;
-  margin-top: -40px;
+  padding-top: 88px;
 }
 
 .slice-panel__tasks ul {
