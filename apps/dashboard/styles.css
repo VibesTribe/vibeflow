@@ -2779,12 +2779,14 @@ a {
 .task-detail__collapse {
   border: none;
   background: transparent;
-  color: #5eead4;
-  letter-spacing: 0.16em;
+  color: #5eead4 !important;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   padding: 4px 0;
   cursor: pointer;
+  text-align: right;
 }
 
 .task-detail__collapse:hover {
