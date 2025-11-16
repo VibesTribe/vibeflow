@@ -1223,7 +1223,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  scroll-padding-top: 56px;
+  scroll-padding-top: 24px;
 }
 
 .mission-modal::before {
@@ -1231,8 +1231,8 @@ a {
   position: sticky;
   top: 0;
   display: block;
-  height: 48px;
-  margin-bottom: -48px;
+  height: 32px;
+  margin-bottom: -32px;
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 6;
@@ -1244,8 +1244,8 @@ a {
   position: sticky;
   top: 0;
   display: block;
-  height: 72px;
-  margin-bottom: -72px;
+  height: 56px;
+  margin-bottom: -56px;
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 5;
@@ -1275,7 +1275,7 @@ a {
 .mission-modal__section--sticky > header,
 .mission-modal__section--sticky > h3 {
   position: sticky;
-  top: 48px;
+  top: 32px;
   background: rgba(8, 11, 22, 1);
   z-index: 11;
   margin-top: 0;
