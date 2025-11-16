@@ -2319,25 +2319,25 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.75);
-  margin: 8px 0 16px;
-  padding-top: 6px;
+  margin: 0 0 12px;
+  padding-top: 2px;
 }
 
 .model-panel {
-  padding-top: 18px;
-  margin-top: 18px;
+  padding-top: 8px;
+  margin-top: 8px;
 }
 
 @media (max-width: 900px) {
   .model-panel__legend {
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 14px;
-    padding-top: 10px;
+    margin-top: 6px;
+    padding-top: 4px;
   }
   .model-panel {
-    padding-top: 26px;
-    margin-top: 28px;
+    padding-top: 12px;
+    margin-top: 16px;
   }
 }
 
@@ -5250,7 +5250,7 @@ a {
 }
 
 .mission-modal--models {
-  padding-top: 48px;
+  padding-top: 20px;
 }
 
 .mission-modal--models .mission-modal__close {
