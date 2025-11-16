@@ -1,4 +1,4 @@
-﻿import { AgentSnapshot, TaskSnapshot, TaskStatus } from "@core/types";
+import { AgentSnapshot, TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionEvent } from "../../../src/utils/events";
 import { SLICE_BLUEPRINTS, SliceBlueprint } from "../config/slices";
 import { resolveProviderIcon } from "./icons";
@@ -12,6 +12,7 @@ export interface MissionAgent {
   summary?: string;
   cooldownReason?: string | null;
   costPerRunUsd?: number;
+  tierCategory: "web" | "mcp" | "internal";
 }
 
 export interface SliceAssignment {
@@ -119,6 +120,7 @@ export function deriveSlices(
 
 export function mapAgent(agent: AgentSnapshot): MissionAgent {
   const tier = agent.tier ? normalizeTier(agent.tier) : inferTier(agent.name);
+  const tierCategory = tier === "W" ? "web" : tier === "M" ? "mcp" : "internal";
   return {
     id: agent.id,
     name: agent.name,
@@ -128,6 +130,7 @@ export function mapAgent(agent: AgentSnapshot): MissionAgent {
     summary: agent.summary,
     cooldownReason: agent.cooldownReason ?? null,
     costPerRunUsd: agent.costPerRunUsd,
+    tierCategory,
   };
 }
 
@@ -225,3 +228,4 @@ export function buildStatusSummary(tasks: TaskSnapshot[]): StatusSummary {
     { total: 0, completed: 0, active: 0, blocked: 0 }
   );
 }
+
