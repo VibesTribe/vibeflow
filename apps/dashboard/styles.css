@@ -2341,6 +2341,15 @@ a {
   }
 }
 
+.mission-modal--models .model-panel__legend {
+  margin-top: 0;
+  padding-top: 0;
+}
+.mission-modal--models .model-panel {
+  margin-top: 0;
+  padding-top: 4px;
+}
+
 .status-dot {
   display: inline-flex;
   align-items: center;
