@@ -2549,7 +2549,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 40px;
+  padding-top: 32px;
 }
 
 .slice-panel__tasks ul {
@@ -2597,7 +2597,7 @@ a {
 }
 
 .slice-task-list li:first-child {
-  margin-top: 2px;
+  margin-top: 0;
 }
 
 .slice-task-list li.is-open {
