@@ -1235,7 +1235,20 @@ a {
   margin-bottom: -96px;
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
-  z-index: 10;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.mission-modal::after {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 120px;
+  margin-bottom: -120px;
+  background: linear-gradient(180deg, rgba(8, 11, 22, 1) 0%, rgba(8, 11, 22, 0) 100%);
+  border-radius: 24px 24px 0 0;
+  z-index: 5;
   pointer-events: none;
 }
 
@@ -6550,3 +6563,8 @@ a {
 .review-queue--plain .rail__header {
   display: none;
 }
+
+.mission-modal__close {
+  z-index: 20 !important;
+}
+
