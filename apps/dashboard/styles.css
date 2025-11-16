@@ -2430,6 +2430,18 @@ a {
   align-items: center;
   gap: 6px;
   letter-spacing: 0.12em;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: transparent;
+  color: rgba(226, 232, 240, 0.85);
+  font-size: 0.62rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.status-dot.is-active {
+  border-color: rgba(226, 232, 240, 0.4);
+  background: rgba(12, 18, 32, 0.6);
 }
 .status-dot__icon {
   width: 18px;

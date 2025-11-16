@@ -169,18 +169,31 @@ const MODEL_STATUS_LEGEND = [
 ] as const;
 
 const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
+  const filteredSummaries = useMemo(() => {
+    if (!statusFilter) return agentSummaries;
+    return agentSummaries.filter((summary) => summary.statusKey === statusFilter);
+  }, [agentSummaries, statusFilter]);
 
   return (
     <div className="mission-modal__section mission-modal__section--sticky model-panel">
       <header className="model-panel__legend">
         <div className="model-panel__legend-row">
-          {MODEL_STATUS_LEGEND.map((item) => (
-            <span key={item.key} className={`status-dot status-dot--${item.key}`}>
-              <span className="status-dot__icon">{item.icon}</span>
-              {item.label}
-            </span>
-          ))}
+          {MODEL_STATUS_LEGEND.map((item) => {
+            const isActive = statusFilter === item.key;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                className={`status-dot status-dot--${item.key} ${isActive ? "is-active" : ""}`}
+                onClick={() => setStatusFilter((prev) => (prev === item.key ? null : item.key))}
+              >
+                <span className="status-dot__icon">{item.icon}</span>
+                {item.label}
+              </button>
+            );
+          })}
         </div>
         <div className="model-panel__legend-row model-panel__legend-row--badges">
           <span className="model-panel__legend-badge model-panel__legend-badge--web">
@@ -198,7 +211,7 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
         </div>
       </header>
       <ul className="model-panel__list">
-        {agentSummaries.map((summary) => (
+        {filteredSummaries.map((summary) => (
           <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
             <div className="model-panel__header">
               <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
