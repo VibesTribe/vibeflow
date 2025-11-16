@@ -166,10 +166,26 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
   return (
     <div className="mission-modal__section mission-modal__section--sticky model-panel">
       <header className="model-panel__legend">
-        <span className="status-dot status-dot--ready">Ready</span>
-        <span className="status-dot status-dot--cooldown">Cooldown</span>
-        <span className="status-dot status-dot--credit">Credit Needed</span>
-        <span className="status-dot status-dot--issue">Issue</span>
+        <div className="model-panel__legend-row">
+          <span className="status-dot status-dot--ready">Ready</span>
+          <span className="status-dot status-dot--cooldown">Cooldown</span>
+          <span className="status-dot status-dot--credit">Credit Needed</span>
+          <span className="status-dot status-dot--issue">Issue</span>
+        </div>
+        <div className="model-panel__legend-row model-panel__legend-row--badges">
+          <span className="model-panel__legend-badge model-panel__legend-badge--web">
+            <span className="model-panel__legend-badge-icon">W</span>
+            <span>Web</span>
+          </span>
+          <span className="model-panel__legend-badge model-panel__legend-badge--mcp">
+            <span className="model-panel__legend-badge-icon">M</span>
+            <span>MCP</span>
+          </span>
+          <span className="model-panel__legend-badge model-panel__legend-badge--internal">
+            <span className="model-panel__legend-badge-icon">Q</span>
+            <span>Internal</span>
+          </span>
+        </div>
       </header>
       <ul className="model-panel__list">
         {agentSummaries.map((summary) => (
