@@ -1252,6 +1252,19 @@ a {
   pointer-events: none;
 }
 
+.mission-modal--models {
+  scroll-padding-top: 0;
+  padding-top: 0;
+}
+.mission-modal--models::before,
+.mission-modal--models::after {
+  display: none;
+}
+.mission-modal--models .mission-modal__section--sticky > header,
+.mission-modal--models .mission-modal__section--sticky > h3 {
+  top: 0;
+}
+
 .mission-modal__close {
   position: sticky;
   top: 16px;
@@ -2314,13 +2327,66 @@ a {
 /* === Modal Panels === */
 .model-panel__legend {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 8px;
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.75);
   margin: 0 0 12px;
-  padding-top: 2px;
+}
+.model-panel__legend-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.model-panel__legend-row--badges {
+  gap: 12px;
+}
+.model-panel__legend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: rgba(226, 232, 240, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.model-panel__legend-badge-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.model-panel__legend-badge--web {
+  border-color: rgba(94, 234, 212, 0.5);
+  color: #5eead4;
+}
+.model-panel__legend-badge--web .model-panel__legend-badge-icon {
+  background: rgba(94, 234, 212, 0.2);
+  color: #5eead4;
+}
+.model-panel__legend-badge--mcp {
+  border-color: rgba(165, 180, 252, 0.45);
+  color: #a5b4fc;
+}
+.model-panel__legend-badge--mcp .model-panel__legend-badge-icon {
+  background: rgba(165, 180, 252, 0.2);
+  color: #a5b4fc;
+}
+.model-panel__legend-badge--internal {
+  border-color: rgba(250, 204, 21, 0.45);
+  color: #fcd34d;
+}
+.model-panel__legend-badge--internal .model-panel__legend-badge-icon {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
 }
 
 .model-panel {
@@ -2330,10 +2396,10 @@ a {
 
 @media (max-width: 900px) {
   .model-panel__legend {
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
-    padding-top: 4px;
+    gap: 6px;
+  }
+  .model-panel__legend-row {
+    gap: 12px;
   }
   .model-panel {
     padding-top: 12px;
@@ -2341,14 +2407,6 @@ a {
   }
 }
 
-.mission-modal--models .model-panel__legend {
-  margin-top: 0;
-  padding-top: 0;
-}
-.mission-modal--models .model-panel {
-  margin-top: 0;
-  padding-top: 4px;
-}
 
 .status-dot {
   display: inline-flex;
