@@ -1271,6 +1271,18 @@ a {
   box-shadow: 0 8px 18px rgba(2, 6, 23, 0.45);
 }
 
+.mission-modal__section--sticky::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 84px;
+  margin-bottom: -84px;
+  background: rgba(8, 11, 22, 1);
+  z-index: 10;
+  pointer-events: none;
+}
+
 .mission-modal__section--sticky > h3 {
   margin-bottom: 12px;
 }
