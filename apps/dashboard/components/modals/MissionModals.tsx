@@ -160,6 +160,14 @@ const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
   </div>
 );
 
+const MODEL_STATUS_LEGEND = [
+  { key: "ready", label: "Ready", icon: "\u2713" },
+  { key: "active", label: "Active", icon: "\u21BB" },
+  { key: "cooldown", label: "Cooldown", icon: "\u23F3" },
+  { key: "credit", label: "Credit Needed", icon: "\u{1F4B0}" },
+  { key: "issue", label: "Issue", icon: "\u26A0" },
+] as const;
+
 const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
 
@@ -167,10 +175,12 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
     <div className="mission-modal__section mission-modal__section--sticky model-panel">
       <header className="model-panel__legend">
         <div className="model-panel__legend-row">
-          <span className="status-dot status-dot--ready">Ready</span>
-          <span className="status-dot status-dot--cooldown">Cooldown</span>
-          <span className="status-dot status-dot--credit">Credit Needed</span>
-          <span className="status-dot status-dot--issue">Issue</span>
+          {MODEL_STATUS_LEGEND.map((item) => (
+            <span key={item.key} className={`status-dot status-dot--${item.key}`}>
+              <span className="status-dot__icon">{item.icon}</span>
+              {item.label}
+            </span>
+          ))}
         </div>
         <div className="model-panel__legend-row model-panel__legend-row--badges">
           <span className="model-panel__legend-badge model-panel__legend-badge--web">
