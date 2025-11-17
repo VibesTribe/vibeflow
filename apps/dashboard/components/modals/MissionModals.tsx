@@ -990,51 +990,45 @@ const AssignmentDetails: React.FC<{
         </div>
       </header>
 
-      <section className="assignment-detail__section">
+      <section className="assignment-detail__section assignment-detail__section--inline">
         <header>
           <h4>Current Progress</h4>
         </header>
-        <dl className="assignment-detail__stats">
-          <div>
-            <dt>Status</dt>
-            <dd>{formatStatusLabel(task.status)}</dd>
-          </div>
-          <div>
-            <dt>Updated</dt>
-            <dd>{updatedAt}</dd>
-          </div>
-          <div>
-            <dt>Tokens used</dt>
-            <dd>{tokensUsed !== undefined ? tokensUsed.toLocaleString() : "Unknown"}</dd>
-          </div>
-          <div>
-            <dt>Runtime</dt>
-            <dd>{runtimeSeconds !== undefined ? `${runtimeSeconds}s` : "n/a"}</dd>
-          </div>
-          <div>
-            <dt>Rerouted</dt>
-            <dd>{routingEvents.length > 0 ? "Yes" : "No"}</dd>
-          </div>
-          <div>
-            <dt>Blocking</dt>
-            <dd>{assignment.isBlocking ? "Yes" : "No"}</dd>
-          </div>
-          {agent?.rateLimitWindowSeconds !== undefined && (
-            <div>
-              <dt>Rate limit window</dt>
-              <dd>{agent.rateLimitWindowSeconds ? `${agent.rateLimitWindowSeconds}s` : "Not provided"}</dd>
-            </div>
-          )}
-          {agent?.costPer1kTokensUsd !== undefined && (
-            <div>
-              <dt>Cost / 1k tokens</dt>
-              <dd>{agent.costPer1kTokensUsd ? `$${agent.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</dd>
-            </div>
-          )}
-        </dl>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Status</span>
+          <span>{formatStatusLabel(task.status)}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Updated</span>
+          <span>{updatedAt}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Tokens used</span>
+          <span>{tokensUsed !== undefined ? tokensUsed.toLocaleString() : "Unknown"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Runtime</span>
+          <span>{runtimeSeconds !== undefined ? `${runtimeSeconds}s` : "n/a"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Cost / 1k tokens</span>
+          <span>{agent?.costPer1kTokensUsd ? `$${agent.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Rate limit</span>
+          <span>{agent?.rateLimitWindowSeconds ? `${agent.rateLimitWindowSeconds}s` : "n/a"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Rerouted</span>
+          <span>{routingEvents.length > 0 ? "Yes" : "No"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Blocking</span>
+          <span>{assignment.isBlocking ? "Yes" : "No"}</span>
+        </div>
       </section>
 
-      <section className="assignment-detail__section">
+      <section className="assignment-detail__section assignment-detail__section--inline">
         <header>
           <h4>Routing</h4>
         </header>
@@ -1057,7 +1051,7 @@ const AssignmentDetails: React.FC<{
         </ul>
       </section>
 
-      <section className="assignment-detail__section">
+      <section className="assignment-detail__section assignment-detail__section--inline">
         <header>
           <h4>Warnings & Issues</h4>
         </header>
