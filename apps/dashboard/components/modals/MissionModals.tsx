@@ -1,6 +1,7 @@
 import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
 import {
+  AgentAssignmentRecord,
   AgentCreditStatus,
   AgentLiveAssignment,
   AgentPerformanceStats,
@@ -10,6 +11,12 @@ import {
   MissionAgent,
   MissionSlice,
   SliceAssignment,
+  buildAgentSummaries,
+  buildRecentTasks,
+  calculateCooldownRemaining,
+  collectAgentAssignments,
+  formatStatusLabel,
+  normalizeAgentStatus,
 } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 
@@ -413,7 +420,7 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
   const intel = useMemo(() => buildAgentIntel(agent, slices, events), [agent, slices, events]);
   const [showLog, setShowLog] = useState(false);
-  const statusKey = normalizeStatus(agent.status);
+    const statusKey = normalizeAgentStatus(agent.status);
 
   return (
     <div className="mission-modal__section agent-panel">
@@ -967,6 +974,7 @@ const AssignmentDetails: React.FC<{
   const updatedAt = new Date(task.updatedAt).toLocaleString();
   const tokensUsed = task.metrics?.tokensUsed;
   const runtimeSeconds = task.metrics?.runtimeSeconds;
+  const costPerTask = tokensUsed !== undefined && agent?.costPer1kTokensUsd ? (tokensUsed / 1000) * agent.costPer1kTokensUsd : null;
   const showReviewAction = Boolean(onOpenReview && (task.status === "supervisor_review" || task.status === "supervisor_approval"));
 
   return (
@@ -994,9 +1002,9 @@ const AssignmentDetails: React.FC<{
         <header>
           <h4>Current Progress</h4>
         </header>
-        <div className="assignment-detail__row">
+        <div className="assignment-detail__row assignment-detail__row--status">
           <span className="assignment-detail__label">Status</span>
-          <span>{formatStatusLabel(task.status)}</span>
+          <span style={{ color: statusMeta.accent }}>{formatStatusLabel(task.status)}</span>
         </div>
         <div className="assignment-detail__row">
           <span className="assignment-detail__label">Updated</span>
@@ -1007,12 +1015,16 @@ const AssignmentDetails: React.FC<{
           <span>{tokensUsed !== undefined ? tokensUsed.toLocaleString() : "Unknown"}</span>
         </div>
         <div className="assignment-detail__row">
-          <span className="assignment-detail__label">Runtime</span>
-          <span>{runtimeSeconds !== undefined ? `${runtimeSeconds}s` : "n/a"}</span>
+          <span className="assignment-detail__label">Cost</span>
+          <span>{costPerTask !== null ? `$${costPerTask.toFixed(2)}` : "Unknown"}</span>
         </div>
         <div className="assignment-detail__row">
           <span className="assignment-detail__label">Cost / 1k tokens</span>
           <span>{agent?.costPer1kTokensUsd ? `$${agent.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</span>
+        </div>
+        <div className="assignment-detail__row">
+          <span className="assignment-detail__label">Runtime</span>
+          <span>{runtimeSeconds !== undefined ? `${runtimeSeconds}s` : "n/a"}</span>
         </div>
         <div className="assignment-detail__row">
           <span className="assignment-detail__label">Rate limit</span>
@@ -1246,76 +1258,6 @@ const AddAgentForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
-interface AgentAssignmentRecord {
-  assignment: SliceAssignment;
-  slice: MissionSlice;
-}
-
-interface AgentSummaryRecord {
-  agent: MissionAgent;
-  assigned: number;
-  succeeded: number;
-  failed: number;
-  successRate: number;
-  tokensUsed: number;
-  tokensToday: number;
-  avgRuntime: number;
-  primaryTask: TaskSnapshot | null;
-  statusKey: string;
-  statusLabel: string;
-  recentTasks: AgentRecentTask[];
-  cooldownRemainingLabel: string | null;
-  effectiveContextTokens?: number;
-}
-
-function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]): AgentSummaryRecord[] {
-  return agents.map((agent) => {
-    const assignmentRecords = collectAgentAssignments(agent, slices);
-    const assignments = assignmentRecords.map((record) => record.assignment);
-
-    const assigned = assignments.length;
-    const succeeded = assignments.filter((assignment) => isCompleted(assignment.task.status)).length;
-    const failed = assignments.filter((assignment) => assignment.isBlocking).length;
-    const successRate = assigned === 0 ? 100 : Math.max(0, Math.round((succeeded / assigned) * 100));
-    const tokensUsed = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
-    const tokensToday = (() => {
-      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-      return assignmentRecords
-        .filter((record) => {
-          const updated = record.assignment.task.updatedAt ? new Date(record.assignment.task.updatedAt).valueOf() : 0;
-          return updated >= cutoff;
-        })
-        .reduce((sum, record) => sum + (record.assignment.task.metrics?.tokensUsed ?? 0), 0);
-    })();
-    const avgRuntime = (() => {
-      const samples = assignments.map((assignment) => assignment.task.metrics?.runtimeSeconds).filter((value): value is number => typeof value === "number");
-      if (samples.length === 0) return 0;
-      return Math.round(samples.reduce((acc, value) => acc + value, 0) / samples.length);
-    })();
-
-    const primaryTask = assignments.find((assignment) => ACTIVE_STATUSES.has(assignment.task.status))?.task ?? null;
-    const statusKey = normalizeStatus(agent.status);
-    const statusLabel = buildStatusLabel(agent.status, primaryTask);
-
-    return {
-      agent,
-      assigned,
-      succeeded,
-      failed,
-      successRate,
-      tokensUsed,
-      tokensToday,
-      avgRuntime,
-      primaryTask,
-      statusKey,
-      statusLabel,
-      recentTasks: buildRecentTasks(assignmentRecords),
-      cooldownRemainingLabel: calculateCooldownRemaining(agent),
-      effectiveContextTokens: agent.effectiveContextWindowTokens ?? agent.contextWindowTokens,
-    };
-  });
-}
-
 function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events: MissionEvent[]) {
   const assignmentRecords = collectAgentAssignments(agent, slices);
   const assignments = assignmentRecords.map((record) => record.assignment);
@@ -1340,102 +1282,6 @@ function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events:
     successRate,
     tokensUsed,
   };
-}
-
-function collectAgentAssignments(agent: MissionAgent, slices: MissionSlice[]): AgentAssignmentRecord[] {
-  const records: AgentAssignmentRecord[] = [];
-  slices.forEach((slice) => {
-    slice.assignments.forEach((assignment) => {
-      if (assignment.agent?.id === agent.id) {
-        records.push({ assignment, slice });
-      }
-    });
-  });
-  return records;
-}
-
-function buildRecentTasks(records: AgentAssignmentRecord[]): AgentRecentTask[] {
-  return records
-    .slice()
-    .sort((a, b) => {
-      const aDate = new Date(a.assignment.task.updatedAt ?? 0).valueOf();
-      const bDate = new Date(b.assignment.task.updatedAt ?? 0).valueOf();
-      return bDate - aDate;
-    })
-    .slice(0, 5)
-    .map(({ assignment, slice }) => {
-      const status = assignment.task.status;
-      const outcome = isCompleted(status) ? "success" : assignment.isBlocking ? "fail" : "active";
-      return {
-        id: assignment.task.id,
-        title: assignment.task.title ?? "Untitled task",
-        taskNumber: assignment.task.taskNumber,
-        status,
-        runtimeSeconds: assignment.task.metrics?.runtimeSeconds,
-        outcome,
-        updatedAt: assignment.task.updatedAt,
-        sliceName: slice.name,
-      };
-    });
-}
-
-function calculateCooldownRemaining(agent: MissionAgent): string | null {
-  if (!agent.cooldownExpiresAt) {
-    return null;
-  }
-  const target = new Date(agent.cooldownExpiresAt).valueOf();
-  const now = Date.now();
-  if (Number.isNaN(target) || target <= now) {
-    return "Ready";
-  }
-  return formatRelativeDuration(target - now);
-}
-
-function formatRelativeDuration(ms: number) {
-  const minutes = Math.floor(ms / 60000);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  if (days > 0) {
-    return `${days}d ${hours % 24}h`;
-  }
-  if (hours > 0) {
-    return `${hours}h ${minutes % 60}m`;
-  }
-  return `${Math.max(1, minutes)}m`;
-}
-
-function normalizeStatus(status: string) {
-  const lower = (status ?? "").toLowerCase().trim();
-  if (lower.includes("credit")) return "credit";
-  if (lower.includes("cooldown") || lower.includes("cool down")) return "cooldown";
-  if (lower.includes("issue") || lower.includes("error") || lower.includes("blocked")) return "issue";
-  if (
-    lower.includes("active") ||
-    lower.includes("in_progress") ||
-    lower.includes("in progress") ||
-    lower.includes("working") ||
-    lower.includes("running") ||
-    lower.includes("received") ||
-    lower.includes("receiving") ||
-    lower.includes("processing")
-  ) {
-    return "active";
-  }
-  return "ready";
-}
-
-function buildStatusLabel(status: string, task: TaskSnapshot | null) {
-  if (task) {
-    return `${formatStatusLabel(status)} · Working on ${task.taskNumber ?? task.title}`;
-  }
-  return formatStatusLabel(status);
-}
-
-function formatStatusLabel(value?: string | null) {
-  if (!value) return "Unknown";
-  return value
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function inferLogTone(event: MissionEvent): "success" | "warn" | "error" {
