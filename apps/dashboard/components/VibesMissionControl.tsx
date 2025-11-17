@@ -85,7 +85,6 @@ const VibesMissionControl: React.FC = () => {
   const handleOpenAssignmentDetail = useCallback((assignment: SliceAssignment, slice: MissionSlice) => {
     setModal({ type: "assignment", assignment, slice });
   }, []);
-  const handleOpenAssignmentDetail = (assignment: SliceAssignment, slice: MissionSlice) => setModal({ type: "assignment", assignment, slice });
   const handleSelectSlice = (slice: MissionSlice) => setModal({ type: "slice", slice });
   const handleCloseModal = () => setModal({ type: null });
   const handleOpenMobilePanel = (panel: MobilePanelView) => setMobilePanel(panel);
