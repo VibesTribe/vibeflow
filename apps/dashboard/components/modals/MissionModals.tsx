@@ -400,7 +400,7 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         </div>
         <div className="agent-panel__hero-badges">
           <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
-          <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{agent.status}</span>
+          <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{formatStatusLabel(agent.status)}</span>
         </div>
       </header>
 
@@ -431,7 +431,7 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         <dl className="agent-detail__grid agent-detail__grid--state">
           <div>
             <dt>Current status</dt>
-            <dd>{agent.status}</dd>
+            <dd>{formatStatusLabel(agent.status)}</dd>
           </div>
           <div>
             <dt>Cooldown</dt>
@@ -470,7 +470,7 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
             </div>
             <div>
               <dt>Status</dt>
-              <dd>{intel.liveAssignment.status}</dd>
+              <dd>{formatStatusLabel(intel.liveAssignment.status)}</dd>
             </div>
             <div className="agent-detail__grid-span">
               <dt>Reason assigned</dt>
@@ -514,7 +514,7 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
                 <strong>{task.taskNumber ?? task.title}</strong>
                 <span>{task.sliceName ?? "Unknown slice"}</span>
                 <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
-                <span className="agent-recent__status">{task.status}</span>
+            <span className="agent-recent__status">{formatStatusLabel(task.status)}</span>
               </li>
             ))
           ) : (
@@ -1198,9 +1198,16 @@ function normalizeStatus(status: string) {
 
 function buildStatusLabel(status: string, task: TaskSnapshot | null) {
   if (task) {
-    return `${status} � Working on ${task.taskNumber ?? task.title}`;
+    return `${formatStatusLabel(status)} · Working on ${task.taskNumber ?? task.title}`;
   }
-  return status;
+  return formatStatusLabel(status);
+}
+
+function formatStatusLabel(value?: string | null) {
+  if (!value) return "Unknown";
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function inferLogTone(event: MissionEvent): "success" | "warn" | "error" {
