@@ -31,6 +31,7 @@ interface MissionModalsProps {
   agents: MissionAgent[];
   slices: MissionSlice[];
   onOpenReview?: (taskId: string) => void;
+  onSelectAgent?: (agent: MissionAgent) => void;
 }
 
 const DOC_LINKS = [
@@ -89,7 +90,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent }) => {
   if (modal.type === null) {
     return null;
   }
@@ -106,7 +107,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <RoiPanel agents={agents} slices={slices} />;
       break;
     case "models":
-      content = <ModelOverview agents={agents} slices={slices} />;
+      content = <ModelOverview agents={agents} slices={slices} onSelectAgent={onSelectAgent} />;
       break;
     case "agent":
       content = <AgentDetails agent={modal.agent} events={events} slices={slices} />;
@@ -206,7 +207,11 @@ const MODEL_STATUS_META = MODEL_STATUS_LEGEND.reduce<
 type ModelStatusKey = (typeof MODEL_STATUS_LEGEND)[number]["key"];
 type ModelTierKey = (typeof MODEL_TIER_LEGEND)[number]["key"];
 
-const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
+const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; onSelectAgent?: (agent: MissionAgent) => void }> = ({
+  agents,
+  slices,
+  onSelectAgent,
+}) => {
   const [statusFilter, setStatusFilter] = useState<ModelStatusKey | null>(null);
   const [tierFilter, setTierFilter] = useState<ModelTierKey | null>(null);
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
@@ -283,7 +288,7 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                 >
                   <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
                 </button>
-                <div>
+                <div className="model-panel__title">
                   <strong>{summary.agent.name}</strong>
                   <div className="model-panel__status">
                     <span className={`status-dot status-dot--${summary.statusKey}`}>
@@ -295,6 +300,11 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                     )}
                   </div>
                 </div>
+                {onSelectAgent && (
+                  <button type="button" className="model-panel__detail" onClick={() => onSelectAgent(summary.agent)}>
+                    Details
+                  </button>
+                )}
               </div>
               <div className="model-panel__metrics">
                 <div className="model-panel__stats-row">
@@ -316,6 +326,15 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                   Cooldown: {cooldownLabel}
                 </p>
                 <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} • Avg response: {summary.avgRuntime}s</p>
+                <div className="model-panel__meta">
+                  {summary.agent.rateLimitWindowSeconds !== undefined && (
+                    <span>Rate limit: {summary.agent.rateLimitWindowSeconds ? `${summary.agent.rateLimitWindowSeconds}s` : "n/a"}</span>
+                  )}
+                  {summary.tokensToday > 0 && <span>Tokens today: {formatTokenCount(summary.tokensToday)}</span>}
+                  {summary.agent.costPer1kTokensUsd !== undefined && (
+                    <span>Cost / 1k: {summary.agent.costPer1kTokensUsd ? `$${summary.agent.costPer1kTokensUsd.toFixed(2)}` : "n/a"}</span>
+                  )}
+                </div>
               </div>
               <div className="model-panel__recent-activity">
                 <p>Recent Activity</p>
@@ -928,28 +947,6 @@ const AssignmentDetails: React.FC<{
         .slice(0, 2),
     [sortedEvents]
   );
-  const statusHistory = useMemo(() => {
-    const history = sortedEvents
-      .map((event) => {
-        if (event.type !== "status_change" || !event.details) {
-          return null;
-        }
-        const details = event.details as Record<string, unknown>;
-        const next = typeof details["to"] === "string" ? (details["to"] as string) : null;
-        if (!next) return null;
-        return {
-          id: event.id,
-          label: formatStatusLabel(next),
-          timestamp: new Date(event.timestamp).toLocaleString(),
-        };
-      })
-      .filter((entry): entry is { id: string; label: string; timestamp: string } => Boolean(entry))
-      .slice(0, 5);
-    if (history.length === 0) {
-      history.push({ id: task.id, label: formatStatusLabel(task.status), timestamp: new Date(task.updatedAt).toLocaleString() });
-    }
-    return history;
-  }, [sortedEvents, task.id, task.status, task.updatedAt]);
   const warningMessages = useMemo(() => {
     const messages = warningEvents.map((event) => ({
       id: event.id,
@@ -1035,20 +1032,6 @@ const AssignmentDetails: React.FC<{
             </div>
           )}
         </dl>
-      </section>
-
-      <section className="assignment-detail__section">
-        <header>
-          <h4>Status Timeline</h4>
-        </header>
-        <ul className="assignment-detail__history">
-          {statusHistory.map((entry) => (
-            <li key={entry.id}>
-              <strong>{entry.label}</strong>
-              <span>{entry.timestamp}</span>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section className="assignment-detail__section">
@@ -1281,6 +1264,7 @@ interface AgentSummaryRecord {
   failed: number;
   successRate: number;
   tokensUsed: number;
+  tokensToday: number;
   avgRuntime: number;
   primaryTask: TaskSnapshot | null;
   statusKey: string;
@@ -1300,6 +1284,15 @@ function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]): Ag
     const failed = assignments.filter((assignment) => assignment.isBlocking).length;
     const successRate = assigned === 0 ? 100 : Math.max(0, Math.round((succeeded / assigned) * 100));
     const tokensUsed = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+    const tokensToday = (() => {
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      return assignmentRecords
+        .filter((record) => {
+          const updated = record.assignment.task.updatedAt ? new Date(record.assignment.task.updatedAt).valueOf() : 0;
+          return updated >= cutoff;
+        })
+        .reduce((sum, record) => sum + (record.assignment.task.metrics?.tokensUsed ?? 0), 0);
+    })();
     const avgRuntime = (() => {
       const samples = assignments.map((assignment) => assignment.task.metrics?.runtimeSeconds).filter((value): value is number => typeof value === "number");
       if (samples.length === 0) return 0;
@@ -1317,6 +1310,7 @@ function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]): Ag
       failed,
       successRate,
       tokensUsed,
+      tokensToday,
       avgRuntime,
       primaryTask,
       statusKey,
