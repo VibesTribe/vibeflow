@@ -293,3 +293,172 @@ export function buildStatusSummary(tasks: TaskSnapshot[]): StatusSummary {
   );
 }
 
+export interface AgentSummaryRecord {
+  agent: MissionAgent;
+  assigned: number;
+  succeeded: number;
+  failed: number;
+  successRate: number;
+  tokensUsed: number;
+  tokensToday: number;
+  avgRuntime: number;
+  primaryTask: TaskSnapshot | null;
+  statusKey: string;
+  statusLabel: string;
+  recentTasks: AgentRecentTask[];
+  cooldownRemainingLabel: string | null;
+  effectiveContextTokens?: number;
+}
+
+export interface AgentAssignmentRecord {
+  assignment: SliceAssignment;
+  slice: MissionSlice;
+}
+
+export function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]): AgentSummaryRecord[] {
+  return agents.map((agent) => {
+    const assignmentRecords = collectAgentAssignments(agent, slices);
+    const assignments = assignmentRecords.map((record) => record.assignment);
+
+    const assigned = assignments.length;
+    const succeeded = assignments.filter((assignment) => isCompleted(assignment.task.status)).length;
+    const failed = assignments.filter((assignment) => assignment.isBlocking).length;
+    const successRate = assigned === 0 ? 100 : Math.max(0, Math.round((succeeded / assigned) * 100));
+    const tokensUsed = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+    const tokensToday = (() => {
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      return assignmentRecords
+        .filter((record) => {
+          const updated = record.assignment.task.updatedAt ? new Date(record.assignment.task.updatedAt).valueOf() : 0;
+          return updated >= cutoff;
+        })
+        .reduce((sum, record) => sum + (record.assignment.task.metrics?.tokensUsed ?? 0), 0);
+    })();
+    const avgRuntime = (() => {
+      const samples = assignments.map((assignment) => assignment.task.metrics?.runtimeSeconds).filter((value): value is number => typeof value === "number");
+      if (samples.length === 0) return 0;
+      return Math.round(samples.reduce((acc, value) => acc + value, 0) / samples.length);
+    })();
+
+    const primaryTask = assignments.find((assignment) => ACTIVE_STATUSES.has(assignment.task.status))?.task ?? null;
+    const statusKey = normalizeAgentStatus(agent.status);
+    const statusLabel = buildStatusLabel(agent.status, primaryTask);
+
+    return {
+      agent,
+      assigned,
+      succeeded,
+      failed,
+      successRate,
+      tokensUsed,
+      tokensToday,
+      avgRuntime,
+      primaryTask,
+      statusKey,
+      statusLabel,
+      recentTasks: buildRecentTasks(assignmentRecords),
+      cooldownRemainingLabel: calculateCooldownRemaining(agent),
+      effectiveContextTokens: agent.effectiveContextWindowTokens ?? agent.contextWindowTokens,
+    };
+  });
+}
+
+export function collectAgentAssignments(agent: MissionAgent, slices: MissionSlice[]): AgentAssignmentRecord[] {
+  const records: AgentAssignmentRecord[] = [];
+  slices.forEach((slice) => {
+    slice.assignments.forEach((assignment) => {
+      if (assignment.agent?.id === agent.id) {
+        records.push({ assignment, slice });
+      }
+    });
+  });
+  return records;
+}
+
+export function buildRecentTasks(records: AgentAssignmentRecord[]): AgentRecentTask[] {
+  return records
+    .slice()
+    .sort((a, b) => {
+      const aDate = new Date(a.assignment.task.updatedAt ?? 0).valueOf();
+      const bDate = new Date(b.assignment.task.updatedAt ?? 0).valueOf();
+      return bDate - aDate;
+    })
+    .slice(0, 5)
+    .map(({ assignment, slice }) => {
+      const status = assignment.task.status;
+      const outcome = isCompleted(status) ? "success" : assignment.isBlocking ? "fail" : "active";
+      return {
+        id: assignment.task.id,
+        title: assignment.task.title ?? "Untitled task",
+        taskNumber: assignment.task.taskNumber,
+        status,
+        runtimeSeconds: assignment.task.metrics?.runtimeSeconds,
+        outcome,
+        updatedAt: assignment.task.updatedAt,
+        sliceName: slice.name,
+      };
+    });
+}
+
+export function calculateCooldownRemaining(agent: MissionAgent): string | null {
+  if (!agent.cooldownExpiresAt) {
+    return null;
+  }
+  const target = new Date(agent.cooldownExpiresAt).valueOf();
+  const now = Date.now();
+  if (Number.isNaN(target) || target <= now) {
+    return "Ready";
+  }
+  const diff = target - now;
+  return formatDuration(diff);
+}
+
+function formatDuration(ms: number): string {
+  const minutes = Math.floor(ms / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) {
+    return `${days}d ${hours % 24}h`;
+  }
+  if (hours > 0) {
+    return `${hours}h ${minutes % 60}m`;
+  }
+  return `${Math.max(1, minutes)}m`;
+}
+
+const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing"]);
+
+export function normalizeAgentStatus(status: string) {
+  const lower = (status ?? "").toLowerCase().trim();
+  if (lower.includes("credit")) return "credit";
+  if (lower.includes("cooldown") || lower.includes("cool down")) return "cooldown";
+  if (lower.includes("issue") || lower.includes("error") || lower.includes("blocked")) return "issue";
+  if (
+    lower.includes("active") ||
+    lower.includes("in_progress") ||
+    lower.includes("in progress") ||
+    lower.includes("working") ||
+    lower.includes("running") ||
+    lower.includes("received") ||
+    lower.includes("receiving") ||
+    lower.includes("processing")
+  ) {
+    return "active";
+  }
+  return "ready";
+}
+
+export function buildStatusLabel(status: string, task: TaskSnapshot | null) {
+  if (task) {
+    return `${formatStatusLabel(status)} · Working on ${task.taskNumber ?? task.title}`;
+  }
+  return formatStatusLabel(status);
+}
+
+export function formatStatusLabel(value?: string | null) {
+  if (!value) return "Unknown";
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
