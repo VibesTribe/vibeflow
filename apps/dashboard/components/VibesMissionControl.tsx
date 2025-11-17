@@ -7,7 +7,7 @@ import SliceHub from "./SliceHub";
 import ReviewPanel from "./ReviewPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
-import { AgentSummaryRecord, MissionAgent, MissionSlice, SliceAssignment, buildAgentSummaries } from "../utils/mission";
+import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
 import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
@@ -135,8 +135,6 @@ const VibesMissionControl: React.FC = () => {
     [reviewItems, activeReviewId],
   );
 
-  const agentSummaries: AgentSummaryRecord[] = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
-
   const handleReviewActionComplete = useCallback(() => {
     refreshReviews();
     workflowDispatch.reset();
@@ -190,7 +188,7 @@ const VibesMissionControl: React.FC = () => {
         )}
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
-      <AgentHangarPanel agents={agents} summaries={agentSummaries} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
+      <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
       <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} onOpenReview={openReviewByTask} onSelectAgent={handleSelectAgent} />
       {isMobile && mobilePanel && (
         <div className="mobile-panel-overlay">
@@ -207,7 +205,7 @@ const VibesMissionControl: React.FC = () => {
                 onSelectSlice={handleSelectSlice}
               />
             ) : (
-              <AgentHangarPanel agents={agents} summaries={agentSummaries} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
+              <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
             )}
           </div>
         </div>
