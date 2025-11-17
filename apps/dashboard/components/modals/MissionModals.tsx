@@ -168,13 +168,23 @@ const MODEL_STATUS_LEGEND = [
   { key: "issue", label: "Issue", icon: "\u26A0" },
 ] as const;
 
+const MODEL_TIER_LEGEND = [
+  { key: "web", label: "Web", icon: "W" },
+  { key: "mcp", label: "MCP", icon: "M" },
+  { key: "internal", label: "Internal", icon: "Q" },
+] as const;
+
 const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [tierFilter, setTierFilter] = useState<string | null>(null);
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
   const filteredSummaries = useMemo(() => {
-    if (!statusFilter) return agentSummaries;
-    return agentSummaries.filter((summary) => summary.statusKey === statusFilter);
-  }, [agentSummaries, statusFilter]);
+    return agentSummaries.filter((summary) => {
+      if (statusFilter && summary.statusKey !== statusFilter) return false;
+      if (tierFilter && summary.agent.tierCategory !== tierFilter) return false;
+      return true;
+    });
+  }, [agentSummaries, statusFilter, tierFilter]);
 
   return (
     <div className="mission-modal__section mission-modal__section--sticky model-panel">
@@ -196,18 +206,22 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
           })}
         </div>
         <div className="model-panel__legend-row model-panel__legend-row--badges">
-          <span className="model-panel__legend-badge model-panel__legend-badge--web">
-            <span className="model-panel__legend-badge-icon">W</span>
-            <span>Web</span>
-          </span>
-          <span className="model-panel__legend-badge model-panel__legend-badge--mcp">
-            <span className="model-panel__legend-badge-icon">M</span>
-            <span>MCP</span>
-          </span>
-          <span className="model-panel__legend-badge model-panel__legend-badge--internal">
-            <span className="model-panel__legend-badge-icon">Q</span>
-            <span>Internal</span>
-          </span>
+          {MODEL_TIER_LEGEND.map((tier) => {
+            const isTierActive = tierFilter === tier.key;
+            return (
+              <button
+                key={tier.key}
+                type="button"
+                className={`model-panel__legend-badge model-panel__legend-badge--${tier.key} ${
+                  isTierActive ? "is-active" : ""
+                }`}
+                onClick={() => setTierFilter((prev) => (prev === tier.key ? null : tier.key))}
+              >
+                <span className="model-panel__legend-badge-icon">{tier.icon}</span>
+                <span>{tier.label}</span>
+              </button>
+            );
+          })}
         </div>
       </header>
       <ul className="model-panel__list">

@@ -2370,6 +2370,13 @@ a {
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 999px;
   padding: 4px 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.model-panel__legend-badge.is-active {
+  border-color: rgba(226, 232, 240, 0.4);
+  background: rgba(12, 18, 32, 0.6);
 }
 .model-panel__legend-badge-icon {
   width: 18px;
