@@ -125,13 +125,7 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, reroutedTasks, onSelectS
           </svg>
           <OrbitCenter slice={slice} progress={progress} onClick={() => onSelectSlice(slice)} />
           {orbitPositions.map((position) => (
-            <OrbitNode
-              key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`}
-              position={position}
-              slice={slice}
-              reroutedTasks={reroutedTasks}
-              onSelectAgent={onSelectAgent}
-            />
+            <OrbitNode key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`} position={position} reroutedTasks={reroutedTasks} onSelectAgent={onSelectAgent} />
           ))}
         </div>
       </div>
@@ -166,12 +160,23 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
 
 interface OrbitNodeProps {
   position: OrbitPosition;
-  slice: MissionSlice;
   reroutedTasks: Set<string>;
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
-const OrbitNode: React.FC<OrbitNodeProps> = ({ position, slice, reroutedTasks, onSelectAgent }) => {
+const TASK_STATUS_LABELS: Partial<Record<TaskSnapshot["status"], string>> = {
+  assigned: "Assigned",
+  in_progress: "In Progress",
+  received: "Received",
+  testing: "Testing",
+  supervisor_review: "Needs Review",
+  supervisor_approval: "Supervisor Approval",
+  ready_to_merge: "Ready to Merge",
+  complete: "Completed",
+  blocked: "Blocked",
+};
+
+const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onSelectAgent }) => {
   const { assignment, x, y, angleRad } = position;
   const agent = assignment.agent;
   if (!agent) {
@@ -181,17 +186,11 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, slice, reroutedTasks, o
   const quadrant = Math.cos(angleRad) >= 0 ? "east" : "west";
   const vertical = Math.sin(angleRad) >= 0 ? "south" : "north";
 
-  const agentAssignments = slice.assignments.filter((item) => item.agent?.id === agent.id);
-  const sliceSuccessRate =
-    agentAssignments.length === 0
-      ? null
-      : Math.round(
-          (agentAssignments.filter((item) => item.task.status === "complete" || item.task.status === "ready_to_merge" || item.task.status === "supervisor_approval").length /
-            agentAssignments.length) *
-            100
-        );
   const rerouted = reroutedTasks.has(assignment.task.id);
-  const agentState = describeAgentState(agent.status);
+  const statusLabel = formatTaskStatus(assignment.task.status);
+  const summary =
+    assignment.task.summary ?? assignment.task.packet?.prompt ?? "No assignment summary provided yet.";
+  const truncatedSummary = summary.length > 140 ? `${summary.slice(0, 137)}…` : summary;
 
   return (
     <button
@@ -217,11 +216,10 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, slice, reroutedTasks, o
         {agent.name}
       </span>
       <div className="slice-orbit__intel">
-        <p>
-          Assigned: <strong>{agent.name}</strong> ({agentState})
-        </p>
-        <p>Rerouted? {rerouted ? "Yes" : "No"}</p>
-        <p>Slice success: {sliceSuccessRate !== null ? `${sliceSuccessRate}%` : "N/A"}</p>
+        <p className="slice-orbit__intel-title">{agent.name}</p>
+        <p>Status: {statusLabel}</p>
+        <p>Rerouted: {rerouted ? "Yes" : "No"}</p>
+        <p className="slice-orbit__intel-summary">{truncatedSummary}</p>
       </div>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
@@ -263,13 +261,12 @@ function deriveReroutedTaskIds(events: MissionEvent[]): Set<string> {
   return rerouted;
 }
 
-function describeAgentState(status: string): string {
-  const lower = (status ?? "").toLowerCase();
-  if (lower.includes("cooldown")) return "cooldown";
-  if (lower.includes("credit")) return "credit";
-  if (lower.includes("issue")) return "issue";
-  if (lower.includes("progress") || lower.includes("working") || lower.includes("running") || lower.includes("active")) return "active";
-  return "ready";
+function formatTaskStatus(status: TaskSnapshot["status"]): string {
+  const label = TASK_STATUS_LABELS[status];
+  if (label) {
+    return label;
+  }
+  return status.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 

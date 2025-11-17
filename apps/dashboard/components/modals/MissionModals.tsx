@@ -187,6 +187,15 @@ const MODEL_TIER_LEGEND = [
   { key: "mcp", label: "MCP", icon: "M" },
   { key: "internal", label: "Internal", icon: "Q" },
 ] as const;
+const MODEL_STATUS_META = MODEL_STATUS_LEGEND.reduce<
+  Record<ModelStatusKey, { label: string; icon: string }>
+>(
+  (acc, item) => {
+    acc[item.key] = { label: item.label, icon: item.icon };
+    return acc;
+  },
+  {} as Record<ModelStatusKey, { label: string; icon: string }>
+);
 
 type ModelStatusKey = (typeof MODEL_STATUS_LEGEND)[number]["key"];
 type ModelTierKey = (typeof MODEL_TIER_LEGEND)[number]["key"];
@@ -255,6 +264,7 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
         {filteredSummaries.map((summary) => {
           const contextTokens = summary.effectiveContextTokens ? formatTokenCount(summary.effectiveContextTokens) : null;
           const cooldownLabel = summary.cooldownRemainingLabel ?? summary.agent.cooldownReason ?? "No cooldown";
+          const statusMeta = MODEL_STATUS_META[summary.statusKey as ModelStatusKey] ?? MODEL_STATUS_META.ready;
           return (
             <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
               <div className="model-panel__header">
@@ -269,24 +279,35 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                 </button>
                 <div>
                   <strong>{summary.agent.name}</strong>
-                  <p>{summary.statusLabel}</p>
+                  <div className="model-panel__status">
+                    <span className={`status-dot status-dot--${summary.statusKey}`}>
+                      <span className="status-dot__icon">{statusMeta?.icon}</span>
+                      {statusMeta?.label}
+                    </span>
+                    {summary.primaryTask && (
+                      <span className="model-panel__working">Working on {summary.primaryTask.taskNumber ?? summary.primaryTask.title}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="model-panel__metrics">
-                <p>
-                  Assigned <strong>{summary.assigned}</strong> • Succeeded <strong>{summary.succeeded}</strong> • Failed <strong>{summary.failed}</strong>{" "}
+                <div className="model-panel__stats-row">
+                  <span className="model-panel__stat model-panel__stat--assigned">
+                    Assigned <strong>{summary.assigned}</strong>
+                  </span>
+                  <span className="model-panel__stat model-panel__stat--success">
+                    Succeeded <strong>{summary.succeeded}</strong>
+                  </span>
+                  <span className="model-panel__stat model-panel__stat--failed">
+                    Failed <strong>{summary.failed}</strong>
+                  </span>
                   <span className={`model-panel__success model-panel__success--${summary.statusKey}`}>Success {summary.successRate}%</span>
-                </p>
-                {summary.primaryTask && (
-                  <p className="model-panel__task">
-                    Working • {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
-                  </p>
-                )}
+                </div>
                 <p className="model-panel__context">
-                  Effective Context: <strong>{contextTokens ? `${contextTokens} tokens` : "Unknown"}</strong>
+                  Effective Context: {contextTokens ? `${contextTokens} tokens` : "Unknown"}
                 </p>
                 <p className="model-panel__cooldown">
-                  Cooldown: <strong>{cooldownLabel}</strong>
+                  Cooldown: {cooldownLabel}
                 </p>
                 <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} • Avg response: {summary.avgRuntime}s</p>
               </div>

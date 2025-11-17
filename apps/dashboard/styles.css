@@ -1104,7 +1104,7 @@ a {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
-  z-index: 4;
+  z-index: 12;
 }
 
 .slice-orbit__intel p {
@@ -1113,6 +1113,33 @@ a {
 
 .slice-orbit__node:hover .slice-orbit__intel {
   opacity: 1;
+}
+
+.slice-orbit__intel-title {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slice-orbit__intel-summary {
+  font-size: 0.58rem;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.slice-orbit__node--east .slice-orbit__intel {
+  left: auto;
+  right: -14px;
+  transform: none;
+}
+
+.slice-orbit__node--west .slice-orbit__intel {
+  left: -14px;
+  transform: none;
+}
+
+.slice-orbit__node--north .slice-orbit__intel {
+  top: auto;
+  bottom: calc(100% + 6px);
 }
 
 .slice-orbit__avatar {
@@ -2580,10 +2607,51 @@ a {
   color: rgba(226, 232, 240, 0.82);
 }
 
+.model-panel__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.model-panel__working {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+}
+
 .model-panel__context,
 .model-panel__cooldown {
   font-size: 0.68rem;
   color: rgba(226, 232, 240, 0.7);
+}
+
+.model-panel__stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.model-panel__stat {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.model-panel__stat--assigned {
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.model-panel__stat--success {
+  color: var(--status-ready);
+}
+
+.model-panel__stat--failed {
+  color: var(--status-issue);
 }
 
 .model-panel__recent-activity {
@@ -6213,6 +6281,21 @@ a {
   display: block !important;
   max-height: 60vh;
   overflow-y: auto;
+}
+
+.mobile-panel-overlay .agent-chip {
+  width: 100%;
+  padding: 16px 0;
+}
+
+.mobile-panel-overlay .agent-chip__logo {
+  margin: 0 auto 28px;
+}
+
+.mobile-panel-overlay .agent-chip__status {
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -65%);
 }
 
 .review-panel {
