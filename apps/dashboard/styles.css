@@ -1410,6 +1410,10 @@ a {
   gap: 12px;
 }
 
+.mission-modal__section--sticky .mission-log-list {
+  padding-top: 12px;
+}
+
 .mission-log-list li {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -2700,6 +2704,12 @@ a {
 
 .model-panel__recent-item--empty {
   color: rgba(148, 163, 184, 0.6);
+}
+
+.model-panel__success {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .model-panel__success--issue {
