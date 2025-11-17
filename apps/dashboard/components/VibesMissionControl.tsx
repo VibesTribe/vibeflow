@@ -183,7 +183,7 @@ const VibesMissionControl: React.FC = () => {
             </div>
           </div>
         )}
-        <SliceHub slices={slices} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
+        <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
       </main>
       <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
       <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} onOpenReview={openReviewByTask} />

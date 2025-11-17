@@ -1,7 +1,8 @@
 import { AgentSnapshot, TaskSnapshot, TaskStatus } from "@core/types";
-import { MissionEvent } from "../../../src/utils/events";
 import { SLICE_BLUEPRINTS, SliceBlueprint } from "../config/slices";
 import { resolveProviderIcon } from "./icons";
+
+export type AgentCreditStatus = "available" | "low" | "depleted" | "unknown";
 
 export interface MissionAgent {
   id: string;
@@ -13,6 +14,59 @@ export interface MissionAgent {
   cooldownReason?: string | null;
   costPerRunUsd?: number;
   tierCategory: "web" | "mcp" | "internal";
+  vendor?: string;
+  capability?: string;
+  contextWindowTokens?: number;
+  effectiveContextWindowTokens?: number;
+  cooldownExpiresAt?: string | null;
+  creditStatus?: AgentCreditStatus;
+  rateLimitWindowSeconds?: number | null;
+  costPer1kTokensUsd?: number;
+  warnings?: string[];
+}
+
+export interface AgentRecentTask {
+  id: string;
+  title: string;
+  taskNumber?: string;
+  status: TaskStatus;
+  runtimeSeconds?: number;
+  outcome: "success" | "fail" | "active";
+  updatedAt?: string;
+  sliceName?: string;
+}
+
+export interface AgentLiveAssignment {
+  taskId: string;
+  title: string;
+  sliceName?: string;
+  status: TaskStatus;
+  summary?: string;
+}
+
+export interface AgentRoutingDecision {
+  id: string;
+  timestamp: string;
+  direction: "from" | "to" | "retry" | "validation";
+  label: string;
+  reason?: string;
+}
+
+export interface AgentTokenStats {
+  today: number;
+  lifetime: number;
+  average: number;
+  peak: number;
+}
+
+export interface AgentPerformanceStats {
+  avgRuntime: number;
+  p95Runtime: number;
+  contextWindow?: number;
+  effectiveContextWindow?: number;
+  costPerRunUsd?: number;
+  costPer1kTokensUsd?: number;
+  rateLimitWindowSeconds?: number | null;
 }
 
 export interface SliceAssignment {
@@ -131,6 +185,15 @@ export function mapAgent(agent: AgentSnapshot): MissionAgent {
     cooldownReason: agent.cooldownReason ?? null,
     costPerRunUsd: agent.costPerRunUsd,
     tierCategory,
+    vendor: agent.vendor,
+    capability: agent.capability ?? agent.summary,
+    contextWindowTokens: agent.contextWindowTokens,
+    effectiveContextWindowTokens: agent.effectiveContextWindowTokens,
+    cooldownExpiresAt: agent.cooldownExpiresAt ?? null,
+    creditStatus: agent.creditStatus ?? "unknown",
+    rateLimitWindowSeconds: agent.rateLimitWindowSeconds ?? null,
+    costPer1kTokensUsd: agent.costPer1kTokensUsd,
+    warnings: agent.warnings ?? [],
   };
 }
 

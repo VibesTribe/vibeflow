@@ -14,7 +14,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/openai.svg",
       "tier": "W",
       "cooldownReason": null,
-      "costPerRunUsd": 0.22
+      "costPerRunUsd": 0.22,
+      "vendor": "OpenAI",
+      "contextWindowTokens": 200000,
+      "effectiveContextWindowTokens": 150000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 60,
+      "costPer1kTokensUsd": 1.25,
+      "warnings": []
     },
     {
       "id": "agent.gemini",
@@ -25,7 +33,17 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/google-gemini.svg",
       "tier": "M",
       "cooldownReason": "Waiting on long-context rerank budget",
-      "costPerRunUsd": 0.19
+      "costPerRunUsd": 0.19,
+      "vendor": "Google",
+      "contextWindowTokens": 1000000,
+      "effectiveContextWindowTokens": 640000,
+      "cooldownExpiresAt": "2025-10-31T05:25:00Z",
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 45,
+      "costPer1kTokensUsd": 1.1,
+      "warnings": [
+        "Long-context rerank budget is in cooldown"
+      ]
     },
     {
       "id": "agent.deepseek",
@@ -36,7 +54,17 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/deepseek.svg",
       "tier": "Q",
       "cooldownReason": "Requesting additional GPU quota",
-      "costPerRunUsd": 0.11
+      "costPerRunUsd": 0.11,
+      "vendor": "DeepSeek",
+      "contextWindowTokens": 320000,
+      "effectiveContextWindowTokens": 220000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "low",
+      "rateLimitWindowSeconds": 30,
+      "costPer1kTokensUsd": 0.9,
+      "warnings": [
+        "Requesting additional GPU quota"
+      ]
     },
     {
       "id": "agent.roo",
@@ -47,7 +75,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/vscode.svg",
       "tier": "M",
       "cooldownReason": null,
-      "costPerRunUsd": 0.07
+      "costPerRunUsd": 0.07,
+      "vendor": "Vercel",
+      "contextWindowTokens": 128000,
+      "effectiveContextWindowTokens": 92000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 20,
+      "costPer1kTokensUsd": 0.6,
+      "warnings": []
     },
     {
       "id": "agent.cursor",
@@ -58,7 +94,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/cursor.svg",
       "tier": "M",
       "cooldownReason": null,
-      "costPerRunUsd": 0.05
+      "costPerRunUsd": 0.05,
+      "vendor": "Cursor",
+      "contextWindowTokens": 96000,
+      "effectiveContextWindowTokens": 60000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 25,
+      "costPer1kTokensUsd": 0.55,
+      "warnings": []
     },
     {
       "id": "agent.cline",
@@ -69,7 +113,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/cli.svg",
       "tier": "Q",
       "cooldownReason": null,
-      "costPerRunUsd": 0.03
+      "costPerRunUsd": 0.03,
+      "vendor": "Cline",
+      "contextWindowTokens": 60000,
+      "effectiveContextWindowTokens": 40000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 15,
+      "costPer1kTokensUsd": 0.4,
+      "warnings": []
     },
     {
       "id": "agent.inductor",
@@ -80,7 +132,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/code.svg",
       "tier": "Q",
       "cooldownReason": null,
-      "costPerRunUsd": 0.02
+      "costPerRunUsd": 0.02,
+      "vendor": "Open Source",
+      "contextWindowTokens": 32000,
+      "effectiveContextWindowTokens": 24000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 30,
+      "costPer1kTokensUsd": 0.2,
+      "warnings": []
     },
     {
       "id": "agent.claude",
@@ -91,7 +151,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/anthropic.svg",
       "tier": "M",
       "cooldownReason": null,
-      "costPerRunUsd": 0.27
+      "costPerRunUsd": 0.27,
+      "vendor": "Anthropic",
+      "contextWindowTokens": 200000,
+      "effectiveContextWindowTokens": 150000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 35,
+      "costPer1kTokensUsd": 1.35,
+      "warnings": []
     },
     {
       "id": "agent.mistral",
@@ -102,7 +170,15 @@
       "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/mistral.svg",
       "tier": "Q",
       "cooldownReason": null,
-      "costPerRunUsd": 0.13
+      "costPerRunUsd": 0.13,
+      "vendor": "Mistral",
+      "contextWindowTokens": 160000,
+      "effectiveContextWindowTokens": 120000,
+      "cooldownExpiresAt": null,
+      "creditStatus": "available",
+      "rateLimitWindowSeconds": 40,
+      "costPer1kTokensUsd": 0.95,
+      "warnings": []
     }
   ],
   "slices": [

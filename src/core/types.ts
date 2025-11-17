@@ -67,6 +67,15 @@ export interface AgentSnapshot {
   tier?: string;
   cooldownReason?: string | null;
   costPerRunUsd?: number;
+  vendor?: string;
+  capability?: string;
+  contextWindowTokens?: number;
+  effectiveContextWindowTokens?: number;
+  cooldownExpiresAt?: string | null;
+  creditStatus?: "available" | "low" | "depleted" | "unknown";
+  rateLimitWindowSeconds?: number | null;
+  costPer1kTokensUsd?: number;
+  warnings?: string[];
 }
 
 export interface FailureSnapshot {
