@@ -1,4 +1,5 @@
 import { AgentSnapshot, TaskSnapshot, TaskStatus } from "@core/types";
+import { MissionEvent } from "../../../src/utils/events";
 import { SLICE_BLUEPRINTS, SliceBlueprint } from "../config/slices";
 import { resolveProviderIcon } from "./icons";
 
