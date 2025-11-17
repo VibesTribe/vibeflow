@@ -21,6 +21,7 @@ export type MissionModalState =
   | { type: "roi" }
   | { type: "agent"; agent: MissionAgent }
   | { type: "slice"; slice: MissionSlice }
+  | { type: "assignment"; assignment: SliceAssignment; slice: MissionSlice }
   | { type: "add" };
 
 interface MissionModalsProps {
@@ -86,6 +87,8 @@ const SLICE_FILTER_META: Record<
   },
 };
 
+const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
+
 const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview }) => {
   if (modal.type === null) {
     return null;
@@ -110,6 +113,9 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       break;
     case "slice":
       content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
+      break;
+    case "assignment":
+      content = <AssignmentDetails assignment={modal.assignment} slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
       break;
     case "add":
       content = <AddAgentForm onClose={onClose} />;
@@ -891,6 +897,240 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   );
 };
 
+const AssignmentDetails: React.FC<{
+  assignment: SliceAssignment;
+  slice: MissionSlice;
+  events: MissionEvent[];
+  onOpenReview?: (taskId: string) => void;
+}> = ({ assignment, slice, events, onOpenReview }) => {
+  const task = assignment.task;
+  const agent = assignment.agent;
+  const sortedEvents = useMemo(
+    () =>
+      events
+        .filter((event) => event.taskId === task.id)
+        .slice()
+        .sort((a, b) => new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf()),
+    [events, task.id]
+  );
+  const activityLogs = useMemo(() => sortedEvents.slice(0, 32), [sortedEvents]);
+  const routingEvents = useMemo(
+    () => sortedEvents.filter((event) => ROUTING_EVENT_TYPES.has(event.type)).slice(0, 3),
+    [sortedEvents]
+  );
+  const warningEvents = useMemo(
+    () =>
+      sortedEvents
+        .filter((event) => {
+          const category = deriveLogCategory(event);
+          return category === "warning" || category === "error";
+        })
+        .slice(0, 2),
+    [sortedEvents]
+  );
+  const statusHistory = useMemo(() => {
+    const history = sortedEvents
+      .map((event) => {
+        if (event.type !== "status_change" || !event.details) {
+          return null;
+        }
+        const details = event.details as Record<string, unknown>;
+        const next = typeof details["to"] === "string" ? (details["to"] as string) : null;
+        if (!next) return null;
+        return {
+          id: event.id,
+          label: formatStatusLabel(next),
+          timestamp: new Date(event.timestamp).toLocaleString(),
+        };
+      })
+      .filter((entry): entry is { id: string; label: string; timestamp: string } => Boolean(entry))
+      .slice(0, 5);
+    if (history.length === 0) {
+      history.push({ id: task.id, label: formatStatusLabel(task.status), timestamp: new Date(task.updatedAt).toLocaleString() });
+    }
+    return history;
+  }, [sortedEvents, task.id, task.status, task.updatedAt]);
+  const warningMessages = useMemo(() => {
+    const messages = warningEvents.map((event) => ({
+      id: event.id,
+      message: extractEventMessage(event) ?? event.reasonCode ?? formatEventLabel(event.type),
+      timestamp: new Date(event.timestamp).toLocaleString(),
+    }));
+    if (assignment.isBlocking) {
+      messages.unshift({
+        id: `${task.id}-blocking`,
+        message: "Marked blocking — requires attention before proceeding.",
+        timestamp: new Date(task.updatedAt).toLocaleString(),
+      });
+    }
+    return messages;
+  }, [warningEvents, assignment.isBlocking, task.id, task.updatedAt]);
+
+  const statusMeta = resolveStatusMeta(task.status);
+  const updatedAt = new Date(task.updatedAt).toLocaleString();
+  const tokensUsed = task.metrics?.tokensUsed;
+  const runtimeSeconds = task.metrics?.runtimeSeconds;
+  const showReviewAction = Boolean(onOpenReview && (task.status === "supervisor_review" || task.status === "supervisor_approval"));
+
+  return (
+    <div className="mission-modal__section assignment-detail">
+      <header className="assignment-detail__header">
+        <div>
+          <p className="assignment-detail__eyebrow">{slice.name}</p>
+          <h3>{task.taskNumber ?? task.title}</h3>
+          <p className="assignment-detail__summary">{task.summary ?? task.packet?.prompt ?? "No task summary provided yet."}</p>
+        </div>
+        <div className="assignment-detail__status">
+          <span className="assignment-detail__status-pill" style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}>
+            <span aria-hidden="true">{statusMeta.icon}</span> {statusMeta.label}
+          </span>
+          {agent && (
+            <div className="assignment-detail__agent">
+              <span>{agent.name}</span>
+              <small>{formatStatusLabel(agent.status)}</small>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <section className="assignment-detail__section">
+        <header>
+          <h4>Current Progress</h4>
+        </header>
+        <dl className="assignment-detail__stats">
+          <div>
+            <dt>Status</dt>
+            <dd>{formatStatusLabel(task.status)}</dd>
+          </div>
+          <div>
+            <dt>Updated</dt>
+            <dd>{updatedAt}</dd>
+          </div>
+          <div>
+            <dt>Tokens used</dt>
+            <dd>{tokensUsed !== undefined ? tokensUsed.toLocaleString() : "Unknown"}</dd>
+          </div>
+          <div>
+            <dt>Runtime</dt>
+            <dd>{runtimeSeconds !== undefined ? `${runtimeSeconds}s` : "n/a"}</dd>
+          </div>
+          <div>
+            <dt>Rerouted</dt>
+            <dd>{routingEvents.length > 0 ? "Yes" : "No"}</dd>
+          </div>
+          <div>
+            <dt>Blocking</dt>
+            <dd>{assignment.isBlocking ? "Yes" : "No"}</dd>
+          </div>
+          {agent?.rateLimitWindowSeconds !== undefined && (
+            <div>
+              <dt>Rate limit window</dt>
+              <dd>{agent.rateLimitWindowSeconds ? `${agent.rateLimitWindowSeconds}s` : "Not provided"}</dd>
+            </div>
+          )}
+          {agent?.costPer1kTokensUsd !== undefined && (
+            <div>
+              <dt>Cost / 1k tokens</dt>
+              <dd>{agent.costPer1kTokensUsd ? `$${agent.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</dd>
+            </div>
+          )}
+        </dl>
+      </section>
+
+      <section className="assignment-detail__section">
+        <header>
+          <h4>Status Timeline</h4>
+        </header>
+        <ul className="assignment-detail__history">
+          {statusHistory.map((entry) => (
+            <li key={entry.id}>
+              <strong>{entry.label}</strong>
+              <span>{entry.timestamp}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="assignment-detail__section">
+        <header>
+          <h4>Routing</h4>
+        </header>
+        <ul className="assignment-detail__routing">
+          {routingEvents.length > 0 ? (
+            routingEvents.map((event) => (
+              <li key={event.id}>
+                <span className={`agent-routing__badge agent-routing__badge--${event.type === "validation" ? "validation" : event.type === "retry" || event.type === "reroute" ? "retry" : "to"}`}>
+                  {formatEventLabel(event.type)}
+                </span>
+                <div>
+                  <p>{extractEventMessage(event) ?? event.reasonCode ?? "Routing update"}</p>
+                  <small>{new Date(event.timestamp).toLocaleString()}</small>
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="assignment-detail__empty">No routing decisions yet.</li>
+          )}
+        </ul>
+      </section>
+
+      <section className="assignment-detail__section">
+        <header>
+          <h4>Warnings & Issues</h4>
+        </header>
+        {warningMessages.length > 0 ? (
+          <ul className="assignment-detail__warnings">
+            {warningMessages.map((entry) => (
+              <li key={entry.id}>
+                <strong>{entry.timestamp}</strong>
+                <p>{entry.message}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="assignment-detail__empty">No warnings reported for this task.</p>
+        )}
+      </section>
+
+      <section className="assignment-detail__section">
+        <header>
+          <h4>Activity</h4>
+        </header>
+        <ul className="mission-log-list assignment-detail__log">
+          {activityLogs.length > 0 ? (
+            activityLogs.map((event) => {
+              const category = deriveLogCategory(event);
+              return (
+                <li key={event.id}>
+                  <span className={`mission-log__bullet mission-log__bullet--${category}`} />
+                  <div className="mission-log__entry">
+                    <div className="mission-log__header">
+                      <strong>{formatEventLabel(event.type)}</strong>
+                      <span>{new Date(event.timestamp).toLocaleString()}</span>
+                      <span className="mission-log__category">{formatLogCategory(category)}</span>
+                    </div>
+                    {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
+                  </div>
+                </li>
+              );
+            })
+          ) : (
+            <li>No activity recorded for this task yet.</li>
+          )}
+        </ul>
+      </section>
+
+      {showReviewAction && onOpenReview && (
+        <div className="assignment-detail__actions">
+          <button type="button" className="mission-button mission-button--primary" onClick={() => onOpenReview(task.id)}>
+            Open Review
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const TaskDetail: React.FC<{
   task: TaskSnapshot;
   assignment: SliceAssignment | null;
@@ -1336,8 +1576,6 @@ function buildAgentIntel(agent: MissionAgent, slices: MissionSlice[], events: Mi
     creditStatus: agent.creditStatus ?? "unknown",
   };
 }
-
-const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
 function buildRoutingHistory(agent: MissionAgent, events: MissionEvent[]): AgentRoutingDecision[] {
   return events

@@ -7,7 +7,7 @@ import SliceHub from "./SliceHub";
 import ReviewPanel from "./ReviewPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
-import { MissionAgent, MissionSlice } from "../utils/mission";
+import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
 import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
@@ -82,6 +82,10 @@ const VibesMissionControl: React.FC = () => {
   const handleOpenRoi = () => setModal({ type: "roi" });
   const handleOpenAdd = () => setModal({ type: "add" });
   const handleSelectAgent = (agent: MissionAgent) => setModal({ type: "agent", agent });
+  const handleOpenAssignmentDetail = useCallback((assignment: SliceAssignment, slice: MissionSlice) => {
+    setModal({ type: "assignment", assignment, slice });
+  }, []);
+  const handleOpenAssignmentDetail = (assignment: SliceAssignment, slice: MissionSlice) => setModal({ type: "assignment", assignment, slice });
   const handleSelectSlice = (slice: MissionSlice) => setModal({ type: "slice", slice });
   const handleCloseModal = () => setModal({ type: null });
   const handleOpenMobilePanel = (panel: MobilePanelView) => setMobilePanel(panel);
@@ -183,7 +187,7 @@ const VibesMissionControl: React.FC = () => {
             </div>
           </div>
         )}
-        <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onSelectAgent={handleSelectAgent} />
+        <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
       <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
       <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} onOpenReview={openReviewByTask} />
