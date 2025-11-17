@@ -174,10 +174,21 @@ const MODEL_TIER_LEGEND = [
   { key: "internal", label: "Internal", icon: "Q" },
 ] as const;
 
+type ModelStatusKey = (typeof MODEL_STATUS_LEGEND)[number]["key"];
+type ModelTierKey = (typeof MODEL_TIER_LEGEND)[number]["key"];
+
 const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [tierFilter, setTierFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<ModelStatusKey | null>(null);
+  const [tierFilter, setTierFilter] = useState<ModelTierKey | null>(null);
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
+  const toggleStatusFilter = useCallback(
+    (nextKey: ModelStatusKey) => setStatusFilter((prev) => (prev === nextKey ? null : nextKey)),
+    []
+  );
+  const toggleTierFilter = useCallback(
+    (nextTier: ModelTierKey) => setTierFilter((prev) => (prev === nextTier ? null : nextTier)),
+    []
+  );
   const filteredSummaries = useMemo(() => {
     return agentSummaries.filter((summary) => {
       if (statusFilter && summary.statusKey !== statusFilter) return false;
@@ -197,7 +208,8 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                 key={item.key}
                 type="button"
                 className={`status-dot status-dot--${item.key} ${isActive ? "is-active" : ""}`}
-                onClick={() => setStatusFilter((prev) => (prev === item.key ? null : item.key))}
+                onClick={() => toggleStatusFilter(item.key)}
+                aria-pressed={isActive}
               >
                 <span className="status-dot__icon">{item.icon}</span>
                 {item.label}
@@ -215,7 +227,8 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
                 className={`model-panel__legend-badge model-panel__legend-badge--${tier.key} ${
                   isTierActive ? "is-active" : ""
                 }`}
-                onClick={() => setTierFilter((prev) => (prev === tier.key ? null : tier.key))}
+                onClick={() => toggleTierFilter(tier.key)}
+                aria-pressed={isTierActive}
               >
                 <span className="model-panel__legend-badge-icon">{tier.icon}</span>
                 <span>{tier.label}</span>
@@ -228,7 +241,15 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
         {filteredSummaries.map((summary) => (
           <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
             <div className="model-panel__header">
-              <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
+              <button
+                type="button"
+                className={`model-panel__tier-toggle ${tierFilter === summary.agent.tierCategory ? "is-active" : ""}`}
+                onClick={() => toggleTierFilter(summary.agent.tierCategory)}
+                aria-label={`Filter ${summary.agent.tierCategory} agents`}
+                aria-pressed={tierFilter === summary.agent.tierCategory}
+              >
+                <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
+              </button>
               <div>
                 <strong>{summary.agent.name}</strong>
                 <p>{summary.statusLabel}</p>
@@ -831,11 +852,22 @@ function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events:
 }
 
 function normalizeStatus(status: string) {
-  const lower = status.toLowerCase();
+  const lower = (status ?? "").toLowerCase().trim();
   if (lower.includes("credit")) return "credit";
-  if (lower.includes("cooldown")) return "cooldown";
+  if (lower.includes("cooldown") || lower.includes("cool down")) return "cooldown";
   if (lower.includes("issue") || lower.includes("error") || lower.includes("blocked")) return "issue";
-  if (lower.includes("working") || lower.includes("in_progress") || lower.includes("running")) return "ready";
+  if (
+    lower.includes("active") ||
+    lower.includes("in_progress") ||
+    lower.includes("in progress") ||
+    lower.includes("working") ||
+    lower.includes("running") ||
+    lower.includes("received") ||
+    lower.includes("receiving") ||
+    lower.includes("processing")
+  ) {
+    return "active";
+  }
   return "ready";
 }
 

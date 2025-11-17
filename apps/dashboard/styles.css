@@ -2417,6 +2417,10 @@ a {
   padding-top: 8px;
   margin-top: 8px;
 }
+.mission-modal--models .model-panel {
+  padding-top: 0;
+  margin-top: 0;
+}
 
 @media (max-width: 900px) {
   .model-panel__legend {
@@ -2490,6 +2494,11 @@ a {
   display: grid;
   gap: 8px;
 }
+.model-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
 .model-panel__item--cooldown {
   border-color: rgba(96, 165, 250, 0.35);
@@ -2501,6 +2510,25 @@ a {
 
 .model-panel__item--issue {
   border-color: rgba(248, 113, 113, 0.35);
+}
+.model-panel__tier-toggle {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  cursor: pointer;
+}
+.model-panel__tier-toggle:focus-visible {
+  outline: 2px solid rgba(148, 163, 184, 0.45);
+  border-radius: 999px;
+  outline-offset: 2px;
+}
+.model-panel__tier-toggle .agent-pill__tier {
+  position: static;
+}
+.model-panel__tier-toggle.is-active .agent-pill__tier {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.45);
 }
 
 .model-panel__metrics p {
@@ -5355,12 +5383,12 @@ a {
 }
 
 .mission-modal--models {
-  padding-top: 20px;
+  padding-top: 0;
 }
 
 .mission-modal--models .mission-modal__close {
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: auto;
 }
 
 @media (max-width: 900px) {
