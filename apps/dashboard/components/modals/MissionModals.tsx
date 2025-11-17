@@ -1,6 +1,16 @@
 import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MissionEvent } from "../../../../src/utils/events";
-import { MissionAgent, MissionSlice, SliceAssignment } from "../../utils/mission";
+import {
+  AgentCreditStatus,
+  AgentLiveAssignment,
+  AgentPerformanceStats,
+  AgentRecentTask,
+  AgentRoutingDecision,
+  AgentTokenStats,
+  MissionAgent,
+  MissionSlice,
+  SliceAssignment,
+} from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 
 export type MissionModalState =
@@ -144,12 +154,16 @@ const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
       {events.slice(0, 40).map((event) => {
         const detailMessage = extractEventMessage(event);
         const eventLabel = formatEventLabel(event.type);
+        const category = deriveLogCategory(event);
         return (
           <li key={event.id}>
-            <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
-            <div>
-              <strong>{eventLabel}</strong>
-              <span>{new Date(event.timestamp).toLocaleString()}</span>
+            <span className={`mission-log__bullet mission-log__bullet--${category}`} />
+            <div className="mission-log__entry">
+              <div className="mission-log__header">
+                <strong>{eventLabel}</strong>
+                <span>{new Date(event.timestamp).toLocaleString()}</span>
+                <span className="mission-log__category">{formatLogCategory(category)}</span>
+              </div>
               {detailMessage && <p>{detailMessage}</p>}
             </div>
           </li>
@@ -238,38 +252,64 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }
         </div>
       </header>
       <ul className="model-panel__list">
-        {filteredSummaries.map((summary) => (
-          <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
-            <div className="model-panel__header">
-              <button
-                type="button"
-                className={`model-panel__tier-toggle ${tierFilter === summary.agent.tierCategory ? "is-active" : ""}`}
-                onClick={() => toggleTierFilter(summary.agent.tierCategory)}
-                aria-label={`Filter ${summary.agent.tierCategory} agents`}
-                aria-pressed={tierFilter === summary.agent.tierCategory}
-              >
-                <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
-              </button>
-              <div>
-                <strong>{summary.agent.name}</strong>
-                <p>{summary.statusLabel}</p>
+        {filteredSummaries.map((summary) => {
+          const contextTokens = summary.effectiveContextTokens ? formatTokenCount(summary.effectiveContextTokens) : null;
+          const cooldownLabel = summary.cooldownRemainingLabel ?? summary.agent.cooldownReason ?? "No cooldown";
+          return (
+            <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
+              <div className="model-panel__header">
+                <button
+                  type="button"
+                  className={`model-panel__tier-toggle ${tierFilter === summary.agent.tierCategory ? "is-active" : ""}`}
+                  onClick={() => toggleTierFilter(summary.agent.tierCategory)}
+                  aria-label={`Filter ${summary.agent.tierCategory} agents`}
+                  aria-pressed={tierFilter === summary.agent.tierCategory}
+                >
+                  <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
+                </button>
+                <div>
+                  <strong>{summary.agent.name}</strong>
+                  <p>{summary.statusLabel}</p>
+                </div>
               </div>
-            </div>
-            <div className="model-panel__metrics">
-              <p>
-                Assigned <strong>{summary.assigned}</strong> � Succeeded <strong>{summary.succeeded}</strong> � Failed <strong>{summary.failed}</strong>{ }
-                <span className={`model-panel__success model-panel__success--${summary.statusKey}`}>Success {summary.successRate}%</span>
-              </p>
-              {summary.primaryTask && (
-                <p className="model-panel__task">
-                  Working � {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
+              <div className="model-panel__metrics">
+                <p>
+                  Assigned <strong>{summary.assigned}</strong> • Succeeded <strong>{summary.succeeded}</strong> • Failed <strong>{summary.failed}</strong>{" "}
+                  <span className={`model-panel__success model-panel__success--${summary.statusKey}`}>Success {summary.successRate}%</span>
                 </p>
-              )}
+                {summary.primaryTask && (
+                  <p className="model-panel__task">
+                    Working • {summary.primaryTask.taskNumber ?? summary.primaryTask.title}
+                  </p>
+                )}
+                <p className="model-panel__context">
+                  Effective Context: <strong>{contextTokens ? `${contextTokens} tokens` : "Unknown"}</strong>
+                </p>
+                <p className="model-panel__cooldown">
+                  Cooldown: <strong>{cooldownLabel}</strong>
+                </p>
+                <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} • Avg response: {summary.avgRuntime}s</p>
+              </div>
+              <div className="model-panel__recent-activity">
+                <p>Recent Activity</p>
+                <ul>
+                  {summary.recentTasks.length > 0 ? (
+                    summary.recentTasks.map((task) => (
+                      <li key={task.id} className={`model-panel__recent-item model-panel__recent-item--${task.outcome}`}>
+                        <span>{task.taskNumber ?? task.title}</span>
+                        <span>{task.sliceName ?? "Slice"}</span>
+                        <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="model-panel__recent-item model-panel__recent-item--empty">No activity logged.</li>
+                  )}
+                </ul>
+              </div>
               {summary.agent.cooldownReason && <p className="model-panel__hint">{summary.agent.cooldownReason}</p>}
-              <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} � Avg response: {summary.avgRuntime}s</p>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
         {agentSummaries.length === 0 && <li className="model-panel__empty">No agents registered.</li>}
       </ul>
     </div>
@@ -325,46 +365,236 @@ const RoiPanel: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = (
 };
 const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[] }> = ({ agent, events, slices }) => {
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
+  const intel = useMemo(() => buildAgentIntel(agent, slices, events), [agent, slices, events]);
+  const [showLog, setShowLog] = useState(false);
+  const statusKey = normalizeStatus(agent.status);
 
   return (
     <div className="mission-modal__section agent-panel">
-      <header className="agent-panel__header">
+      <header className="agent-panel__hero">
         <div>
+          <p className="agent-panel__eyebrow">Section A — Basic Info</p>
           <h3>{agent.name}</h3>
           <p>{agent.summary ?? "No summary provided."}</p>
         </div>
-        <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+        <div className="agent-panel__hero-badges">
+          <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+          <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{agent.status}</span>
+        </div>
       </header>
-      <dl className="agent-panel__stats">
-        <div>
-          <dt>Status</dt>
-          <dd>{agent.status}</dd>
-        </div>
-        <div>
-          <dt>Current tasks</dt>
-          <dd>{timeline.activeAssignments.length}</dd>
-        </div>
-        <div>
-          <dt>Success rate</dt>
-          <dd>{timeline.successRate}%</dd>
-        </div>
-        <div>
-          <dt>Tokens used</dt>
-          <dd>{timeline.tokensUsed.toLocaleString()}</dd>
-        </div>
-      </dl>
-      <div className="agent-panel__timeline">
-        {timeline.entries.map((entry) => (
-          <article key={entry.id} className={`agent-panel__event agent-panel__event--${entry.kind}`}>
-            <header>
-              <span>{entry.label}</span>
-              <time>{entry.timestamp}</time>
-            </header>
-            <p>{entry.message}</p>
-          </article>
-        ))}
-        {timeline.entries.length === 0 && <p>No recent activity for this agent.</p>}
-      </div>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Basic Info</h4>
+        </header>
+        <dl className="agent-detail__grid">
+          <div>
+            <dt>Vendor</dt>
+            <dd>{agent.vendor ?? "Unknown"}</dd>
+          </div>
+          <div>
+            <dt>Capability</dt>
+            <dd>{agent.capability ?? agent.summary ?? "N/A"}</dd>
+          </div>
+          <div>
+            <dt>Tier</dt>
+            <dd>{agent.tier}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>State</h4>
+        </header>
+        <dl className="agent-detail__grid agent-detail__grid--state">
+          <div>
+            <dt>Current status</dt>
+            <dd>{agent.status}</dd>
+          </div>
+          <div>
+            <dt>Cooldown</dt>
+            <dd>{intel.cooldownRemaining ?? agent.cooldownReason ?? "None"}</dd>
+          </div>
+          <div>
+            <dt>Credit</dt>
+            <dd>{intel.creditStatus ?? "unknown"}</dd>
+          </div>
+          <div>
+            <dt>Rate limit window</dt>
+            <dd>
+              {intel.performance.rateLimitWindowSeconds
+                ? `${intel.performance.rateLimitWindowSeconds}s`
+                : agent.rateLimitWindowSeconds
+                  ? `${agent.rateLimitWindowSeconds}s`
+                  : "Not provided"}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Live Task</h4>
+        </header>
+        {intel.liveAssignment ? (
+          <dl className="agent-detail__grid agent-detail__grid--tasks">
+            <div>
+              <dt>Task</dt>
+              <dd>{intel.liveAssignment.title ?? intel.liveAssignment.taskId}</dd>
+            </div>
+            <div>
+              <dt>Slice</dt>
+              <dd>{intel.liveAssignment.sliceName ?? "Unknown slice"}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>{intel.liveAssignment.status}</dd>
+            </div>
+            <div className="agent-detail__grid-span">
+              <dt>Reason assigned</dt>
+              <dd>{intel.liveAssignment.summary ?? "Assignment summary unavailable."}</dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="agent-detail__empty">This model is not currently assigned.</p>
+        )}
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Recent Routing</h4>
+        </header>
+        <ul className="agent-routing">
+          {intel.routingHistory.length > 0 ? (
+            intel.routingHistory.map((entry) => (
+              <li key={entry.id}>
+                <span className={`agent-routing__badge agent-routing__badge--${entry.direction}`}>{entry.direction}</span>
+                <div>
+                  <p>{entry.label}</p>
+                  <small>{entry.reason ?? "No reason provided"}</small>
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="agent-detail__empty">No routing decisions recorded.</li>
+          )}
+        </ul>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Recent Tasks</h4>
+        </header>
+        <ul className="agent-recent">
+          {intel.recentTasks.length > 0 ? (
+            intel.recentTasks.map((task) => (
+              <li key={task.id} className={`agent-recent__item agent-recent__item--${task.outcome}`}>
+                <strong>{task.taskNumber ?? task.title}</strong>
+                <span>{task.sliceName ?? "Unknown slice"}</span>
+                <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
+                <span className="agent-recent__status">{task.status}</span>
+              </li>
+            ))
+          ) : (
+            <li className="agent-detail__empty">No tasks recorded for this agent.</li>
+          )}
+        </ul>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Performance & Limits</h4>
+        </header>
+        <dl className="agent-detail__grid">
+          <div>
+            <dt>Context window</dt>
+            <dd>{intel.performance.contextWindow ? `${formatTokenCount(intel.performance.contextWindow)} tokens` : "Unknown"}</dd>
+          </div>
+          <div>
+            <dt>Effective context</dt>
+            <dd>{intel.performance.effectiveContextWindow ? `${formatTokenCount(intel.performance.effectiveContextWindow)} tokens` : "Unknown"}</dd>
+          </div>
+          <div>
+            <dt>Avg runtime</dt>
+            <dd>{intel.performance.avgRuntime}s</dd>
+          </div>
+          <div>
+            <dt>p95 latency</dt>
+            <dd>{intel.performance.p95Runtime}s</dd>
+          </div>
+          <div>
+            <dt>Cost / run</dt>
+            <dd>{intel.performance.costPerRunUsd ? `$${intel.performance.costPerRunUsd.toFixed(2)}` : "Unknown"}</dd>
+          </div>
+          <div>
+            <dt>Cost / 1k tokens</dt>
+            <dd>{intel.performance.costPer1kTokensUsd ? `$${intel.performance.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Token Stats</h4>
+        </header>
+        <dl className="agent-detail__grid">
+          <div>
+            <dt>Tokens today</dt>
+            <dd>{intel.tokenStats.today.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>Tokens lifetime</dt>
+            <dd>{intel.tokenStats.lifetime.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>Avg tokens / task</dt>
+            <dd>{intel.tokenStats.average.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>Peak tokens / task</dt>
+            <dd>{intel.tokenStats.peak.toLocaleString()}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="agent-detail__section">
+        <header>
+          <h4>Warnings</h4>
+        </header>
+        {intel.warnings.length > 0 ? (
+          <ul className="agent-warnings">
+            {intel.warnings.slice(0, 2).map((warning) => (
+              <li key={warning}>{warning}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="agent-detail__empty">No warnings reported.</p>
+        )}
+      </section>
+
+      <section className="agent-detail__section">
+        <header className="agent-detail__section-header">
+          <h4>Full Activity Log</h4>
+          <button type="button" className="agent-detail__toggle" onClick={() => setShowLog((prev) => !prev)}>
+            {showLog ? "Hide log" : "Show log"}
+          </button>
+        </header>
+        {showLog && (
+          <div className="agent-panel__timeline">
+            {timeline.entries.map((entry) => (
+              <article key={entry.id} className={`agent-panel__event agent-panel__event--${entry.kind}`}>
+                <header>
+                  <span>{entry.label}</span>
+                  <time>{entry.timestamp}</time>
+                </header>
+                <p>{entry.message}</p>
+              </article>
+            ))}
+            {timeline.entries.length === 0 && <p>No recent activity for this agent.</p>}
+          </div>
+        )}
+      </section>
     </div>
   );
 };
@@ -778,16 +1008,31 @@ const AddAgentForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
-function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]) {
+interface AgentAssignmentRecord {
+  assignment: SliceAssignment;
+  slice: MissionSlice;
+}
+
+interface AgentSummaryRecord {
+  agent: MissionAgent;
+  assigned: number;
+  succeeded: number;
+  failed: number;
+  successRate: number;
+  tokensUsed: number;
+  avgRuntime: number;
+  primaryTask: TaskSnapshot | null;
+  statusKey: string;
+  statusLabel: string;
+  recentTasks: AgentRecentTask[];
+  cooldownRemainingLabel: string | null;
+  effectiveContextTokens?: number;
+}
+
+function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]): AgentSummaryRecord[] {
   return agents.map((agent) => {
-    const assignments: SliceAssignment[] = [];
-    slices.forEach((slice) => {
-      slice.assignments.forEach((assignment) => {
-        if (assignment.agent?.id === agent.id) {
-          assignments.push(assignment);
-        }
-      });
-    });
+    const assignmentRecords = collectAgentAssignments(agent, slices);
+    const assignments = assignmentRecords.map((record) => record.assignment);
 
     const assigned = assignments.length;
     const succeeded = assignments.filter((assignment) => isCompleted(assignment.task.status)).length;
@@ -815,19 +1060,16 @@ function buildAgentSummaries(agents: MissionAgent[], slices: MissionSlice[]) {
       primaryTask,
       statusKey,
       statusLabel,
+      recentTasks: buildRecentTasks(assignmentRecords),
+      cooldownRemainingLabel: calculateCooldownRemaining(agent),
+      effectiveContextTokens: agent.effectiveContextWindowTokens ?? agent.contextWindowTokens,
     };
   });
 }
 
 function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events: MissionEvent[]) {
-  const assignments: SliceAssignment[] = [];
-  slices.forEach((slice) => {
-    slice.assignments.forEach((assignment) => {
-      if (assignment.agent?.id === agent.id) {
-        assignments.push(assignment);
-      }
-    });
-  });
+  const assignmentRecords = collectAgentAssignments(agent, slices);
+  const assignments = assignmentRecords.map((record) => record.assignment);
 
   const taskIds = new Set(assignments.map((assignment) => assignment.task.id));
   const timelineEvents = events
@@ -849,6 +1091,68 @@ function buildAgentTimeline(agent: MissionAgent, slices: MissionSlice[], events:
     successRate,
     tokensUsed,
   };
+}
+
+function collectAgentAssignments(agent: MissionAgent, slices: MissionSlice[]): AgentAssignmentRecord[] {
+  const records: AgentAssignmentRecord[] = [];
+  slices.forEach((slice) => {
+    slice.assignments.forEach((assignment) => {
+      if (assignment.agent?.id === agent.id) {
+        records.push({ assignment, slice });
+      }
+    });
+  });
+  return records;
+}
+
+function buildRecentTasks(records: AgentAssignmentRecord[]): AgentRecentTask[] {
+  return records
+    .slice()
+    .sort((a, b) => {
+      const aDate = new Date(a.assignment.task.updatedAt ?? 0).valueOf();
+      const bDate = new Date(b.assignment.task.updatedAt ?? 0).valueOf();
+      return bDate - aDate;
+    })
+    .slice(0, 5)
+    .map(({ assignment, slice }) => {
+      const status = assignment.task.status;
+      const outcome = isCompleted(status) ? "success" : assignment.isBlocking ? "fail" : "active";
+      return {
+        id: assignment.task.id,
+        title: assignment.task.title ?? "Untitled task",
+        taskNumber: assignment.task.taskNumber,
+        status,
+        runtimeSeconds: assignment.task.metrics?.runtimeSeconds,
+        outcome,
+        updatedAt: assignment.task.updatedAt,
+        sliceName: slice.name,
+      };
+    });
+}
+
+function calculateCooldownRemaining(agent: MissionAgent): string | null {
+  if (!agent.cooldownExpiresAt) {
+    return null;
+  }
+  const target = new Date(agent.cooldownExpiresAt).valueOf();
+  const now = Date.now();
+  if (Number.isNaN(target) || target <= now) {
+    return "Ready";
+  }
+  return formatRelativeDuration(target - now);
+}
+
+function formatRelativeDuration(ms: number) {
+  const minutes = Math.floor(ms / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) {
+    return `${days}d ${hours % 24}h`;
+  }
+  if (hours > 0) {
+    return `${hours}h ${minutes % 60}m`;
+  }
+  return `${Math.max(1, minutes)}m`;
 }
 
 function normalizeStatus(status: string) {
@@ -905,11 +1209,55 @@ function extractEventMessage(event: MissionEvent): string | null {
   return null;
 }
 
+type MissionLogCategory = "note" | "success" | "warning" | "route" | "validation" | "retry" | "error";
+
 function formatEventLabel(value?: string) {
   if (!value) return "Update";
   return value
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function deriveLogCategory(event: MissionEvent): MissionLogCategory {
+  const type = event.type.toLowerCase();
+  if (type.includes("route")) {
+    return "route";
+  }
+  if (type.includes("validation") || type.includes("validator")) {
+    return "validation";
+  }
+  if (type.includes("retry") || type.includes("reroute")) {
+    return "retry";
+  }
+  if (event.reasonCode?.startsWith("E/") || type === "failure") {
+    return "error";
+  }
+  if (type === "warning") {
+    return "warning";
+  }
+  if (type === "note") {
+    return "note";
+  }
+  return "success";
+}
+
+function formatLogCategory(category: MissionLogCategory) {
+  switch (category) {
+    case "route":
+      return "Route";
+    case "validation":
+      return "Validation";
+    case "retry":
+      return "Retry";
+    case "warning":
+      return "Warning";
+    case "note":
+      return "Note";
+    case "error":
+      return "Error";
+    default:
+      return "Success";
+  }
 }
 
 function isCompleted(status: TaskSnapshot["status"]) {
@@ -924,6 +1272,133 @@ function formatTokenCount(value: number): string {
     return `${Math.round(value / 1_000)}K`;
   }
   return value.toLocaleString();
+}
+
+interface AgentIntelBundle {
+  liveAssignment: AgentLiveAssignment | null;
+  recentTasks: AgentRecentTask[];
+  routingHistory: AgentRoutingDecision[];
+  tokenStats: AgentTokenStats;
+  performance: AgentPerformanceStats;
+  warnings: string[];
+  cooldownRemaining: string | null;
+  creditStatus: AgentCreditStatus;
+}
+
+function buildAgentIntel(agent: MissionAgent, slices: MissionSlice[], events: MissionEvent[]): AgentIntelBundle {
+  const assignmentRecords = collectAgentAssignments(agent, slices);
+  const assignments = assignmentRecords.map((record) => record.assignment);
+  const liveAssignmentRecord = assignmentRecords.find((record) => ACTIVE_STATUSES.has(record.assignment.task.status));
+  return {
+    liveAssignment: liveAssignmentRecord
+      ? {
+          taskId: liveAssignmentRecord.assignment.task.id,
+          title: liveAssignmentRecord.assignment.task.taskNumber ?? liveAssignmentRecord.assignment.task.title,
+          sliceName: liveAssignmentRecord.slice.name,
+          status: liveAssignmentRecord.assignment.task.status,
+          summary: liveAssignmentRecord.assignment.task.summary ?? liveAssignmentRecord.assignment.task.packet?.prompt,
+        }
+      : null,
+    recentTasks: buildRecentTasks(assignmentRecords),
+    routingHistory: buildRoutingHistory(agent, events),
+    tokenStats: deriveTokenStats(assignments),
+    performance: derivePerformanceStats(assignments, agent),
+    warnings: deriveAgentWarnings(agent, assignmentRecords, events),
+    cooldownRemaining: calculateCooldownRemaining(agent),
+    creditStatus: agent.creditStatus ?? "unknown",
+  };
+}
+
+const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
+
+function buildRoutingHistory(agent: MissionAgent, events: MissionEvent[]): AgentRoutingDecision[] {
+  return events
+    .filter((event) => ROUTING_EVENT_TYPES.has(event.type))
+    .filter((event) => {
+      const details = event.details ?? {};
+      const toAgent = typeof details?.["toAgent"] === "string" ? (details["toAgent"] as string) : null;
+      const fromAgent = typeof details?.["fromAgent"] === "string" ? (details["fromAgent"] as string) : null;
+      const agentId = typeof details?.["agentId"] === "string" ? (details["agentId"] as string) : null;
+      return toAgent === agent.id || fromAgent === agent.id || agentId === agent.id;
+    })
+    .slice(0, 3)
+    .map((event) => {
+      const details = event.details ?? {};
+      const toAgent = typeof details?.["toAgent"] === "string" ? (details["toAgent"] as string) : null;
+      const fromAgent = typeof details?.["fromAgent"] === "string" ? (details["fromAgent"] as string) : null;
+      const direction: AgentRoutingDecision["direction"] =
+        event.type === "validation" ? "validation" : event.type === "retry" || event.type === "reroute" ? "retry" : fromAgent === agent.id ? "from" : "to";
+      const label =
+        typeof details?.["label"] === "string"
+          ? (details["label"] as string)
+          : direction === "from"
+            ? `Routed from ${details?.["fromProvider"] ?? fromAgent ?? "unknown"}`
+            : direction === "validation"
+              ? "Validator check"
+              : `Routed to ${details?.["toProvider"] ?? toAgent ?? "unknown"}`;
+      const reason = typeof details?.["reason"] === "string" ? (details["reason"] as string) : details?.["message"] ? String(details["message"]) : undefined;
+      return {
+        id: event.id,
+        timestamp: event.timestamp,
+        direction,
+        label,
+        reason,
+      };
+    });
+}
+
+function deriveTokenStats(assignments: SliceAssignment[]): AgentTokenStats {
+  const todayCutoff = Date.now() - 24 * 60 * 60 * 1000;
+  const lifetime = assignments.reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+  const today = assignments
+    .filter((assignment) => {
+      const updated = assignment.task.updatedAt ? new Date(assignment.task.updatedAt).valueOf() : 0;
+      return updated >= todayCutoff;
+    })
+    .reduce((sum, assignment) => sum + (assignment.task.metrics?.tokensUsed ?? 0), 0);
+  const peak = assignments.reduce((max, assignment) => Math.max(max, assignment.task.metrics?.tokensUsed ?? 0), 0);
+  const average = assignments.length === 0 ? 0 : Math.round(lifetime / assignments.length);
+  return { today, lifetime, peak, average };
+}
+
+function derivePerformanceStats(assignments: SliceAssignment[], agent: MissionAgent): AgentPerformanceStats {
+  const runtimes = assignments
+    .map((assignment) => assignment.task.metrics?.runtimeSeconds)
+    .filter((value): value is number => typeof value === "number");
+  const avgRuntime = runtimes.length === 0 ? 0 : Math.round(runtimes.reduce((sum, value) => sum + value, 0) / runtimes.length);
+  const p95Runtime =
+    runtimes.length === 0
+      ? 0
+      : (() => {
+          const sorted = runtimes.slice().sort((a, b) => a - b);
+          const index = Math.min(sorted.length - 1, Math.floor(sorted.length * 0.95));
+          return sorted[index];
+        })();
+  return {
+    avgRuntime,
+    p95Runtime,
+    contextWindow: agent.contextWindowTokens,
+    effectiveContextWindow: agent.effectiveContextWindowTokens ?? agent.contextWindowTokens,
+    costPerRunUsd: agent.costPerRunUsd,
+    costPer1kTokensUsd: agent.costPer1kTokensUsd,
+    rateLimitWindowSeconds: agent.rateLimitWindowSeconds ?? null,
+  };
+}
+
+function deriveAgentWarnings(agent: MissionAgent, records: AgentAssignmentRecord[], events: MissionEvent[]): string[] {
+  const warnings = new Set<string>();
+  (agent.warnings ?? []).forEach((warning) => warnings.add(warning));
+  if (agent.cooldownReason) {
+    warnings.add(agent.cooldownReason);
+  }
+  const taskIds = new Set(records.map((record) => record.assignment.task.id));
+  events
+    .filter((event) => event.type === "warning" && taskIds.has(event.taskId))
+    .forEach((event) => {
+      const message = extractEventMessage(event) ?? event.reasonCode ?? "Warning reported";
+      warnings.add(message);
+    });
+  return Array.from(warnings).slice(0, 4);
 }
 
 

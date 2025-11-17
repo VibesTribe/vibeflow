@@ -2,6 +2,7 @@ import React, { CSSProperties, useMemo } from "react";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
 import { TaskSnapshot } from "@core/types";
 import { FALLBACK_ICON } from "../utils/icons";
+import { MissionEvent } from "../../../src/utils/events";
 
 const ACTIVE_STATUSES = new Set([
   "assigned",
@@ -21,17 +22,19 @@ const MAX_ORBIT_AGENTS = 8;
 
 interface SliceHubProps {
   slices: MissionSlice[];
+  events: MissionEvent[];
   onSelectSlice: (slice: MissionSlice) => void;
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
-const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgent }) => {
+const SliceHub: React.FC<SliceHubProps> = ({ slices, events, onSelectSlice, onSelectAgent }) => {
   const orderedSlices = useMemo(() => {
     if (slices.length === 0) {
       return [];
     }
     return slices.slice().sort((a, b) => b.active - a.active || b.total - a.total);
   }, [slices]);
+  const reroutedTasks = useMemo(() => deriveReroutedTaskIds(events), [events]);
 
   if (orderedSlices.length === 0) {
     return (
@@ -45,7 +48,7 @@ const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgen
     <section className="slice-hub">
       <div className="slice-hub__grid">
         {orderedSlices.map((slice) => (
-          <SliceOrbit key={slice.id} slice={slice} onSelectSlice={onSelectSlice} onSelectAgent={onSelectAgent} />
+          <SliceOrbit key={slice.id} slice={slice} reroutedTasks={reroutedTasks} onSelectSlice={onSelectSlice} onSelectAgent={onSelectAgent} />
         ))}
       </div>
     </section>
@@ -54,6 +57,7 @@ const SliceHub: React.FC<SliceHubProps> = ({ slices, onSelectSlice, onSelectAgen
 
 interface SliceOrbitProps {
   slice: MissionSlice;
+  reroutedTasks: Set<string>;
   onSelectSlice: (slice: MissionSlice) => void;
   onSelectAgent: (agent: MissionAgent) => void;
 }
@@ -68,7 +72,7 @@ type OrbitPosition = {
   startY: number;
 };
 
-const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectAgent }) => {
+const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, reroutedTasks, onSelectSlice, onSelectAgent }) => {
   const progress = slice.total === 0 ? 0 : Math.min(100, Math.round((slice.completed / slice.total) * 100));
 
   const orbitAssignments = useMemo(() => buildOrbitAssignments(slice), [slice]);
@@ -121,7 +125,13 @@ const SliceOrbit: React.FC<SliceOrbitProps> = ({ slice, onSelectSlice, onSelectA
           </svg>
           <OrbitCenter slice={slice} progress={progress} onClick={() => onSelectSlice(slice)} />
           {orbitPositions.map((position) => (
-            <OrbitNode key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`} position={position} onSelectAgent={onSelectAgent} />
+            <OrbitNode
+              key={`${position.assignment.task.id}-${position.assignment.agent?.id ?? "node"}`}
+              position={position}
+              slice={slice}
+              reroutedTasks={reroutedTasks}
+              onSelectAgent={onSelectAgent}
+            />
           ))}
         </div>
       </div>
@@ -156,10 +166,12 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
 
 interface OrbitNodeProps {
   position: OrbitPosition;
+  slice: MissionSlice;
+  reroutedTasks: Set<string>;
   onSelectAgent: (agent: MissionAgent) => void;
 }
 
-const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
+const OrbitNode: React.FC<OrbitNodeProps> = ({ position, slice, reroutedTasks, onSelectAgent }) => {
   const { assignment, x, y, angleRad } = position;
   const agent = assignment.agent;
   if (!agent) {
@@ -168,6 +180,18 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
 
   const quadrant = Math.cos(angleRad) >= 0 ? "east" : "west";
   const vertical = Math.sin(angleRad) >= 0 ? "south" : "north";
+
+  const agentAssignments = slice.assignments.filter((item) => item.agent?.id === agent.id);
+  const sliceSuccessRate =
+    agentAssignments.length === 0
+      ? null
+      : Math.round(
+          (agentAssignments.filter((item) => item.task.status === "complete" || item.task.status === "ready_to_merge" || item.task.status === "supervisor_approval").length /
+            agentAssignments.length) *
+            100
+        );
+  const rerouted = reroutedTasks.has(assignment.task.id);
+  const agentState = describeAgentState(agent.status);
 
   return (
     <button
@@ -192,6 +216,13 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, onSelectAgent }) => {
       <span className="slice-orbit__model" aria-hidden="true">
         {agent.name}
       </span>
+      <div className="slice-orbit__intel">
+        <p>
+          Assigned: <strong>{agent.name}</strong> ({agentState})
+        </p>
+        <p>Rerouted? {rerouted ? "Yes" : "No"}</p>
+        <p>Slice success: {sliceSuccessRate !== null ? `${sliceSuccessRate}%` : "N/A"}</p>
+      </div>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
   );
@@ -220,6 +251,26 @@ function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
 }
 
 export default SliceHub;
+
+function deriveReroutedTaskIds(events: MissionEvent[]): Set<string> {
+  const rerouted = new Set<string>();
+  events.forEach((event) => {
+    const type = event.type.toLowerCase();
+    if ((type.includes("route") || type.includes("retry")) && event.taskId) {
+      rerouted.add(event.taskId);
+    }
+  });
+  return rerouted;
+}
+
+function describeAgentState(status: string): string {
+  const lower = (status ?? "").toLowerCase();
+  if (lower.includes("cooldown")) return "cooldown";
+  if (lower.includes("credit")) return "credit";
+  if (lower.includes("issue")) return "issue";
+  if (lower.includes("progress") || lower.includes("working") || lower.includes("running") || lower.includes("active")) return "active";
+  return "ready";
+}
 
 
 

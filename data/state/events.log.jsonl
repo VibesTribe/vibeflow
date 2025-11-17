@@ -4,3 +4,6 @@
 {"id":"evt-004","taskId":"task-205","type":"note","timestamp":"2025-10-31T04:50:00Z","details":{"message":"Claude QC noted flakiness in endpoint smoke tests"}}
 {"id":"evt-005","taskId":"task-203","type":"note","timestamp":"2025-10-31T04:58:00Z","details":{"message":"Auth audit flagged missing MFA path"}}
 {"id":"evt-006","taskId":"task-206","type":"success","timestamp":"2025-10-31T05:05:00Z","details":{"message":"Mission dispatch rollout plan ready to merge"}}
+{"id":"evt-007","taskId":"task-205","type":"route","timestamp":"2025-10-31T05:08:00Z","details":{"fromAgent":"agent.deepseek","toAgent":"agent.gpt5","reason":"credit_needed","fromProvider":"DeepSeek","toProvider":"GPT-5 Turbo"}}
+{"id":"evt-008","taskId":"task-206","type":"validation","timestamp":"2025-10-31T05:09:30Z","details":{"agentId":"agent.gpt5","reason":"schema_validation","message":"Validator confirmed structured output"}}
+{"id":"evt-009","taskId":"task-210","type":"retry","timestamp":"2025-10-31T05:11:00Z","details":{"fromAgent":"agent.cursor","toAgent":"agent.cline","reason":"runtime exceeded 120s"}}
