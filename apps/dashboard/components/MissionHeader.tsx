@@ -299,11 +299,11 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               data-active={activePill === pill.key ? "true" : "false"}
               onClick={() => setActivePill((prev) => (prev === pill.key ? null : pill.key))}
             >
-              <span className="mission-header__stat-label">{pill.label}</span>
-              <span className="mission-header__stat-value-row">
+              <span className="mission-header__stat-inline">
                 <span className="mission-header__stat-icon" aria-hidden="true">
                   {pill.icon}
                 </span>
+                <span className="mission-header__stat-label">{pill.label}</span>
                 <strong className="mission-header__stat-value">{pill.value}</strong>
               </span>
             </button>
@@ -315,8 +315,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
             onClick={onOpenTokens}
           >
-            <span className="mission-header__stat-label">Tokens</span>
-            <strong className="mission-header__stat-value">{formattedTokens}</strong>
+            <span className="mission-header__stat-inline">
+              <span className="mission-header__stat-label">Tokens</span>
+              <strong className="mission-header__stat-value">{formattedTokens}</strong>
+            </span>
           </button>
         </div>
         {activeDetail && (
@@ -434,10 +436,21 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         >
           <div className="mission-progress__header">
             <div className="mission-progress__label">Project tasks &amp; progress</div>
-            <span className="mission-progress__value">{progress}%</span>
-            <span className="mission-header__timestamp mission-progress__timestamp" aria-label="Last snapshot time">
-              {snapshotTime}
-            </span>
+            <div className="mission-progress__meta">
+              <span className="mission-progress__value">{progress}%</span>
+              <span className="mission-header__timestamp mission-progress__timestamp" aria-label="Last snapshot time">
+                {snapshotTime}
+              </span>
+              <button
+                type="button"
+                className="mission-progress__tokens-inline"
+                onClick={onOpenTokens}
+                aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
+              >
+                <strong>{formattedTokens}</strong>
+                <span>tokens</span>
+              </button>
+            </div>
           </div>
           <div className="mission-progress__track">
             <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
