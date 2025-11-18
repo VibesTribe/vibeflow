@@ -1342,10 +1342,16 @@ a {
   top: 0;
 }
 
-.mission-modal__close {
+.mission-modal__controls {
   position: sticky;
-  top: 16px;
-  align-self: flex-end;
+  top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  z-index: 20;
+}
+
+.mission-modal__close {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -1357,9 +1363,6 @@ a {
 }
 
 .mission-modal__back {
-  position: sticky;
-  top: 16px;
-  align-self: flex-start;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(8, 12, 24, 0.7);
   color: rgba(248, 250, 252, 0.85);

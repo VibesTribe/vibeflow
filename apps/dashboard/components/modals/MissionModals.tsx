@@ -143,14 +143,16 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
   return (
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
       <div className={`mission-modal ${modal.type === "models" ? "mission-modal--models" : ""}`} ref={modalRef}>
-        {canShowBackControl && (
-          <button type="button" className="mission-modal__back" onClick={onShowModels}>
-            {"\u2190"} Back
+        <div className="mission-modal__controls">
+          {canShowBackControl && (
+            <button type="button" className="mission-modal__back" onClick={onShowModels}>
+              {"\u2190"} Back
+            </button>
+          )}
+          <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
+            {"\u00D7"}
           </button>
-        )}
-        <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
-          {"\u00D7"}
-        </button>
+        </div>
         {content}
       </div>
     </div>
