@@ -2583,8 +2583,15 @@ a {
   gap: 16px;
 }
 
+.model-panel__legend-row--badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .model-panel__legend-actions {
-  margin-top: 12px;
+  margin-left: auto;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;

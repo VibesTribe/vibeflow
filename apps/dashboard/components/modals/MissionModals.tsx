@@ -281,20 +281,20 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
               </button>
             );
           })}
-        </div>
-        <div className="model-panel__legend-actions">
-          <button type="button" className="model-panel__action model-panel__action--primary" onClick={clearFilters}>
-            View All
-          </button>
-          <button
-            type="button"
-            className="model-panel__action"
-            onClick={clearFilters}
-            disabled={!hasFilters}
-            aria-disabled={!hasFilters}
-          >
-            Clear Filters
-          </button>
+          <div className="model-panel__legend-actions">
+            <button type="button" className="model-panel__action model-panel__action--primary" onClick={clearFilters}>
+              View All
+            </button>
+            <button
+              type="button"
+              className="model-panel__action"
+              onClick={clearFilters}
+              disabled={!hasFilters}
+              aria-disabled={!hasFilters}
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
       </header>
       <ul className="model-panel__list">
