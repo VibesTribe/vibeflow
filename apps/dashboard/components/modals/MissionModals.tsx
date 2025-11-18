@@ -923,6 +923,13 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
   );
 };
 
+type WarningMessage = {
+  id: string;
+  message: string;
+  timestamp: string;
+  category: MissionLogCategory;
+};
+
 const AssignmentDetails: React.FC<{
   assignment: SliceAssignment;
   slice: MissionSlice;
@@ -940,10 +947,7 @@ const AssignmentDetails: React.FC<{
     [events, task.id]
   );
   const activityLogs = useMemo(() => sortedEvents.slice(0, 32), [sortedEvents]);
-  const routingEvents = useMemo(
-    () => sortedEvents.filter((event) => ROUTING_EVENT_TYPES.has(event.type)).slice(0, 3),
-    [sortedEvents]
-  );
+  const wasRerouted = useMemo(() => sortedEvents.some((event) => ROUTING_EVENT_TYPES.has(event.type)), [sortedEvents]);
   const warningEvents = useMemo(
     () =>
       sortedEvents
@@ -954,17 +958,19 @@ const AssignmentDetails: React.FC<{
         .slice(0, 2),
     [sortedEvents]
   );
-  const warningMessages = useMemo(() => {
+  const warningMessages = useMemo<WarningMessage[]>(() => {
     const messages = warningEvents.map((event) => ({
       id: event.id,
       message: extractEventMessage(event) ?? event.reasonCode ?? formatEventLabel(event.type),
       timestamp: new Date(event.timestamp).toLocaleString(),
+      category: deriveLogCategory(event),
     }));
     if (assignment.isBlocking) {
       messages.unshift({
         id: `${task.id}-blocking`,
         message: "Marked blocking — requires attention before proceeding.",
         timestamp: new Date(task.updatedAt).toLocaleString(),
+        category: "warning",
       });
     }
     return messages;
@@ -1032,7 +1038,7 @@ const AssignmentDetails: React.FC<{
         </div>
         <div className="assignment-detail__row">
           <span className="assignment-detail__label">Rerouted</span>
-          <span>{routingEvents.length > 0 ? "Yes" : "No"}</span>
+          <span>{wasRerouted ? "Yes" : "No"}</span>
         </div>
         <div className="assignment-detail__row">
           <span className="assignment-detail__label">Blocking</span>
@@ -1040,65 +1046,46 @@ const AssignmentDetails: React.FC<{
         </div>
       </section>
 
-      <section className="assignment-detail__section assignment-detail__section--inline">
-        <header>
-          <h4>Routing</h4>
-        </header>
-        <ul className="assignment-detail__routing">
-          {routingEvents.length > 0 ? (
-            routingEvents.map((event) => (
-              <li key={event.id}>
-                <span className={`agent-routing__badge agent-routing__badge--${event.type === "validation" ? "validation" : event.type === "retry" || event.type === "reroute" ? "retry" : "to"}`}>
-                  {formatEventLabel(event.type)}
-                </span>
-                <div>
-                  <p>{extractEventMessage(event) ?? event.reasonCode ?? "Routing update"}</p>
-                  <small>{new Date(event.timestamp).toLocaleString()}</small>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="assignment-detail__empty">No routing decisions yet.</li>
-          )}
-        </ul>
-      </section>
-
-      <section className="assignment-detail__section assignment-detail__section--inline">
-        <header>
-          <h4>Warnings & Issues</h4>
-        </header>
-        {warningMessages.length > 0 ? (
-          <ul className="assignment-detail__warnings">
-            {warningMessages.map((entry) => (
-              <li key={entry.id}>
-                <strong>{entry.timestamp}</strong>
-                <p>{entry.message}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="assignment-detail__empty">No warnings reported for this task.</p>
-        )}
-      </section>
-
       <section className="assignment-detail__section">
         <header>
           <h4>Activity</h4>
         </header>
+        {warningMessages.length > 0 && (
+          <div className="assignment-detail__activity-warnings">
+            {warningMessages.map((entry) => (
+              <article key={entry.id} className={`assignment-detail__activity-warning assignment-detail__activity-warning--${entry.category}`}>
+                <div>
+                  <strong>{entry.message}</strong>
+                  <small>{entry.timestamp}</small>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
         <ul className="mission-log-list assignment-detail__log">
           {activityLogs.length > 0 ? (
             activityLogs.map((event) => {
               const category = deriveLogCategory(event);
+              const summary = extractEventMessage(event) ?? event.reasonCode ?? null;
+              const participants = deriveEventParticipants(event);
               return (
                 <li key={event.id}>
                   <span className={`mission-log__bullet mission-log__bullet--${category}`} />
                   <div className="mission-log__entry">
-                    <div className="mission-log__header">
-                      <strong>{formatEventLabel(event.type)}</strong>
-                      <span>{new Date(event.timestamp).toLocaleString()}</span>
-                      <span className="mission-log__category">{formatLogCategory(category)}</span>
+                    <div className="mission-log__headline">
+                      <strong className={`mission-log__title mission-log__title--${category}`}>{formatEventLabel(event.type)}</strong>
+                      {summary && <span className="mission-log__summary">. {summary}</span>}
                     </div>
-                    {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
+                    {participants.length > 0 && (
+                      <div className="mission-log__participants">
+                        {participants.map((participant) => (
+                          <span key={`${event.id}-${participant}`} className="mission-log__participant">
+                            {participant}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <span className="mission-log__timestamp">{new Date(event.timestamp).toLocaleString()}</span>
                   </div>
                 </li>
               );
@@ -1341,6 +1328,42 @@ function deriveLogCategory(event: MissionEvent): MissionLogCategory {
     return "note";
   }
   return "success";
+}
+
+function deriveEventParticipants(event: MissionEvent): string[] {
+  if (!event.details) {
+    return [];
+  }
+  const details = event.details as Record<string, unknown>;
+  const participants = new Set<string>();
+  const from = readDetailString(details, ["fromRole", "fromProvider", "fromAgent", "previousAgent", "sourceAgent"]);
+  const to = readDetailString(details, ["toRole", "toProvider", "toAgent", "nextAgent", "targetAgent"]);
+  if (from || to) {
+    const fromLabel = formatStatusLabel(from ?? "Previous agent");
+    const toLabel = to ? formatStatusLabel(to) : null;
+    participants.add(toLabel ? `${fromLabel} -> ${toLabel}` : fromLabel);
+  }
+  const actorKeys = ["agentRole", "role", "agent", "agentName", "agentId", "assignedAgent", "supervisor", "planner", "watcher", "tester", "orchestrator"];
+  actorKeys.forEach((key) => {
+    const value = readDetailString(details, [key]);
+    if (value) {
+      participants.add(formatStatusLabel(value));
+    }
+  });
+  return Array.from(participants);
+}
+
+function readDetailString(details: Record<string, unknown>, keys: string[]): string | null {
+  for (const key of keys) {
+    const raw = details[key];
+    if (typeof raw === "string") {
+      const trimmed = raw.trim();
+      if (trimmed.length > 0) {
+        return trimmed;
+      }
+    }
+  }
+  return null;
 }
 
 function formatLogCategory(category: MissionLogCategory) {
