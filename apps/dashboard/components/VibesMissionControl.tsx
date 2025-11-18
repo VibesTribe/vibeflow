@@ -189,7 +189,16 @@ const VibesMissionControl: React.FC = () => {
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
       <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
-      <MissionModals modal={modal} onClose={handleCloseModal} events={events} agents={agents} slices={slices} onOpenReview={openReviewByTask} onSelectAgent={handleSelectAgent} />
+      <MissionModals
+        modal={modal}
+        onClose={handleCloseModal}
+        events={events}
+        agents={agents}
+        slices={slices}
+        onOpenReview={openReviewByTask}
+        onSelectAgent={handleSelectAgent}
+        onShowModels={handleOpenModels}
+      />
       {isMobile && mobilePanel && (
         <div className="mobile-panel-overlay">
           <button type="button" className="mobile-panel-overlay__close" aria-label="Close panel" onClick={handleCloseMobilePanel}>
