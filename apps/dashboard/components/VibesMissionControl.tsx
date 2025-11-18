@@ -205,17 +205,19 @@ const VibesMissionControl: React.FC = () => {
             {"\u00D7"}
           </button>
           <div className="mobile-panel-overlay__body">
-            {mobilePanel === "slices" ? (
-              <SliceDockPanel
-                slices={slices}
-                loading={loading.snapshot}
-                onViewDocs={handleOpenDocs}
-                onViewLogs={handleOpenLogs}
-                onSelectSlice={handleSelectSlice}
-              />
-            ) : (
-              <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
-            )}
+            <div className="mobile-panel-overlay__content" data-panel={mobilePanel}>
+              {mobilePanel === "slices" ? (
+                <SliceDockPanel
+                  slices={slices}
+                  loading={loading.snapshot}
+                  onViewDocs={handleOpenDocs}
+                  onViewLogs={handleOpenLogs}
+                  onSelectSlice={handleSelectSlice}
+                />
+              ) : (
+                <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
+              )}
+            </div>
           </div>
         </div>
       )}
