@@ -497,13 +497,11 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         <p className="agent-panel__eyebrow">Model snapshot</p>
         <div className="agent-panel__title-row">
           {agent.icon && <img src={agent.icon} alt={`${agent.name} logo`} className="agent-panel__logo" />}
-          <div className="agent-panel__title-text">
-            <h3>{agent.name}</h3>
-            <p className="agent-panel__summary">{agent.summary ?? agent.capability ?? "No summary provided."}</p>
-          </div>
+          <h3 className="agent-panel__title">{agent.name}</h3>
           <span className={`agent-panel__tier-pill agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
           <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{formatStatusLabel(agent.status)}</span>
         </div>
+        <p className="agent-panel__summary">{agent.summary ?? agent.capability ?? "No summary provided."}</p>
       </header>
 
       <div className="agent-panel__lines">
