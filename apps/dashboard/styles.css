@@ -2870,14 +2870,8 @@ a {
 .agent-panel__title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
-}
-
-.agent-panel__title-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .agent-panel__logo {
@@ -2889,16 +2883,13 @@ a {
   background: rgba(8, 12, 24, 0.6);
 }
 
-.agent-panel__title-text h3 {
+.agent-panel__title {
   margin: 0;
-}
-
-.agent-panel__title-text h3 {
-  margin: 0;
+  font-size: 1.4rem;
 }
 
 .agent-panel__summary {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: rgba(226, 232, 240, 0.85);
   max-width: 480px;
 }
