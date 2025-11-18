@@ -6952,7 +6952,10 @@ a {
 }
 
 .mobile-panel-overlay .rail__scroll {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
   max-height: 60vh;
   overflow-y: auto;
 }
