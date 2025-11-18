@@ -66,7 +66,8 @@ function resolveStatusMeta(status?: TaskStatus | null): HeaderStatusMeta {
 
 function formatTokenCount(value: number): string {
   if (value >= 1_000_000) {
-    return `${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}M`;
+    const precise = value / 1_000_000;
+    return `${Number.isInteger(precise) ? precise.toFixed(0) : precise.toFixed(1)}M`;
   }
   if (value >= 10_000) {
     return `${Math.round(value / 1_000)}K`;
@@ -266,6 +267,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     return task.status.replace(/_/g, " ");
   };
 
+  const formattedTokens = useMemo(() => formatTokenCount(tokenUsage), [tokenUsage]);
+
   return (
     <header className="mission-header">
       <div className="mission-header__identity">
@@ -285,16 +288,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       </div>
       <div className="mission-header__content">
         <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
-          <button
-            type="button"
-            className="mission-header__stat-pill mission-header__stat-pill--tokens"
-            title="Open ROI + token usage"
-            aria-label={`Open ROI + token usage: ${tokenUsage.toLocaleString()} tokens`}
-            onClick={onOpenTokens}
-          >
-            <span className="mission-header__stat-label">Tokens</span>
-            <strong className="mission-header__stat-value">{tokenUsage.toLocaleString()}</strong>
-          </button>
           {pills.map((pill) => (
             <button
               key={pill.key}
@@ -315,6 +308,16 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               </span>
             </button>
           ))}
+          <button
+            type="button"
+            className="mission-header__stat-pill mission-header__stat-pill--tokens"
+            title="Open ROI + token usage"
+            aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
+            onClick={onOpenTokens}
+          >
+            <span className="mission-header__stat-label">Tokens</span>
+            <strong className="mission-header__stat-value">{formattedTokens}</strong>
+          </button>
         </div>
         {activeDetail && (
           <div className="mission-header__pill-detail" role="region" aria-live="polite">
