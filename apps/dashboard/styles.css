@@ -6972,6 +6972,17 @@ a {
   box-sizing: border-box;
 }
 
+.mobile-panel-overlay .rail__header {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-panel-overlay .rail__button {
+  width: min(320px, 100%);
+}
+
 .mobile-panel-overlay .agent-chip {
   width: min(320px, 100%);
   padding: 16px 0;
@@ -7391,6 +7402,17 @@ a {
   align-items: center;
   padding-right: 0;
   box-sizing: border-box;
+}
+
+.mobile-panel-overlay .rail__header {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-panel-overlay .rail__button {
+  width: min(320px, 100%);
 }
 
 .mobile-panel-overlay .slice-dial {
