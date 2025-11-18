@@ -39,6 +39,7 @@ interface MissionModalsProps {
   slices: MissionSlice[];
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
+  onShowModels?: () => void;
 }
 
 const DOC_LINKS = [
@@ -97,7 +98,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent, onShowModels }) => {
   if (modal.type === null) {
     return null;
   }
@@ -117,7 +118,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <ModelOverview agents={agents} slices={slices} onSelectAgent={onSelectAgent} />;
       break;
     case "agent":
-      content = <AgentDetails agent={modal.agent} events={events} slices={slices} />;
+      content = <AgentDetails agent={modal.agent} events={events} slices={slices} onBackToModels={onShowModels} />;
       break;
     case "slice":
       content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
@@ -303,8 +304,24 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
           const cooldownLabel = summary.cooldownRemainingLabel ?? summary.agent.cooldownReason ?? "No cooldown";
           const statusMeta = MODEL_STATUS_META[summary.statusKey as ModelStatusKey] ?? MODEL_STATUS_META.ready;
           return (
-            <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
+              <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
               <div className="model-panel__header">
+                <div className="model-panel__identity">
+                  {summary.agent.icon && (
+                    <img src={summary.agent.icon} alt={`${summary.agent.name} logo`} className="model-panel__logo" />
+                  )}
+                  <div>
+                    <strong>{summary.agent.name}</strong>
+                    {summary.agent.vendor && <span className="model-panel__vendor">{summary.agent.vendor}</span>}
+                  </div>
+                </div>
+                {onSelectAgent && (
+                  <button type="button" className="model-panel__detail" onClick={() => onSelectAgent(summary.agent)}>
+                    Details
+                  </button>
+                )}
+              </div>
+              <div className="model-panel__status-line">
                 <button
                   type="button"
                   className={`model-panel__tier-toggle ${tierFilter === summary.agent.tierCategory ? "is-active" : ""}`}
@@ -314,22 +331,12 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
                 >
                   <span className={`agent-pill__tier agent-pill__tier--${summary.agent.tier.toLowerCase()}`}>{summary.agent.tier}</span>
                 </button>
-                <div className="model-panel__title">
-                  <strong>{summary.agent.name}</strong>
-                  <div className="model-panel__status">
-                    <span className={`status-dot status-dot--${summary.statusKey}`}>
-                      <span className="status-dot__icon">{statusMeta?.icon}</span>
-                      {statusMeta?.label}
-                    </span>
-                    {summary.primaryTask && (
-                      <span className="model-panel__working">Working on {summary.primaryTask.taskNumber ?? summary.primaryTask.title}</span>
-                    )}
-                  </div>
-                </div>
-                {onSelectAgent && (
-                  <button type="button" className="model-panel__detail" onClick={() => onSelectAgent(summary.agent)}>
-                    Details
-                  </button>
+                <span className={`status-dot status-dot--${summary.statusKey}`}>
+                  <span className="status-dot__icon">{statusMeta?.icon}</span>
+                  {statusMeta?.label}
+                </span>
+                {summary.primaryTask && (
+                  <span className="model-panel__working">Working on {summary.primaryTask.taskNumber ?? summary.primaryTask.title}</span>
                 )}
               </div>
               <div className="model-panel__metrics">
@@ -435,7 +442,12 @@ const RoiPanel: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = (
     </div>
   );
 };
-const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[] }> = ({ agent, events, slices }) => {
+const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[]; onBackToModels?: () => void }> = ({
+  agent,
+  events,
+  slices,
+  onBackToModels,
+}) => {
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
   const intel = useMemo(() => buildAgentIntel(agent, slices, events), [agent, slices, events]);
   const [showLog, setShowLog] = useState(false);
@@ -470,13 +482,21 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   return (
     <div className="mission-modal__section agent-panel agent-panel--details">
       <header className="agent-panel__hero">
-        <div>
+        {onBackToModels && (
+          <button type="button" className="agent-panel__back" onClick={onBackToModels}>
+            {"\u2190"} Back
+          </button>
+        )}
+        <div className="agent-panel__hero-main">
           <p className="agent-panel__eyebrow">Model snapshot</p>
-          <h3>{agent.name}</h3>
+          <div className="agent-panel__title-row">
+            {agent.icon && <img src={agent.icon} alt={`${agent.name} logo`} className="agent-panel__logo" />}
+            <h3>{agent.name}</h3>
+            <span className={`agent-panel__tier-pill agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+          </div>
           <p>{agent.summary ?? agent.capability ?? "No summary provided."}</p>
         </div>
-        <div className="agent-panel__hero-badges">
-          <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+        <div className="agent-panel__hero-status">
           <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{formatStatusLabel(agent.status)}</span>
         </div>
       </header>
@@ -595,6 +615,13 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
           </div>
         )}
       </section>
+      {onBackToModels && (
+        <div className="agent-panel__footer">
+          <button type="button" className="agent-panel__back-link" onClick={onBackToModels}>
+            {"\u2190"} Back to models
+          </button>
+        </div>
+      )}
     </div>
   );
 };
