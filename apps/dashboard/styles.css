@@ -3097,49 +3097,39 @@ a {
   font-weight: 600;
 }
 
-.assignment-detail__routing {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-}
-
-.assignment-detail__routing li {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: center;
-}
-
-.assignment-detail__routing small {
-  color: rgba(148, 163, 184, 0.75);
-  font-size: 0.65rem;
-}
-
-.assignment-detail__warnings {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.assignment-detail__activity-warnings {
   display: grid;
   gap: 8px;
+  margin-bottom: 14px;
 }
 
-.assignment-detail__warnings li {
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.28);
+.assignment-detail__activity-warning {
   border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 0.75rem;
-  color: rgba(248, 226, 231, 0.9);
+  padding: 10px 12px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.08);
 }
 
-.assignment-detail__warnings strong {
+.assignment-detail__activity-warning--error {
+  border-color: rgba(248, 113, 113, 0.45);
+  background: rgba(248, 113, 113, 0.15);
+}
+
+.assignment-detail__activity-warning strong {
   display: block;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  color: rgba(248, 250, 252, 0.92);
+}
+
+.assignment-detail__activity-warning small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.8);
 }
 
 .assignment-detail__log {
@@ -3483,6 +3473,75 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.mission-log__headline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.mission-log__title {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mission-log__title--success {
+  color: #34d399;
+}
+
+.mission-log__title--warning {
+  color: #facc15;
+}
+
+.mission-log__title--note {
+  color: #94a3b8;
+}
+
+.mission-log__title--route {
+  color: #60a5fa;
+}
+
+.mission-log__title--validation {
+  color: #a5b4fc;
+}
+
+.mission-log__title--retry {
+  color: #fb923c;
+}
+
+.mission-log__title--error {
+  color: #f87171;
+}
+
+.mission-log__summary {
+  font-size: 0.82rem;
+  color: rgba(226, 232, 240, 0.92);
+}
+
+.mission-log__participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mission-log__participant {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: rgba(248, 250, 252, 0.85);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.mission-log__timestamp {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.8);
 }
 
 .mission-log__header {
