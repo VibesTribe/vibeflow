@@ -135,6 +135,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     }
     return Math.round((statusSummary.completed / statusSummary.total) * 100);
   }, [statusSummary.completed, statusSummary.total]);
+  const progressSummaryLabel = useMemo(
+    () => `${statusSummary.completed.toLocaleString()}/${statusSummary.total.toLocaleString()} tasks`,
+    [statusSummary.completed, statusSummary.total]
+  );
 
   const taskBuckets = useMemo<Record<HeaderPillKey, number>>(() => {
     const counts: Record<HeaderPillKey, number> = { complete: 0, active: 0, pending: 0, review: 0 };
@@ -423,8 +427,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           aria-valuenow={progress}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Mission completion"
+          aria-label="Project tasks & progress"
         >
+          <div className="mission-progress__label">
+            <span>Project tasks & progress</span>
+            <span>{progressSummaryLabel}</span>
+          </div>
           <div className="mission-progress__track">
             <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
           </div>
