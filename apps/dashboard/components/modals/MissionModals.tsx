@@ -420,15 +420,41 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
   const intel = useMemo(() => buildAgentIntel(agent, slices, events), [agent, slices, events]);
   const [showLog, setShowLog] = useState(false);
-    const statusKey = normalizeAgentStatus(agent.status);
+  const statusKey = normalizeAgentStatus(agent.status);
+  const cooldownLabel = intel.cooldownRemaining ?? agent.cooldownReason ?? "No cooldown";
+  const rateLimitSeconds = intel.performance.rateLimitWindowSeconds ?? agent.rateLimitWindowSeconds ?? null;
+  const liveTaskId = intel.liveAssignment?.taskId ?? null;
+
+  const perfMetrics = [
+    { label: "Context", value: intel.performance.contextWindow ? `${formatTokenCount(intel.performance.contextWindow)} tokens` : "Unknown" },
+    { label: "Effective", value: intel.performance.effectiveContextWindow ? `${formatTokenCount(intel.performance.effectiveContextWindow)} tokens` : "Unknown" },
+    { label: "Avg Runtime", value: `${intel.performance.avgRuntime || 0}s` },
+    { label: "P95", value: `${intel.performance.p95Runtime || 0}s` },
+    { label: "Cost / Run", value: intel.performance.costPerRunUsd ? `$${intel.performance.costPerRunUsd.toFixed(2)}` : "Unknown" },
+    { label: "Cost / 1K", value: intel.performance.costPer1kTokensUsd ? `$${intel.performance.costPer1kTokensUsd.toFixed(2)}` : "Unknown" },
+    { label: "Tokens Today", value: intel.tokenStats.today.toLocaleString() },
+    { label: "Lifetime Tokens", value: intel.tokenStats.lifetime.toLocaleString() },
+    { label: "Avg / Task", value: intel.tokenStats.average.toLocaleString() },
+    { label: "Peak / Task", value: intel.tokenStats.peak.toLocaleString() },
+  ];
+
+  const stateChips = [
+    { label: formatStatusLabel(agent.status), tone: statusKey },
+    { label: `Cooldown: ${cooldownLabel}` },
+    { label: `Credit: ${formatStatusLabel(intel.creditStatus ?? "unknown")}` },
+    { label: `Rate Limit: ${rateLimitSeconds ? `${rateLimitSeconds}s` : "n/a"}` },
+  ];
+
+  const warnings = intel.warnings.slice(0, 3);
+  const recentTasks = intel.recentTasks.slice(0, 4);
 
   return (
-    <div className="mission-modal__section agent-panel">
+    <div className="mission-modal__section agent-panel agent-panel--details">
       <header className="agent-panel__hero">
         <div>
-          <p className="agent-panel__eyebrow">Section A — Basic Info</p>
+          <p className="agent-panel__eyebrow">Model snapshot</p>
           <h3>{agent.name}</h3>
-          <p>{agent.summary ?? "No summary provided."}</p>
+          <p>{agent.summary ?? agent.capability ?? "No summary provided."}</p>
         </div>
         <div className="agent-panel__hero-badges">
           <span className={`agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
@@ -436,195 +462,103 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         </div>
       </header>
 
-      <section className="agent-detail__section">
-        <header>
-          <h4>Basic Info</h4>
-        </header>
-        <dl className="agent-detail__grid">
-          <div>
-            <dt>Vendor</dt>
-            <dd>{agent.vendor ?? "Unknown"}</dd>
-          </div>
-          <div>
-            <dt>Capability</dt>
-            <dd>{agent.capability ?? agent.summary ?? "N/A"}</dd>
-          </div>
-          <div>
-            <dt>Tier</dt>
-            <dd>{agent.tier}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>State</h4>
-        </header>
-        <dl className="agent-detail__grid agent-detail__grid--state">
-          <div>
-            <dt>Current status</dt>
-            <dd>{formatStatusLabel(agent.status)}</dd>
-          </div>
-          <div>
-            <dt>Cooldown</dt>
-            <dd>{intel.cooldownRemaining ?? agent.cooldownReason ?? "None"}</dd>
-          </div>
-          <div>
-            <dt>Credit</dt>
-            <dd>{intel.creditStatus ?? "unknown"}</dd>
-          </div>
-          <div>
-            <dt>Rate limit window</dt>
-            <dd>
-              {intel.performance.rateLimitWindowSeconds
-                ? `${intel.performance.rateLimitWindowSeconds}s`
-                : agent.rateLimitWindowSeconds
-                  ? `${agent.rateLimitWindowSeconds}s`
-                  : "Not provided"}
-            </dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Live Task</h4>
-        </header>
-        {intel.liveAssignment ? (
-          <dl className="agent-detail__grid agent-detail__grid--tasks">
-            <div>
-              <dt>Task</dt>
-              <dd>{intel.liveAssignment.title ?? intel.liveAssignment.taskId}</dd>
-            </div>
-            <div>
-              <dt>Slice</dt>
-              <dd>{intel.liveAssignment.sliceName ?? "Unknown slice"}</dd>
-            </div>
-            <div>
-              <dt>Status</dt>
-              <dd>{formatStatusLabel(intel.liveAssignment.status)}</dd>
-            </div>
-            <div className="agent-detail__grid-span">
-              <dt>Reason assigned</dt>
-              <dd>{intel.liveAssignment.summary ?? "Assignment summary unavailable."}</dd>
-            </div>
-          </dl>
-        ) : (
-          <p className="agent-detail__empty">This model is not currently assigned.</p>
-        )}
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Recent Routing</h4>
-        </header>
-        <ul className="agent-routing">
-          {intel.routingHistory.length > 0 ? (
-            intel.routingHistory.map((entry) => (
-              <li key={entry.id}>
-                <span className={`agent-routing__badge agent-routing__badge--${entry.direction}`}>{entry.direction}</span>
-                <div>
-                  <p>{entry.label}</p>
-                  <small>{entry.reason ?? "No reason provided"}</small>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="agent-detail__empty">No routing decisions recorded.</li>
-          )}
-        </ul>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Recent Tasks</h4>
-        </header>
-        <ul className="agent-recent">
-          {intel.recentTasks.length > 0 ? (
-            intel.recentTasks.map((task) => (
-              <li key={task.id} className={`agent-recent__item agent-recent__item--${task.outcome}`}>
-                <strong>{task.taskNumber ?? task.title}</strong>
-                <span>{task.sliceName ?? "Unknown slice"}</span>
-                <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
-            <span className="agent-recent__status">{formatStatusLabel(task.status)}</span>
-              </li>
-            ))
-          ) : (
-            <li className="agent-detail__empty">No tasks recorded for this agent.</li>
-          )}
-        </ul>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Performance & Limits</h4>
-        </header>
-        <dl className="agent-detail__grid">
-          <div>
-            <dt>Context window</dt>
-            <dd>{intel.performance.contextWindow ? `${formatTokenCount(intel.performance.contextWindow)} tokens` : "Unknown"}</dd>
-          </div>
-          <div>
-            <dt>Effective context</dt>
-            <dd>{intel.performance.effectiveContextWindow ? `${formatTokenCount(intel.performance.effectiveContextWindow)} tokens` : "Unknown"}</dd>
-          </div>
-          <div>
-            <dt>Avg runtime</dt>
-            <dd>{intel.performance.avgRuntime}s</dd>
-          </div>
-          <div>
-            <dt>p95 latency</dt>
-            <dd>{intel.performance.p95Runtime}s</dd>
-          </div>
-          <div>
-            <dt>Cost / run</dt>
-            <dd>{intel.performance.costPerRunUsd ? `$${intel.performance.costPerRunUsd.toFixed(2)}` : "Unknown"}</dd>
-          </div>
-          <div>
-            <dt>Cost / 1k tokens</dt>
-            <dd>{intel.performance.costPer1kTokensUsd ? `$${intel.performance.costPer1kTokensUsd.toFixed(2)}` : "Unknown"}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Token Stats</h4>
-        </header>
-        <dl className="agent-detail__grid">
-          <div>
-            <dt>Tokens today</dt>
-            <dd>{intel.tokenStats.today.toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt>Tokens lifetime</dt>
-            <dd>{intel.tokenStats.lifetime.toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt>Avg tokens / task</dt>
-            <dd>{intel.tokenStats.average.toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt>Peak tokens / task</dt>
-            <dd>{intel.tokenStats.peak.toLocaleString()}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="agent-detail__section">
-        <header>
-          <h4>Warnings</h4>
-        </header>
-        {intel.warnings.length > 0 ? (
-          <ul className="agent-warnings">
-            {intel.warnings.slice(0, 2).map((warning) => (
-              <li key={warning}>{warning}</li>
+      <div className="agent-panel__lines">
+        <div className="agent-panel__line">
+          <span className="agent-panel__label">State</span>
+          <div className="agent-panel__chips">
+            {stateChips.map((chip) => (
+              <span key={chip.label} className={`agent-panel__chip ${chip.tone ? `agent-panel__chip--${chip.tone}` : ""}`}>
+                {chip.label}
+              </span>
             ))}
-          </ul>
-        ) : (
-          <p className="agent-detail__empty">No warnings reported.</p>
+            {agent.vendor && <span className="agent-panel__chip agent-panel__chip--subtle">{agent.vendor}</span>}
+            {agent.capability && <span className="agent-panel__chip agent-panel__chip--subtle">{agent.capability}</span>}
+          </div>
+        </div>
+
+        {warnings.length > 0 && (
+          <div className="agent-panel__line agent-panel__line--alert">
+            <span className="agent-panel__label">Warnings</span>
+            <div className="agent-panel__alerts">
+              {warnings.map((warning, index) => (
+                <span key={`${warning}-${index}`} className="agent-panel__alert-chip">
+                  {warning}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
-      </section>
+
+        <div className="agent-panel__line">
+          <span className="agent-panel__label">Live Task</span>
+          {intel.liveAssignment ? (
+            <div className="agent-panel__live">
+              <div>
+                <strong>{intel.liveAssignment.title ?? intel.liveAssignment.taskId}</strong>
+                <span>{intel.liveAssignment.sliceName ?? "Unknown slice"}</span>
+              </div>
+              <span className="agent-panel__chip agent-panel__chip--status">{formatStatusLabel(intel.liveAssignment.status)}</span>
+            </div>
+          ) : (
+            <span className="agent-panel__muted">No task currently assigned</span>
+          )}
+        </div>
+
+        <div className="agent-panel__line">
+          <span className="agent-panel__label">Routing</span>
+          {intel.routingHistory.length > 0 ? (
+            <div className="agent-panel__routing-line">
+              {intel.routingHistory.map((entry) => (
+                <div key={entry.id} className="agent-panel__routing-chip">
+                  <span className={`agent-routing__badge agent-routing__badge--${entry.direction}`}>{entry.direction}</span>
+                  <div>
+                    <strong>{entry.label}</strong>
+                    {entry.reason && <small>{entry.reason}</small>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span className="agent-panel__muted">No routing decisions recorded</span>
+          )}
+        </div>
+
+        <div className="agent-panel__line">
+          <span className="agent-panel__label">Performance & Tokens</span>
+          <dl className="agent-panel__metrics-grid">
+            {perfMetrics.map((metric) => (
+              <div key={metric.label}>
+                <dt>{metric.label}</dt>
+                <dd>{metric.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div className="agent-panel__line">
+          <span className="agent-panel__label">Recent Tasks</span>
+          {recentTasks.length > 0 ? (
+            <ul className="agent-panel__recent-list">
+              {recentTasks.map((task) => {
+                const isLive = liveTaskId === task.id;
+                return (
+                  <li key={task.id} className={`agent-panel__task agent-panel__task--${task.outcome}`}>
+                    <div>
+                      <strong>{task.taskNumber ?? task.title}</strong>
+                      <small>{task.sliceName ?? "Unknown slice"}</small>
+                    </div>
+                    <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
+                    <span className="agent-panel__task-status">{formatStatusLabel(task.status)}</span>
+                    {isLive && <span className="agent-panel__task-live">Live</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <span className="agent-panel__muted">No tasks recorded for this agent</span>
+          )}
+        </div>
+      </div>
 
       <section className="agent-detail__section">
         <header className="agent-detail__section-header">
