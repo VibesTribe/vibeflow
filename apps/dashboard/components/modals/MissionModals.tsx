@@ -490,40 +490,6 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         )}
 
         <div className="agent-panel__line">
-          <span className="agent-panel__label">Live Task</span>
-          {intel.liveAssignment ? (
-            <div className="agent-panel__live">
-              <div>
-                <strong>{intel.liveAssignment.title ?? intel.liveAssignment.taskId}</strong>
-                <span>{intel.liveAssignment.sliceName ?? "Unknown slice"}</span>
-              </div>
-              <span className="agent-panel__chip agent-panel__chip--status">{formatStatusLabel(intel.liveAssignment.status)}</span>
-            </div>
-          ) : (
-            <span className="agent-panel__muted">No task currently assigned</span>
-          )}
-        </div>
-
-        <div className="agent-panel__line">
-          <span className="agent-panel__label">Routing</span>
-          {intel.routingHistory.length > 0 ? (
-            <div className="agent-panel__routing-line">
-              {intel.routingHistory.map((entry) => (
-                <div key={entry.id} className="agent-panel__routing-chip">
-                  <span className={`agent-routing__badge agent-routing__badge--${entry.direction}`}>{entry.direction}</span>
-                  <div>
-                    <strong>{entry.label}</strong>
-                    {entry.reason && <small>{entry.reason}</small>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span className="agent-panel__muted">No routing decisions recorded</span>
-          )}
-        </div>
-
-        <div className="agent-panel__line">
           <span className="agent-panel__label">Performance & Tokens</span>
           <dl className="agent-panel__metrics-grid">
             {perfMetrics.map((metric) => (
@@ -536,27 +502,55 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
         </div>
 
         <div className="agent-panel__line">
-          <span className="agent-panel__label">Recent Tasks</span>
-          {recentTasks.length > 0 ? (
-            <ul className="agent-panel__recent-list">
-              {recentTasks.map((task) => {
-                const isLive = liveTaskId === task.id;
-                return (
-                  <li key={task.id} className={`agent-panel__task agent-panel__task--${task.outcome}`}>
-                    <div>
-                      <strong>{task.taskNumber ?? task.title}</strong>
-                      <small>{task.sliceName ?? "Unknown slice"}</small>
-                    </div>
-                    <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
-                    <span className="agent-panel__task-status">{formatStatusLabel(task.status)}</span>
-                    {isLive && <span className="agent-panel__task-live">Live</span>}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <span className="agent-panel__muted">No tasks recorded for this agent</span>
-          )}
+          <span className="agent-panel__label">Assignments</span>
+          <div className="agent-panel__assignments">
+            {intel.liveAssignment ? (
+              <article className="agent-panel__assignment-card">
+                <div className="agent-panel__assignment-main">
+                  <div>
+                    <strong>{intel.liveAssignment.title ?? intel.liveAssignment.taskId}</strong>
+                    <small>{intel.liveAssignment.sliceName ?? "Unknown slice"}</small>
+                  </div>
+                  <span className="agent-panel__chip agent-panel__chip--status">{formatStatusLabel(intel.liveAssignment.status)}</span>
+                </div>
+                {intel.routingHistory.length > 0 && (
+                  <ul className="agent-panel__routing-inline">
+                    {intel.routingHistory.map((entry) => (
+                      <li key={entry.id}>
+                        <span className={`agent-routing__badge agent-routing__badge--${entry.direction}`}>{entry.direction}</span>
+                        <div>
+                          <strong>{entry.label}</strong>
+                          {entry.reason && <small>{entry.reason}</small>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ) : (
+              <span className="agent-panel__muted agent-panel__muted--inline">No live assignments</span>
+            )}
+            {recentTasks.length > 0 ? (
+              <ul className="agent-panel__recent-list">
+                {recentTasks.map((task) => {
+                  const isLive = liveTaskId === task.id;
+                  return (
+                    <li key={task.id} className={`agent-panel__task agent-panel__task--${task.outcome}`}>
+                      <div>
+                        <strong>{task.taskNumber ?? task.title}</strong>
+                        <small>{task.sliceName ?? "Unknown slice"}</small>
+                      </div>
+                      <span>{task.runtimeSeconds ? `${task.runtimeSeconds}s` : "n/a"}</span>
+                      <span className="agent-panel__task-status">{formatStatusLabel(task.status)}</span>
+                      {isLive && <span className="agent-panel__task-live">Live</span>}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <span className="agent-panel__muted">No tasks recorded for this agent</span>
+            )}
+          </div>
         </div>
       </div>
 
