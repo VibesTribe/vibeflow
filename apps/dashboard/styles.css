@@ -52,7 +52,9 @@ body#dummybodyid::-webkit-scrollbar {
     .slice-panel__tasks,
     .slice-panel__scroll,
     .slice-task-list__accordion,
-    .mission-main
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
   ) {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
@@ -71,7 +73,9 @@ body#dummybodyid::-webkit-scrollbar {
     .slice-panel__tasks,
     .slice-panel__scroll,
     .slice-task-list__accordion,
-    .mission-main
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
   )::-webkit-scrollbar {
   width: 6px;
 }
@@ -89,7 +93,9 @@ body#dummybodyid::-webkit-scrollbar {
     .slice-panel__tasks,
     .slice-panel__scroll,
     .slice-task-list__accordion,
-    .mission-main
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
   )::-webkit-scrollbar-track {
   background: var(--scrollbar-track-color);
   border-radius: 999px;
@@ -108,7 +114,9 @@ body#dummybodyid::-webkit-scrollbar {
     .slice-panel__tasks,
     .slice-panel__scroll,
     .slice-task-list__accordion,
-    .mission-main
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
   )::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb-color);
   border-radius: 999px;
@@ -1348,6 +1356,16 @@ a {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  z-index: 20;
+}
+
+.mission-modal__controls {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   z-index: 20;
 }
 
@@ -2899,6 +2917,7 @@ a {
 
 .agent-panel__tier-pill {
   padding: 6px 12px;
+  position: static;
 }
 
 .agent-panel__eyebrow {
@@ -6906,6 +6925,12 @@ a {
   overflow-y: auto;
   margin-top: 12px;
   padding-inline: clamp(6px, 2vw, 12px);
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-panel-overlay__body > * {
+  width: min(480px, 100%);
 }
 
 .mobile-panel-overlay .rail {
