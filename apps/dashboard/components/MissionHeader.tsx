@@ -425,9 +425,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           aria-valuemax={100}
           aria-label="Project tasks & progress"
         >
-          <div className="mission-progress__label">
-            <span>Project tasks & progress</span>
-          </div>
+          <div className="mission-progress__label">Project tasks &amp; progress</div>
           <div className="mission-progress__track">
             <span className="mission-progress__fill" style={{ width: `${progress}%` }} />
           </div>
