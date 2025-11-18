@@ -221,6 +221,10 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
 }) => {
   const [statusFilter, setStatusFilter] = useState<ModelStatusKey | null>(null);
   const [tierFilter, setTierFilter] = useState<ModelTierKey | null>(null);
+  const clearFilters = useCallback(() => {
+    setStatusFilter(null);
+    setTierFilter(null);
+  }, []);
   const agentSummaries = useMemo(() => buildAgentSummaries(agents, slices), [agents, slices]);
   const toggleStatusFilter = useCallback(
     (nextKey: ModelStatusKey) => setStatusFilter((prev) => (prev === nextKey ? null : nextKey)),
@@ -230,6 +234,7 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
     (nextTier: ModelTierKey) => setTierFilter((prev) => (prev === nextTier ? null : nextTier)),
     []
   );
+  const hasFilters = statusFilter !== null || tierFilter !== null;
   const filteredSummaries = useMemo(() => {
     return agentSummaries.filter((summary) => {
       if (statusFilter && summary.statusKey !== statusFilter) return false;
@@ -276,6 +281,20 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
               </button>
             );
           })}
+        </div>
+        <div className="model-panel__legend-actions">
+          <button type="button" className="model-panel__action model-panel__action--primary" onClick={clearFilters}>
+            View All
+          </button>
+          <button
+            type="button"
+            className="model-panel__action"
+            onClick={clearFilters}
+            disabled={!hasFilters}
+            aria-disabled={!hasFilters}
+          >
+            Clear Filters
+          </button>
         </div>
       </header>
       <ul className="model-panel__list">
