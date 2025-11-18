@@ -6929,8 +6929,9 @@ a {
   justify-content: center;
 }
 
-.mobile-panel-overlay__body > * {
-  width: min(480px, 100%);
+.mobile-panel-overlay__body > .rail {
+  width: min(420px, 100%);
+  margin: 0 auto;
 }
 
 .mobile-panel-overlay .rail {
