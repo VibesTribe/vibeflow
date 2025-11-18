@@ -6938,8 +6938,10 @@ a {
   display: flex;
   justify-content: center;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: clamp(12px, 2.6vw, 20px) clamp(8px, 2vw, 14px);
   scrollbar-gutter: stable;
+  box-sizing: border-box;
 }
 
 .mobile-panel-overlay .rail {
@@ -6954,22 +6956,41 @@ a {
   padding: clamp(18px, 3.6vw, 26px) clamp(14px, 3vw, 24px);
   margin: 0 auto;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .mobile-panel-overlay .rail__scroll {
   width: 100%;
   max-height: none;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 0;
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 2vw, 22px);
   align-items: center;
+  box-sizing: border-box;
+}
+
+.mobile-panel-overlay .rail__header {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-panel-overlay .rail__button {
+  width: min(320px, 100%);
 }
 
 .mobile-panel-overlay .agent-chip {
   width: min(320px, 100%);
   padding: 16px 0;
+  margin: 0 auto;
+}
+
+.mobile-panel-overlay .slice-dial {
+  width: min(320px, 100%);
   margin: 0 auto;
 }
 
@@ -7362,6 +7383,7 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.2);
   box-shadow: none;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .mobile-panel-overlay .rail--left,
@@ -7373,14 +7395,28 @@ a {
   width: 100%;
   max-height: none;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 2vw, 22px);
   align-items: center;
   padding-right: 0;
+  box-sizing: border-box;
+}
+
+.mobile-panel-overlay .rail__header {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-panel-overlay .rail__button {
+  width: min(320px, 100%);
 }
 
 .mobile-panel-overlay .slice-dial {
+  width: min(320px, 100%);
   margin: 0 auto;
 }
 
