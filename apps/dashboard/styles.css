@@ -7309,12 +7309,26 @@ a {
     padding: 2px 0;
   }
 
+  .mission-header {
+    padding-inline: clamp(6px, 4vw, 14px);
+  }
+
+  .mission-header__stat-inline {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
   .mission-header__stat-pill {
+    flex-direction: column;
+    align-items: center;
     padding: 6px 8px;
     gap: 6px;
+    min-width: 58px;
   }
 
   .mission-header__stat-label {
+    letter-spacing: 0.12em;
     font-size: 0.48rem;
   }
 
