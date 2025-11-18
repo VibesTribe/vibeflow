@@ -99,6 +99,11 @@ const SLICE_FILTER_META: Record<
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
 const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent, onShowModels }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    modalRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [modal]);
   if (modal.type === null) {
     return null;
   }
@@ -133,9 +138,16 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = null;
   }
 
+  const canShowBackControl = modal.type === "agent" && typeof onShowModels === "function";
+
   return (
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
-      <div className={`mission-modal ${modal.type === "models" ? "mission-modal--models" : ""}`}>
+      <div className={`mission-modal ${modal.type === "models" ? "mission-modal--models" : ""}`} ref={modalRef}>
+        {canShowBackControl && (
+          <button type="button" className="mission-modal__back" onClick={onShowModels}>
+            {"\u2190"} Back
+          </button>
+        )}
         <button type="button" className="mission-modal__close" onClick={onClose} aria-label="Close">
           {"\u00D7"}
         </button>
@@ -482,21 +494,14 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   return (
     <div className="mission-modal__section agent-panel agent-panel--details">
       <header className="agent-panel__hero">
-        {onBackToModels && (
-          <button type="button" className="agent-panel__back" onClick={onBackToModels}>
-            {"\u2190"} Back
-          </button>
-        )}
-        <div className="agent-panel__hero-main">
-          <p className="agent-panel__eyebrow">Model snapshot</p>
-          <div className="agent-panel__title-row">
-            {agent.icon && <img src={agent.icon} alt={`${agent.name} logo`} className="agent-panel__logo" />}
+        <p className="agent-panel__eyebrow">Model snapshot</p>
+        <div className="agent-panel__title-row">
+          {agent.icon && <img src={agent.icon} alt={`${agent.name} logo`} className="agent-panel__logo" />}
+          <div className="agent-panel__title-text">
             <h3>{agent.name}</h3>
-            <span className={`agent-panel__tier-pill agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
+            <p className="agent-panel__summary">{agent.summary ?? agent.capability ?? "No summary provided."}</p>
           </div>
-          <p>{agent.summary ?? agent.capability ?? "No summary provided."}</p>
-        </div>
-        <div className="agent-panel__hero-status">
+          <span className={`agent-panel__tier-pill agent-pill__tier agent-pill__tier--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
           <span className={`agent-status-badge agent-status-badge--${statusKey}`}>{formatStatusLabel(agent.status)}</span>
         </div>
       </header>

@@ -1356,6 +1356,21 @@ a {
   z-index: 10;
 }
 
+.mission-modal__back {
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(8, 12, 24, 0.7);
+  color: rgba(248, 250, 252, 0.85);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 6px 14px;
+  z-index: 10;
+}
+
 .mission-modal__section {
   display: flex;
   flex-direction: column;
@@ -2846,29 +2861,10 @@ a {
 
 .agent-panel__hero {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 8px;
   align-items: flex-start;
   margin-bottom: 12px;
-}
-
-.agent-panel__back {
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: transparent;
-  color: rgba(226, 232, 240, 0.85);
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-radius: 999px;
-  padding: 6px 12px;
-  align-self: flex-start;
-}
-
-.agent-panel__hero-main {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
 }
 
 .agent-panel__title-row {
@@ -2876,6 +2872,12 @@ a {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.agent-panel__title-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .agent-panel__logo {
@@ -2887,13 +2889,22 @@ a {
   background: rgba(8, 12, 24, 0.6);
 }
 
-.agent-panel__tier-pill {
-  padding: 6px 12px;
+.agent-panel__title-text h3 {
+  margin: 0;
 }
 
-.agent-panel__hero-status {
-  display: flex;
-  align-items: flex-start;
+.agent-panel__title-text h3 {
+  margin: 0;
+}
+
+.agent-panel__summary {
+  margin: 4px 0 0;
+  color: rgba(226, 232, 240, 0.85);
+  max-width: 480px;
+}
+
+.agent-panel__tier-pill {
+  padding: 6px 12px;
 }
 
 .agent-panel__eyebrow {
