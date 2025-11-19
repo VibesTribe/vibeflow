@@ -1960,11 +1960,10 @@ a {
 }
 
 .mission-header__stat-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 6px 14px 7px;
   border-radius: 999px;
   border: 1.5px solid rgba(94, 234, 212, 0.35);
   background: rgba(5, 10, 21, 0.9);
@@ -1975,6 +1974,15 @@ a {
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   z-index: 0;
+}
+
+.mission-header__stat-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: 100%;
+  line-height: 1.1;
 }
 
 .mission-header__stat-primary {
@@ -1997,7 +2005,7 @@ a {
   font-size: 0.9rem;
   letter-spacing: 0.04em;
   color: #f8fafc;
-  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .mission-header__stat-icon {
@@ -7312,7 +7320,7 @@ a {
 
   .mission-header__stat-pill {
     min-height: 36px;
-    padding: 6px 12px;
+    padding: 4px 10px 5px;
     flex: 1 1 140px;
   }
 
