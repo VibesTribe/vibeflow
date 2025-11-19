@@ -1952,10 +1952,10 @@ a {
 
 .mission-header__tasks-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 10px;
   width: 100%;
-  padding: 4px;
+  padding: 4px 8px;
 }
 
 .mission-header__stat-pill {
@@ -1963,13 +1963,13 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 999px;
   border: 1.5px solid rgba(94, 234, 212, 0.35);
   background: rgba(5, 10, 21, 0.9);
   color: rgba(226, 232, 240, 0.85);
   min-height: 40px;
-  min-width: 120px;
+  min-width: 140px;
   text-align: center;
   white-space: nowrap;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -1982,9 +1982,9 @@ a {
   align-items: center;
   gap: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.6rem;
-  color: rgba(226, 232, 240, 0.9);
+  letter-spacing: 0.14em;
+  font-size: 0.58rem;
+  color: rgba(226, 232, 240, 0.85);
 }
 
 .mission-header__stat-label {
@@ -1992,7 +1992,7 @@ a {
 }
 
 .mission-header__stat-value {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   letter-spacing: 0.08em;
   color: #f8fafc;
 }
@@ -7302,24 +7302,25 @@ a {
   }
 
   .mission-header__tasks-row {
-    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 4px;
-    padding: 2px clamp(2px, 2vw, 6px);
+    padding: 2px clamp(2px, 3vw, 10px);
   }
 
   .mission-header__stat-pill {
-    min-height: 38px;
+    min-height: 36px;
     padding: 6px 12px;
   }
 
   .mission-header__stat-primary {
-    font-size: 0.5rem;
-    gap: 4px;
-    letter-spacing: 0.12em;
+    font-size: 0.48rem;
+    gap: 3px;
+    letter-spacing: 0.1em;
+    justify-content: flex-start;
   }
 
   .mission-header__stat-value {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .mission-header__stat-pill--tokens {
