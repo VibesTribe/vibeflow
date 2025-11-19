@@ -299,13 +299,13 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               data-active={activePill === pill.key ? "true" : "false"}
               onClick={() => setActivePill((prev) => (prev === pill.key ? null : pill.key))}
             >
-              <span className="mission-header__stat-inline">
+              <span className="mission-header__stat-primary">
                 <span className="mission-header__stat-icon" aria-hidden="true">
                   {pill.icon}
                 </span>
                 <span className="mission-header__stat-label">{pill.label}</span>
-                <strong className="mission-header__stat-value">{pill.value}</strong>
               </span>
+              <strong className="mission-header__stat-value">{pill.value}</strong>
             </button>
           ))}
           <button
@@ -315,10 +315,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
             onClick={onOpenTokens}
           >
-            <span className="mission-header__stat-inline">
+            <span className="mission-header__stat-primary">
               <span className="mission-header__stat-label">Tokens</span>
-              <strong className="mission-header__stat-value">{formattedTokens}</strong>
             </span>
+            <strong className="mission-header__stat-value">{formattedTokens}</strong>
           </button>
         </div>
         {activeDetail && (
