@@ -1955,7 +1955,8 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 10px;
   width: 100%;
-  padding: 4px 0;
+  padding: 0;
+  margin: 0;
 }
 
 .mission-header__stat-pill {
@@ -1984,6 +1985,8 @@ a {
   letter-spacing: 0.12em;
   font-size: 0.56rem;
   color: rgba(226, 232, 240, 0.82);
+  flex: 1;
+  min-width: 0;
 }
 
 .mission-header__stat-label {
@@ -1994,6 +1997,7 @@ a {
   font-size: 0.9rem;
   letter-spacing: 0.04em;
   color: #f8fafc;
+  flex-shrink: 0;
 }
 
 .mission-header__stat-icon {
@@ -7302,7 +7306,8 @@ a {
 
   .mission-header__tasks-row {
     gap: 4px;
-    padding: 2px clamp(2px, 3vw, 10px);
+    padding: 0;
+    margin: 0;
   }
 
   .mission-header__stat-pill {
