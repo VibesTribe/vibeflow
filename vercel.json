@@ -1,13 +1,9 @@
 {
-  // The actual app is inside apps/dashboard
-  "rootDirectory": "apps/dashboard",
-
-  // Make sure Vercel serves your Vite SPA correctly
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ],
-
-  // Required so your dashboard can embed previews via iframe
   "headers": [
     {
       "source": "/(.*)",
@@ -16,14 +12,5 @@
         { "key": "Content-Security-Policy", "value": "frame-ancestors *;" }
       ]
     }
-  ],
-
-  // The build system defaults to npm run build
-  // and uses the dist/ output directory internally.
-  // These are included only for explicit clarity.
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-
-  // Ensure static files serve properly even in nested routes
-  "cleanUrls": true
+  ]
 }
