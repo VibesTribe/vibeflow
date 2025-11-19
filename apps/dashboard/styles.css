@@ -1956,7 +1956,7 @@ a {
   gap: 10px;
   align-items: stretch;
   overflow-x: auto;
-  padding: 4px 4px;
+  padding: 4px;
   scrollbar-width: none;
   touch-action: pan-x;
 }
@@ -7281,7 +7281,8 @@ a {
 
 @media (max-width: 900px) {
   .mission-header {
-    gap: 12px !important;
+    gap: 10px !important;
+    padding-inline: clamp(4px, 3vw, 10px);
   }
 
   .mission-root {
@@ -7308,13 +7309,9 @@ a {
   .mission-header__tasks-row {
     justify-content: flex-start;
     align-items: stretch;
-    gap: 4px;
+    gap: 3px;
     margin-bottom: 0;
-    padding: 2px 0;
-  }
-
-  .mission-header {
-    padding-inline: clamp(6px, 4vw, 14px);
+    padding: 2px clamp(2px, 2vw, 8px);
   }
 
   .mission-header__stat-inline {
@@ -7326,14 +7323,14 @@ a {
   .mission-header__stat-pill {
     flex-direction: column;
     align-items: center;
-    padding: 6px 8px;
-    gap: 6px;
-    min-width: 58px;
+    padding: 4px 10px;
+    gap: 4px;
+    min-width: 52px;
   }
 
   .mission-header__stat-label {
-    letter-spacing: 0.12em;
-    font-size: 0.48rem;
+    letter-spacing: 0.1em;
+    font-size: 0.45rem;
   }
 
   .mission-header__stat-value {
@@ -7351,6 +7348,15 @@ a {
 
   .mission-progress__track {
     height: 6px;
+  }
+
+  .mission-progress__header {
+    flex-wrap: nowrap;
+  }
+
+  .mission-progress__meta {
+    flex-wrap: nowrap;
+    gap: 6px;
   }
 
   .mission-mobile-nav {
