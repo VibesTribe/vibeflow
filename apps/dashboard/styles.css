@@ -1951,8 +1951,8 @@ a {
 }
 
 .mission-header__tasks-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   width: 100%;
   padding: 4px 8px;
@@ -1969,9 +1969,9 @@ a {
   background: rgba(5, 10, 21, 0.9);
   color: rgba(226, 232, 240, 0.85);
   min-height: 40px;
-  min-width: 140px;
+  min-width: 0;
+  flex: 1 1 150px;
   text-align: center;
-  white-space: nowrap;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   z-index: 0;
@@ -1982,18 +1982,18 @@ a {
   align-items: center;
   gap: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.58rem;
-  color: rgba(226, 232, 240, 0.85);
+  letter-spacing: 0.12em;
+  font-size: 0.56rem;
+  color: rgba(226, 232, 240, 0.82);
 }
 
 .mission-header__stat-label {
-  font-size: 0.58rem;
+  font-size: 0.56rem;
 }
 
 .mission-header__stat-value {
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
   color: #f8fafc;
 }
 
@@ -7302,7 +7302,6 @@ a {
   }
 
   .mission-header__tasks-row {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 4px;
     padding: 2px clamp(2px, 3vw, 10px);
   }
@@ -7310,17 +7309,18 @@ a {
   .mission-header__stat-pill {
     min-height: 36px;
     padding: 6px 12px;
+    flex: 1 1 140px;
   }
 
   .mission-header__stat-primary {
-    font-size: 0.48rem;
+    font-size: 0.46rem;
     gap: 3px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     justify-content: flex-start;
   }
 
   .mission-header__stat-value {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 
   .mission-header__stat-pill--tokens {
