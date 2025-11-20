@@ -10,9 +10,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// ✅ Standard GitHub Pages base
-const base = "/vibeflow/";
+const onVercel = process.env.VERCEL === "1";
+const base = onVercel ? "/" : "/vibeflow/";
+const outDir = onVercel
+  ? path.resolve(dirname, "dist")
+  : path.resolve(dirname, "../../dist");
 
 export default defineConfig({
   root: dirname,
@@ -22,9 +24,8 @@ export default defineConfig({
     host: true,
     port: 5173,
   },
-  // ✅ Output to project root /dist (where Pages will look)
   build: {
-    outDir: path.resolve(dirname, "../../dist"),
+    outDir,
     emptyOutDir: true,
   },
   resolve: {
