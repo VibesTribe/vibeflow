@@ -16,6 +16,7 @@ export interface ReviewRecord {
   branch?: string;
   diff_url?: string;
   comparison_url?: string;
+  preview_url?: string;
   attachments?: Array<{ label: string; url: string }>;
 }
 

@@ -14,6 +14,7 @@ export interface ReviewQueueItem {
   reviewer?: string;
   diffUrl?: string;
   comparisonUrl?: string;
+  previewUrl?: string;
   entry: ReviewEntry;
   task?: TaskSnapshot;
   restore?: RestoreRecord;

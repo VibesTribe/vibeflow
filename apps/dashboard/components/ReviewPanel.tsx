@@ -24,10 +24,16 @@ const ReviewPanel: React.FC<ReviewPanelProps> = ({ review, task, dispatch, onClo
   const statusLabel = STATUS_LABEL[review.status] ?? STATUS_LABEL.pending;
   const isDispatching = dispatch.status === "pending";
   const canSubmit = dispatch.available && !isDispatching;
+  const previewUrl = review.previewUrl ?? review.restore?.preview_url;
+  const [previewOpen, setPreviewOpen] = useState<boolean>(Boolean(previewUrl));
 
   useEffect(() => {
     setNotes(review.notes ?? "");
   }, [review.taskId, review.notes]);
+
+  useEffect(() => {
+    setPreviewOpen(Boolean(previewUrl));
+  }, [previewUrl]);
 
   const taskMetadata = useMemo(() => {
     if (!task) return [];
@@ -129,6 +135,37 @@ const ReviewPanel: React.FC<ReviewPanelProps> = ({ review, task, dispatch, onClo
               <a className="review-panel__link" href={review.comparisonUrl} target="_blank" rel="noreferrer">
                 Compare preview
               </a>
+            )}
+            {previewUrl && (
+              <section className="review-panel__preview">
+                <div className="review-panel__preview-header">
+                  <h4>Preview</h4>
+                  <div className="review-panel__preview-actions">
+                    <a href={previewUrl} target="_blank" rel="noreferrer" className="review-panel__link">
+                      Open in new tab
+                    </a>
+                    <button
+                      type="button"
+                      className="review-panel__preview-toggle"
+                      onClick={() => setPreviewOpen((prev) => !prev)}
+                    >
+                      {previewOpen ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                </div>
+                {previewOpen ? (
+                  <div className="review-panel__preview-frame">
+                    <iframe
+                      src={previewUrl}
+                      title={`Review preview for ${review.title}`}
+                      className="review-panel__preview-iframe"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : (
+                  <p className="review-panel__hint">Preview hidden — select "Show" to embed it here.</p>
+                )}
+              </section>
             )}
             {review.restore && (
               <section className="review-panel__restore">

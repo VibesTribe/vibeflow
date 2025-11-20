@@ -98,6 +98,8 @@ const VibesMissionControl: React.FC = () => {
     return reviews.map((review) => {
       const task = snapshot.tasks.find((entry) => entry.id === review.task_id);
       const sliceName = task?.sliceId ? sliceNameById.get(task.sliceId) : undefined;
+      const restoreEntry = restores[review.task_id];
+      const previewUrl = review.preview_url ?? restoreEntry?.preview_url ?? review.comparison_url ?? review.diff_url;
       return {
         taskId: review.task_id,
         title: task?.title ?? `Task ${review.task_id}`,
@@ -111,9 +113,10 @@ const VibesMissionControl: React.FC = () => {
         reviewer: review.reviewer,
         diffUrl: review.diff_url,
         comparisonUrl: review.comparison_url,
+        previewUrl,
         entry: review,
         task,
-        restore: restores[review.task_id],
+        restore: restoreEntry,
       };
     });
   }, [reviews, snapshot.tasks, slices, restores]);
