@@ -121,7 +121,7 @@ const VibesMissionControl: React.FC = () => {
   }, [refreshReviews, workflowDispatch]);
 
   return (
-    <div className="mission-root mission-root--wide">
+    <div className="mission-root--wide">
       <main className="mission-main">
         <MissionHeader
           statusSummary={statusSummary}

@@ -4,6 +4,34 @@
   color: #e2e8f0;
 }
 
+.mission-root.mission-root--wide .slice-hub {
+  width: 100%;
+  padding-right: 0;
+  max-height: none;
+}
+
+.mission-root.mission-root--wide .slice-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(20px, 2vw, 40px);
+  width: 100%;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card {
+  max-width: none;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card__body {
+  min-height: clamp(420px, 42vw, 620px);
+}
+
+.mission-root.mission-root--wide .rail,
+.mission-root.mission-root--wide .mission-mobile-nav,
+.mission-root.mission-root--wide .mobile-panel-overlay {
+  display: none !important;
+}
+
+
 #root {
   height: 100%;
   overflow: hidden;
@@ -7703,9 +7731,71 @@ a {
     display: none;
   }
 
-  .mission-mobile-nav {
-    display: flex;
-  }
+.mission-mobile-nav {
+  display: flex;
+}
+}
+
+/* --- Mission control widescreen override --- */
+.mission-root.mission-root--wide {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(18px, 2vw, 36px);
+  padding: clamp(24px, 4vw, 64px) clamp(18px, 4vw, 72px) clamp(32px, 5vw, 80px);
+  min-height: 100vh;
+  height: auto !important;
+  background: radial-gradient(circle at 20% 20%, rgba(12, 20, 36, 0.95), rgba(3, 7, 18, 0.98));
+}
+
+.mission-root.mission-root--wide .mission-main {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  height: auto !important;
+  max-width: none !important;
+  padding: clamp(18px, 3vw, 36px) clamp(12px, 4vw, 48px) clamp(18px, 4vw, 48px);
+  border-radius: clamp(18px, 2vw, 42px);
+  gap: clamp(18px, 2vw, 32px);
+  background: rgba(3, 7, 18, 0.85);
+  box-shadow: 0 35px 140px rgba(2, 4, 15, 0.65);
+  overflow: visible !important;
+}
+
+.mission-root.mission-root--wide .mission-action-bar {
+  width: 100%;
+  margin: 0 auto clamp(12px, 2vw, 24px);
+}
+
+.mission-root.mission-root--wide .mission-action-bar button {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.mission-root.mission-root--wide .slice-hub {
+  width: 100%;
+  padding-right: 0;
+  max-height: none;
+}
+
+.mission-root.mission-root--wide .slice-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(20px, 2vw, 40px);
+  width: 100%;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card {
+  max-width: none;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card__body {
+  min-height: clamp(420px, 42vw, 620px);
+}
+
+.mission-root.mission-root--wide .rail,
+.mission-root.mission-root--wide .mission-mobile-nav,
+.mission-root.mission-root--wide .mobile-panel-overlay {
+  display: none !important;
 }
 
 /* Agent hangar overrides */
