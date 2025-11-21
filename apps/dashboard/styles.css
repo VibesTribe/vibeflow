@@ -151,53 +151,71 @@ a {
 .mission-root--wide {
   display: flex;
   flex-direction: column;
-  padding: clamp(16px, 3vw, 48px);
-  gap: clamp(16px, 2vw, 28px);
+  align-items: center;
+  gap: clamp(18px, 2vw, 32px);
+  padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 64px);
   min-height: 100vh;
-  height: auto;
+  background: radial-gradient(circle at 20% 20%, rgba(12, 20, 36, 0.95), rgba(3, 7, 18, 0.98));
 }
 
 .mission-root--wide .mission-main {
+  width: min(1400px, 100%);
   height: auto;
-  max-width: 1200px;
-  width: 100%;
+  max-height: none;
+  padding: 0 clamp(12px, 2vw, 28px);
   margin: 0 auto;
-  padding: 0 clamp(12px, 2vw, 24px);
+  overflow: visible;
 }
 
-.mission-root--wide .rail {
+.mission-root--wide .rail,
+.mission-root--wide .mission-mobile-nav,
+.mission-root--wide .mobile-panel-overlay {
   display: none !important;
+}
+
+.mission-root--wide .slice-hub {
+  width: 100%;
+}
+
+.mission-root--wide .slice-hub__grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(18px, 2vw, 32px);
+}
+
+.mission-root--wide .slice-orbit-card__body {
+  min-height: clamp(420px, 45vw, 640px);
+}
+
+.mission-root--wide .slice-orbit {
+  width: clamp(360px, 45vw, 520px);
+  height: clamp(360px, 45vw, 520px);
+}
+
+.mission-root--wide .slice-orbit__node {
+  transform: scale(1.08);
 }
 
 .mission-action-bar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
-  margin-bottom: clamp(12px, 2vw, 24px);
+  margin-bottom: clamp(14px, 2vw, 28px);
 }
 
 .mission-action-bar button {
   border-radius: 999px;
   padding: 10px 16px;
   border: 1px solid rgba(94, 234, 212, 0.4);
-  background: rgba(4, 7, 18, 0.8);
+  background: rgba(4, 7, 18, 0.9);
   color: rgba(241, 245, 249, 0.95);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
 }
 
-.mission-root--wide .slice-orbit-card__body {
-  min-height: clamp(460px, 60vw, 600px);
-}
-
-.mission-root--wide .slice-orbit {
-  width: clamp(360px, 60vw, 560px);
-  height: clamp(360px, 60vw, 560px);
-}
-
-.mission-root--wide .slice-orbit__node {
-  transform: scale(1.12);
+.mission-action-bar button:hover {
+  border-color: rgba(94, 234, 212, 0.7);
+  box-shadow: 0 4px 15px rgba(94, 234, 212, 0.15);
 }
 
 .mission-panel {
