@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { TaskSnapshot } from "@core/types";
 import MissionHeader from "./MissionHeader";
-import SliceDockPanel from "./SliceDockPanel";
-import AgentHangarPanel from "./AgentHangarPanel";
 import SliceHub from "./SliceHub";
 import ReviewPanel from "./ReviewPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
@@ -12,25 +10,7 @@ import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
 
-function usePrefersMobile(breakpoint = 900) {
-  const [isMobile, setIsMobile] = useState<boolean>(() => (typeof window === "undefined" ? false : window.innerWidth <= breakpoint));
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const media = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, [breakpoint]);
-
-  return isMobile;
-}
-
-type MobilePanelView = "slices" | "agents" | null;
-
 const VibesMissionControl: React.FC = () => {
-  const isMobile = usePrefersMobile();
   useEffect(() => {
     if (typeof document === "undefined") return;
     const htmlElement = document.documentElement;
@@ -66,7 +46,6 @@ const VibesMissionControl: React.FC = () => {
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
-  const [mobilePanel, setMobilePanel] = useState<MobilePanelView>(null);
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
 
   const snapshotTime = useMemo(() => {
@@ -80,15 +59,13 @@ const VibesMissionControl: React.FC = () => {
   const handleOpenLogs = () => setModal({ type: "logs" });
   const handleOpenModels = () => setModal({ type: "models" });
   const handleOpenRoi = () => setModal({ type: "roi" });
-  const handleOpenAdd = () => setModal({ type: "add" });
+  const handleOpenAdmin = () => setModal({ type: "add" });
   const handleSelectAgent = (agent: MissionAgent) => setModal({ type: "agent", agent });
   const handleOpenAssignmentDetail = useCallback((assignment: SliceAssignment, slice: MissionSlice) => {
     setModal({ type: "assignment", assignment, slice });
   }, []);
   const handleSelectSlice = (slice: MissionSlice) => setModal({ type: "slice", slice });
   const handleCloseModal = () => setModal({ type: null });
-  const handleOpenMobilePanel = (panel: MobilePanelView) => setMobilePanel(panel);
-  const handleCloseMobilePanel = () => setMobilePanel(null);
 
   const reviewItems = useMemo<ReviewQueueItem[]>(() => {
     if (!reviews || reviews.length === 0) {
@@ -144,14 +121,7 @@ const VibesMissionControl: React.FC = () => {
   }, [refreshReviews, workflowDispatch]);
 
   return (
-    <div className="mission-root">
-      <SliceDockPanel
-        slices={slices}
-        loading={loading.snapshot}
-        onViewDocs={handleOpenDocs}
-        onViewLogs={handleOpenLogs}
-        onSelectSlice={handleSelectSlice}
-      />
+    <div className="mission-root mission-root--wide">
       <main className="mission-main">
         <MissionHeader
           statusSummary={statusSummary}
@@ -163,35 +133,22 @@ const VibesMissionControl: React.FC = () => {
           onOpenTokens={handleOpenRoi}
           onOpenReviewTask={openReviewByTask}
         />
-        {isMobile && (
-          <div className="mission-mobile-nav">
-            <div className="mission-mobile-nav__group">
-              <button type="button" className="mission-mobile-nav__button" onClick={handleOpenLogs}>
-                Logs
-              </button>
-              <button type="button" className="mission-mobile-nav__button" onClick={handleOpenDocs}>
-                Docs
-              </button>
-              <button type="button" className="mission-mobile-nav__button" onClick={() => handleOpenMobilePanel("slices")}>
-                Tasks
-              </button>
-            </div>
-            <div className="mission-mobile-nav__group">
-              <button type="button" className="mission-mobile-nav__button" onClick={handleOpenModels}>
-                Models
-              </button>
-              <button type="button" className="mission-mobile-nav__button" onClick={handleOpenAdd}>
-                Add
-              </button>
-              <button type="button" className="mission-mobile-nav__button" onClick={() => handleOpenMobilePanel("agents")}>
-                Agents
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="mission-action-bar" role="navigation" aria-label="Mission controls">
+          <button type="button" onClick={handleOpenLogs}>
+            Logs
+          </button>
+          <button type="button" onClick={handleOpenDocs}>
+            Docs
+          </button>
+          <button type="button" onClick={handleOpenModels}>
+            Models
+          </button>
+          <button type="button" onClick={handleOpenAdmin}>
+            Admin
+          </button>
+        </div>
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
-      <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
       <MissionModals
         modal={modal}
         onClose={handleCloseModal}
@@ -202,28 +159,6 @@ const VibesMissionControl: React.FC = () => {
         onSelectAgent={handleSelectAgent}
         onShowModels={handleOpenModels}
       />
-      {isMobile && mobilePanel && (
-        <div className="mobile-panel-overlay">
-          <button type="button" className="mobile-panel-overlay__close" aria-label="Close panel" onClick={handleCloseMobilePanel}>
-            {"\u00D7"}
-          </button>
-          <div className="mobile-panel-overlay__body">
-            <div className="mobile-panel-overlay__content" data-panel={mobilePanel}>
-              {mobilePanel === "slices" ? (
-                <SliceDockPanel
-                  slices={slices}
-                  loading={loading.snapshot}
-                  onViewDocs={handleOpenDocs}
-                  onViewLogs={handleOpenLogs}
-                  onSelectSlice={handleSelectSlice}
-                />
-              ) : (
-                <AgentHangarPanel agents={agents} loading={loading.snapshot} onViewAll={handleOpenModels} onAdd={handleOpenAdd} onSelectAgent={handleSelectAgent} />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
       {selectedReview && (
         <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />
       )}
@@ -232,5 +167,3 @@ const VibesMissionControl: React.FC = () => {
 };
 
 export default VibesMissionControl;
-
-
