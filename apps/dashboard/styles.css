@@ -175,11 +175,19 @@ a {
 
 .mission-root--wide .slice-hub {
   width: 100%;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
 }
 
 .mission-root--wide .slice-hub__grid {
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: clamp(18px, 2vw, 32px);
+  width: 100%;
+}
+
+.mission-root--wide .slice-orbit-card {
+  max-width: none;
 }
 
 .mission-root--wide .slice-orbit-card__body {
@@ -8057,4 +8065,7 @@ a {
 .mission-modal__close {
   z-index: 20 !important;
 }
+
+
+
 
