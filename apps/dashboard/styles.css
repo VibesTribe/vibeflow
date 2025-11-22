@@ -2065,14 +2065,14 @@ a {
   gap: 10px;
   width: 100%;
   padding: 0;
-  margin: 0;
+  margin: 16px 0 0;
 }
 
 .mission-header__stat-pill {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 6px 14px 7px;
+  padding: 5px 12px 6px;
   border-radius: 999px;
   border: 1.5px solid rgba(94, 234, 212, 0.35);
   background: rgba(5, 10, 21, 0.9);
@@ -2089,7 +2089,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 4px;
   width: 100%;
   line-height: 1.1;
 }
@@ -2097,7 +2097,7 @@ a {
 .mission-header__stat-primary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.56rem;
@@ -2108,19 +2108,21 @@ a {
 }
 
 .mission-header__stat-label {
-  font-size: 0.66rem;
-  letter-spacing: 0.12em;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
 }
 
 .mission-header__stat-value {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   letter-spacing: 0.04em;
   color: #f8fafc;
-  align-self: flex-start;
+  align-self: center;
+  font-weight: 700;
 }
 
 .mission-header__stat-icon {
-  font-size: 0.72rem;
+  font-size: 1.25rem;
 }
 
 @media (min-width: 900px) {
@@ -2128,7 +2130,7 @@ a {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: nowrap;
   }
 
