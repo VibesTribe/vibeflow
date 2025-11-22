@@ -239,7 +239,7 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
-  margin-bottom: clamp(10px, 1.5vw, 20px);
+  margin-bottom: clamp(6px, 1vw, 14px);
 }
 
 .mission-action-bar button {
@@ -663,6 +663,7 @@ a {
   align-items: flex-start;
   border-bottom: none !important;
   border-radius: 0 !important;
+  padding: 10px 0 10px;
 }
 
 .mission-header__left {
@@ -2044,7 +2045,7 @@ a {
 .mission-header__left {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   flex: 1;
 }
 
@@ -2216,26 +2217,28 @@ a {
 }
 
 .mission-progress__meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  display: none;
 }
 
 .mission-progress__value {
   font-size: 0.9rem;
 }
 
-.mission-progress__timestamp {
-  font-size: 0.7rem;
+.mission-progress__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mission-progress__value-inline {
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fefad8;
 }
 
 .mission-progress__timestamp {
-  font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.9);
+  display: none;
 }
 
 .mission-progress__tokens-inline {

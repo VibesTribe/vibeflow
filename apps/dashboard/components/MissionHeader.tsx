@@ -425,12 +425,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           aria-label="Project tasks & progress"
         >
           <div className="mission-progress__header">
-            <div className="mission-progress__label">Project tasks &amp; progress</div>
-            <div className="mission-progress__meta">
-              <span className="mission-progress__value">{progress}%</span>
-              <span className="mission-header__timestamp mission-progress__timestamp" aria-label="Last snapshot time">
-                {snapshotTime}
-              </span>
+            <div className="mission-progress__label">
+              Project tasks &amp; progress
+              <span className="mission-progress__value-inline">{progress}%</span>
             </div>
           </div>
           <div className="mission-progress__track">
