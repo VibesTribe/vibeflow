@@ -288,17 +288,17 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       </div>
       <div className="mission-header__content">
         <div className="mission-header__tasks-row" role="group" aria-label="Mission snapshot">
-          {pills.map((pill) => (
-            <button
-              key={pill.key}
-              type="button"
-              className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
-              title={pill.description}
-              aria-label={`${pill.label}: ${pill.value}`}
-              aria-expanded={activePill === pill.key}
-              data-active={activePill === pill.key ? "true" : "false"}
-              onClick={() => setActivePill((prev) => (prev === pill.key ? null : pill.key))}
-            >
+        {pills.map((pill) => (
+          <button
+            key={pill.key}
+            type="button"
+            className={`mission-header__stat-pill mission-header__stat-pill--${pill.tone}`}
+            title={pill.description}
+            aria-label={`${pill.label}: ${pill.value}`}
+            aria-expanded={activePill === pill.key}
+            data-active={activePill === pill.key ? "true" : "false"}
+            onClick={() => setActivePill((prev) => (prev === pill.key ? null : pill.key))}
+          >
               <div className="mission-header__stat-body">
                 <span className="mission-header__stat-primary">
                   <span className="mission-header__stat-icon" aria-hidden="true">
@@ -307,24 +307,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   <span className="mission-header__stat-label">{pill.label}</span>
                 </span>
                 <strong className="mission-header__stat-value">{pill.value}</strong>
-              </div>
-            </button>
-          ))}
-          <button
-            type="button"
-            className="mission-header__stat-pill mission-header__stat-pill--tokens"
-            title="Open ROI + token usage"
-            aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
-            onClick={onOpenTokens}
-          >
-            <div className="mission-header__stat-body">
-              <span className="mission-header__stat-primary">
-                <span className="mission-header__stat-label">Tokens</span>
-              </span>
-              <strong className="mission-header__stat-value">{formattedTokens}</strong>
             </div>
           </button>
-        </div>
+        ))}
+      </div>
         {activeDetail && (
           <div className="mission-header__pill-detail" role="region" aria-live="polite">
             <div className={`mission-header__pill-detail-card mission-header__pill-detail-card--${activeDetail.pill.tone}`}>
@@ -445,15 +431,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               <span className="mission-header__timestamp mission-progress__timestamp" aria-label="Last snapshot time">
                 {snapshotTime}
               </span>
-              <button
-                type="button"
-                className="mission-progress__tokens-inline"
-                onClick={onOpenTokens}
-                aria-label={`Open ROI + token usage: ${formattedTokens} tokens`}
-              >
-                <strong>{formattedTokens}</strong>
-                <span>tokens</span>
-              </button>
             </div>
           </div>
           <div className="mission-progress__track">
