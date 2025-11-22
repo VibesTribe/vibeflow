@@ -2121,6 +2121,25 @@ a {
   font-size: 0.72rem;
 }
 
+@media (min-width: 900px) {
+  .mission-header__stat-body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+
+  .mission-header__stat-primary {
+    flex: 0 1 auto;
+  }
+
+  .mission-header__stat-value {
+    align-self: center;
+    white-space: nowrap;
+  }
+}
+
 .mission-header__stat-pill--tokens {
   border: 2px solid rgba(120, 230, 255, 0.35);
   background: rgba(6, 11, 22, 0.95);
@@ -6302,17 +6321,17 @@ a {
 }
 
 .slice-orbit {
-  width: 220px !important;
-  height: 220px !important;
+  width: 440px !important;
+  height: 440px !important;
   position: relative !important;
-  margin: 0 auto 12px !important;
+  margin: 0 auto 20px !important;
   border: none !important;
   display: block !important;
   overflow: visible !important;
   min-height: auto !important;
   z-index: 0 !important;
-  --slice-core-size: 110px;
-  --slice-ring-thickness: 6px;
+  --slice-core-size: 200px;
+  --slice-ring-thickness: 10px;
   --slice-ring-offset: calc((100% - var(--slice-core-size)) / 2);
 }
 
@@ -6354,7 +6373,7 @@ a {
 
 .slice-orbit__connector {
   stroke: rgba(137, 255, 255, 0.95) !important;
-  stroke-width: 2.8 !important;
+  stroke-width: 4.2 !important;
   stroke-dasharray: 6 4 !important;
   stroke-linecap: round !important;
   vector-effect: non-scaling-stroke !important;
@@ -6391,19 +6410,19 @@ a {
 }
 
 .slice-orbit__name {
-  font-size: 0.68rem !important;
+  font-size: 1.05rem !important;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .slice-orbit__value {
-  font-size: 0.76rem !important;
+  font-size: 1.25rem !important;
   letter-spacing: 0.08em;
   color: var(--slice-orbit-core-value) !important;
 }
 
 .slice-orbit__tokens {
-  font-size: 0.58rem !important;
+  font-size: 0.82rem !important;
   letter-spacing: 0.2em;
   color: var(--slice-orbit-core-tokens) !important;
 }
@@ -6411,8 +6430,8 @@ a {
 .slice-orbit__node {
   position: absolute !important;
   transform: translate(-50%, -50%) !important;
-  width: 44px !important;
-  height: 44px !important;
+  width: 84px !important;
+  height: 84px !important;
   margin: 0 !important;
   border-radius: 50% !important;
   background: transparent !important;
@@ -6432,8 +6451,8 @@ a {
 
 .slice-orbit__core {
   position: relative !important;
-  width: 36px !important;
-  height: 36px !important;
+  width: 72px !important;
+  height: 72px !important;
   border-radius: 50% !important;
   border: 1px solid rgba(148, 163, 184, 0.35) !important;
   background: radial-gradient(circle at 32% 28%, rgba(248, 250, 252, 0.16), rgba(6, 12, 26, 0.95)) !important;
@@ -6461,8 +6480,8 @@ a {
 
 .slice-orbit__avatar {
   z-index: 1;
-  width: 26px !important;
-  height: 26px !important;
+  width: 52px !important;
+  height: 52px !important;
   border-radius: 50%;
   border: none !important;
   background: transparent !important;
@@ -6474,8 +6493,8 @@ a {
   bottom: -4px !important;
   left: 50% !important;
   transform: translate(-50%, 0) !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 22px !important;
+  height: 22px !important;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -7774,6 +7793,16 @@ a {
 .mission-root.mission-root--wide .mission-action-bar button {
   font-size: 0.75rem;
   letter-spacing: 0.2em;
+}
+
+.mission-root.mission-root--wide .slice-hub__grid {
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  align-items: flex-start;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card__body {
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .mission-root.mission-root--wide .slice-hub {
