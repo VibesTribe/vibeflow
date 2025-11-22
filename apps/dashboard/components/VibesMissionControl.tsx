@@ -13,6 +13,9 @@ import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
 const VibesMissionControl: React.FC = () => {
   useEffect(() => {
     if (typeof document === "undefined") return;
+    if (document.querySelector(".mission-root--wide")) {
+      return;
+    }
     const htmlElement = document.documentElement;
     const fallbackBody = document.body;
     if (!(htmlElement instanceof HTMLElement) || !(fallbackBody instanceof HTMLElement)) {

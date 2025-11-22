@@ -43,7 +43,8 @@ body#dummybodyid {
   margin: 0;
   height: 100% !important;
   width: 100% !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   scrollbar-width: none;
   overscroll-behavior: none;
 }
