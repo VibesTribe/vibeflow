@@ -2238,6 +2238,18 @@ a {
   color: #fefad8;
 }
 
+.mission-header__stat-pill--tokens {
+  border: 2px solid rgba(120, 230, 255, 0.45);
+  background: rgba(6, 11, 22, 0.95);
+  box-shadow: 0 10px 24px rgba(2, 6, 16, 0.55);
+}
+
+.mission-header__stat-value--tokens {
+  color: #fefad8;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
 .mission-progress__timestamp {
   display: none;
 }
@@ -7634,7 +7646,7 @@ a {
 
 /* Final spacing and modal readability overrides */
 .mission-header {
-  padding: 0 0 2px !important;
+  padding: 0 !important;
 }
 
 .mission-header__left {
@@ -7652,8 +7664,16 @@ a {
 }
 
 .mission-root.mission-root--wide .mission-main {
-  padding: clamp(4px, 2vw, 16px) clamp(8px, 3vw, 32px) clamp(8px, 2.6vw, 22px) !important;
-  gap: clamp(10px, 1.4vw, 18px) !important;
+  padding: clamp(2px, 1.6vw, 12px) clamp(6px, 2.6vw, 26px) clamp(6px, 2.2vw, 18px) !important;
+  gap: clamp(8px, 1.2vw, 14px) !important;
+}
+
+.slice-hub {
+  padding-bottom: 0 !important;
+}
+
+.slice-orbit-card__body {
+  padding-bottom: 6px !important;
 }
 
 .model-panel__legend-row {

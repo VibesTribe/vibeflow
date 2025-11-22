@@ -310,6 +310,20 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             </div>
           </button>
         ))}
+        <button
+          type="button"
+          className="mission-header__stat-pill mission-header__stat-pill--tokens"
+          title="Open ROI + token usage"
+          aria-label={`Open ROI + token usage`}
+          onClick={onOpenTokens}
+        >
+          <div className="mission-header__stat-body">
+            <span className="mission-header__stat-primary">
+              <span className="mission-header__stat-label">Tokens</span>
+            </span>
+            <strong className="mission-header__stat-value mission-header__stat-value--tokens">ROI</strong>
+          </div>
+        </button>
       </div>
         {activeDetail && (
           <div className="mission-header__pill-detail" role="region" aria-live="polite">
