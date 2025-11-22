@@ -2039,7 +2039,7 @@ a {
   justify-content: space-between;
   align-items: stretch;
   gap: 32px;
-  padding: 18px 0 12px;
+  padding: 8px 0 6px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 }
 
@@ -2787,27 +2787,26 @@ a {
   align-items: center;
   gap: 6px;
   letter-spacing: 0.12em;
-  border: 1px solid transparent;
+  border: 1px solid currentColor;
   border-radius: 999px;
-  padding: 4px 10px;
-  background: transparent;
+  padding: 4px 12px;
+  background: rgba(12, 18, 32, 0.4);
   color: rgba(240, 246, 255, 0.92);
   font-size: 0.78rem;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .status-dot.is-active {
-  border-color: rgba(226, 232, 240, 0.4);
-  background: rgba(12, 18, 32, 0.6);
+  border-color: rgba(226, 232, 240, 0.6);
+  background: rgba(12, 18, 32, 0.75);
 }
 .status-dot__icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1px solid currentColor;
-  display: grid;
-  place-items: center;
-  font-size: 0.58rem;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: none;
+  display: inline-flex;
+  font-size: 0.78rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -3006,7 +3005,8 @@ a {
 }
 
 .model-panel__stat--assigned {
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(220, 234, 255, 0.92);
+  font-size: 0.86rem !important;
 }
 
 .model-panel__stat--success {
@@ -3027,10 +3027,10 @@ a {
 
 .model-panel__recent-activity p {
   margin: 0 0 6px;
-  font-size: 0.65rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(225, 235, 255, 0.92);
 }
 
 .model-panel__recent-activity ul {
@@ -3038,7 +3038,9 @@ a {
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 4px;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: rgba(240, 246, 255, 0.96);
 }
 
 .model-panel__meta {
