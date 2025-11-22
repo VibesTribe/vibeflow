@@ -239,7 +239,8 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
-  margin-bottom: clamp(4px, 0.8vw, 10px);
+  margin-bottom: clamp(2px, 0.6vw, 8px);
+  margin-top: 4px;
 }
 
 .mission-action-bar button {
@@ -663,7 +664,7 @@ a {
   align-items: flex-start;
   border-bottom: none !important;
   border-radius: 0 !important;
-  padding: 10px 0 10px;
+  padding: 6px 0 8px;
 }
 
 .mission-header__left {
@@ -2045,7 +2046,7 @@ a {
 .mission-header__left {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   flex: 1;
 }
 
@@ -2678,7 +2679,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: rgba(148, 163, 184, 0.75);
@@ -2696,7 +2697,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
   color: rgba(226, 232, 240, 0.85);
   border: 1px solid rgba(148, 163, 184, 0.35);
@@ -2746,8 +2747,9 @@ a {
 }
 
 .model-panel {
-  padding-top: 8px;
-  margin-top: 8px;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 0.95rem;
 }
 .mission-modal--models .model-panel {
   padding-top: 0;
@@ -2778,7 +2780,7 @@ a {
   padding: 4px 10px;
   background: transparent;
   color: rgba(226, 232, 240, 0.85);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
@@ -3752,8 +3754,8 @@ a {
   gap: 12px;
   padding: 4px 0;
   border-bottom: 1px solid rgba(94, 234, 255, 0.12);
-  font-size: 0.82rem;
-  color: rgba(240, 246, 255, 0.95);
+  font-size: 0.86rem;
+  color: rgba(245, 250, 255, 0.98);
 }
 
 .assignment-detail__section--inline .assignment-detail__row:last-child {
@@ -4714,6 +4716,7 @@ a {
   align-items: flex-start;
   margin-left: 0;
   width: 100%;
+  margin-bottom: 2px;
 }
 
 .mission-progress__track {
@@ -7856,9 +7859,9 @@ a {
   margin: 0 auto;
   height: auto !important;
   max-width: none !important;
-  padding: clamp(12px, 2.6vw, 28px) clamp(10px, 3.4vw, 42px) clamp(12px, 3.2vw, 32px);
+  padding: clamp(8px, 2.2vw, 22px) clamp(10px, 3.2vw, 38px) clamp(10px, 2.8vw, 26px);
   border-radius: clamp(18px, 2vw, 42px);
-  gap: clamp(18px, 2vw, 32px);
+  gap: clamp(12px, 1.8vw, 22px);
   background: rgba(3, 7, 18, 0.85);
   box-shadow: 0 35px 140px rgba(2, 4, 15, 0.65);
   overflow: visible !important;
