@@ -2039,7 +2039,7 @@ a {
   justify-content: space-between;
   align-items: stretch;
   gap: 32px;
-  padding: 8px 0 6px;
+  padding: 4px 0 4px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 }
 
@@ -2789,7 +2789,7 @@ a {
   letter-spacing: 0.12em;
   border: 1px solid currentColor;
   border-radius: 999px;
-  padding: 4px 12px;
+  padding: 3px 10px;
   background: rgba(12, 18, 32, 0.4);
   color: rgba(240, 246, 255, 0.92);
   font-size: 0.78rem;
@@ -2806,9 +2806,13 @@ a {
   border-radius: 0;
   border: none;
   display: inline-flex;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   line-height: 1;
+}
+
+.status-dot--credit .status-dot__icon {
+  color: #f59e0b;
 }
 .status-dot--ready {
   color: var(--status-ready);
@@ -3039,8 +3043,8 @@ a {
   margin: 0;
   display: grid;
   gap: 6px;
-  font-size: 0.9rem;
-  color: rgba(240, 246, 255, 0.96);
+  font-size: 1rem;
+  color: rgba(245, 250, 255, 0.98);
 }
 
 .model-panel__meta {
@@ -6367,7 +6371,7 @@ a {
   width: 440px !important;
   height: 440px !important;
   position: relative !important;
-  margin: 6px auto 18px !important;
+  margin: 6px auto 6px !important;
   border: none !important;
   display: block !important;
   overflow: visible !important;
@@ -7666,8 +7670,8 @@ a {
 }
 
 .mission-root.mission-root--wide .mission-main {
-  padding: clamp(2px, 1.6vw, 12px) clamp(6px, 2.6vw, 26px) clamp(6px, 2.2vw, 18px) !important;
-  gap: clamp(8px, 1.2vw, 14px) !important;
+  padding: clamp(2px, 1.6vw, 12px) clamp(6px, 2.6vw, 26px) clamp(4px, 1.8vw, 12px) !important;
+  gap: clamp(6px, 1vw, 12px) !important;
 }
 
 .slice-hub {
@@ -7995,7 +7999,7 @@ a {
 .mission-root.mission-root--wide .slice-orbit-card__body {
   align-items: center;
   justify-content: flex-start;
-  padding-top: 24px;
+  padding-top: 14px;
 }
 
 .mission-root.mission-root--wide .slice-hub {
