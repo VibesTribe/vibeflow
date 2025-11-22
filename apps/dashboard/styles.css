@@ -2107,11 +2107,12 @@ a {
 }
 
 .mission-header__stat-label {
-  font-size: 0.56rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
 }
 
 .mission-header__stat-value {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   letter-spacing: 0.04em;
   color: #f8fafc;
   align-self: flex-start;
@@ -2138,6 +2139,13 @@ a {
     align-self: center;
     white-space: nowrap;
   }
+}
+
+.mission-header__subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #f8fafc;
+  margin-bottom: 10px;
 }
 
 .mission-header__stat-pill--tokens {
@@ -5436,18 +5444,18 @@ a {
 }
 
 .vibes-orb {
-  width: 50px;
-  height: 50px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: radial-gradient(circle at 40% 35%, rgba(250, 204, 21, 0.6), rgba(16, 10, 1, 0));
-  box-shadow: 0 0 18px rgba(250, 204, 21, 0.35);
+  box-shadow: 0 0 28px rgba(250, 204, 21, 0.5);
 }
 
 .vibes-orb__label {
-  font-size: 0.58rem;
-  letter-spacing: 0.28em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #fff8db;
 }
@@ -6235,17 +6243,17 @@ a {
 .mission-header__identity {
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 32px;
 }
 
 .mission-header__titles {
-  margin-left: 6px;
+  margin-left: 24px;
 }
 
 .mission-header__content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   padding-left: 0;
   width: 100%;
 }
@@ -6324,7 +6332,7 @@ a {
   width: 440px !important;
   height: 440px !important;
   position: relative !important;
-  margin: 0 auto 20px !important;
+  margin: 10px auto 20px !important;
   border: none !important;
   display: block !important;
   overflow: visible !important;
@@ -6536,8 +6544,8 @@ a {
   left: 50% !important;
   transform: translateX(-50%) !important;
   margin: 0 !important;
-  font-size: 0.46rem !important;
-  letter-spacing: 0.1em !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
   color: #f8fafc !important;
   white-space: nowrap !important;
   line-height: 1 !important;
@@ -6551,8 +6559,8 @@ a {
   transform: translateX(-50%) !important;
   margin: 0 !important;
   max-width: 96px !important;
-  font-size: 0.42rem !important;
-  letter-spacing: 0.05em !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.08em !important;
   color: rgba(226, 232, 240, 0.85) !important;
   white-space: nowrap !important;
   overflow: hidden !important;
