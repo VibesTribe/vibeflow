@@ -33,8 +33,10 @@
 
 
 #root {
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 html,
@@ -6578,8 +6580,10 @@ a {
   color: #f8fafc !important;
 }
 #root {
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 .mission-root .rail__button,
 .mission-root .rail__button--primary,
