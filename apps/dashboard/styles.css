@@ -239,7 +239,7 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
-  margin-bottom: clamp(14px, 2vw, 28px);
+  margin-bottom: clamp(10px, 1.5vw, 20px);
 }
 
 .mission-action-bar button {
@@ -2044,7 +2044,7 @@ a {
 .mission-header__left {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   flex: 1;
 }
 
@@ -2067,7 +2067,7 @@ a {
   gap: 10px;
   width: 100%;
   padding: 0;
-  margin: 18px 0 0;
+  margin: 12px 0 0;
 }
 
 .mission-header__stat-pill {
@@ -4707,7 +4707,7 @@ a {
 .mission-progress {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   align-items: flex-start;
   margin-left: 0;
   width: 100%;
@@ -6338,8 +6338,8 @@ a {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: 18px !important;
-  padding: 18px 0 14px !important;
+  gap: 12px !important;
+  padding: 10px 0 12px !important;
 }
 
 .slice-orbit {
@@ -7863,7 +7863,7 @@ a {
 
 .mission-root.mission-root--wide .mission-action-bar {
   width: 100%;
-  margin: clamp(4px, 0.8vw, 10px) auto clamp(8px, 1.6vw, 14px);
+  margin: clamp(2px, 0.6vw, 8px) auto clamp(6px, 1.2vw, 12px);
 }
 
 .mission-root.mission-root--wide .mission-action-bar button {
