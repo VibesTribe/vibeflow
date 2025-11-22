@@ -239,8 +239,8 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
-  margin-bottom: clamp(2px, 0.6vw, 8px);
-  margin-top: 4px;
+  margin-bottom: clamp(0px, 0.5vw, 6px);
+  margin-top: 2px;
 }
 
 .mission-action-bar button {
@@ -664,7 +664,7 @@ a {
   align-items: flex-start;
   border-bottom: none !important;
   border-radius: 0 !important;
-  padding: 6px 0 8px;
+  padding: 2px 0 6px;
 }
 
 .mission-header__left {
@@ -2046,7 +2046,7 @@ a {
 .mission-header__left {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 }
 
@@ -2679,10 +2679,10 @@ a {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(198, 218, 255, 0.85);
   margin: 0 0 12px;
 }
 .model-panel__legend-row {
@@ -2697,9 +2697,9 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.12em;
-  color: rgba(226, 232, 240, 0.85);
+  color: rgba(240, 246, 255, 0.92);
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 999px;
   padding: 4px 10px;
@@ -2749,7 +2749,7 @@ a {
 .model-panel {
   padding-top: 10px;
   margin-top: 10px;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 .mission-modal--models .model-panel {
   padding-top: 0;
@@ -2779,8 +2779,8 @@ a {
   border-radius: 999px;
   padding: 4px 10px;
   background: transparent;
-  color: rgba(226, 232, 240, 0.85);
-  font-size: 0.7rem;
+  color: rgba(240, 246, 255, 0.92);
+  font-size: 0.78rem;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
@@ -2962,21 +2962,21 @@ a {
 
 .model-panel__metrics p {
   margin: 2px 0;
-  font-size: 0.7rem;
-  color: rgba(226, 232, 240, 0.82);
+  font-size: 0.78rem;
+  color: rgba(240, 246, 255, 0.9);
 }
 
 .model-panel__working {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(198, 218, 255, 0.9);
 }
 
 .model-panel__context,
 .model-panel__cooldown {
-  font-size: 0.68rem;
-  color: rgba(226, 232, 240, 0.7);
+  font-size: 0.74rem;
+  color: rgba(220, 230, 245, 0.78);
 }
 
 .model-panel__stats-row {
@@ -2988,7 +2988,7 @@ a {
 }
 
 .model-panel__stat {
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -4717,6 +4717,7 @@ a {
   margin-left: 0;
   width: 100%;
   margin-bottom: 2px;
+  margin-top: 2px;
 }
 
 .mission-progress__track {
