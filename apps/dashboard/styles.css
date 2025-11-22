@@ -2067,7 +2067,7 @@ a {
   gap: 10px;
   width: 100%;
   padding: 0;
-  margin: 22px 0 0;
+  margin: 18px 0 0;
 }
 
 .mission-header__stat-pill {
@@ -2117,7 +2117,7 @@ a {
 }
 
 .mission-header__stat-value {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   letter-spacing: 0.04em;
   color: #f8fafc;
   align-self: center;
@@ -2221,6 +2221,14 @@ a {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.mission-progress__value {
+  font-size: 0.9rem;
+}
+
+.mission-progress__timestamp {
+  font-size: 0.7rem;
 }
 
 .mission-progress__timestamp {
@@ -6330,15 +6338,15 @@ a {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: 22px !important;
-  padding: 28px 0 22px !important;
+  gap: 18px !important;
+  padding: 18px 0 14px !important;
 }
 
 .slice-orbit {
   width: 440px !important;
   height: 440px !important;
   position: relative !important;
-  margin: 18px auto 24px !important;
+  margin: 6px auto 18px !important;
   border: none !important;
   display: block !important;
   overflow: visible !important;
@@ -6576,6 +6584,10 @@ a {
   line-height: 1.2 !important;
   text-shadow: 0 0 8px rgba(2, 6, 23, 0.85) !important;
   z-index: 5 !important;
+  padding: 2px 6px !important;
+  border-radius: 10px !important;
+  background: rgba(4, 10, 22, 0.6) !important;
+  backdrop-filter: blur(2px);
 }
 
 .slice-orbit__node--west .slice-orbit__model,
@@ -7851,7 +7863,7 @@ a {
 
 .mission-root.mission-root--wide .mission-action-bar {
   width: 100%;
-  margin: clamp(6px, 1vw, 12px) auto clamp(10px, 2vw, 20px);
+  margin: clamp(4px, 0.8vw, 10px) auto clamp(8px, 1.6vw, 14px);
 }
 
 .mission-root.mission-root--wide .mission-action-bar button {

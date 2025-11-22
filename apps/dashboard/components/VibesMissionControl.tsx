@@ -140,11 +140,11 @@ const VibesMissionControl: React.FC = () => {
           <button type="button" onClick={handleOpenLogs}>
             Logs
           </button>
-          <button type="button" onClick={handleOpenDocs}>
-            Docs
-          </button>
           <button type="button" onClick={handleOpenModels}>
             Models
+          </button>
+          <button type="button" onClick={handleOpenDocs}>
+            Docs
           </button>
           <button type="button" onClick={handleOpenAdmin}>
             Admin
