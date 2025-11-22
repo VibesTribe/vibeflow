@@ -7631,6 +7631,87 @@ a {
     padding: 4px 6px;
   }
 }
+
+/* Final spacing and modal readability overrides */
+.mission-header {
+  padding: 0 0 2px !important;
+}
+
+.mission-header__left {
+  gap: 0 !important;
+}
+
+.mission-progress {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.mission-action-bar {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.mission-root.mission-root--wide .mission-main {
+  padding: clamp(4px, 2vw, 16px) clamp(8px, 3vw, 32px) clamp(8px, 2.6vw, 22px) !important;
+  gap: clamp(10px, 1.4vw, 18px) !important;
+}
+
+.model-panel__legend-row {
+  flex-wrap: nowrap;
+  gap: 14px;
+}
+
+@media (max-width: 1100px) {
+  .model-panel__legend-row {
+    flex-wrap: wrap;
+  }
+}
+
+.model-panel__vendor {
+  font-size: 0.7rem;
+  color: rgba(220, 230, 245, 0.88);
+}
+
+.model-panel__legend,
+.model-panel__legend-badge,
+.status-dot {
+  color: rgba(240, 246, 255, 0.92) !important;
+}
+
+.model-panel__metrics p {
+  font-size: 0.82rem !important;
+  color: rgba(245, 250, 255, 0.96) !important;
+}
+
+.model-panel__working {
+  font-size: 0.8rem !important;
+  color: rgba(225, 235, 255, 0.92) !important;
+}
+
+.model-panel__context,
+.model-panel__cooldown {
+  font-size: 0.78rem !important;
+  color: rgba(230, 238, 250, 0.88) !important;
+}
+
+.model-panel__stat {
+  font-size: 0.82rem !important;
+}
+
+.model-panel__recent-activity p {
+  font-size: 0.74rem !important;
+  color: rgba(220, 230, 245, 0.88) !important;
+}
+
+.model-panel__recent-activity ul {
+  font-size: 0.8rem !important;
+  color: rgba(240, 246, 255, 0.95) !important;
+}
+
+.model-panel__meta {
+  font-size: 0.74rem !important;
+  color: rgba(220, 230, 245, 0.88) !important;
+}
 .mission-mobile-nav {
   display: none;
   margin: 0 0 2px;
