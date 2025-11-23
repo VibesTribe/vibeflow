@@ -3873,13 +3873,19 @@ a {
 }
 
 .slice-panel__header {
+  position: sticky;
+  top: var(--modal-sticky-offset);
+  z-index: 12;
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
   flex-wrap: wrap;
   padding-bottom: 12px;
+  padding-top: 8px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.16);
+  background: rgba(8, 11, 22, 1);
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.55);
 }
 
 .slice-panel__summary {
