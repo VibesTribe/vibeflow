@@ -1518,7 +1518,7 @@ a {
 .mission-modal__section--sticky::before {
   content: "";
   position: sticky;
-  top: calc(var(--modal-sticky-offset) - 16px);
+  top: 0;
   display: block;
   height: calc(var(--modal-sticky-offset) + 32px);
   margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 32px));
