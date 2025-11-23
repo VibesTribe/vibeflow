@@ -3268,6 +3268,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-top: 24px;
 }
 
 .agent-panel__line {
@@ -3737,7 +3738,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 
 .assignment-detail__header {
@@ -3819,6 +3820,7 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.12);
   border-radius: 16px;
   padding: 16px;
+  margin-top: 14px;
 }
 
 .assignment-detail__section h4 {
