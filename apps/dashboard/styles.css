@@ -1409,6 +1409,7 @@ a {
 }
 
 .mission-modal {
+  --modal-sticky-offset: 56px;
   width: min(520px, calc(100% - 32px));
   max-height: calc(100vh - 80px);
   background: rgba(8, 11, 22, 0.95);
@@ -1420,7 +1421,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  scroll-padding-top: 8px;
+  scroll-padding-top: var(--modal-sticky-offset);
 }
 
 .mission-modal::before {
@@ -1450,12 +1451,8 @@ a {
 }
 
 .mission-modal--models {
-  scroll-padding-top: 0;
-  padding-top: 0;
-}
-.mission-modal--models::before,
-.mission-modal--models::after {
-  display: none;
+  --modal-sticky-offset: 64px;
+  padding-top: 4px;
 }
 
 .mission-modal__controls {
@@ -1509,7 +1506,7 @@ a {
 .mission-modal__section--sticky > header,
 .mission-modal__section--sticky > h3 {
   position: sticky;
-  top: 16px;
+  top: var(--modal-sticky-offset);
   background: rgba(8, 11, 22, 1);
   z-index: 11;
   margin-top: 0;
@@ -1521,10 +1518,10 @@ a {
 .mission-modal__section--sticky::before {
   content: "";
   position: sticky;
-  top: 0;
+  top: calc(var(--modal-sticky-offset) - 16px);
   display: block;
-  height: 84px;
-  margin-bottom: -84px;
+  height: calc(var(--modal-sticky-offset) + 32px);
+  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 32px));
   background: rgba(8, 11, 22, 1);
   z-index: 10;
   pointer-events: none;
@@ -1544,7 +1541,7 @@ a {
 }
 .mission-modal--models .mission-modal__section--sticky > header,
 .mission-modal--models .mission-modal__section--sticky > h3 {
-  top: 0;
+  top: var(--modal-sticky-offset);
 }
 
 .mission-modal__section--sticky > h3 {
