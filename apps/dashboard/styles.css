@@ -3138,11 +3138,17 @@ a {
 }
 
 .agent-panel__hero {
+  position: sticky;
+  top: var(--modal-sticky-offset);
+  z-index: 12;
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: flex-start;
   margin-bottom: 12px;
+  padding: 8px 0 12px;
+  background: rgba(8, 11, 22, 1);
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.55);
 }
 
 .agent-panel__title-row {
