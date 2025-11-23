@@ -1527,18 +1527,6 @@ a {
   pointer-events: none;
 }
 
-.mission-modal--models {
-  background: rgba(8, 11, 22, 1);
-  padding-top: 0;
-  scroll-padding-top: 0;
-}
-.mission-modal--models::before,
-.mission-modal--models::after {
-  display: none;
-}
-.mission-modal--models .mission-modal__section--sticky::before {
-  display: none;
-}
 .mission-modal--models .mission-modal__section--sticky > header,
 .mission-modal--models .mission-modal__section--sticky > h3 {
   top: var(--modal-sticky-offset);
