@@ -1515,6 +1515,10 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-top: 10px;
+}
+.mission-modal__section:first-of-type {
+  padding-top: calc(var(--modal-sticky-offset) + 12px);
 }
 
 .mission-modal__section--sticky > header,
@@ -2856,6 +2860,7 @@ a {
 .model-panel__list {
   display: grid;
   gap: 16px;
+  padding-top: 40px;
 }
 
 .model-panel__legend-row--badges {
@@ -3268,7 +3273,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 24px;
+  padding-top: 32px;
 }
 
 .agent-panel__line {
@@ -3738,7 +3743,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 20px;
+  padding-top: 26px;
 }
 
 .assignment-detail__header {
@@ -3912,6 +3917,7 @@ a {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 18px;
+  padding-top: 20px;
 }
 
 .slice-panel__header {
@@ -4028,7 +4034,7 @@ a {
 .slice-task-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 16px 0 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
