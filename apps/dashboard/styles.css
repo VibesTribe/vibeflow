@@ -2807,7 +2807,6 @@ a {
   border-radius: 0;
   border: none;
   display: inline-flex;
-  color: inherit;
   font-size: 0.7rem;
   font-weight: 700;
   line-height: 1;
@@ -2824,24 +2823,39 @@ a {
   font-size: 0.78rem;
 }
 .status-dot--ready {
-  color: #34d399;
+  color: rgba(240, 246, 255, 0.92);
   border-color: #34d399;
 }
 .status-dot--active {
-  color: #38bdf8;
+  color: rgba(240, 246, 255, 0.92);
   border-color: #38bdf8;
 }
 .status-dot--cooldown {
-  color: #fbbf24;
-  border-color: #fbbf24;
+  color: rgba(240, 246, 255, 0.92);
+  border-color: #fde047;
 }
 .status-dot--credit {
-  color: #f59e0b;
+  color: rgba(240, 246, 255, 0.92);
   border-color: #f59e0b;
 }
 .status-dot--issue {
-  color: #fb923c;
+  color: rgba(240, 246, 255, 0.92);
   border-color: #fb7185;
+}
+.status-dot--ready .status-dot__icon {
+  color: #34d399;
+}
+.status-dot--active .status-dot__icon {
+  color: #38bdf8;
+}
+.status-dot--cooldown .status-dot__icon {
+  color: #fde047;
+}
+.status-dot--credit .status-dot__icon {
+  color: #f59e0b;
+}
+.status-dot--issue .status-dot__icon {
+  color: #fb7185;
 }
 
 .model-panel__list {
@@ -3057,16 +3071,16 @@ a {
   margin: 0;
   display: grid;
   gap: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: rgba(240, 246, 255, 0.96);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(191, 219, 254, 0.96);
 }
 
 .model-panel__recent-activity ul a {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: rgba(191, 219, 254, 0.96);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .model-panel__meta {
@@ -3084,9 +3098,9 @@ a {
   display: grid;
   grid-template-columns: 1fr auto auto;
   gap: 6px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   letter-spacing: 0.02em;
-  color: rgba(226, 232, 240, 0.94);
+  color: rgba(191, 219, 254, 0.92);
 }
 
 .model-panel__recent-item--success {
@@ -7752,16 +7766,16 @@ a {
 }
 
 .model-panel__recent-activity ul {
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.04em !important;
-  color: rgba(240, 246, 255, 0.96) !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(191, 219, 254, 0.96) !important;
 }
 
 .model-panel__recent-item {
-  font-size: 1rem !important;
+  font-size: 0.95rem !important;
   letter-spacing: 0.02em !important;
-  color: rgba(226, 232, 240, 0.94) !important;
+  color: rgba(191, 219, 254, 0.92) !important;
 }
 
 .model-panel__meta {
