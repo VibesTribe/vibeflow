@@ -1427,10 +1427,10 @@ a {
 .mission-modal::before {
   content: "";
   position: sticky;
-  top: 0;
+  top: -32px;
   display: block;
-  height: calc(var(--modal-sticky-offset) + 96px);
-  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 96px));
+  height: calc(var(--modal-sticky-offset) + 192px);
+  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 160px));
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 6;
@@ -1440,10 +1440,10 @@ a {
 .mission-modal::after {
   content: "";
   position: sticky;
-  top: 0;
+  top: -32px;
   display: block;
-  height: calc(var(--modal-sticky-offset) + 120px);
-  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 120px));
+  height: calc(var(--modal-sticky-offset) + 224px);
+  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 192px));
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 5;
