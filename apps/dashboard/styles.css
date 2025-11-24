@@ -2864,7 +2864,10 @@ a {
 }
 
 .model-panel__list > li:first-child {
-  margin-top: 36px;
+  margin-top: 96px;
+}
+.model-panel__item {
+  scroll-margin-top: 140px;
 }
 
 .model-panel__legend-row--badges {
