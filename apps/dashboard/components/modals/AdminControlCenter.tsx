@@ -5,7 +5,7 @@ type AdminTab = "Logs" | "Agents" | "Tools" | "Skills" | "Models" | "Preview" | 
 const NAV_ITEMS: AdminTab[] = ["Logs", "Agents", "Tools", "Skills", "Models", "Preview", "Research", "Settings"];
 
 const LOG_ENTRIES = [
-  "[11:14:02] Orchestrator: Routed Planner task → DeepSeek-R1",
+  "[11:14:02] Orchestrator: Routed Planner task -> DeepSeek-R1",
   "[11:14:08] Codex MCP: Patch applied to preview/T1.3",
   "[11:16:22] Visual Tester: Layout discrepancy detected",
   "[11:19:10] Supervisor: Changes approved",
@@ -41,14 +41,14 @@ const AGENTS = [
     model: "DeepSeek-R1 ($)",
     creativity: "Low",
     tokens: "2437",
-    routing: "Planner → DeepSeek-R1 → Gemini Flash (fallback)",
+    routing: "Planner -> DeepSeek-R1 -> Gemini Flash (fallback)",
   },
   {
     name: "Supervisor Agent",
     model: "GPT-4o-mini ($$)",
     creativity: "Balanced",
     tokens: "1280",
-    routing: "Supervisor → GPT-4o-mini → Claude (validation)",
+    routing: "Supervisor -> GPT-4o-mini -> Claude (validation)",
   },
 ];
 
@@ -274,7 +274,14 @@ const AdminControlCenter: React.FC = () => {
           </button>
         </div>
       </header>
-
+      <div className="admin-hero">
+        <span className="admin-hero__eyebrow">Mission Control · Vibeflow</span>
+        <div className="admin-hero__headline">
+          <h1>Control Center</h1>
+          <span className="admin-hero__pill">{activeTab} view</span>
+        </div>
+        <p className="admin-hero__subhead">{subheading}</p>
+      </div>
       <section className="admin-panel">
         <div className="admin-panel__header">
           <h2>{heading}</h2>
