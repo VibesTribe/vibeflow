@@ -8479,7 +8479,6 @@ a {
   z-index: 20 !important;
 }
 
-
 /* Admin Control Center (mission-modal--admin) */
 .mission-modal--admin {
   width: min(1280px, calc(100% - 32px));
@@ -8520,14 +8519,14 @@ a {
 }
 
 .admin-console {
-  background: radial-gradient(circle at 18% 12%, rgba(30, 203, 255, 0.09), transparent 35%), radial-gradient(circle at 82% 0%, rgba(72, 122, 255, 0.12), transparent 38%), linear-gradient(150deg, #0c1527 0%, #0a1323 50%, #081020 100%);
-  border: 1px solid rgba(0, 214, 255, 0.35);
+  background: radial-gradient(circle at 18% 12%, rgba(30, 203, 255, 0.09), transparent 35%), radial-gradient(circle at 82% 0%, rgba(72, 122, 255, 0.08), transparent 38%), linear-gradient(160deg, #060b16 0%, #050b14 45%, #030910 100%);
+  border: 1px solid rgba(56, 189, 248, 0.22);
   border-radius: 22px;
   padding: 24px;
   color: #d8e4ff;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .admin-console__bar {
@@ -8539,17 +8538,18 @@ a {
   top: 0;
   padding: 10px 12px 8px;
   margin: -10px -12px 8px;
-  background: rgba(10, 18, 36, 0.9);
-  border-bottom: 1px solid rgba(0, 214, 255, 0.2);
+  background: linear-gradient(180deg, rgba(10, 18, 36, 0.9), rgba(6, 12, 24, 0.65));
+  border-bottom: 1px solid rgba(0, 214, 255, 0.18);
   z-index: 3;
   backdrop-filter: blur(6px);
 }
 
 .admin-console__title {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: #26e0ff;
-  letter-spacing: 0.01em;
+  color: #6ef5ff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .admin-console__nav {
@@ -8561,22 +8561,28 @@ a {
 
 .admin-nav__item {
   border: none;
-  background: transparent;
+  background: rgba(13, 25, 42, 0.65);
   color: #b7c8ec;
-  padding: 10px 12px;
-  border-bottom: 2px solid transparent;
-  font-size: 0.95rem;
+  padding: 10px 14px;
+  border: 1px solid rgba(86, 204, 242, 0.25);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .admin-nav__item--active {
   color: #1ee2ff;
-  border-color: #1ee2ff;
+  border-color: rgba(30, 226, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(30, 226, 255, 0.35), 0 6px 18px rgba(30, 226, 255, 0.18);
+  background: radial-gradient(circle at 50% 120%, rgba(30, 226, 255, 0.08), rgba(13, 25, 42, 0.65));
 }
 
 .admin-nav__item:hover {
   color: #e8f2ff;
+  border-color: rgba(110, 245, 255, 0.55);
 }
 
 .admin-console__actions {
@@ -8586,14 +8592,16 @@ a {
 }
 
 .admin-primary {
-  background: linear-gradient(120deg, #23d7ff, #1aa8ff);
+  background: radial-gradient(circle at 20% 20%, rgba(110, 245, 255, 0.35), rgba(26, 168, 255, 0.35));
   color: #031122;
-  border: none;
+  border: 1px solid rgba(110, 245, 255, 0.8);
   padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 700;
+  border-radius: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(26, 168, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(26, 168, 255, 0.28);
 }
 
 .admin-new {
@@ -8622,6 +8630,9 @@ a {
   text-align: left;
   padding: 10px 14px;
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
 .admin-new__menu button:hover {
@@ -8635,7 +8646,9 @@ a {
   padding: 8px 12px;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .admin-ghost-button--icon {
@@ -8663,19 +8676,21 @@ a {
 }
 
 .admin-panel__card {
-  background: #0d1a2d;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #060c15;
+  border-radius: 18px;
+  border: 1px solid rgba(86, 204, 242, 0.14);
   padding: 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 16px 32px rgba(0, 0, 0, 0.32);
 }
 
 .admin-panel__card--stacked {
-  background: #0f1f36;
+  background: #081020;
+  border-color: rgba(111, 243, 255, 0.12);
 }
 
 .admin-panel__card--deep {
-  background: linear-gradient(140deg, #0d1a2d 0%, #0a1527 100%);
+  background: linear-gradient(140deg, #08101d 0%, #050c17 100%);
+  border-color: rgba(110, 245, 255, 0.16);
 }
 
 .admin-grid {
@@ -8696,19 +8711,39 @@ a {
 
 .admin-panel__title {
   margin: 0;
-  color: #26e0ff;
+  color: #6ef5ff;
+  letter-spacing: 0.04em;
 }
 
 .admin-list {
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
   display: grid;
-  gap: 8px;
+  gap: 10px;
   color: #c9d7f5;
+  list-style: none;
 }
 
 .admin-list a.admin-link {
   color: #39d9ff;
+}
+
+.admin-list li {
+  position: relative;
+  padding-left: 14px;
+  letter-spacing: 0.03em;
+}
+
+.admin-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(110, 245, 255, 0.8);
+  box-shadow: 0 0 0 4px rgba(110, 245, 255, 0.08);
 }
 
 .admin-meta {
@@ -8721,10 +8756,12 @@ a {
 .admin-pill {
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(57, 217, 255, 0.08);
+  background: rgba(57, 217, 255, 0.05);
   border: 1px solid rgba(57, 217, 255, 0.24);
   color: #c8e8ff;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .admin-pill--route {
@@ -8734,9 +8771,13 @@ a {
 .admin-status {
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .admin-status--success {
@@ -8762,6 +8803,49 @@ a {
   padding: 6px 10px;
   border-radius: 12px;
   color: #e2e8f0;
+}
+
+.admin-hero {
+  padding: 10px 4px 14px;
+  border-bottom: 1px solid rgba(110, 245, 255, 0.12);
+  margin-bottom: 10px;
+}
+
+.admin-hero__eyebrow {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: rgba(200, 230, 255, 0.7);
+}
+
+.admin-hero__headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-hero__headline h1 {
+  margin: 6px 0 2px 0;
+  font-size: 1.6rem;
+  color: #f8fbff;
+  letter-spacing: 0.02em;
+}
+
+.admin-hero__pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(110, 245, 255, 0.45);
+  color: #7af3ff;
+  background: rgba(12, 30, 42, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.admin-hero__subhead {
+  margin: 2px 0 0 0;
+  color: #a3b9d9;
 }
 
 @media (max-width: 900px) {
