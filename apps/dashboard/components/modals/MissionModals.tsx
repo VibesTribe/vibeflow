@@ -19,6 +19,7 @@ import {
   normalizeAgentStatus,
 } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
+import AdminControlCenter from "./AdminControlCenter";
 
 export type MissionModalState =
   | { type: null }
@@ -29,7 +30,8 @@ export type MissionModalState =
   | { type: "agent"; agent: MissionAgent }
   | { type: "slice"; slice: MissionSlice }
   | { type: "assignment"; assignment: SliceAssignment; slice: MissionSlice }
-  | { type: "add" };
+  | { type: "add" }
+  | { type: "admin" };
 
 interface MissionModalsProps {
   modal: MissionModalState;
@@ -134,15 +136,26 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     case "add":
       content = <AddAgentForm onClose={onClose} />;
       break;
+    case "admin":
+      content = <AdminControlCenter />;
+      break;
     default:
       content = null;
   }
 
   const canShowBackControl = modal.type === "agent" && typeof onShowModels === "function";
 
+  const modalClasses = ["mission-modal"];
+  if (modal.type === "models") {
+    modalClasses.push("mission-modal--models");
+  }
+  if (modal.type === "admin") {
+    modalClasses.push("mission-modal--admin");
+  }
+
   return (
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">
-      <div className={`mission-modal ${modal.type === "models" ? "mission-modal--models" : ""}`} ref={modalRef}>
+      <div className={modalClasses.join(" ")} ref={modalRef}>
         <div className="mission-modal__controls">
           {canShowBackControl && (
             <button type="button" className="mission-modal__back" onClick={onShowModels}>

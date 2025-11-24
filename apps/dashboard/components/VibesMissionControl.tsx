@@ -62,7 +62,7 @@ const VibesMissionControl: React.FC = () => {
   const handleOpenLogs = () => setModal({ type: "logs" });
   const handleOpenModels = () => setModal({ type: "models" });
   const handleOpenRoi = () => setModal({ type: "roi" });
-  const handleOpenAdmin = () => setModal({ type: "add" });
+  const handleOpenAdmin = () => setModal({ type: "admin" });
   const handleSelectAgent = (agent: MissionAgent) => setModal({ type: "agent", agent });
   const handleOpenAssignmentDetail = useCallback((assignment: SliceAssignment, slice: MissionSlice) => {
     setModal({ type: "assignment", assignment, slice });
