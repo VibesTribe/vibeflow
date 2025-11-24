@@ -1515,10 +1515,10 @@ a {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 16px;
+  padding-top: 28px;
 }
 .mission-modal__section:first-of-type {
-  padding-top: calc(var(--modal-sticky-offset) + 24px);
+  padding-top: calc(var(--modal-sticky-offset) + 36px);
 }
 
 .mission-modal__section--sticky > header,
@@ -2860,7 +2860,11 @@ a {
 .model-panel__list {
   display: grid;
   gap: 16px;
-  padding-top: 56px;
+  padding-top: 72px;
+}
+
+.model-panel__list > li:first-child {
+  margin-top: 36px;
 }
 
 .model-panel__legend-row--badges {
@@ -3273,7 +3277,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 40px;
+  padding-top: 48px;
 }
 
 .agent-panel__line {
