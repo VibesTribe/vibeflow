@@ -39,6 +39,7 @@ interface MissionModalsProps {
   events: MissionEvent[];
   agents: MissionAgent[];
   slices: MissionSlice[];
+  tasks: TaskSnapshot[];
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -100,7 +101,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, tasks, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -137,7 +138,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <AddAgentForm onClose={onClose} />;
       break;
     case "admin":
-      content = <AdminControlCenter />;
+      content = <AdminControlCenter events={events} tasks={tasks} />;
       break;
     default:
       content = null;

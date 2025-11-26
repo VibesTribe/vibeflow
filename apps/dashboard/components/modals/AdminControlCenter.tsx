@@ -1,236 +1,256 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { MissionEvent } from "../../../../src/utils/events";
+import { TaskSnapshot } from "@core/types";
+import { resolveDashboardPath } from "../../utils/paths";
 
-type AdminTab = "Logs" | "Agents" | "Tools" | "Skills" | "Models" | "Preview" | "Research" | "Settings";
+type AdminTab = "Orchestrator" | "Agents" | "Models" | "MCP" | "Logs" | "Settings";
 
-const NAV_ITEMS: AdminTab[] = ["Logs", "Agents", "Tools", "Skills", "Models", "Preview", "Research", "Settings"];
+interface AdminControlCenterProps {
+  events: MissionEvent[];
+  tasks: TaskSnapshot[];
+}
 
-const LOG_ENTRIES = [
-  "[11:14:02] Orchestrator: Routed Planner task -> DeepSeek-R1",
-  "[11:14:08] Codex MCP: Patch applied to preview/T1.3",
-  "[11:16:22] Visual Tester: Layout discrepancy detected",
-  "[11:19:10] Supervisor: Changes approved",
+interface AgentControl {
+  id: string;
+  name: string;
+  role: string;
+  llm: string;
+  model?: string;
+  prompt: string;
+  skills?: string[];
+  notes?: string;
+}
+
+interface OrchestratorControl {
+  llm: string;
+  model?: string;
+  prompt: string;
+  auto_dispatch?: boolean;
+  queue_path?: string;
+  events_path?: string;
+  skills?: string[];
+}
+
+interface McpTool {
+  name: string;
+  description: string;
+}
+
+interface McpConfig {
+  host?: string;
+  port?: number;
+  token_env?: string;
+  queue_dir?: string;
+  processed_dir?: string;
+  failed_dir?: string;
+  tools?: McpTool[];
+  notes?: string[];
+}
+
+interface AdminConfig {
+  updated_at?: string;
+  default_llm?: string;
+  orchestrator: OrchestratorControl;
+  agents: AgentControl[];
+  mcp?: McpConfig;
+}
+
+interface LlmProvider {
+  id: string;
+  label: string;
+  model?: string;
+  priority?: number;
+  enabled?: boolean;
+  modes?: string[];
+  max_output_tokens?: number;
+}
+
+const NAV_ITEMS: AdminTab[] = ["Orchestrator", "Agents", "Models", "MCP", "Logs", "Settings"];
+const STORAGE_KEY = "vibeflow-admin-overrides";
+
+const fallbackProviders: LlmProvider[] = [
+  { id: "openrouter", label: "OpenRouter GPT-4.1 Mini", model: "gpt-4.1-mini", enabled: true },
+  { id: "deepseek", label: "DeepSeek Reasoner", model: "deepseek-reasoner", enabled: true },
+  { id: "gemini", label: "Gemini 1.5 Pro", model: "gemini-1.5-pro-latest", enabled: true },
 ];
 
-const PREVIEW_LINKS = [
-  { label: "preview/T1.3-dashboard-header", url: "https://vibestribe.github.io/vibeflow/preview/T1.3" },
-  { label: "preview/S2.1-modelview", url: "https://vibestribe.github.io/vibeflow/preview/S2.1" },
-];
-
-const RESEARCH_ITEMS = ["Claude MCP2 update summary", "DeepSeek cost optimization note", "Browser-Use 0.23 stability improvements"];
-
-const SETTINGS_ITEMS = ["Snapshots: Auto-backup enabled", "Notifications: Email + Dashboard", "API Keys: 3 active (hidden)"];
-
-const SKILLS = ["dag_executor", "cli_exec", "visual_exec", "test_runner"];
-
-const TOOLING = [
-  { name: "GraphBit", status: "Healthy", tone: "success", version: "0.9.2", updated: "2 days ago" },
-  { name: "Browser-Use", status: "Warning", tone: "warn", version: "0.22", updated: "4 hours ago" },
-  { name: "Codex MCP", status: "Connected", tone: "info", version: "1.4.0", updated: "Just now" },
-  { name: "Playwright", status: "Stable", tone: "success", version: "1.43.0", updated: "Yesterday" },
-];
-
-const MODELS = [
-  { name: "DeepSeek-R1", provider: "OpenRouter", context: "200k (180k effective)", success: "94%", cost: "$" },
-  { name: "Gemini Flash", provider: "Google", context: "1M (900k effective)", success: "91%", cost: "$" },
-  { name: "GPT-5.1-mini", provider: "OpenAI", context: "128k (115k effective)", success: "92%", cost: "$$" },
-];
-
-const AGENTS = [
-  {
-    name: "Planner Agent",
-    model: "DeepSeek-R1 ($)",
-    creativity: "Low",
-    tokens: "2437",
-    routing: "Planner -> DeepSeek-R1 -> Gemini Flash (fallback)",
+const fallbackConfig: AdminConfig = {
+  updated_at: new Date().toISOString(),
+  default_llm: "openrouter",
+  orchestrator: {
+    llm: "openrouter",
+    model: "gpt-4.1-mini",
+    prompt: "You are the Vibeflow orchestrator. Assign validated tasks to the best agent and emit clear status changes.",
+    auto_dispatch: true,
+    queue_path: "data/tasks/queued",
+    events_path: "data/state/events.log.jsonl",
+    skills: ["dag_executor"],
   },
-  {
-    name: "Supervisor Agent",
-    model: "GPT-4o-mini ($$)",
-    creativity: "Balanced",
-    tokens: "1280",
-    routing: "Supervisor -> GPT-4o-mini -> Claude (validation)",
+  agents: [
+    {
+      id: "planner",
+      name: "Planner Agent",
+      role: "planner",
+      llm: "deepseek",
+      model: "deepseek-reasoner",
+      prompt: "Break the mission into atomic tasks with dependencies, titles, and deliverables.",
+      skills: ["plan", "scope"],
+    },
+    {
+      id: "router",
+      name: "Router",
+      role: "router",
+      llm: "openrouter",
+      model: "gpt-4.1-mini",
+      prompt: "Choose providers based on weights, latency targets, and credit status.",
+      skills: ["route"],
+    },
+  ],
+  mcp: {
+    host: "127.0.0.1",
+    port: 3030,
+    queue_dir: "data/tasks/queued",
+    tools: [
+      { name: "runSkill", description: "Execute a registered skill runner and return JSON output." },
+      { name: "getTaskState", description: "Load the latest task state snapshot from disk." },
+    ],
   },
-];
+};
 
-const AdminControlCenter: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<AdminTab>("Logs");
-  const [menuOpen, setMenuOpen] = useState(false);
+const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }) => {
+  const [activeTab, setActiveTab] = useState<AdminTab>("Orchestrator");
+  const [config, setConfig] = useState<AdminConfig>(fallbackConfig);
+  const [providers, setProviders] = useState<LlmProvider[]>(fallbackProviders);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const baselineRef = useRef<AdminConfig>(fallbackConfig);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      setStatus("loading");
+      try {
+        const [providerList, configPayload] = await Promise.all([fetchProviders(), fetchAdminConfig()]);
+        if (cancelled) return;
+        baselineRef.current = configPayload;
+        setProviders(providerList);
+        setConfig(applyOverrides(configPayload));
+        setStatus("ready");
+      } catch (error) {
+        console.warn("[admin] failed to load config, using fallback", error);
+        if (cancelled) return;
+        setProviders(fallbackProviders);
+        setConfig(applyOverrides(fallbackConfig));
+        setStatus("error");
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const providerById = useMemo(() => new Map(providers.map((provider) => [provider.id, provider])), [providers]);
+  const providerUsage = useMemo(() => buildProviderUsage(config), [config]);
+  const activeTasks = useMemo(() => tasks.filter((task) => task.status !== "complete"), [tasks]);
+  const recentEvents = useMemo(() => events.slice(0, 20), [events]);
+
+  const handleSelectProvider = (target: "orchestrator" | AgentControl["id"], providerId: string) => {
+    setConfig((prev) => {
+      if (target === "orchestrator") {
+        return { ...prev, orchestrator: { ...prev.orchestrator, llm: providerId } };
+      }
+      const nextAgents = prev.agents.map((agent) => (agent.id === target ? { ...agent, llm: providerId } : agent));
+      return { ...prev, agents: nextAgents };
+    });
+  };
+
+  const handlePromptChange = (target: "orchestrator" | AgentControl["id"], prompt: string) => {
+    setConfig((prev) => {
+      if (target === "orchestrator") {
+        return { ...prev, orchestrator: { ...prev.orchestrator, prompt } };
+      }
+      const nextAgents = prev.agents.map((agent) => (agent.id === target ? { ...agent, prompt } : agent));
+      return { ...prev, agents: nextAgents };
+    });
+  };
+
+  const handleSaveOverrides = () => {
+    try {
+      persistOverrides(config);
+      setSaveMessage("Saved locally for this browser session.");
+    } catch (error) {
+      setSaveMessage(`Save failed: ${(error as Error).message}`);
+    }
+  };
+
+  const handleResetOverrides = () => {
+    const baseline = cloneConfig(baselineRef.current);
+    setConfig(baseline);
+    clearOverrides();
+    setSaveMessage("Reset to repo config.");
+  };
 
   const heading = useMemo(() => {
     switch (activeTab) {
-      case "Logs":
-        return "System Logs";
+      case "Orchestrator":
+        return "Orchestrator runtime and routing";
       case "Agents":
-        return "Internal Agents & Routing";
-      case "Tools":
-        return "Runtime Tools & Systems";
-      case "Skills":
-        return "Skills Registry";
+        return "Agent LLM assignments and prompts";
       case "Models":
-        return "Models Overview";
-      case "Preview":
-        return "Preview Branches";
-      case "Research":
-        return "Research Digest";
+        return "LLM providers available to this mission";
+      case "MCP":
+        return "MCP server and skills";
+      case "Logs":
+        return "Recent mission events";
       case "Settings":
-        return "System Settings";
+        return "Admin settings and persistence";
       default:
-        return "Vibeflow Control Center";
+        return "Control Center";
     }
   }, [activeTab]);
 
-  const subheading = useMemo(() => {
+  const renderActiveTab = () => {
     switch (activeTab) {
-      case "Logs":
-        return "Routing events, failovers, merges, and warnings.";
+      case "Orchestrator":
+        return (
+          <OrchestratorPanel
+            config={config.orchestrator}
+            providers={providers}
+            providerById={providerById}
+            onSelectProvider={handleSelectProvider}
+            onPromptChange={handlePromptChange}
+            tasks={activeTasks}
+            events={recentEvents}
+          />
+        );
       case "Agents":
-        return "Agent assignments, routing chains, and token usage.";
-      case "Tools":
-        return "Examples of Vibes runtime systems currently available.";
-      case "Skills":
-        return "Execution skills wired into Vibeflow.";
+        return (
+          <AgentPanel
+            agents={config.agents}
+            providers={providers}
+            providerById={providerById}
+            onSelectProvider={handleSelectProvider}
+            onPromptChange={handlePromptChange}
+          />
+        );
       case "Models":
-        return "Example models with provider, cost, context, and success rate.";
-      case "Preview":
-        return "Live preview URLs and approval state.";
-      case "Research":
-        return "Daily/weekly updates from the Research Agent.";
-      case "Settings":
-        return "Backups, notifications, and API keys.";
-      default:
-        return "";
-    }
-  }, [activeTab]);
-
-  const renderLogs = () => (
-    <div className="admin-panel__card admin-panel__card--stacked">
-      <ul className="admin-list">
-        {LOG_ENTRIES.map((entry) => (
-          <li key={entry}>{entry}</li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderAgents = () => (
-    <div className="admin-grid admin-grid--double">
-      {AGENTS.map((agent) => (
-        <div key={agent.name} className="admin-panel__card admin-panel__card--deep">
-          <div className="admin-panel__row">
-            <h3 className="admin-panel__title">{agent.name}</h3>
-            <button className="admin-ghost-button">View Prompt</button>
-          </div>
-          <div className="admin-meta">
-            <div>Model: {agent.model}</div>
-            <div>Creativity: {agent.creativity}</div>
-            <div>Tokens today: {agent.tokens}</div>
-          </div>
-          <div className="admin-pill admin-pill--route">Routing: {agent.routing}</div>
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderTools = () => (
-    <div className="admin-grid admin-grid--double">
-      {TOOLING.map((tool) => (
-        <div key={tool.name} className="admin-panel__card admin-panel__card--deep">
-          <div className="admin-panel__row">
-            <h3 className="admin-panel__title">{tool.name}</h3>
-            <span className={`admin-status admin-status--${tool.tone}`}>{tool.status}</span>
-          </div>
-          <div className="admin-meta">
-            <div>Version: {tool.version}</div>
-            <div>Updated: {tool.updated}</div>
-          </div>
-          <button className="admin-ghost-button">Details</button>
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderSkills = () => (
-    <div className="admin-panel__card admin-panel__card--stacked">
-      <ul className="admin-list">
-        {SKILLS.map((skill) => (
-          <li key={skill}>{skill}</li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderModels = () => (
-    <div className="admin-grid admin-grid--double">
-      {MODELS.map((model) => (
-        <div key={model.name} className="admin-panel__card admin-panel__card--deep">
-          <div className="admin-panel__row">
-            <h3 className="admin-panel__title">{model.name}</h3>
-            <span className="admin-cost">{model.cost}</span>
-          </div>
-          <div className="admin-meta">
-            <div>Provider: {model.provider}</div>
-            <div>Context: {model.context}</div>
-            <div>Success: {model.success}</div>
-          </div>
-          <button className="admin-ghost-button">View Details</button>
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderPreview = () => (
-    <div className="admin-panel__card admin-panel__card--stacked">
-      <ul className="admin-list">
-        {PREVIEW_LINKS.map((entry) => (
-          <li key={entry.label}>
-            {entry.label} —{" "}
-            <a href={entry.url} target="_blank" rel="noreferrer" className="admin-link">
-              {entry.url}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderResearch = () => (
-    <div className="admin-panel__card admin-panel__card--stacked">
-      <ul className="admin-list">
-        {RESEARCH_ITEMS.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderSettings = () => (
-    <div className="admin-panel__card admin-panel__card--stacked">
-      <ul className="admin-list">
-        {SETTINGS_ITEMS.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderActive = () => {
-    switch (activeTab) {
+        return <ModelPanel providers={providers} usage={providerUsage} />;
+      case "MCP":
+        return <McpPanel config={config.mcp} />;
       case "Logs":
-        return renderLogs();
-      case "Agents":
-        return renderAgents();
-      case "Tools":
-        return renderTools();
-      case "Skills":
-        return renderSkills();
-      case "Models":
-        return renderModels();
-      case "Preview":
-        return renderPreview();
-      case "Research":
-        return renderResearch();
+        return <LogPanel events={recentEvents} />;
       case "Settings":
-        return renderSettings();
+        return (
+          <SettingsPanel
+            config={config}
+            status={status}
+            onSave={handleSaveOverrides}
+            onReset={handleResetOverrides}
+            message={saveMessage}
+            providers={providers}
+          />
+        );
       default:
         return null;
     }
@@ -253,44 +273,493 @@ const AdminControlCenter: React.FC = () => {
           ))}
         </nav>
         <div className="admin-console__actions">
-          <div className="admin-new">
-            <button type="button" className="admin-primary" onClick={() => setMenuOpen((open) => !open)}>
-              + New
-            </button>
-            {menuOpen && (
-              <div className="admin-new__menu">
-                <button type="button">Add Model</button>
-                <button type="button">Add Agent</button>
-                <button type="button">Add Skill</button>
-                <button type="button">Add Tool</button>
-              </div>
-            )}
-          </div>
-          <button type="button" className="admin-ghost-button admin-ghost-button--icon">
-            {"\uD83D\uDD0D"} Search
+          <button type="button" className="admin-primary" onClick={handleSaveOverrides}>
+            Save overrides
           </button>
-          <button type="button" className="admin-ghost-button admin-ghost-button--icon">
-            {"\uD83E\uDDCD"} User
+          <button type="button" className="admin-ghost-button" onClick={handleResetOverrides}>
+            Reset
           </button>
         </div>
       </header>
+
       <div className="admin-hero">
         <span className="admin-hero__eyebrow">Mission Control · Vibeflow</span>
         <div className="admin-hero__headline">
           <h1>Control Center</h1>
-          <span className="admin-hero__pill">{activeTab} view</span>
+          <span className="admin-hero__pill">{activeTab}</span>
         </div>
-        <p className="admin-hero__subhead">{subheading}</p>
+        <p className="admin-hero__subhead">{heading}</p>
       </div>
+
       <section className="admin-panel">
         <div className="admin-panel__header">
           <h2>{heading}</h2>
-          <p>{subheading}</p>
+          <p>Updated {config.updated_at ? new Date(config.updated_at).toLocaleString() : "recently"}</p>
         </div>
-        {renderActive()}
+        {renderActiveTab()}
       </section>
     </div>
   );
 };
 
 export default AdminControlCenter;
+
+function OrchestratorPanel({
+  config,
+  providers,
+  providerById,
+  tasks,
+  events,
+  onSelectProvider,
+  onPromptChange,
+}: {
+  config: OrchestratorControl;
+  providers: LlmProvider[];
+  providerById: Map<string, LlmProvider>;
+  tasks: TaskSnapshot[];
+  events: MissionEvent[];
+  onSelectProvider: (target: "orchestrator", providerId: string) => void;
+  onPromptChange: (target: "orchestrator", prompt: string) => void;
+}) {
+  const activeProvider = providerById.get(config.llm);
+  const recentTasks = tasks.slice(0, 4);
+  const recentEvents = events.filter((event) => event.type.includes("route") || event.type === "status_change").slice(0, 5);
+
+  return (
+    <div className="admin-grid admin-grid--double">
+      <div className="admin-panel__card admin-panel__card--deep">
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">Orchestrator Runtime</h3>
+          <span className="admin-status admin-status--info">{config.auto_dispatch ? "Auto-dispatch on" : "Manual"}</span>
+        </div>
+        <div className="admin-meta">
+          <div>Queue: {config.queue_path ?? "data/tasks/queued"}</div>
+          <div>Events: {config.events_path ?? "data/state/events.log.jsonl"}</div>
+        </div>
+        <div className="mission-field">
+          <label>
+            LLM Provider
+            <select value={config.llm} onChange={(event) => onSelectProvider("orchestrator", event.target.value)}>
+              {providers.map((provider) => (
+                <option key={provider.id} value={provider.id}>
+                  {provider.label} {provider.enabled === false ? "(disabled)" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="admin-meta">
+          <div>Model: {config.model ?? activeProvider?.model ?? "unspecified"}</div>
+          <div>Skills: {(config.skills ?? ["dag_executor"]).join(", ")}</div>
+        </div>
+        <div className="mission-field">
+          <label>
+            Dispatch prompt
+            <textarea value={config.prompt} onChange={(event) => onPromptChange("orchestrator", event.target.value)} rows={4} />
+          </label>
+        </div>
+        <p className="admin-hero__subhead">
+          The orchestrator calls router.decide() then emits status_change events and updates task.state.json so the dashboard shows live
+          assignments.
+        </p>
+      </div>
+      <div className="admin-panel__card admin-panel__card--stacked">
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">Live queue</h3>
+          <span className="admin-pill admin-pill--route">{recentTasks.length} active</span>
+        </div>
+        <ul className="admin-list">
+          {recentTasks.length === 0 && <li>No active tasks yet.</li>}
+          {recentTasks.map((task) => (
+            <li key={task.id}>
+              {task.taskNumber ?? task.title} — {task.status} · {task.owner ?? "unassigned"}
+            </li>
+          ))}
+        </ul>
+        <div className="admin-panel__row">
+          <h4 className="admin-panel__title">Latest routing events</h4>
+        </div>
+        <ul className="admin-list">
+          {recentEvents.length === 0 && <li>No routing events recorded.</li>}
+          {recentEvents.map((event) => {
+            const detailMessage = typeof event.details?.["message"] === "string" ? event.details?.["message"] : "";
+            return (
+              <li key={event.id}>
+                {event.type} · {new Date(event.timestamp).toLocaleTimeString()} · {event.reasonCode ?? detailMessage ?? ""}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function AgentPanel({
+  agents,
+  providers,
+  providerById,
+  onSelectProvider,
+  onPromptChange,
+}: {
+  agents: AgentControl[];
+  providers: LlmProvider[];
+  providerById: Map<string, LlmProvider>;
+  onSelectProvider: (target: AgentControl["id"], providerId: string) => void;
+  onPromptChange: (target: AgentControl["id"], prompt: string) => void;
+}) {
+  return (
+    <div className="admin-grid admin-grid--double">
+      {agents.map((agent) => {
+        const provider = providerById.get(agent.llm);
+        return (
+          <div key={agent.id} className="admin-panel__card admin-panel__card--deep">
+            <div className="admin-panel__row">
+              <h3 className="admin-panel__title">{agent.name}</h3>
+              <span className="admin-pill admin-pill--route">{agent.role}</span>
+            </div>
+            <div className="mission-field">
+              <label>
+                LLM Provider
+                <select value={agent.llm} onChange={(event) => onSelectProvider(agent.id, event.target.value)}>
+                  {providers.map((providerOption) => (
+                    <option key={providerOption.id} value={providerOption.id}>
+                      {providerOption.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="admin-meta">
+              <div>Model: {agent.model ?? provider?.model ?? "unspecified"}</div>
+              <div>Skills: {(agent.skills ?? []).join(", ") || "n/a"}</div>
+            </div>
+            <div className="mission-field">
+              <label>
+                Prompt
+                <textarea value={agent.prompt} onChange={(event) => onPromptChange(agent.id, event.target.value)} rows={3} />
+              </label>
+            </div>
+            {agent.notes && <p className="admin-hero__subhead">{agent.notes}</p>}
+          </div>
+        );
+      })}
+      {agents.length === 0 && <div className="admin-panel__card">No agents configured.</div>}
+    </div>
+  );
+}
+
+function ModelPanel({ providers, usage }: { providers: LlmProvider[]; usage: Record<string, string[]> }) {
+  return (
+    <div className="admin-grid admin-grid--double">
+      {providers.map((provider) => (
+        <div key={provider.id} className="admin-panel__card admin-panel__card--deep">
+          <div className="admin-panel__row">
+            <h3 className="admin-panel__title">{provider.label}</h3>
+            <span className={`admin-status ${provider.enabled === false ? "admin-status--warn" : "admin-status--success"}`}>
+              {provider.enabled === false ? "Disabled" : "Ready"}
+            </span>
+          </div>
+          <div className="admin-meta">
+            <div>ID: {provider.id}</div>
+            <div>Model: {provider.model ?? "n/a"}</div>
+            <div>Context: {provider.max_output_tokens ? `${provider.max_output_tokens.toLocaleString()} tokens` : "unknown"}</div>
+          </div>
+          <div className="admin-pill admin-pill--route">Modes: {(provider.modes ?? ["text"]).join(", ")}</div>
+          <p className="admin-hero__subhead">
+            Used by: {usage[provider.id]?.length ? usage[provider.id].join(", ") : "not wired yet"}
+          </p>
+        </div>
+      ))}
+      {providers.length === 0 && <div className="admin-panel__card">No provider registry found.</div>}
+    </div>
+  );
+}
+
+function McpPanel({ config }: { config?: McpConfig }) {
+  const tools = config?.tools ?? [];
+  const notes = config?.notes ?? [];
+  return (
+    <div className="admin-grid admin-grid--double">
+      <div className="admin-panel__card admin-panel__card--deep">
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">MCP Server</h3>
+          <span className="admin-status admin-status--info">Port {config?.port ?? 3030}</span>
+        </div>
+        <div className="admin-meta">
+          <div>Host: {config?.host ?? "127.0.0.1"}</div>
+          <div>Queue: {config?.queue_dir ?? "data/tasks/queued"}</div>
+          <div>Processed: {config?.processed_dir ?? "data/tasks/processed"}</div>
+          <div>Failed: {config?.failed_dir ?? "data/tasks/failed"}</div>
+          <div>Token env: {config?.token_env ?? "MCP_SERVER_TOKEN"}</div>
+        </div>
+        <p className="admin-hero__subhead">
+          POST /run-task validates task_packet.schema.json, calls orchestrator.dispatch, then writes to queue for auto_runner.
+        </p>
+      </div>
+      <div className="admin-panel__card admin-panel__card--stacked">
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">Registered tools</h3>
+        </div>
+        <ul className="admin-list">
+          {tools.length === 0 && <li>No tools registered.</li>}
+          {tools.map((tool) => (
+            <li key={tool.name}>
+              <strong>{tool.name}</strong> — {tool.description}
+            </li>
+          ))}
+        </ul>
+        {notes.length > 0 && (
+          <>
+            <div className="admin-panel__row">
+              <h4 className="admin-panel__title">Notes</h4>
+            </div>
+            <ul className="admin-list">
+              {notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function LogPanel({ events }: { events: MissionEvent[] }) {
+  return (
+    <div className="admin-panel__card admin-panel__card--stacked">
+      <ul className="admin-list">
+        {events.length === 0 && <li>No mission events yet.</li>}
+        {events.map((event) => {
+          const message = typeof event.details?.message === "string" ? event.details.message : event.reasonCode ?? "";
+          return (
+            <li key={event.id}>
+              <strong>{event.type}</strong> — {new Date(event.timestamp).toLocaleString()}
+              {message && <> · {message}</>}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function SettingsPanel({
+  config,
+  providers,
+  status,
+  onSave,
+  onReset,
+  message,
+}: {
+  config: AdminConfig;
+  providers: LlmProvider[];
+  status: "idle" | "loading" | "ready" | "error";
+  onSave: () => void;
+  onReset: () => void;
+  message: string | null;
+}) {
+  return (
+    <div className="admin-panel__card admin-panel__card--stacked">
+      <p>Status: {status === "ready" ? "Loaded" : status}</p>
+      <p>Default LLM: {config.default_llm ?? "openrouter"}</p>
+      <p>Providers loaded: {providers.length}</p>
+      <div className="admin-panel__row" style={{ gap: "0.5rem", flexWrap: "wrap" }}>
+        <button type="button" className="admin-primary" onClick={onSave}>
+          Save overrides
+        </button>
+        <button type="button" className="admin-ghost-button" onClick={onReset}>
+          Reset to repo config
+        </button>
+      </div>
+      <p className="admin-hero__subhead">
+        Overrides are stored locally in your browser (no backend write yet). Update agent LLMs or prompts, save, and refresh to keep them.
+      </p>
+      {message && <p className="admin-hero__subhead">{message}</p>}
+    </div>
+  );
+}
+
+async function fetchProviders(): Promise<LlmProvider[]> {
+  const response = await fetch(resolveDashboardPath("data/registry/llm_providers.json"), { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Provider registry unavailable (${response.status})`);
+  }
+  const payload = await response.json();
+  const providers = Array.isArray(payload.providers) ? payload.providers : [];
+  return providers
+    .map((provider: Record<string, unknown>) => ({
+      id: readString(provider, ["id"]) ?? "unknown",
+      label: readString(provider, ["label", "name"]) ?? "Unnamed provider",
+      model: readString(provider, ["model"]),
+      priority: readNumber(provider, ["priority"]),
+      enabled: provider["enabled"] !== false,
+      modes: Array.isArray(provider["modes"]) ? (provider["modes"] as string[]) : undefined,
+      max_output_tokens: readNumber(provider, ["max_output_tokens"]),
+    }))
+    .sort((a: LlmProvider, b: LlmProvider) => (b.priority ?? 0) - (a.priority ?? 0));
+}
+
+async function fetchAdminConfig(): Promise<AdminConfig> {
+  const response = await fetch(resolveDashboardPath("data/state/agent_controls.json"), { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Admin config unavailable (${response.status})`);
+  }
+  const payload = await response.json();
+  return normalizeConfig(payload);
+}
+
+function normalizeConfig(raw: Record<string, unknown>): AdminConfig {
+  return {
+    updated_at: readString(raw, ["updated_at", "updatedAt"]) ?? new Date().toISOString(),
+    default_llm: readString(raw, ["default_llm", "defaultLlm"]) ?? "openrouter",
+    orchestrator: normalizeOrchestrator(raw["orchestrator"]),
+    agents: Array.isArray(raw["agents"])
+      ? (raw["agents"] as Record<string, unknown>[]).map(normalizeAgentControl).filter(Boolean)
+      : [],
+    mcp: normalizeMcp(raw["mcp"]),
+  };
+}
+
+function normalizeOrchestrator(raw: unknown): OrchestratorControl {
+  const source = (raw ?? {}) as Record<string, unknown>;
+  return {
+    llm: readString(source, ["llm"]) ?? fallbackConfig.orchestrator.llm,
+    model: readString(source, ["model"]),
+    prompt: readString(source, ["prompt"]) ?? fallbackConfig.orchestrator.prompt,
+    auto_dispatch: readBoolean(source, ["auto_dispatch", "autoDispatch"], true),
+    queue_path: readString(source, ["queue_path", "queuePath"]) ?? "data/tasks/queued",
+    events_path: readString(source, ["events_path", "eventsPath"]) ?? "data/state/events.log.jsonl",
+    skills: Array.isArray(source["skills"]) ? (source["skills"] as string[]) : ["dag_executor"],
+  };
+}
+
+function normalizeAgentControl(raw: Record<string, unknown>): AgentControl {
+  return {
+    id: readString(raw, ["id"]) ?? `agent-${Math.random().toString(36).slice(2, 6)}`,
+    name: readString(raw, ["name"]) ?? "Agent",
+    role: readString(raw, ["role"]) ?? "agent",
+    llm: readString(raw, ["llm"]) ?? "openrouter",
+    model: readString(raw, ["model"]),
+    prompt: readString(raw, ["prompt"]) ?? "",
+    skills: Array.isArray(raw["skills"]) ? (raw["skills"] as string[]) : [],
+    notes: readString(raw, ["notes"]),
+  };
+}
+
+function normalizeMcp(raw: unknown): McpConfig {
+  if (!raw || typeof raw !== "object") {
+    return {};
+  }
+  const source = raw as Record<string, unknown>;
+  return {
+    host: readString(source, ["host"]),
+    port: readNumber(source, ["port"]),
+    token_env: readString(source, ["token_env"]),
+    queue_dir: readString(source, ["queue_dir"]),
+    processed_dir: readString(source, ["processed_dir"]),
+    failed_dir: readString(source, ["failed_dir"]),
+    tools: Array.isArray(source["tools"])
+      ? (source["tools"] as Record<string, unknown>[]).map((tool) => ({
+          name: readString(tool, ["name"]) ?? "tool",
+          description: readString(tool, ["description"]) ?? "",
+        }))
+      : [],
+    notes: Array.isArray(source["notes"]) ? (source["notes"] as string[]) : [],
+  };
+}
+
+function applyOverrides(config: AdminConfig): AdminConfig {
+  if (typeof window === "undefined") return config;
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (!raw) return config;
+  try {
+    const parsed = normalizeConfig(JSON.parse(raw));
+    return mergeConfig(config, parsed);
+  } catch (error) {
+    console.warn("[admin] failed to parse overrides", error);
+    return config;
+  }
+}
+
+function persistOverrides(config: AdminConfig) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+}
+
+function clearOverrides() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(STORAGE_KEY);
+}
+
+function mergeConfig(base: AdminConfig, override: AdminConfig): AdminConfig {
+  return {
+    ...base,
+    ...override,
+    orchestrator: { ...base.orchestrator, ...override.orchestrator },
+    agents: override.agents && override.agents.length > 0 ? override.agents : base.agents,
+    mcp: { ...base.mcp, ...override.mcp },
+  };
+}
+
+function buildProviderUsage(config: AdminConfig): Record<string, string[]> {
+  const usage: Record<string, string[]> = {};
+  const record = (providerId: string, label: string) => {
+    if (!providerId) return;
+    if (!usage[providerId]) usage[providerId] = [];
+    usage[providerId].push(label);
+  };
+  record(config.orchestrator.llm, "orchestrator");
+  (config.agents ?? []).forEach((agent) => record(agent.llm, agent.name));
+  return usage;
+}
+
+function cloneConfig(config: AdminConfig): AdminConfig {
+  return JSON.parse(JSON.stringify(config)) as AdminConfig;
+}
+
+function readString(entry: Record<string, unknown>, keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = entry[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function readNumber(entry: Record<string, unknown>, keys: string[]): number | undefined {
+  for (const key of keys) {
+    const value = entry[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value.trim()) {
+      const parsed = Number(value);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+  }
+  return undefined;
+}
+
+function readBoolean(entry: Record<string, unknown>, keys: string[], fallback = false): boolean {
+  for (const key of keys) {
+    const value = entry[key];
+    if (typeof value === "boolean") {
+      return value;
+    }
+    if (typeof value === "string") {
+      const normalized = value.toLowerCase().trim();
+      if (normalized === "true" || normalized === "1" || normalized === "yes") {
+        return true;
+      }
+      if (normalized === "false" || normalized === "0" || normalized === "no") {
+        return false;
+      }
+    }
+  }
+  return fallback;
+}

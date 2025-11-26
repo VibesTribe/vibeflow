@@ -45,18 +45,11 @@ const VibesMissionControl: React.FC = () => {
     };
   }, []);
 
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, loading } = useMissionData();
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage } = useMissionData();
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
-
-  const snapshotTime = useMemo(() => {
-    if (!snapshot.updatedAt) {
-      return "-";
-    }
-    return new Date(snapshot.updatedAt).toLocaleTimeString();
-  }, [snapshot.updatedAt]);
 
   const handleOpenDocs = () => setModal({ type: "docs" });
   const handleOpenLogs = () => setModal({ type: "logs" });
@@ -131,7 +124,6 @@ const VibesMissionControl: React.FC = () => {
           tasks={(snapshot.tasks as TaskSnapshot[] | undefined) ?? []}
           slices={slices}
           events={events}
-          snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
           onOpenTokens={handleOpenRoi}
           onOpenReviewTask={openReviewByTask}
@@ -158,6 +150,7 @@ const VibesMissionControl: React.FC = () => {
         events={events}
         agents={agents}
         slices={slices}
+        tasks={snapshot.tasks ?? []}
         onOpenReview={openReviewByTask}
         onSelectAgent={handleSelectAgent}
         onShowModels={handleOpenModels}

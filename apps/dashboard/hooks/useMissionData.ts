@@ -1,16 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@core/types";
+import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
-
-function resolveDashboardPath(path: string): string {
-  const base = import.meta.env.BASE_URL ?? "/";
-  const normalized = path.startsWith("/") ? path.slice(1) : path;
-  if (base === "/") {
-    return `/${normalized}`;
-  }
-  return `${base.replace(/\/$/, "")}/${normalized}`;
-}
+import { resolveDashboardPath } from "../utils/paths";
 
 interface DashboardSnapshot {
   tasks: TaskSnapshot[];
@@ -68,6 +60,7 @@ const initialRunMetrics: RunMetrics = {
   updated_at: new Date().toISOString(),
 };
 
+const SNAPSHOT_SOURCES = ["data/state/task.state.json", "data/state/dashboard.mock.json"];
 const SNAPSHOT_POLL_MS = 5_000;
 const METRICS_POLL_MS = 25_000;
 const EVENTS_POLL_MS = 5_000;
@@ -91,26 +84,17 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, snapshot: true }));
     try {
-      const response = await fetch(resolveDashboardPath("data/state/dashboard.mock.json"), { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Failed to load snapshot (${response.status})`);
+      const loaded = await loadFirstAvailableSnapshot();
+      if (!loaded) {
+        throw new Error("No snapshot source available");
       }
-      const raw = await response.text();
-      if (raw === snapshotRawRef.current) {
+      const changeToken = `${loaded.source}:${loaded.raw}`;
+      if (changeToken === snapshotRawRef.current) {
         return;
       }
-      snapshotRawRef.current = raw;
-      const parsed = JSON.parse(raw);
+      snapshotRawRef.current = changeToken;
       if (!mountedRef.current) return;
-      setSnapshot({
-        tasks: parsed.tasks ?? [],
-        agents: parsed.agents ?? [],
-        failures: parsed.failures ?? [],
-        mergeCandidates: parsed.merge_candidates ?? [],
-        metrics: parsed.metrics ?? {},
-        sliceCatalog: Array.isArray(parsed.slices) ? parsed.slices : [],
-        updatedAt: parsed.updated_at ?? new Date().toISOString(),
-      });
+      setSnapshot(loaded.snapshot);
     } catch (error) {
       console.warn("[mission-data] snapshot fetch failed", error);
     } finally {
@@ -220,6 +204,219 @@ export function useMissionData(): MissionData {
     loading,
     refresh,
   };
+}
+
+async function loadFirstAvailableSnapshot(): Promise<{ raw: string; snapshot: DashboardSnapshot; source: string } | null> {
+  const attempts: string[] = [];
+  for (const source of SNAPSHOT_SOURCES) {
+    try {
+      const response = await fetch(resolveDashboardPath(source), { cache: "no-store" });
+      if (!response.ok) {
+        attempts.push(`${source} (${response.status})`);
+        continue;
+      }
+      const raw = await response.text();
+      const parsed = normalizeSnapshotPayload(raw);
+      return { raw, snapshot: parsed, source };
+    } catch (error) {
+      attempts.push(`${source} (${(error as Error).message})`);
+    }
+  }
+  if (attempts.length > 0) {
+    console.warn("[mission-data] snapshot sources unavailable:", attempts.join("; "));
+  }
+  return null;
+}
+
+function normalizeSnapshotPayload(raw: string): DashboardSnapshot {
+  const parsed = JSON.parse(raw);
+  const updatedAt = parsed.updated_at ?? parsed.updatedAt ?? new Date().toISOString();
+  const sliceCatalog: SliceCatalog[] = Array.isArray(parsed.slices) ? parsed.slices.map(normalizeSliceCatalog) : [];
+  const failures: FailureSnapshot[] = Array.isArray(parsed.failures) ? parsed.failures.map(normalizeFailure) : [];
+  const mergeCandidates: MergeCandidate[] = Array.isArray(parsed.merge_candidates ?? parsed.mergeCandidates)
+    ? (parsed.merge_candidates ?? parsed.mergeCandidates).map(normalizeMergeCandidate)
+    : [];
+
+  return {
+    tasks: Array.isArray(parsed.tasks) ? parsed.tasks.map(normalizeTaskSnapshot).filter(Boolean) : [],
+    agents: Array.isArray(parsed.agents) ? parsed.agents.map(normalizeAgentSnapshot).filter(Boolean) : [],
+    failures,
+    mergeCandidates,
+    metrics: parsed.metrics ?? {},
+    sliceCatalog,
+    updatedAt,
+  };
+}
+
+function normalizeTaskSnapshot(entry: Record<string, unknown>): TaskSnapshot {
+  const id = readString(entry, ["id", "taskId", "task_id"]) ?? `task-${Math.random().toString(36).slice(2, 8)}`;
+  const title = readString(entry, ["title", "name"]) ?? id;
+  const status = (readString(entry, ["status"]) as TaskStatus | null) ?? "assigned";
+  const confidence = readNumber(entry, ["confidence"], 0.75);
+  const updatedAt = readString(entry, ["updatedAt", "updated_at"]) ?? new Date().toISOString();
+  const owner = readString(entry, ["owner", "agent", "provider"]);
+  const sliceId = readString(entry, ["sliceId", "slice_id"]);
+  const taskNumber = readString(entry, ["taskNumber", "task_number"]);
+  const dependencies = readStringArray(entry, ["dependencies", "depends_on"]);
+  const packet = readPacket(entry);
+  const summary = readString(entry, ["summary", "description"]);
+  const metrics = readMetrics(entry);
+  const lessons = Array.isArray(entry["lessons"]) ? (entry["lessons"] as TaskSnapshot["lessons"]) : [];
+
+  return {
+    id,
+    title,
+    status,
+    confidence,
+    updatedAt,
+    owner: owner ?? undefined,
+    sliceId: sliceId ?? undefined,
+    taskNumber: taskNumber ?? undefined,
+    dependencies: dependencies.length ? dependencies : undefined,
+    packet: packet ?? undefined,
+    summary: summary ?? undefined,
+    metrics,
+    lessons: lessons ?? [],
+  };
+}
+
+function normalizeAgentSnapshot(entry: Record<string, unknown>): AgentSnapshot | null {
+  const id = readString(entry, ["id", "agentId"]);
+  const name = readString(entry, ["name", "label"]);
+  if (!id || !name) {
+    return null;
+  }
+  const status = readString(entry, ["status"]) ?? "ready";
+  const summary = readString(entry, ["summary", "description"]) ?? "";
+  const updatedAt = readString(entry, ["updatedAt", "updated_at"]) ?? new Date().toISOString();
+
+  return {
+    id,
+    name,
+    status,
+    summary,
+    updatedAt,
+    logo: readString(entry, ["logo"]),
+    tier: readString(entry, ["tier"]),
+    cooldownReason: readString(entry, ["cooldownReason", "cooldown_reason"]),
+    costPerRunUsd: readNumber(entry, ["costPerRunUsd", "cost_per_run"]),
+    vendor: readString(entry, ["vendor"]),
+    capability: readString(entry, ["capability"]),
+    contextWindowTokens: readNumber(entry, ["contextWindowTokens", "context_tokens"]),
+    effectiveContextWindowTokens: readNumber(entry, ["effectiveContextWindowTokens", "effective_tokens"]),
+    cooldownExpiresAt: readString(entry, ["cooldownExpiresAt", "cooldown_expires_at"]),
+    creditStatus: (readString(entry, ["creditStatus"]) as AgentSnapshot["creditStatus"]) ?? undefined,
+    rateLimitWindowSeconds: readNumber(entry, ["rateLimitWindowSeconds", "rate_limit_seconds"]),
+    costPer1kTokensUsd: readNumber(entry, ["costPer1kTokensUsd", "cost_per_1k"]),
+    warnings: Array.isArray(entry["warnings"]) ? (entry["warnings"] as string[]) : [],
+  };
+}
+
+function normalizeSliceCatalog(entry: Record<string, unknown>): SliceCatalog {
+  return {
+    id: readString(entry, ["id"]) ?? `slice-${Math.random().toString(36).slice(2, 8)}`,
+    name: readString(entry, ["name", "label"]) ?? "Slice",
+    accent: readString(entry, ["accent"]) ?? undefined,
+    tokens: readNumber(entry, ["tokens"]),
+    tasksTotal: readNumber(entry, ["tasksTotal", "tasks_total"]),
+    tasksDone: readNumber(entry, ["tasksDone", "tasks_done"]),
+  };
+}
+
+function normalizeFailure(entry: Record<string, unknown>): FailureSnapshot {
+  return {
+    id: readString(entry, ["id"]) ?? `failure-${Math.random().toString(36).slice(2, 8)}`,
+    title: readString(entry, ["title"]) ?? "Failure",
+    summary: readString(entry, ["summary"]) ?? "",
+    reasonCode: readString(entry, ["reasonCode", "reason_code"]) ?? "",
+  };
+}
+
+function normalizeMergeCandidate(entry: Record<string, unknown>): MergeCandidate {
+  return {
+    branch: readString(entry, ["branch"]) ?? "unknown",
+    title: readString(entry, ["title"]) ?? "Pending merge",
+    summary: readString(entry, ["summary"]) ?? "",
+    checklist: Array.isArray(entry["checklist"]) ? (entry["checklist"] as boolean[]) : [],
+  };
+}
+
+function readPacket(entry: Record<string, unknown>): TaskSnapshot["packet"] | null {
+  const packet = entry["packet"];
+  if (!packet || typeof packet !== "object") {
+    return null;
+  }
+  const prompt = readString(packet as Record<string, unknown>, ["prompt"]);
+  const attachments = Array.isArray((packet as Record<string, unknown>)["attachments"])
+    ? ((packet as Record<string, unknown>)["attachments"] as Record<string, unknown>[])
+        .map((attachment) => {
+          const label = readString(attachment, ["label", "name"]);
+          const href = readString(attachment, ["href", "url"]);
+          if (!label || !href) return null;
+          return { label, href };
+        })
+        .filter((entry): entry is { label: string; href: string } => Boolean(entry))
+    : undefined;
+
+  if (!prompt && !attachments) {
+    return null;
+  }
+
+  return {
+    prompt: prompt ?? "",
+    attachments,
+  };
+}
+
+function readMetrics(entry: Record<string, unknown>): TaskSnapshot["metrics"] | undefined {
+  const metrics = entry["metrics"];
+  if (!metrics || typeof metrics !== "object") return undefined;
+  const tokensUsed = readNumber(metrics as Record<string, unknown>, ["tokensUsed", "tokens_used"]);
+  const runtimeSeconds = readNumber(metrics as Record<string, unknown>, ["runtimeSeconds", "runtime_seconds"]);
+  const costUsd = readNumber(metrics as Record<string, unknown>, ["costUsd", "cost_usd"]);
+  const hasMetrics = [tokensUsed, runtimeSeconds, costUsd].some((value) => Number.isFinite(value));
+  if (!hasMetrics) return undefined;
+  return {
+    tokensUsed: Number.isFinite(tokensUsed) ? tokensUsed : undefined,
+    runtimeSeconds: Number.isFinite(runtimeSeconds) ? runtimeSeconds : undefined,
+    costUsd: Number.isFinite(costUsd) ? costUsd : undefined,
+  };
+}
+
+function readString(entry: Record<string, unknown>, keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = entry[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function readNumber(entry: Record<string, unknown>, keys: string[], fallback?: number): number {
+  for (const key of keys) {
+    const value = entry[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value.trim()) {
+      const parsed = Number(value);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+  }
+  return fallback !== undefined ? fallback : Number.NaN;
+}
+
+function readStringArray(entry: Record<string, unknown>, keys: string[]): string[] {
+  for (const key of keys) {
+    const value = entry[key];
+    if (Array.isArray(value)) {
+      return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+    }
+  }
+  return [];
 }
 
 

@@ -1,0 +1,85 @@
+{
+  "updated_at": "2025-11-24T00:05:00Z",
+  "default_llm": "openrouter",
+  "orchestrator": {
+    "llm": "openrouter",
+    "model": "gpt-4.1-mini",
+    "auto_dispatch": true,
+    "queue_path": "data/tasks/queued",
+    "events_path": "data/state/events.log.jsonl",
+    "skills": ["dag_executor"],
+    "prompt": "You are the Vibeflow orchestrator. Assign each validated task packet to the best agent, honoring router weights, provider health, and credit limits. Emit concise status_change events with provider, confidence, and why the selection is safe. Never drop required deliverables."
+  },
+  "agents": [
+    {
+      "id": "planner",
+      "name": "Planner Agent",
+      "role": "planner",
+      "llm": "deepseek",
+      "model": "deepseek-reasoner",
+      "skills": ["plan", "decompose", "scope"],
+      "prompt": "Turn mission objectives into a dependency-ordered plan of small tasks with titles, owners, and deliverables. Keep tasks atomic, verifiable, and scoped to this repo.",
+      "notes": "Feeds orchestrator plan() output."
+    },
+    {
+      "id": "router",
+      "name": "Router",
+      "role": "router",
+      "llm": "openrouter",
+      "model": "gpt-4.1-mini",
+      "skills": ["route", "provider-select", "cooldown"],
+      "prompt": "Select the best provider + skill for each packet using historical success, latency targets, and credit signals. Prefer healthy providers, avoid cooldowns, and surface fallback chains.",
+      "notes": "Backed by data/registry/platforms/index.json weights."
+    },
+    {
+      "id": "watcher",
+      "name": "Watcher",
+      "role": "watcher",
+      "llm": "gemini",
+      "model": "gemini-1.5-pro-latest",
+      "skills": ["monitor", "reroute", "alert"],
+      "prompt": "Monitor task progress, detect stalls over 10 minutes, and recommend reroutes when a provider degrades. Emit MCP note events with reason codes.",
+      "notes": "Consumes data/state/events.log.jsonl."
+    },
+    {
+      "id": "tester",
+      "name": "Tester",
+      "role": "tester",
+      "llm": "openrouter",
+      "model": "gpt-4.1-mini",
+      "skills": ["test_runner", "visual_exec"],
+      "prompt": "Generate and run focused checks against the latest change. Return pass/fail with reproduction steps, screenshots, and diffs when possible.",
+      "notes": "Uses skills/test_runner and visual_exec."
+    },
+    {
+      "id": "supervisor",
+      "name": "Supervisor",
+      "role": "supervisor",
+      "llm": "deepseek",
+      "model": "deepseek-reasoner",
+      "skills": ["review", "block", "approve"],
+      "prompt": "Score outputs for safety, regression risk, and spec coverage. Approve only when ready_to_merge; otherwise emit a blocking note with fixes.",
+      "notes": "Marks status_change events and raises blocking notes."
+    }
+  ],
+  "mcp": {
+    "host": "127.0.0.1",
+    "port": 3030,
+    "token_env": "MCP_SERVER_TOKEN",
+    "queue_dir": "data/tasks/queued",
+    "processed_dir": "data/tasks/processed",
+    "failed_dir": "data/tasks/failed",
+    "tools": [
+      { "name": "runSkill", "description": "Execute a registered skill runner and return its JSON output." },
+      { "name": "getTaskState", "description": "Load the latest task state snapshot from disk." },
+      { "name": "emitNote", "description": "Append a note event to the mission log." },
+      { "name": "queryEvents", "description": "Read lifecycle events from the mission log." },
+      { "name": "run-task endpoint", "description": "POST /run-task validates, dispatches, and enqueues task packets." }
+    ],
+    "notes": [
+      "Auto-dispatch queue lives at data/tasks/queued and is consumed by scripts/orchestrator/auto_runner.mjs.",
+      "orchestrator.dispatch updates data/state/task.state.json and data/state/events.log.jsonl.",
+      "MCP auth uses Bearer token from MCP_SERVER_TOKEN when set."
+    ]
+  }
+}

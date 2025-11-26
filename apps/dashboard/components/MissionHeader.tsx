@@ -9,7 +9,6 @@ interface MissionHeaderProps {
   tasks: TaskSnapshot[];
   slices: MissionSlice[];
   events: MissionEvent[];
-  snapshotTime: string;
   tokenUsage: number;
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
@@ -119,7 +118,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   tasks,
   slices,
   events,
-  snapshotTime,
   tokenUsage,
   onOpenTokens,
   onOpenReviewTask,
@@ -253,6 +251,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     setSelectedTaskId(targetId);
   };
 
+  const tokensLabel = useMemo(() => formatTokenCount(tokenUsage), [tokenUsage]);
+
   const formatTaskLabel = (task: TaskSnapshot) => {
     if (task.taskNumber) {
       const cleaned = String(task.taskNumber).replace(/task\s*#/i, "").replace(/^#/i, "").trim();
@@ -266,8 +266,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     if (task.title) return task.title;
     return task.status.replace(/_/g, " ");
   };
-
-  const formattedTokens = useMemo(() => formatTokenCount(tokenUsage), [tokenUsage]);
 
   return (
     <header className="mission-header">
@@ -314,14 +312,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           type="button"
           className="mission-header__stat-pill mission-header__stat-pill--tokens"
           title="Open ROI + token usage"
-          aria-label={`Open ROI + token usage`}
+          aria-label={`Open ROI + token usage (${tokensLabel} tokens)`}
           onClick={onOpenTokens}
         >
           <div className="mission-header__stat-body">
             <span className="mission-header__stat-primary">
               <span className="mission-header__stat-label">Tokens</span>
             </span>
-            <strong className="mission-header__stat-value mission-header__stat-value--tokens">ROI</strong>
+            <strong className="mission-header__stat-value mission-header__stat-value--tokens">{tokensLabel}</strong>
           </div>
         </button>
       </div>
