@@ -3,7 +3,7 @@ import { MissionEvent } from "../../../../src/utils/events";
 import { TaskSnapshot } from "@core/types";
 import { resolveDashboardPath } from "../../utils/paths";
 
-type AdminTab = "Orchestrator" | "Agents" | "Models" | "MCP" | "Logs" | "Settings";
+type AdminTab = "Orchestrator" | "Agents" | "Models" | "Platforms" | "MCP" | "Logs" | "Settings";
 
 interface AdminControlCenterProps {
   events: MissionEvent[];
@@ -66,9 +66,18 @@ interface LlmProvider {
   api_key_env?: string;
 }
 
-const NAV_ITEMS: AdminTab[] = ["Orchestrator", "Agents", "Models", "MCP", "Logs", "Settings"];
+interface PlatformEntry {
+  id: string;
+  label: string;
+  url?: string;
+  vendor?: string;
+  notes?: string;
+}
+
+const NAV_ITEMS: AdminTab[] = ["Orchestrator", "Agents", "Models", "Platforms", "MCP", "Logs", "Settings"];
 const STORAGE_KEY = "vibeflow-admin-overrides";
 const PROVIDER_STORAGE_KEY = "vibeflow-admin-providers";
+const PLATFORM_STORAGE_KEY = "vibeflow-admin-platforms";
 
 const fallbackProviders: LlmProvider[] = [
   { id: "openrouter", label: "OpenRouter GPT-4.1 Mini", model: "gpt-4.1-mini", enabled: true },
@@ -169,14 +178,22 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
   const [activeTab, setActiveTab] = useState<AdminTab>("Orchestrator");
   const [config, setConfig] = useState<AdminConfig>(fallbackConfig);
   const [providers, setProviders] = useState<LlmProvider[]>(fallbackProviders);
+  const [platforms, setPlatforms] = useState<PlatformEntry[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [providerMessage, setProviderMessage] = useState<string | null>(null);
+  const [platformMessage, setPlatformMessage] = useState<string | null>(null);
   const [newProvider, setNewProvider] = useState<{ id: string; label: string; model: string; apiKeyEnv: string }>({
     id: "",
     label: "",
     model: "",
     apiKeyEnv: "OPENROUTER_API_KEY",
+  });
+  const [newPlatform, setNewPlatform] = useState<{ id: string; label: string; url: string; vendor: string }>({
+    id: "",
+    label: "",
+    url: "",
+    vendor: "",
   });
   const baselineRef = useRef<AdminConfig>(fallbackConfig);
   const loadedRef = useRef(false);
@@ -186,11 +203,13 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
     const load = async () => {
       setStatus("loading");
       try {
-        const [providerList, configPayload] = await Promise.all([fetchProviders(), fetchAdminConfig()]);
+        const [providerList, platformList, configPayload] = await Promise.all([fetchProviders(), fetchPlatforms(), fetchAdminConfig()]);
         if (cancelled) return;
         const mergedProviders = applyProviderOverrides(providerList);
+        const mergedPlatforms = applyPlatformOverrides(platformList);
         baselineRef.current = configPayload;
         setProviders(mergedProviders);
+        setPlatforms(mergedPlatforms);
         setConfig(applyOverrides(configPayload));
         setStatus("ready");
         loadedRef.current = true;
@@ -200,6 +219,7 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
         const mergedFallback = applyProviderOverrides(fallbackProviders);
         setProviders(mergedFallback);
         setConfig(applyOverrides(fallbackConfig));
+        setPlatforms(applyPlatformOverrides([]));
         setStatus("error");
         loadedRef.current = true;
       }
@@ -326,6 +346,33 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
                 return next;
               });
               setNewProvider({ id: "", label: "", model: "", apiKeyEnv: "OPENROUTER_API_KEY" });
+            }}
+          />
+        );
+      case "Platforms":
+        return (
+          <PlatformPanel
+            platforms={platforms}
+            message={platformMessage}
+            newPlatform={newPlatform}
+            onChange={(field, value) => {
+              setNewPlatform((prev) => ({ ...prev, [field]: value }));
+              setPlatformMessage(null);
+            }}
+            onAdd={() => {
+              const payload: PlatformEntry = {
+                id: newPlatform.id.trim(),
+                label: newPlatform.label.trim(),
+                url: newPlatform.url.trim() || undefined,
+                vendor: newPlatform.vendor.trim() || undefined,
+              };
+              setPlatforms((prev) => {
+                const next = prev.some((p) => p.id === payload.id) ? prev.map((p) => (p.id === payload.id ? payload : p)) : [...prev, payload];
+                persistPlatformOverrides(next);
+                setPlatformMessage("Saved locally");
+                return next;
+              });
+              setNewPlatform({ id: "", label: "", url: "", vendor: "" });
             }}
           />
         );
@@ -621,6 +668,80 @@ function ModelPanel({
   );
 }
 
+function PlatformPanel({
+  platforms,
+  message,
+  newPlatform,
+  onChange,
+  onAdd,
+}: {
+  platforms: PlatformEntry[];
+  message: string | null;
+  newPlatform: { id: string; label: string; url: string; vendor: string };
+  onChange: (field: keyof typeof newPlatform, value: string) => void;
+  onAdd: () => void;
+}) {
+  return (
+    <>
+      <div className="admin-grid admin-grid--double">
+        {platforms.map((platform) => (
+          <div key={platform.id} className="admin-panel__card admin-panel__card--deep">
+            <div className="admin-panel__row">
+              <h3 className="admin-panel__title">{platform.label}</h3>
+              <span className="admin-pill admin-pill--route">{platform.vendor ?? "Platform"}</span>
+            </div>
+            <div className="admin-meta">
+              <div>ID: {platform.id}</div>
+              {platform.url && (
+                <div>
+                  URL:{" "}
+                  <a className="admin-link" href={platform.url} target="_blank" rel="noreferrer">
+                    {platform.url}
+                  </a>
+                </div>
+              )}
+            </div>
+            {platform.notes && <p className="admin-hero__subhead">{platform.notes}</p>}
+          </div>
+        ))}
+        {platforms.length === 0 && <div className="admin-panel__card">No platforms registered yet.</div>}
+      </div>
+      <div className="admin-panel__card admin-panel__card--deep" style={{ marginTop: 16 }}>
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">Add platform / workspace</h3>
+          {message && <span className="admin-pill admin-pill--route">{message}</span>}
+        </div>
+        <div className="admin-grid admin-grid--double">
+          <label className="mission-field">
+            Platform ID
+            <input value={newPlatform.id} onChange={(e) => onChange("id", e.target.value)} placeholder="gemini-chat" />
+          </label>
+          <label className="mission-field">
+            Label
+            <input value={newPlatform.label} onChange={(e) => onChange("label", e.target.value)} placeholder="Gemini Web Studio" />
+          </label>
+          <label className="mission-field">
+            URL
+            <input value={newPlatform.url} onChange={(e) => onChange("url", e.target.value)} placeholder="https://..." />
+          </label>
+          <label className="mission-field">
+            Vendor
+            <input value={newPlatform.vendor} onChange={(e) => onChange("vendor", e.target.value)} placeholder="Google / OpenAI / Anthropic" />
+          </label>
+        </div>
+        <p className="admin-hero__subhead">
+          Paste the workspace URL (chat/playground). Agents can return task chat URLs for traceability; Maintenance agent can wire deeper after add.
+        </p>
+        <div className="admin-panel__row">
+          <button type="button" className="admin-primary" onClick={onAdd} disabled={!newPlatform.id || !newPlatform.label}>
+            Add platform
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function McpPanel({ config }: { config?: McpConfig }) {
   const tools = config?.tools ?? [];
   const notes = config?.notes ?? [];
@@ -639,7 +760,8 @@ function McpPanel({ config }: { config?: McpConfig }) {
           <div>Token env: {config?.token_env ?? "MCP_SERVER_TOKEN"}</div>
         </div>
         <p className="admin-hero__subhead">
-          POST /run-task validates task_packet.schema.json, calls orchestrator.dispatch, then writes to queue for auto_runner.
+          POST /run-task validates task_packet.schema.json, calls orchestrator.dispatch, then writes to queue for auto_runner. Point VS Code MCP
+          clients to http://{config?.host ?? "127.0.0.1"}:{config?.port ?? 3030}.
         </p>
       </div>
       <div className="admin-panel__card admin-panel__card--stacked">
@@ -710,7 +832,7 @@ function SettingsPanel({
       <p>Status: {status === "ready" ? "Loaded" : status}</p>
       <p>Default LLM: {config.default_llm ?? "openrouter"}</p>
       <p>Providers loaded: {providers.length}</p>
-      <p className="admin-hero__subhead">Changes auto-save locally and also persist when you click Save overrides.</p>
+      <p className="admin-hero__subhead">Changes auto-save locally as you type. Click Save overrides to commit this session, Reset to revert to repo defaults.</p>
       <div className="admin-panel__row" style={{ gap: "0.5rem", flexWrap: "wrap" }}>
         <button type="button" className="admin-primary" onClick={onSave}>
           Save overrides
@@ -755,6 +877,26 @@ async function fetchAdminConfig(): Promise<AdminConfig> {
   }
   const payload = await response.json();
   return normalizeConfig(payload);
+}
+
+async function fetchPlatforms(): Promise<PlatformEntry[]> {
+  try {
+    const response = await fetch(resolveDashboardPath("data/registry/platforms/index.json"), { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Platform registry unavailable (${response.status})`);
+    }
+    const payload = await response.json();
+    const providers = Array.isArray(payload.providers) ? payload.providers : [];
+    return providers.map((entry: Record<string, unknown>) => ({
+      id: readString(entry, ["id"]) ?? "platform",
+      label: readString(entry, ["label", "name"]) ?? "Platform",
+      vendor: readString(entry, ["vendor"]),
+      url: readString(entry, ["url"]) ?? undefined,
+    }));
+  } catch (error) {
+    console.warn("[admin] platform registry missing", error);
+    return [];
+  }
 }
 
 function normalizeConfig(raw: Record<string, unknown>): AdminConfig {
@@ -872,6 +1014,28 @@ function applyProviderOverrides(base: LlmProvider[]): LlmProvider[] {
   }
 }
 
+function applyPlatformOverrides(base: PlatformEntry[]): PlatformEntry[] {
+  if (typeof window === "undefined") return base;
+  const raw = window.localStorage.getItem(PLATFORM_STORAGE_KEY);
+  if (!raw) return base;
+  try {
+    const overrides: PlatformEntry[] = JSON.parse(raw);
+    const merged = [...base];
+    overrides.forEach((entry) => {
+      const index = merged.findIndex((p) => p.id === entry.id);
+      if (index >= 0) {
+        merged[index] = { ...merged[index], ...entry };
+      } else {
+        merged.push(entry);
+      }
+    });
+    return merged;
+  } catch (error) {
+    console.warn("[admin] failed to parse platform overrides", error);
+    return base;
+  }
+}
+
 function buildProviderUsage(config: AdminConfig): Record<string, string[]> {
   const usage: Record<string, string[]> = {};
   const record = (providerId: string, label: string) => {
@@ -939,5 +1103,14 @@ function persistProviderOverrides(providers: LlmProvider[]) {
     window.localStorage.setItem(PROVIDER_STORAGE_KEY, JSON.stringify(providers));
   } catch (error) {
     console.warn("[admin] unable to persist provider overrides", error);
+  }
+}
+
+function persistPlatformOverrides(platforms: PlatformEntry[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PLATFORM_STORAGE_KEY, JSON.stringify(platforms));
+  } catch (error) {
+    console.warn("[admin] unable to persist platform overrides", error);
   }
 }

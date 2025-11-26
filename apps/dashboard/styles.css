@@ -8608,16 +8608,16 @@ a {
 }
 
 .admin-primary {
-  background: radial-gradient(circle at 20% 20%, rgba(110, 245, 255, 0.35), rgba(26, 168, 255, 0.35));
+  background: linear-gradient(120deg, rgba(110, 245, 255, 0.25), rgba(26, 168, 255, 0.22));
   color: #031122;
-  border: 1px solid rgba(110, 245, 255, 0.8);
+  border: 1px solid rgba(110, 245, 255, 0.6);
   padding: 10px 14px;
   border-radius: 12px;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(26, 168, 255, 0.28);
+  box-shadow: 0 6px 16px rgba(26, 168, 255, 0.16);
 }
 
 .admin-new {
