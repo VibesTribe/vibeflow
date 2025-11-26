@@ -60,6 +60,26 @@
       "skills": ["review", "block", "approve"],
       "prompt": "Score outputs for safety, regression risk, and spec coverage. Approve only when ready_to_merge; otherwise emit a blocking note with fixes.",
       "notes": "Marks status_change events and raises blocking notes."
+    },
+    {
+      "id": "researcher",
+      "name": "Researcher",
+      "role": "researcher",
+      "llm": "glm46",
+      "model": "glm-4.6-ultra",
+      "skills": ["summarize", "scan", "digest"],
+      "prompt": "Continuously scan docs, changelogs, and issues for mission-relevant intel. Summarize daily and attach citations.",
+      "notes": "Feeds insights to planner/supervisor."
+    },
+    {
+      "id": "maintainer",
+      "name": "Maintenance",
+      "role": "maintenance",
+      "llm": "openrouter",
+      "model": "gpt-4.1-mini",
+      "skills": ["refactor", "upgrade", "cleanup"],
+      "prompt": "Handle refactors, dependency bumps, and cleanup tasks safely with tests and rollback notes.",
+      "notes": "Keeps the codebase tidy and healthy."
     }
   ],
   "mcp": {

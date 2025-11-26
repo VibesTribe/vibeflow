@@ -63,14 +63,17 @@ interface LlmProvider {
   enabled?: boolean;
   modes?: string[];
   max_output_tokens?: number;
+  api_key_env?: string;
 }
 
 const NAV_ITEMS: AdminTab[] = ["Orchestrator", "Agents", "Models", "MCP", "Logs", "Settings"];
 const STORAGE_KEY = "vibeflow-admin-overrides";
+const PROVIDER_STORAGE_KEY = "vibeflow-admin-providers";
 
 const fallbackProviders: LlmProvider[] = [
   { id: "openrouter", label: "OpenRouter GPT-4.1 Mini", model: "gpt-4.1-mini", enabled: true },
   { id: "deepseek", label: "DeepSeek Reasoner", model: "deepseek-reasoner", enabled: true },
+  { id: "glm46", label: "GLM 4.6 Ultra", model: "glm-4.6-ultra", enabled: true },
   { id: "gemini", label: "Gemini 1.5 Pro", model: "gemini-1.5-pro-latest", enabled: true },
 ];
 
@@ -105,6 +108,51 @@ const fallbackConfig: AdminConfig = {
       prompt: "Choose providers based on weights, latency targets, and credit status.",
       skills: ["route"],
     },
+    {
+      id: "supervisor",
+      name: "Supervisor",
+      role: "supervisor",
+      llm: "openrouter",
+      model: "gpt-4.1-mini",
+      prompt: "Score outputs for safety, regression risk, and spec coverage. Approve only when ready_to_merge; otherwise emit a blocking note with fixes.",
+      skills: ["review", "approve", "block"],
+    },
+    {
+      id: "tester",
+      name: "Tester",
+      role: "tester",
+      llm: "gemini",
+      model: "gemini-1.5-pro-latest",
+      prompt: "Generate and run focused checks against the latest change. Return pass/fail with reproduction steps, screenshots, and diffs when possible.",
+      skills: ["test_runner", "visual_exec"],
+    },
+    {
+      id: "watcher",
+      name: "Watcher",
+      role: "watcher",
+      llm: "deepseek",
+      model: "deepseek-reasoner",
+      prompt: "Monitor task progress, detect stalls over 10 minutes, and recommend reroutes when a provider degrades. Emit MCP note events with reason codes.",
+      skills: ["monitor", "reroute", "alert"],
+    },
+    {
+      id: "researcher",
+      name: "Researcher",
+      role: "researcher",
+      llm: "glm46",
+      model: "glm-4.6-ultra",
+      prompt: "Continuously scan docs, changelogs, and issues for mission-relevant intel. Summarize daily and attach citations.",
+      skills: ["summarize", "scan", "digest"],
+    },
+    {
+      id: "maintainer",
+      name: "Maintenance",
+      role: "maintenance",
+      llm: "openrouter",
+      model: "gpt-4.1-mini",
+      prompt: "Handle refactors, dependency bumps, and cleanup tasks safely with tests and rollback notes.",
+      skills: ["refactor", "upgrade", "cleanup"],
+    },
   ],
   mcp: {
     host: "127.0.0.1",
@@ -123,7 +171,15 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
   const [providers, setProviders] = useState<LlmProvider[]>(fallbackProviders);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [providerMessage, setProviderMessage] = useState<string | null>(null);
+  const [newProvider, setNewProvider] = useState<{ id: string; label: string; model: string; apiKeyEnv: string }>({
+    id: "",
+    label: "",
+    model: "",
+    apiKeyEnv: "OPENROUTER_API_KEY",
+  });
   const baselineRef = useRef<AdminConfig>(fallbackConfig);
+  const loadedRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -132,16 +188,20 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
       try {
         const [providerList, configPayload] = await Promise.all([fetchProviders(), fetchAdminConfig()]);
         if (cancelled) return;
+        const mergedProviders = applyProviderOverrides(providerList);
         baselineRef.current = configPayload;
-        setProviders(providerList);
+        setProviders(mergedProviders);
         setConfig(applyOverrides(configPayload));
         setStatus("ready");
+        loadedRef.current = true;
       } catch (error) {
         console.warn("[admin] failed to load config, using fallback", error);
         if (cancelled) return;
-        setProviders(fallbackProviders);
+        const mergedFallback = applyProviderOverrides(fallbackProviders);
+        setProviders(mergedFallback);
         setConfig(applyOverrides(fallbackConfig));
         setStatus("error");
+        loadedRef.current = true;
       }
     };
     load();
@@ -191,6 +251,12 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
     setSaveMessage("Reset to repo config.");
   };
 
+  useEffect(() => {
+    if (!loadedRef.current) return;
+    persistOverrides(config);
+    setSaveMessage("Autosaved locally.");
+  }, [config]);
+
   const heading = useMemo(() => {
     switch (activeTab) {
       case "Orchestrator":
@@ -235,7 +301,34 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ events, tasks }
           />
         );
       case "Models":
-        return <ModelPanel providers={providers} usage={providerUsage} />;
+        return (
+          <ModelPanel
+            providers={providers}
+            usage={providerUsage}
+            newProvider={newProvider}
+            providerMessage={providerMessage}
+            onChange={(field, value) => {
+              setNewProvider((prev) => ({ ...prev, [field]: value }));
+              setProviderMessage(null);
+            }}
+            onAdd={() => {
+              const payload: LlmProvider = {
+                id: newProvider.id.trim(),
+                label: newProvider.label.trim(),
+                model: newProvider.model.trim(),
+                api_key_env: newProvider.apiKeyEnv.trim() || undefined,
+                enabled: true,
+              };
+              setProviders((prev) => {
+                const next = prev.some((p) => p.id === payload.id) ? prev.map((p) => (p.id === payload.id ? payload : p)) : [...prev, payload];
+                persistProviderOverrides(next);
+                setProviderMessage("Saved locally");
+                return next;
+              });
+              setNewProvider({ id: "", label: "", model: "", apiKeyEnv: "OPENROUTER_API_KEY" });
+            }}
+          />
+        );
       case "MCP":
         return <McpPanel config={config.mcp} />;
       case "Logs":
@@ -330,7 +423,9 @@ function OrchestratorPanel({
       <div className="admin-panel__card admin-panel__card--deep">
         <div className="admin-panel__row">
           <h3 className="admin-panel__title">Orchestrator Runtime</h3>
-          <span className="admin-status admin-status--info">{config.auto_dispatch ? "Auto-dispatch on" : "Manual"}</span>
+          <span className="admin-status admin-status--info">
+            Auto-dispatch {config.auto_dispatch === false ? "off (not recommended)" : "on (enforced)"}
+          </span>
         </div>
         <div className="admin-meta">
           <div>Queue: {config.queue_path ?? "data/tasks/queued"}</div>
@@ -355,7 +450,7 @@ function OrchestratorPanel({
         <div className="mission-field">
           <label>
             Dispatch prompt
-            <textarea value={config.prompt} onChange={(event) => onPromptChange("orchestrator", event.target.value)} rows={4} />
+            <textarea value={config.prompt} onChange={(event) => onPromptChange("orchestrator", event.target.value)} rows={6} />
           </label>
         </div>
         <p className="admin-hero__subhead">
@@ -437,7 +532,7 @@ function AgentPanel({
             <div className="mission-field">
               <label>
                 Prompt
-                <textarea value={agent.prompt} onChange={(event) => onPromptChange(agent.id, event.target.value)} rows={3} />
+                <textarea value={agent.prompt} onChange={(event) => onPromptChange(agent.id, event.target.value)} rows={5} />
               </label>
             </div>
             {agent.notes && <p className="admin-hero__subhead">{agent.notes}</p>}
@@ -449,30 +544,80 @@ function AgentPanel({
   );
 }
 
-function ModelPanel({ providers, usage }: { providers: LlmProvider[]; usage: Record<string, string[]> }) {
+function ModelPanel({
+  providers,
+  usage,
+  newProvider,
+  providerMessage,
+  onChange,
+  onAdd,
+}: {
+  providers: LlmProvider[];
+  usage: Record<string, string[]>;
+  newProvider: { id: string; label: string; model: string; apiKeyEnv: string };
+  providerMessage: string | null;
+  onChange: (field: keyof typeof newProvider, value: string) => void;
+  onAdd: () => void;
+}) {
   return (
-    <div className="admin-grid admin-grid--double">
-      {providers.map((provider) => (
-        <div key={provider.id} className="admin-panel__card admin-panel__card--deep">
-          <div className="admin-panel__row">
-            <h3 className="admin-panel__title">{provider.label}</h3>
-            <span className={`admin-status ${provider.enabled === false ? "admin-status--warn" : "admin-status--success"}`}>
-              {provider.enabled === false ? "Disabled" : "Ready"}
-            </span>
+    <>
+      <div className="admin-grid admin-grid--double">
+        {providers.map((provider) => (
+          <div key={provider.id} className="admin-panel__card admin-panel__card--deep">
+            <div className="admin-panel__row">
+              <h3 className="admin-panel__title">{provider.label}</h3>
+              <span className={`admin-status ${provider.enabled === false ? "admin-status--warn" : "admin-status--success"}`}>
+                {provider.enabled === false ? "Disabled" : "Ready"}
+              </span>
+            </div>
+            <div className="admin-meta">
+              <div>ID: {provider.id}</div>
+              <div>Model: {provider.model ?? "n/a"}</div>
+              <div>API Key Env: {provider.api_key_env ?? "N/A"}</div>
+              <div>Context: {provider.max_output_tokens ? `${provider.max_output_tokens.toLocaleString()} tokens` : "unknown"}</div>
+            </div>
+            <div className="admin-pill admin-pill--route">Modes: {(provider.modes ?? ["text"]).join(", ")}</div>
+            <p className="admin-hero__subhead">
+              Used by: {usage[provider.id]?.length ? usage[provider.id].join(", ") : "not wired yet"}
+            </p>
           </div>
-          <div className="admin-meta">
-            <div>ID: {provider.id}</div>
-            <div>Model: {provider.model ?? "n/a"}</div>
-            <div>Context: {provider.max_output_tokens ? `${provider.max_output_tokens.toLocaleString()} tokens` : "unknown"}</div>
-          </div>
-          <div className="admin-pill admin-pill--route">Modes: {(provider.modes ?? ["text"]).join(", ")}</div>
-          <p className="admin-hero__subhead">
-            Used by: {usage[provider.id]?.length ? usage[provider.id].join(", ") : "not wired yet"}
-          </p>
+        ))}
+        {providers.length === 0 && <div className="admin-panel__card">No provider registry found.</div>}
+      </div>
+      <div className="admin-panel__card admin-panel__card--deep" style={{ marginTop: 16 }}>
+        <div className="admin-panel__row">
+          <h3 className="admin-panel__title">Add provider (e.g. OpenRouter model)</h3>
+          {providerMessage && <span className="admin-pill admin-pill--route">{providerMessage}</span>}
         </div>
-      ))}
-      {providers.length === 0 && <div className="admin-panel__card">No provider registry found.</div>}
-    </div>
+        <div className="admin-grid admin-grid--double">
+          <label className="mission-field">
+            Provider ID
+            <input value={newProvider.id} onChange={(e) => onChange("id", e.target.value)} placeholder="openrouter/gpt-4.1-mini" />
+          </label>
+          <label className="mission-field">
+            Label
+            <input value={newProvider.label} onChange={(e) => onChange("label", e.target.value)} placeholder="OpenRouter GPT-4.1 Mini" />
+          </label>
+          <label className="mission-field">
+            Model
+            <input value={newProvider.model} onChange={(e) => onChange("model", e.target.value)} placeholder="gpt-4.1-mini" />
+          </label>
+          <label className="mission-field">
+            API Key Env
+            <input value={newProvider.apiKeyEnv} onChange={(e) => onChange("apiKeyEnv", e.target.value)} placeholder="OPENROUTER_API_KEY" />
+          </label>
+        </div>
+        <p className="admin-hero__subhead">
+          Keys live in GitHub/Vercel secrets. Add any OpenRouter-capable model or direct Gemini/DeepSeek/GLM entries here; they persist locally for
+          this browser.
+        </p>
+        <div className="admin-panel__row">
+          <button type="button" className="admin-primary" onClick={onAdd} disabled={!newProvider.id || !newProvider.label || !newProvider.model}>
+            Add provider
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -565,6 +710,7 @@ function SettingsPanel({
       <p>Status: {status === "ready" ? "Loaded" : status}</p>
       <p>Default LLM: {config.default_llm ?? "openrouter"}</p>
       <p>Providers loaded: {providers.length}</p>
+      <p className="admin-hero__subhead">Changes auto-save locally and also persist when you click Save overrides.</p>
       <div className="admin-panel__row" style={{ gap: "0.5rem", flexWrap: "wrap" }}>
         <button type="button" className="admin-primary" onClick={onSave}>
           Save overrides
@@ -597,6 +743,7 @@ async function fetchProviders(): Promise<LlmProvider[]> {
       enabled: provider["enabled"] !== false,
       modes: Array.isArray(provider["modes"]) ? (provider["modes"] as string[]) : undefined,
       max_output_tokens: readNumber(provider, ["max_output_tokens"]),
+      api_key_env: readString(provider, ["api_key_env"]),
     }))
     .sort((a: LlmProvider, b: LlmProvider) => (b.priority ?? 0) - (a.priority ?? 0));
 }
@@ -703,6 +850,28 @@ function mergeConfig(base: AdminConfig, override: AdminConfig): AdminConfig {
   };
 }
 
+function applyProviderOverrides(base: LlmProvider[]): LlmProvider[] {
+  if (typeof window === "undefined") return base;
+  const raw = window.localStorage.getItem(PROVIDER_STORAGE_KEY);
+  if (!raw) return base;
+  try {
+    const overrides: LlmProvider[] = JSON.parse(raw);
+    const merged = [...base];
+    overrides.forEach((entry) => {
+      const index = merged.findIndex((p) => p.id === entry.id);
+      if (index >= 0) {
+        merged[index] = { ...merged[index], ...entry };
+      } else {
+        merged.push(entry);
+      }
+    });
+    return merged;
+  } catch (error) {
+    console.warn("[admin] failed to parse provider overrides", error);
+    return base;
+  }
+}
+
 function buildProviderUsage(config: AdminConfig): Record<string, string[]> {
   const usage: Record<string, string[]> = {};
   const record = (providerId: string, label: string) => {
@@ -762,4 +931,13 @@ function readBoolean(entry: Record<string, unknown>, keys: string[], fallback = 
     }
   }
   return fallback;
+}
+
+function persistProviderOverrides(providers: LlmProvider[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PROVIDER_STORAGE_KEY, JSON.stringify(providers));
+  } catch (error) {
+    console.warn("[admin] unable to persist provider overrides", error);
+  }
 }
