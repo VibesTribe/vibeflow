@@ -499,6 +499,7 @@ function OrchestratorPanel({
             Dispatch prompt
             <textarea value={config.prompt} onChange={(event) => onPromptChange("orchestrator", event.target.value)} rows={6} />
           </label>
+          <small className="admin-hero__subhead">Autosaves locally; click Save overrides to keep this session.</small>
         </div>
         <p className="admin-hero__subhead">
           The orchestrator calls router.decide() then emits status_change events and updates task.state.json so the dashboard shows live
@@ -581,6 +582,7 @@ function AgentPanel({
                 Prompt
                 <textarea value={agent.prompt} onChange={(event) => onPromptChange(agent.id, event.target.value)} rows={5} />
               </label>
+              <small className="admin-hero__subhead">Autosaves locally; Save overrides to persist.</small>
             </div>
             {agent.notes && <p className="admin-hero__subhead">{agent.notes}</p>}
           </div>
@@ -658,8 +660,8 @@ function ModelPanel({
           Keys live in GitHub/Vercel secrets. Add any OpenRouter-capable model or direct Gemini/DeepSeek/GLM entries here; they persist locally for
           this browser.
         </p>
-        <div className="admin-panel__row">
-          <button type="button" className="admin-primary" onClick={onAdd} disabled={!newProvider.id || !newProvider.label || !newProvider.model}>
+        <div className="admin-panel__row" style={{ marginTop: 12 }}>
+          <button type="button" className="admin-outline" onClick={onAdd} disabled={!newProvider.id || !newProvider.label || !newProvider.model}>
             Add provider
           </button>
         </div>
@@ -732,8 +734,8 @@ function PlatformPanel({
         <p className="admin-hero__subhead">
           Paste the workspace URL (chat/playground). Agents can return task chat URLs for traceability; Maintenance agent can wire deeper after add.
         </p>
-        <div className="admin-panel__row">
-          <button type="button" className="admin-primary" onClick={onAdd} disabled={!newPlatform.id || !newPlatform.label}>
+        <div className="admin-panel__row" style={{ marginTop: 12 }}>
+          <button type="button" className="admin-outline" onClick={onAdd} disabled={!newPlatform.id || !newPlatform.label}>
             Add platform
           </button>
         </div>
