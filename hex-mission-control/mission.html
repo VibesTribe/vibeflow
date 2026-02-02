@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background: #050505; display: flex; justify-content: center; padding-top: 50px; font-family: 'Segoe UI', sans-serif; }
+  
+  /* The Container that holds the Grid */
+  .hex-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 105px); /* Adjust '4' to how many across you want */
+    grid-auto-rows: 60px; /* This creates the tight vertical overlap */
+    gap: 15px 10px;
+    padding-bottom: 100px;
+  }
+
+  /* The Hexagon Shape */
+  .hex {
+    width: 100px;
+    height: 110px;
+    background: #111;
+    color: #00f2ff;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #222;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* The Honeycomb Offset Magic */
+  .hex:nth-child(8n+5), .hex:nth-child(8n+6), .hex:nth-child(8n+7), .hex:nth-child(8n+8) {
+    transform: translateX(57px) translateY(-30px);
+  }
+
+  /* Status Colors */
+  .active { background: #001a1a; box-shadow: inset 0 0 20px #00f2ff; color: #fff; }
+  .alert { background: #220000; box-shadow: inset 0 0 20px #ff3333; color: #ff9999; }
+  .sys { background: #1a1a1a; color: #888; border: 1px dashed #444; }
+
+  .hex:hover {
+    filter: brightness(1.5);
+    transform: scale(1.05) !important;
+    z-index: 10;
+  }
+
+  .label { font-size: 8px; color: #555; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<div class="hex-grid">
+  <div class="hex active" onclick="window.open('https://vibeflow-dashboard-git-feature-admi-1e8c37-vibestribes-projects.vercel.app/')">VIBEFLOW<div class="label">LIVE</div></div>
+  <div class="hex active">WEBS OF<br>WISDOM<div class="label">PLANNING</div></div>
+  <div class="hex alert">PILOT-04<div class="label">BLOCKED</div></div>
+  <div class="hex">FUTURE<br>MISSION<div class="label">EMPTY</div></div>
+
+  <div class="hex sys" onclick="window.open('https://github.com/vibestribe')">GITHUB<div class="label">REPOS</div></div>
+  <div class="hex sys" onclick="window.open('https://supabase.com')">SUPABASE<div class="label">DATABASE</div></div>
+  <div class="hex sys" onclick="window.open('https://console.cloud.google.com')">GCE<div class="label">HOSTING</div></div>
+  <div class="hex sys">LITELLM<div class="label">PROXY</div></div>
+</div>
+
+</body>
+</html>
