@@ -70,12 +70,28 @@ interface VibePilotModel {
 // Supabase platforms row shape
 interface VibePilotPlatform {
   id: string;
-  name: string;
+  name: string | null;
   vendor: string | null;
   type: string;
   context_limit: number | null;
   status: string;
   logo_url: string | null;
+  config: {
+    name?: string;
+    provider?: string;
+    free_tier?: {
+      model?: string;
+      rate_limits?: {
+        requests_per_minute?: number;
+        requests_per_day?: number;
+        messages_per_hour?: number;
+      };
+      context_limit?: number;
+    };
+    capabilities?: string[];
+    strengths?: string[];
+    notes?: string;
+  } | null;
 }
 
 /**
@@ -237,8 +253,10 @@ export function transformAgents(
   for (const platform of platforms) {
     if (platform.status !== "active") continue;
 
-    // Fallback name from id if name column doesn't exist
-    const platformName = platform.name || platform.id.charAt(0).toUpperCase() + platform.id.slice(1);
+    // Use config if available, otherwise fall back to columns
+    const config = platform.config || {};
+    const platformName = config.name || platform.name || platform.id.charAt(0).toUpperCase() + platform.id.slice(1);
+    const freeTier = config.free_tier || {};
     
     // Derive logo from provider/id
     const logoMap: Record<string, string> = {
@@ -251,16 +269,19 @@ export function transformAgents(
     };
     const logoSlug = logoMap[platform.id] || "default";
     
+    // Build summary from config
+    const summary = config.notes || `Free tier: ${freeTier.model || 'varies'}`;
+    
     agents.push({
       id: `agent.${platform.id}`,
       name: platformName,
       status: "idle",
-      summary: "Web courier platform",
+      summary,
       updatedAt: new Date().toISOString(),
       logo: `https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/${logoSlug}.svg`,
       tier: "W",
-      vendor: platform.vendor || undefined,
-      contextWindowTokens: platform.context_limit || undefined,
+      vendor: config.provider || platform.vendor || undefined,
+      contextWindowTokens: freeTier.context_limit || platform.context_limit || undefined,
       effectiveContextWindowTokens: platform.context_limit
         ? Math.round(platform.context_limit * 0.75)
         : undefined,
