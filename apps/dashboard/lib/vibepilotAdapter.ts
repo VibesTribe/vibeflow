@@ -221,12 +221,15 @@ export function transformTasks(
       status: mapTaskStatus(task.status),
       confidence: 0.85, // Default - could be stored in task
       updatedAt: task.updated_at,
-      owner: task.assigned_to ? `agent.${task.assigned_to}` : null,
+      // Clear owner for completed tasks - they should "vanish" from orbit
+      owner: task.status === "merged" ? null : (task.assigned_to ? `agent.${task.assigned_to}` : null),
       sliceId: task.slice_id ? `slice.${task.slice_id}` : undefined,
       taskNumber: task.task_number || undefined,
       location: deriveTaskLocation(
         task.routing_flag,
         task.assigned_to,
+        run?.platform || null
+      ),
         run?.platform || null
       ),
       dependencies: task.dependencies || [],
