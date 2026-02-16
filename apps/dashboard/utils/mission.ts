@@ -161,7 +161,9 @@ export function deriveSlices(
     slice.total += 1;
 
     const mappedAgent = task.owner ? agentMap.get(task.owner) ?? null : null;
-    if (mappedAgent && !slice.agents.some((item) => item.id === mappedAgent.id)) {
+    // Only add agent to slice.agents if task is active (not completed/blocked)
+    const isActiveTask = !isCompleted(task.status) && bucket !== "blocked";
+    if (mappedAgent && isActiveTask && !slice.agents.some((item) => item.id === mappedAgent.id)) {
       slice.agents.push(mappedAgent);
     }
 
