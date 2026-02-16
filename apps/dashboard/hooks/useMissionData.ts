@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@core/types";
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { adaptVibePilotToDashboard } from "../lib/vibepilotAdapter";
 
 function resolveDashboardPath(path: string): string {
   const base = import.meta.env.BASE_URL ?? "/";
@@ -91,6 +93,39 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, snapshot: true }));
     try {
+      // Try Supabase first if configured
+      if (isSupabaseConfigured() && supabase) {
+        const [tasksRes, runsRes] = await Promise.all([
+          supabase.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
+          supabase.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
+        ]);
+
+        if (tasksRes.error) {
+          console.warn("[mission-data] Supabase tasks query failed:", tasksRes.error);
+        } else if (runsRes.error) {
+          console.warn("[mission-data] Supabase task_runs query failed:", runsRes.error);
+        } else {
+          // Transform Supabase data to dashboard shape
+          const adapted = adaptVibePilotToDashboard(
+            tasksRes.data || [],
+            runsRes.data || []
+          );
+          if (!mountedRef.current) return;
+          setSnapshot({
+            tasks: adapted.tasks,
+            agents: adapted.agents,
+            failures: [],
+            mergeCandidates: [],
+            metrics: adapted.metrics,
+            sliceCatalog: adapted.slices,
+            updatedAt: adapted.updated_at,
+          });
+          setLoading((prev) => ({ ...prev, snapshot: false }));
+          return;
+        }
+      }
+
+      // Fallback to mock data
       const response = await fetch(resolveDashboardPath("data/state/dashboard.mock.json"), { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load snapshot (${response.status})`);
