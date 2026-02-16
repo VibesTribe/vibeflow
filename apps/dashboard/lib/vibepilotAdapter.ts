@@ -230,8 +230,6 @@ export function transformTasks(
         task.assigned_to,
         run?.platform || null
       ),
-        run?.platform || null
-      ),
       dependencies: task.dependencies || [],
       summary: task.routing_flag_reason || undefined,
       metrics: {
