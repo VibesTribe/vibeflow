@@ -95,9 +95,11 @@ export function useMissionData(): MissionData {
     try {
       // Try Supabase first if configured
       if (isSupabaseConfigured() && supabase) {
-        const [tasksRes, runsRes] = await Promise.all([
+        const [tasksRes, runsRes, modelsRes, platformsRes] = await Promise.all([
           supabase.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
           supabase.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
+          supabase.from("models").select("*").eq("status", "active"),
+          supabase.from("platforms").select("*").eq("status", "active"),
         ]);
 
         if (tasksRes.error) {
@@ -106,9 +108,12 @@ export function useMissionData(): MissionData {
           console.warn("[mission-data] Supabase task_runs query failed:", runsRes.error);
         } else {
           // Transform Supabase data to dashboard shape
+          // Use live models/platforms from DB, fallback to empty array
           const adapted = adaptVibePilotToDashboard(
             tasksRes.data || [],
-            runsRes.data || []
+            runsRes.data || [],
+            modelsRes.data || [],
+            platformsRes.data || []
           );
           if (!mountedRef.current) return;
           setSnapshot({

@@ -3,106 +3,12 @@
  *
  * Transforms VibePilot's Supabase data to Vibeflow Dashboard shape.
  * Falls back to mock data if Supabase not configured.
+ * 
+ * NO HARDCODED DATA - all models/platforms come from Supabase.
  */
 
 import { AgentSnapshot, TaskSnapshot } from "@core/types";
 import { SliceCatalog } from "../utils/mission";
-
-// VibePilot config - models we have direct access to
-const VIBEPILOT_MODELS = [
-  {
-    id: "gemini-api",
-    name: "Gemini API",
-    provider: "google",
-    access_type: "api",
-    context_limit: 1000000,
-    vendor: "Google",
-    tier: "Q" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/google-gemini.svg",
-  },
-  {
-    id: "deepseek-chat",
-    name: "DeepSeek Chat",
-    provider: "deepseek",
-    access_type: "api",
-    context_limit: 64000,
-    vendor: "DeepSeek",
-    tier: "Q" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/deepseek.svg",
-  },
-  {
-    id: "kimi-cli",
-    name: "Kimi CLI",
-    provider: "moonshot",
-    access_type: "cli_subscription",
-    context_limit: 200000,
-    vendor: "Moonshot",
-    tier: "Q" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/default.svg",
-  },
-  {
-    id: "opencode",
-    name: "OpenCode (GLM-5)",
-    provider: "zhipu",
-    access_type: "cli_subscription",
-    context_limit: 128000,
-    vendor: "Zhipu",
-    tier: "Q" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/default.svg",
-  },
-];
-
-// VibePilot platforms - where couriers deliver
-const VIBEPILOT_PLATFORMS = [
-  {
-    id: "gemini",
-    name: "Gemini (Web)",
-    vendor: "Google",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/google-gemini.svg",
-    context_limit: 1000000,
-  },
-  {
-    id: "claude",
-    name: "Claude (Web)",
-    vendor: "Anthropic",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/anthropic.svg",
-    context_limit: 200000,
-  },
-  {
-    id: "chatgpt",
-    name: "ChatGPT",
-    vendor: "OpenAI",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/openai.svg",
-    context_limit: 128000,
-  },
-  {
-    id: "copilot",
-    name: "Copilot",
-    vendor: "Microsoft",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/github.svg",
-    context_limit: 128000,
-  },
-  {
-    id: "deepseek",
-    name: "DeepSeek (Web)",
-    vendor: "DeepSeek",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/deepseek.svg",
-    context_limit: 64000,
-  },
-  {
-    id: "huggingchat",
-    name: "HuggingChat",
-    vendor: "Hugging Face",
-    tier: "W" as const,
-    logo: "https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/huggingface.svg",
-    context_limit: 32000,
-  },
-];
 
 // Slice colors for consistent display
 const SLICE_ACCENTS: Record<string, string> = {
@@ -114,6 +20,7 @@ const SLICE_ACCENTS: Record<string, string> = {
   testing: "#22c55e",
   docs: "#facc15",
   config: "#ec4899",
+  general: "#94a3b8",
 };
 
 // Supabase task row shape
@@ -147,6 +54,28 @@ interface VibePilotTaskRun {
   tokens_used: number | null;
   started_at: string;
   completed_at: string | null;
+}
+
+// Supabase models row shape
+interface VibePilotModel {
+  id: string;
+  name: string | null;
+  vendor: string | null;
+  access_type: string;
+  context_limit: number | null;
+  status: string;
+  logo_url: string | null;
+}
+
+// Supabase platforms row shape
+interface VibePilotPlatform {
+  id: string;
+  name: string;
+  vendor: string | null;
+  type: string;
+  context_limit: number | null;
+  status: string;
+  logo_url: string | null;
 }
 
 /**
@@ -183,8 +112,7 @@ function deriveTaskLocation(
   }
   // Web courier
   if (platform) {
-    const platformInfo = VIBEPILOT_PLATFORMS.find((p) => p.id === platform);
-    return { kind: "platform", label: platformInfo?.name || platform };
+    return { kind: "platform", label: platform };
   }
   return { kind: "platform", label: "Web" };
 }
@@ -207,22 +135,28 @@ export function transformTasks(
 
   return tasks.map((task) => {
     const run = latestRunByTask.get(task.id);
-    const runtimeSeconds = run?.started_at && run?.completed_at
-      ? Math.round(
-          (new Date(run.completed_at).getTime() -
-            new Date(run.started_at).getTime()) /
-            1000
-        )
-      : undefined;
+    const runtimeSeconds =
+      run?.started_at && run?.completed_at
+        ? Math.round(
+            (new Date(run.completed_at).getTime() -
+              new Date(run.started_at).getTime()) /
+              1000
+          )
+        : undefined;
 
     return {
       id: task.id,
       title: task.title || "Untitled Task",
       status: mapTaskStatus(task.status),
-      confidence: 0.85, // Default - could be stored in task
+      confidence: 0.85,
       updatedAt: task.updated_at,
       // Clear owner for completed tasks - they should "vanish" from orbit
-      owner: task.status === "merged" ? null : (task.assigned_to ? `agent.${task.assigned_to}` : null),
+      owner:
+        task.status === "merged"
+          ? null
+          : task.assigned_to
+          ? `agent.${task.assigned_to}`
+          : null,
       sliceId: task.slice_id ? `slice.${task.slice_id}` : undefined,
       taskNumber: task.task_number || undefined,
       location: deriveTaskLocation(
@@ -235,25 +169,31 @@ export function transformTasks(
       metrics: {
         tokensUsed: run?.tokens_used || 0,
         runtimeSeconds,
-        costUsd: 0, // Would need pricing data
+        costUsd: 0,
       },
     };
   });
 }
 
 /**
- * Build AgentSnapshot[] from models + platforms
+ * Build AgentSnapshot[] from Supabase models + platforms
+ * NO HARDCODING - queries live data
  */
 export function transformAgents(
   tasks: VibePilotTask[],
-  runs: VibePilotTaskRun[]
+  runs: VibePilotTaskRun[],
+  models: VibePilotModel[],
+  platforms: VibePilotPlatform[]
 ): AgentSnapshot[] {
   // Build assignment counts
   const assignmentsByModel = new Map<string, { active: number; total: number }>();
-  
+
   for (const task of tasks) {
     if (task.assigned_to) {
-      const stats = assignmentsByModel.get(task.assigned_to) || { active: 0, total: 0 };
+      const stats = assignmentsByModel.get(task.assigned_to) || {
+        active: 0,
+        total: 0,
+      };
       stats.total += 1;
       if (["in_progress", "review", "testing"].includes(task.status)) {
         stats.active += 1;
@@ -262,41 +202,54 @@ export function transformAgents(
     }
   }
 
-  // Combine models + platforms as agents
   const agents: AgentSnapshot[] = [];
 
-  // Add internal models
-  for (const model of VIBEPILOT_MODELS) {
+  // Add internal models (Q tier)
+  for (const model of models) {
+    if (model.status !== "active") continue;
+
     const stats = assignmentsByModel.get(model.id) || { active: 0, total: 0 };
+    const tier =
+      model.access_type === "web" ? "W" : model.access_type === "mcp" ? "M" : "Q";
+
     agents.push({
       id: `agent.${model.id}`,
-      name: model.name,
+      name: model.name || model.id,
       status: stats.active > 0 ? "in_progress" : "idle",
-      summary: stats.active > 0 ? `Working on ${stats.active} task(s)` : "Available",
+      summary:
+        stats.active > 0
+          ? `Working on ${stats.active} task(s)`
+          : "Available",
       updatedAt: new Date().toISOString(),
-      logo: model.logo,
-      tier: model.tier,
-      vendor: model.vendor,
-      contextWindowTokens: model.context_limit,
-      effectiveContextWindowTokens: Math.round(model.context_limit * 0.75),
+      logo: model.logo_url || undefined,
+      tier,
+      vendor: model.vendor || undefined,
+      contextWindowTokens: model.context_limit || undefined,
+      effectiveContextWindowTokens: model.context_limit
+        ? Math.round(model.context_limit * 0.75)
+        : undefined,
       creditStatus: "available",
       warnings: [],
     });
   }
 
-  // Add web platforms
-  for (const platform of VIBEPILOT_PLATFORMS) {
+  // Add web platforms (W tier)
+  for (const platform of platforms) {
+    if (platform.status !== "active") continue;
+
     agents.push({
       id: `agent.${platform.id}`,
       name: platform.name,
       status: "idle",
       summary: "Web courier platform",
       updatedAt: new Date().toISOString(),
-      logo: platform.logo,
-      tier: platform.tier,
-      vendor: platform.vendor,
-      contextWindowTokens: platform.context_limit,
-      effectiveContextWindowTokens: Math.round(platform.context_limit * 0.75),
+      logo: platform.logo_url || undefined,
+      tier: "W",
+      vendor: platform.vendor || undefined,
+      contextWindowTokens: platform.context_limit || undefined,
+      effectiveContextWindowTokens: platform.context_limit
+        ? Math.round(platform.context_limit * 0.75)
+        : undefined,
       creditStatus: "available",
       warnings: [],
     });
@@ -309,10 +262,7 @@ export function transformAgents(
  * Build SliceCatalog[] from tasks grouped by slice_id
  */
 export function transformSlices(tasks: VibePilotTask[]): SliceCatalog[] {
-  const sliceMap = new Map<
-    string,
-    { total: number; done: number; tokens: number }
-  >();
+  const sliceMap = new Map<string, { total: number; done: number; tokens: number }>();
 
   for (const task of tasks) {
     const sliceId = task.slice_id || "general";
@@ -368,11 +318,13 @@ export interface DashboardData {
 
 export function adaptVibePilotToDashboard(
   tasks: VibePilotTask[],
-  runs: VibePilotTaskRun[]
+  runs: VibePilotTaskRun[],
+  models: VibePilotModel[],
+  platforms: VibePilotPlatform[]
 ): DashboardData {
   return {
     tasks: transformTasks(tasks, runs),
-    agents: transformAgents(tasks, runs),
+    agents: transformAgents(tasks, runs, models, platforms),
     slices: transformSlices(tasks),
     metrics: calculateMetrics(tasks, runs),
     updated_at: new Date().toISOString(),
