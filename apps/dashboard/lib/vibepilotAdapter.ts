@@ -237,13 +237,27 @@ export function transformAgents(
   for (const platform of platforms) {
     if (platform.status !== "active") continue;
 
+    // Fallback name from id if name column doesn't exist
+    const platformName = platform.name || platform.id.charAt(0).toUpperCase() + platform.id.slice(1);
+    
+    // Derive logo from provider/id
+    const logoMap: Record<string, string> = {
+      gemini: "google-gemini",
+      claude: "anthropic",
+      chatgpt: "openai",
+      copilot: "github",
+      deepseek: "deepseek",
+      huggingchat: "huggingface",
+    };
+    const logoSlug = logoMap[platform.id] || "default";
+    
     agents.push({
       id: `agent.${platform.id}`,
-      name: platform.name,
+      name: platformName,
       status: "idle",
       summary: "Web courier platform",
       updatedAt: new Date().toISOString(),
-      logo: platform.logo_url || undefined,
+      logo: `https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/${logoSlug}.svg`,
       tier: "W",
       vendor: platform.vendor || undefined,
       contextWindowTokens: platform.context_limit || undefined,
