@@ -4818,6 +4818,20 @@ a {
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
 }
+
+.model-panel__roi {
+  color: rgba(148, 163, 184, 0.7);
+  font-size: 0.75rem;
+}
+
+.agent-panel__metrics-grid--roi dt {
+  color: #22c55e;
+}
+
+.agent-panel__roi-savings {
+  color: #22c55e;
+  font-weight: 600;
+}
 /* --- Mission control compact layout overrides --- */
 .mission-root {
   display: grid;

@@ -129,10 +129,10 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <RoiPanel agents={agents} slices={slices} roi={roi} />;
       break;
     case "models":
-      content = <ModelOverview agents={agents} slices={slices} onSelectAgent={onSelectAgent} />;
+      content = <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />;
       break;
     case "agent":
-      content = <AgentDetails agent={modal.agent} events={events} slices={slices} onBackToModels={onShowModels} />;
+      content = <AgentDetails agent={modal.agent} events={events} slices={slices} roi={roi} onBackToModels={onShowModels} />;
       break;
     case "slice":
       content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
@@ -249,9 +249,20 @@ const MODEL_STATUS_META = MODEL_STATUS_LEGEND.reduce<
 type ModelStatusKey = (typeof MODEL_STATUS_LEGEND)[number]["key"];
 type ModelTierKey = (typeof MODEL_TIER_LEGEND)[number]["key"];
 
-const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; onSelectAgent?: (agent: MissionAgent) => void }> = ({
+const ModelOverview: React.FC<{ 
+  agents: MissionAgent[]; 
+  slices: MissionSlice[]; 
+  roi: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    models: ModelROI[];
+    subscriptions: SubscriptionROI[];
+  } | null;
+  onSelectAgent?: (agent: MissionAgent) => void 
+}> = ({
   agents,
   slices,
+  roi,
   onSelectAgent,
 }) => {
   const [statusFilter, setStatusFilter] = useState<ModelStatusKey | null>(null);
@@ -337,6 +348,11 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
           const contextTokens = summary.effectiveContextTokens ? formatTokenCount(summary.effectiveContextTokens) : null;
           const cooldownLabel = summary.cooldownRemainingLabel ?? summary.agent.cooldownReason ?? "No cooldown";
           const statusMeta = MODEL_STATUS_META[summary.statusKey as ModelStatusKey] ?? MODEL_STATUS_META.ready;
+          
+          // Look up ROI data for this model
+          const modelId = summary.agent.id.replace(/^agent\./, "");
+          const modelRoi = roi?.models?.find(m => m.model_id === modelId);
+          
           return (
               <li key={summary.agent.id} className={`model-panel__item model-panel__item--${summary.statusKey}`}>
               <div className="model-panel__header">
@@ -392,7 +408,14 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
                 <p className="model-panel__cooldown">
                   Cooldown: {cooldownLabel}
                 </p>
-                <p className="model-panel__foot">Tokens used: {summary.tokensUsed.toLocaleString()} • Avg response: {summary.avgRuntime}s</p>
+                <p className="model-panel__foot">
+                  Tokens used: {summary.tokensUsed.toLocaleString()} • Avg response: {summary.avgRuntime}s
+                  {modelRoi && (
+                    <span className="model-panel__roi">
+                      {" "}• Cost: ${modelRoi.actual_cost_usd.toFixed(4)} • Saved: ${modelRoi.savings_usd.toFixed(4)}
+                    </span>
+                  )}
+                </p>
                 <div className="model-panel__meta">
                   {summary.agent.rateLimitWindowSeconds !== undefined && (
                     <span>Rate limit: {summary.agent.rateLimitWindowSeconds ? `${summary.agent.rateLimitWindowSeconds}s` : "n/a"}</span>
@@ -696,10 +719,22 @@ const RoiPanel: React.FC<{
     </div>
   );
 };
-const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slices: MissionSlice[]; onBackToModels?: () => void }> = ({
+const AgentDetails: React.FC<{ 
+  agent: MissionAgent; 
+  events: MissionEvent[]; 
+  slices: MissionSlice[]; 
+  roi: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    models: ModelROI[];
+    subscriptions: SubscriptionROI[];
+  } | null;
+  onBackToModels?: () => void 
+}> = ({
   agent,
   events,
   slices,
+  roi,
   onBackToModels,
 }) => {
   const timeline = useMemo(() => buildAgentTimeline(agent, slices, events), [agent, slices, events]);
@@ -709,6 +744,10 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
   const cooldownLabel = intel.cooldownRemaining ?? agent.cooldownReason ?? "No cooldown";
   const rateLimitSeconds = intel.performance.rateLimitWindowSeconds ?? agent.rateLimitWindowSeconds ?? null;
   const liveTaskId = intel.liveAssignment?.taskId ?? null;
+  
+  // Look up ROI data for this model
+  const modelId = agent.id.replace(/^agent\./, "");
+  const modelRoi = roi?.models?.find(m => m.model_id === modelId);
 
   const perfMetrics = [
     { label: "Context", value: intel.performance.contextWindow ? `${formatTokenCount(intel.performance.contextWindow)} tokens` : "Unknown" },
@@ -722,6 +761,15 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
     { label: "Avg / Task", value: intel.tokenStats.average.toLocaleString() },
     { label: "Peak / Task", value: intel.tokenStats.peak.toLocaleString() },
   ];
+  
+  // ROI metrics (if available)
+  const roiMetrics = modelRoi ? [
+    { label: "Total Runs", value: modelRoi.total_runs.toString() },
+    { label: "Role", value: modelRoi.role },
+    { label: "Total Cost", value: `$${modelRoi.actual_cost_usd.toFixed(4)}` },
+    { label: "Theoretical", value: `$${modelRoi.theoretical_cost_usd.toFixed(4)}` },
+    { label: "Total Savings", value: `$${modelRoi.savings_usd.toFixed(4)}` },
+  ] : [];
 
   const stateChips = [
     { label: formatStatusLabel(agent.status), tone: statusKey },
@@ -784,6 +832,20 @@ const AgentDetails: React.FC<{ agent: MissionAgent; events: MissionEvent[]; slic
             ))}
           </dl>
         </div>
+
+        {roiMetrics.length > 0 && (
+          <div className="agent-panel__line">
+            <span className="agent-panel__label">ROI Summary</span>
+            <dl className="agent-panel__metrics-grid agent-panel__metrics-grid--roi">
+              {roiMetrics.map((metric) => (
+                <div key={metric.label}>
+                  <dt>{metric.label}</dt>
+                  <dd className={metric.label === "Total Savings" ? "agent-panel__roi-savings" : ""}>{metric.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
 
         <div className="agent-panel__line">
           <span className="agent-panel__label">Assignments</span>
