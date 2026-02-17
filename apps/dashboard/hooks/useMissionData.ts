@@ -72,7 +72,6 @@ const initialSnapshot: DashboardSnapshot = {
   mergeCandidates: [],
   metrics: {},
   sliceCatalog: [],
-  roi: null,
   updatedAt: new Date().toISOString(),
 };
 

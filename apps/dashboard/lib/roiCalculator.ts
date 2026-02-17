@@ -68,18 +68,16 @@ export async function fetchExchangeRate(): Promise<ExchangeRate> {
         };
         cacheExchangeRate(result);
         
-        // Try to persist to Supabase
+        // Try to persist to Supabase (fire and forget)
         if (isSupabaseConfigured() && supabase) {
-          supabase
+          void supabase
             .from("exchange_rates")
             .upsert({
               id: "usd_cad",
               rate: cadRate,
               fetched_at: result.fetched_at,
               source: result.source,
-            })
-            .then(() => {})
-            .catch(() => {});
+            });
         }
         
         return result;
