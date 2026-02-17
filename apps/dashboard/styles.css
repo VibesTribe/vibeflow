@@ -4533,6 +4533,151 @@ a {
   font-size: 0.65rem;
   color: rgba(148, 163, 184, 0.75);
 }
+
+.roi-panel__totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.roi-panel__savings {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.roi-panel__currency-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.roi-panel__toggle {
+  padding: 6px 16px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 6px;
+  background: rgba(9, 14, 26, 0.6);
+  color: rgba(148, 163, 184, 0.85);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.roi-panel__toggle:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #e2e8f0;
+}
+
+.roi-panel__toggle.is-active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+}
+
+.roi-panel__summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.roi-panel__summary-item {
+  background: rgba(9, 14, 26, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.roi-panel__summary-item dt {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.roi-panel__summary-item dd {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.roi-panel__cost--theoretical {
+  color: #f59e0b;
+}
+
+.roi-panel__cost--actual {
+  color: #38bdf8;
+}
+
+.roi-panel__cost--savings {
+  color: #22c55e;
+}
+
+.roi-panel__section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+.roi-panel__section h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(148, 163, 184, 0.85);
+  margin-bottom: 12px;
+}
+
+.roi-panel__slice-list,
+.roi-panel__subscription-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.roi-panel__slice-item,
+.roi-panel__subscription-item {
+  background: rgba(9, 14, 26, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.roi-panel__slice-name,
+.roi-panel__subscription-header {
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roi-panel__slice-stats,
+.roi-panel__subscription-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 0.7rem;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.roi-panel__slice-savings {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.roi-panel__recommendation {
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
 /* --- Mission control compact layout overrides --- */
 .mission-root {
   display: grid;

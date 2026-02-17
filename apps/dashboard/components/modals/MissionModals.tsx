@@ -20,6 +20,7 @@ import {
 } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 import AdminControlCenter from "./AdminControlCenter";
+import { ROITotals, SliceROI, SubscriptionROI } from "../../lib/vibepilotAdapter";
 
 export type MissionModalState =
   | { type: null }
@@ -39,6 +40,11 @@ interface MissionModalsProps {
   events: MissionEvent[];
   agents: MissionAgent[];
   slices: MissionSlice[];
+  roi: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    subscriptions: SubscriptionROI[];
+  } | null;
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -100,7 +106,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -119,7 +125,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <LogList events={events} />;
       break;
     case "roi":
-      content = <RoiPanel agents={agents} slices={slices} />;
+      content = <RoiPanel agents={agents} slices={slices} roi={roi} />;
       break;
     case "models":
       content = <ModelOverview agents={agents} slices={slices} onSelectAgent={onSelectAgent} />;
@@ -422,25 +428,134 @@ const ModelOverview: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[]; 
   );
 };
 
-const RoiPanel: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = ({ agents, slices }) => {
+const RoiPanel: React.FC<{ 
+  agents: MissionAgent[]; 
+  slices: MissionSlice[];
+  roi: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    subscriptions: SubscriptionROI[];
+  } | null;
+}> = ({ agents, slices, roi }) => {
+  const [showCad, setShowCad] = useState(false);
+  const [exchangeRate, setExchangeRate] = useState<number>(1.36);
+
+  useEffect(() => {
+    if (showCad) {
+      import("../../lib/roiCalculator").then(({ fetchExchangeRate }) => {
+        fetchExchangeRate().then((result) => setExchangeRate(result.rate));
+      });
+    }
+  }, [showCad]);
+
+  const formatUsd = (amount: number) => {
+    const value = showCad ? amount * exchangeRate : amount;
+    const currency = showCad ? "CAD" : "USD";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
+  const formatTokens = (tokens: number) => {
+    if (tokens >= 1_000_000) return `${(tokens / 1_000_000).toFixed(1)}M`;
+    if (tokens >= 1_000) return `${(tokens / 1_000).toFixed(1)}K`;
+    return tokens.toString();
+  };
+
   const totals = useMemo(() => {
+    if (roi) {
+      return {
+        totalTokens: roi.totals.total_tokens,
+        activeSlices: slices.filter((slice) => slice.active > 0).length,
+        blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
+        completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
+        theoreticalCost: roi.totals.total_theoretical_usd,
+        actualCost: roi.totals.total_actual_usd,
+        savings: roi.totals.total_savings_usd,
+        totalTasks: roi.totals.total_tasks,
+        completedTasks: roi.totals.total_completed,
+      };
+    }
     const totalTokens = slices.reduce((sum, slice) => sum + (slice.tokens ?? 0), 0);
-    const activeSlices = slices.filter((slice) => slice.active > 0).length;
-    const blockedSlices = slices.filter((slice) => slice.blocked > 0).length;
-    const completedSlices = slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length;
     const agentSpend = agents.reduce((sum, agent) => sum + (agent.costPerRunUsd ?? 0), 0);
-    return { totalTokens, activeSlices, blockedSlices, completedSlices, agentSpend };
-  }, [agents, slices]);
+    return {
+      totalTokens,
+      activeSlices: slices.filter((slice) => slice.active > 0).length,
+      blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
+      completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
+      theoreticalCost: 0,
+      actualCost: agentSpend,
+      savings: 0,
+      totalTasks: slices.reduce((sum, s) => sum + s.total, 0),
+      completedTasks: slices.reduce((sum, s) => sum + s.completed, 0),
+    };
+  }, [agents, slices, roi]);
+
+  const getRecommendationMeta = (rec: string) => {
+    switch (rec) {
+      case "expired":
+        return { label: "Expired", color: "#ef4444" };
+      case "renew_soon":
+        return { label: "Renew Soon", color: "#f59e0b" };
+      case "good_value_renew":
+        return { label: "Good Value", color: "#22c55e" };
+      default:
+        return { label: "Evaluate", color: "#6b7280" };
+    }
+  };
 
   return (
     <div className="mission-modal__section roi-panel">
       <header className="roi-panel__header">
         <div>
-          <h3>Mission ROI Snapshot</h3>
-          <p>Total tokens consumed by all slices and agents.</p>
+          <h3>ROI Dashboard</h3>
+          <p>Theoretical vs actual costs across all tasks</p>
         </div>
-        <div className="roi-panel__total">{totals.totalTokens.toLocaleString()} tokens</div>
+        <div className="roi-panel__totals">
+          <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
+          <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
+        </div>
       </header>
+
+      <div className="roi-panel__currency-toggle">
+        <button 
+          type="button"
+          className={`roi-panel__toggle ${!showCad ? "is-active" : ""}`}
+          onClick={() => setShowCad(false)}
+        >
+          USD
+        </button>
+        <button 
+          type="button"
+          className={`roi-panel__toggle ${showCad ? "is-active" : ""}`}
+          onClick={() => setShowCad(true)}
+        >
+          CAD
+        </button>
+      </div>
+
+      <div className="roi-panel__summary-grid">
+        <div className="roi-panel__summary-item">
+          <dt>Would Have Cost</dt>
+          <dd className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</dd>
+        </div>
+        <div className="roi-panel__summary-item">
+          <dt>Actually Cost</dt>
+          <dd className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</dd>
+        </div>
+        <div className="roi-panel__summary-item">
+          <dt>Total Savings</dt>
+          <dd className="roi-panel__cost--savings">{formatUsd(totals.savings)}</dd>
+        </div>
+        <div className="roi-panel__summary-item">
+          <dt>Tasks Completed</dt>
+          <dd>{totals.completedTasks} / {totals.totalTasks}</dd>
+        </div>
+      </div>
+
       <dl className="roi-panel__grid">
         <div>
           <dt>Active slices</dt>
@@ -455,17 +570,64 @@ const RoiPanel: React.FC<{ agents: MissionAgent[]; slices: MissionSlice[] }> = (
           <dd>{totals.completedSlices}</dd>
         </div>
         <div>
-          <dt>Avg agent cost / run</dt>
-          <dd>${totals.agentSpend.toFixed(2)}</dd>
+          <dt>ROI %</dt>
+          <dd>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</dd>
         </div>
       </dl>
-      <p className="roi-panel__note">
-        Replace this mock with live telemetry by mapping mission metrics to your cost model. Tokens are drawn from the current
-        slice catalog and agent metadata.
-      </p>
-      <a className="roi-panel__action" href="/docs/reports/roi-calculator.html" target="_blank" rel="noreferrer">
-        Open ROI calculator
-      </a>
+
+      {roi?.slices && roi.slices.length > 0 && (
+        <div className="roi-panel__section">
+          <h4>Slice Breakdown</h4>
+          <ul className="roi-panel__slice-list">
+            {roi.slices.slice(0, 10).map((slice) => (
+              <li key={slice.slice_id} className="roi-panel__slice-item">
+                <div className="roi-panel__slice-name">{slice.slice_name}</div>
+                <div className="roi-panel__slice-stats">
+                  <span>{slice.completed_tasks}/{slice.total_tasks} tasks</span>
+                  <span>{formatTokens(slice.total_tokens_in + slice.total_tokens_out)} tokens</span>
+                  <span className="roi-panel__slice-savings">{formatUsd(slice.savings_usd)} saved</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {roi?.subscriptions && roi.subscriptions.length > 0 && (
+        <div className="roi-panel__section">
+          <h4>Active Subscriptions</h4>
+          <ul className="roi-panel__subscription-list">
+            {roi.subscriptions.map((sub) => {
+              const rec = getRecommendationMeta(sub.recommendation);
+              return (
+                <li key={sub.model_id} className="roi-panel__subscription-item">
+                  <div className="roi-panel__subscription-header">
+                    <strong>{sub.model_name || sub.model_id}</strong>
+                    <span 
+                      className="roi-panel__recommendation"
+                      style={{ backgroundColor: rec.color }}
+                    >
+                      {rec.label}
+                    </span>
+                  </div>
+                  <div className="roi-panel__subscription-stats">
+                    <span>{formatUsd(sub.subscription_cost_usd || 0)}/mo</span>
+                    <span>{sub.days_remaining} days left</span>
+                    <span>{sub.tasks_completed} tasks</span>
+                    <span>{formatUsd(sub.cost_per_task)}/task</span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {!roi && (
+        <p className="roi-panel__note">
+          Connect to Supabase to see live ROI data including theoretical costs, savings, and subscription tracking.
+        </p>
+      )}
     </div>
   );
 };

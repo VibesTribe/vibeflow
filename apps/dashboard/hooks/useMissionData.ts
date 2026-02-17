@@ -3,7 +3,7 @@ import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@c
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
-import { adaptVibePilotToDashboard } from "../lib/vibepilotAdapter";
+import { adaptVibePilotToDashboard, ROITotals, SliceROI, SubscriptionROI } from "../lib/vibepilotAdapter";
 
 function resolveDashboardPath(path: string): string {
   const base = import.meta.env.BASE_URL ?? "/";
@@ -22,6 +22,11 @@ interface DashboardSnapshot {
   metrics: Record<string, number>;
   sliceCatalog: SliceCatalog[];
   updatedAt: string;
+  roi?: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    subscriptions: SubscriptionROI[];
+  };
 }
 
 interface RunMetricEntry {
@@ -51,6 +56,11 @@ export interface MissionData {
   statusSummary: ReturnType<typeof buildStatusSummary>;
   qualityByTask: Record<string, string>;
   tokenUsage: number;
+  roi: {
+    totals: ROITotals;
+    slices: SliceROI[];
+    subscriptions: SubscriptionROI[];
+  } | null;
   loading: MissionLoadingState;
   refresh: () => void;
 }
@@ -62,6 +72,7 @@ const initialSnapshot: DashboardSnapshot = {
   mergeCandidates: [],
   metrics: {},
   sliceCatalog: [],
+  roi: null,
   updatedAt: new Date().toISOString(),
 };
 
@@ -123,6 +134,7 @@ export function useMissionData(): MissionData {
             mergeCandidates: [],
             metrics: adapted.metrics,
             sliceCatalog: adapted.slices,
+            roi: adapted.roi,
             updatedAt: adapted.updated_at,
           });
           setLoading((prev) => ({ ...prev, snapshot: false }));
@@ -257,6 +269,7 @@ export function useMissionData(): MissionData {
     statusSummary,
     qualityByTask,
     tokenUsage,
+    roi: snapshot.roi || null,
     loading,
     refresh,
   };
