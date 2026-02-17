@@ -64,7 +64,13 @@ interface VibePilotModel {
   access_type: string;
   context_limit: number | null;
   status: string;
+  status_reason: string | null;
   logo_url: string | null;
+  tokens_used: number | null;
+  tasks_completed: number | null;
+  success_rate: number | null;
+  cooldown_expires_at: string | null;
+  config: Record<string, unknown> | null;
 }
 
 // Supabase platforms row shape
@@ -222,20 +228,35 @@ export function transformAgents(
 
   // Add internal models (Q tier)
   for (const model of models) {
-    if (model.status !== "active") continue;
+    // Include paused models too (they're in cooldown)
+    if (!["active", "paused"].includes(model.status)) continue;
 
     const stats = assignmentsByModel.get(model.id) || { active: 0, total: 0 };
     const tier =
       model.access_type === "web" ? "W" : model.access_type === "mcp" ? "M" : "Q";
 
+    // Check cooldown status
+    const inCooldown = model.status === "paused" && model.cooldown_expires_at;
+    const cooldownExpiresAt = model.cooldown_expires_at || undefined;
+    
+    // Determine status
+    let agentStatus: AgentSnapshot["status"] = "idle";
+    if (inCooldown) {
+      agentStatus = "cooldown";
+    } else if (stats.active > 0) {
+      agentStatus = "in_progress";
+    }
+
     agents.push({
       id: `agent.${model.id}`,
       name: model.name || model.id,
-      status: stats.active > 0 ? "in_progress" : "idle",
+      status: agentStatus,
       summary:
-        stats.active > 0
-          ? `Working on ${stats.active} task(s)`
-          : "Available",
+        inCooldown 
+          ? model.status_reason || "In cooldown"
+          : stats.active > 0
+            ? `Working on ${stats.active} task(s)`
+            : "Available",
       updatedAt: new Date().toISOString(),
       logo: model.logo_url || undefined,
       tier,
@@ -244,8 +265,10 @@ export function transformAgents(
       effectiveContextWindowTokens: model.context_limit
         ? Math.round(model.context_limit * 0.75)
         : undefined,
-      creditStatus: "available",
-      warnings: [],
+      creditStatus: inCooldown ? "unknown" : "available",
+      cooldownExpiresAt,
+      cooldownReason: inCooldown ? model.status_reason || undefined : undefined,
+      warnings: inCooldown ? [model.status_reason || "Cooldown active"] : [],
     });
   }
 

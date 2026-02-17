@@ -98,8 +98,8 @@ export function useMissionData(): MissionData {
         const [tasksRes, runsRes, modelsRes, platformsRes] = await Promise.all([
           supabase.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
           supabase.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
-          supabase.from("models").select("*").eq("status", "active"),
-          supabase.from("platforms").select("*").eq("status", "active"),
+          supabase.from("models").select("*").in("status", ["active", "paused"]),
+          supabase.from("platforms").select("*").in("status", ["active", "paused"]),
         ]);
 
         if (tasksRes.error) {
