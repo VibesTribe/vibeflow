@@ -424,7 +424,39 @@ export interface FullROIReport {
   totals: ROITotals;
   projects: ProjectROI[];
   slices: SliceROI[];
+  models: ModelROI[];
   subscriptions: SubscriptionROI[];
+}
+
+export interface ModelROI {
+  model_id: string;
+  model_name: string | null;
+  role: "executor" | "courier" | "both";
+  total_runs: number;
+  successful_runs: number;
+  total_tokens_in: number;
+  total_tokens_out: number;
+  total_courier_tokens: number;
+  theoretical_cost_usd: number;
+  actual_cost_usd: number;
+  savings_usd: number;
+  tasks: TaskRunROI[];
+}
+
+export interface TaskRunROI {
+  task_id: string;
+  task_title: string;
+  slice_id: string | null;
+  run_id: string;
+  tokens_in: number;
+  tokens_out: number;
+  courier_tokens: number;
+  theoretical_cost_usd: number;
+  actual_cost_usd: number;
+  savings_usd: number;
+  status: string;
+  started_at: string;
+  completed_at: string | null;
 }
 
 /**
@@ -563,6 +595,123 @@ export function calculateSubscriptionROI(
 }
 
 /**
+ * Calculate model-level ROI from task runs
+ * A model can be an executor (model_id) or a courier (courier_model_id)
+ */
+export function calculateModelROI(
+  runs: VibePilotTaskRun[],
+  models: VibePilotModel[],
+  tasks: VibePilotTask[]
+): ModelROI[] {
+  const modelMap = new Map<string, {
+    executorRuns: VibePilotTaskRun[];
+    courierRuns: VibePilotTaskRun[];
+  }>();
+
+  // Group runs by model (both as executor and courier)
+  for (const run of runs) {
+    if (run.model_id) {
+      const entry = modelMap.get(run.model_id) || { executorRuns: [], courierRuns: [] };
+      entry.executorRuns.push(run);
+      modelMap.set(run.model_id, entry);
+    }
+    if (run.courier_model_id && run.courier_model_id !== run.model_id) {
+      const entry = modelMap.get(run.courier_model_id) || { executorRuns: [], courierRuns: [] };
+      entry.courierRuns.push(run);
+      modelMap.set(run.courier_model_id, entry);
+    }
+  }
+
+  const results: ModelROI[] = [];
+
+  for (const [modelId, data] of modelMap.entries()) {
+    const model = models.find(m => m.id === modelId);
+    const allRuns = [...data.executorRuns, ...data.courierRuns];
+    const uniqueRuns = new Set(allRuns.map(r => r.id));
+
+    // Determine role
+    const role: "executor" | "courier" | "both" = 
+      data.executorRuns.length > 0 && data.courierRuns.length > 0 ? "both" :
+      data.courierRuns.length > 0 ? "courier" : "executor";
+
+    // Calculate totals
+    let totalTokensIn = 0;
+    let totalTokensOut = 0;
+    let totalCourierTokens = 0;
+    let theoreticalCost = 0;
+    let actualCost = 0;
+    let savings = 0;
+    let successfulRuns = 0;
+
+    const taskRuns: TaskRunROI[] = [];
+
+    for (const run of allRuns) {
+      const task = tasks.find(t => t.id === run.task_id);
+      const isExecutor = run.model_id === modelId;
+      const isCourier = run.courier_model_id === modelId;
+
+      // As executor: count platform tokens and theoretical cost
+      if (isExecutor) {
+        totalTokensIn += run.tokens_in || 0;
+        totalTokensOut += run.tokens_out || 0;
+        theoreticalCost += run.platform_theoretical_cost_usd || 0;
+      }
+
+      // As courier: count courier tokens and actual cost
+      if (isCourier) {
+        totalCourierTokens += run.courier_tokens || 0;
+        actualCost += run.courier_cost_usd || 0;
+      }
+
+      // Savings from this run (count once per unique run)
+      if (isExecutor) {
+        savings += run.total_savings_usd || 0;
+      }
+
+      if (run.status === "success") {
+        successfulRuns++;
+      }
+
+      // Build task run entry (only once per run, prefer executor perspective)
+      if (isExecutor && !taskRuns.find(tr => tr.run_id === run.id)) {
+        taskRuns.push({
+          task_id: run.task_id,
+          task_title: task?.title || "Unknown",
+          slice_id: task?.slice_id || null,
+          run_id: run.id,
+          tokens_in: run.tokens_in || 0,
+          tokens_out: run.tokens_out || 0,
+          courier_tokens: run.courier_tokens || 0,
+          theoretical_cost_usd: run.platform_theoretical_cost_usd || 0,
+          actual_cost_usd: run.total_actual_cost_usd || 0,
+          savings_usd: run.total_savings_usd || 0,
+          status: run.status,
+          started_at: run.started_at,
+          completed_at: run.completed_at,
+        });
+      }
+    }
+
+    results.push({
+      model_id: modelId,
+      model_name: model?.name || modelId,
+      role,
+      total_runs: uniqueRuns.size,
+      successful_runs: successfulRuns,
+      total_tokens_in: totalTokensIn,
+      total_tokens_out: totalTokensOut,
+      total_courier_tokens: totalCourierTokens,
+      theoretical_cost_usd: Math.round(theoreticalCost * 10000) / 10000,
+      actual_cost_usd: Math.round(actualCost * 10000) / 10000,
+      savings_usd: Math.round(savings * 10000) / 10000,
+      tasks: taskRuns.sort((a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()),
+    });
+  }
+
+  return results.sort((a, b) => b.savings_usd - a.savings_usd);
+}
+
+/**
  * Calculate aggregate metrics
  */
 export function calculateMetrics(
@@ -594,6 +743,7 @@ export interface DashboardData {
   roi: {
     totals: ROITotals;
     slices: SliceROI[];
+    models: ModelROI[];
     subscriptions: SubscriptionROI[];
   };
   updated_at: string;
@@ -608,6 +758,7 @@ export function adaptVibePilotToDashboard(
   const roi = calculateROI(runs);
   const sliceROI = calculateSliceROI(tasks, runs);
   const subscriptionROI = calculateSubscriptionROI(models);
+  const modelROI = calculateModelROI(runs, models, tasks);
   
   const completedTasks = tasks.filter(t => t.status === "merged").length;
   
@@ -626,6 +777,7 @@ export function adaptVibePilotToDashboard(
         total_completed: completedTasks,
       },
       slices: sliceROI,
+      models: modelROI,
       subscriptions: subscriptionROI,
     },
     updated_at: new Date().toISOString(),

@@ -3,7 +3,7 @@ import { AgentSnapshot, FailureSnapshot, MergeCandidate, TaskSnapshot } from "@c
 import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/utils/events";
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
-import { adaptVibePilotToDashboard, ROITotals, SliceROI, SubscriptionROI } from "../lib/vibepilotAdapter";
+import { adaptVibePilotToDashboard, ROITotals, SliceROI, SubscriptionROI, ModelROI } from "../lib/vibepilotAdapter";
 
 function resolveDashboardPath(path: string): string {
   const base = import.meta.env.BASE_URL ?? "/";
@@ -25,6 +25,7 @@ interface DashboardSnapshot {
   roi?: {
     totals: ROITotals;
     slices: SliceROI[];
+    models: ModelROI[];
     subscriptions: SubscriptionROI[];
   };
 }
@@ -59,6 +60,7 @@ export interface MissionData {
   roi: {
     totals: ROITotals;
     slices: SliceROI[];
+    models: ModelROI[];
     subscriptions: SubscriptionROI[];
   } | null;
   loading: MissionLoadingState;
