@@ -252,13 +252,15 @@ export function transformAgents(
     const tier =
       model.access_type === "web" ? "W" : model.access_type === "mcp" ? "M" : "Q";
 
-    // Check cooldown status
+    const statusReason = (model.status_reason || "").toLowerCase();
     const inCooldown = model.status === "paused" && model.cooldown_expires_at;
+    const needsCredit = model.status === "paused" && statusReason.includes("credit");
     const cooldownExpiresAt = model.cooldown_expires_at || undefined;
     
-    // Determine status
     let agentStatus: AgentSnapshot["status"] = "idle";
-    if (inCooldown) {
+    if (needsCredit) {
+      agentStatus = "credit_needed";
+    } else if (inCooldown) {
       agentStatus = "cooldown";
     } else if (stats.active > 0) {
       agentStatus = "in_progress";
@@ -269,11 +271,13 @@ export function transformAgents(
       name: model.name || model.id,
       status: agentStatus,
       summary:
-        inCooldown 
-          ? model.status_reason || "In cooldown"
-          : stats.active > 0
-            ? `Working on ${stats.active} task(s)`
-            : "Available",
+        needsCredit 
+          ? "Credit needed - flagged for review"
+          : inCooldown 
+            ? model.status_reason || "In cooldown"
+            : stats.active > 0
+              ? `Working on ${stats.active} task(s)`
+              : "Available",
       updatedAt: new Date().toISOString(),
       logo: model.logo_url || undefined,
       tier,
@@ -282,10 +286,14 @@ export function transformAgents(
       effectiveContextWindowTokens: model.context_limit
         ? Math.round(model.context_limit * 0.75)
         : undefined,
-      creditStatus: inCooldown ? "unknown" : "available",
-      cooldownExpiresAt,
-      cooldownReason: inCooldown ? model.status_reason || undefined : undefined,
-      warnings: inCooldown ? [model.status_reason || "Cooldown active"] : [],
+      creditStatus: needsCredit ? "depleted" : inCooldown ? "unknown" : "available",
+      cooldownExpiresAt: needsCredit ? undefined : cooldownExpiresAt,
+      cooldownReason: needsCredit ? undefined : (inCooldown ? model.status_reason || undefined : undefined),
+      warnings: needsCredit 
+        ? ["Add credit to resume"] 
+        : inCooldown 
+          ? [model.status_reason || "Cooldown active"] 
+          : [],
     });
   }
 
