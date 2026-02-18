@@ -4620,6 +4620,7 @@ a {
 .roi-panel__section {
   margin-top: 20px;
   padding-top: 16px;
+  padding-bottom: 12px;
   border-top: 1px solid rgba(56, 189, 248, 0.1);
 }
 
@@ -4728,11 +4729,12 @@ a {
 .roi-panel__task-list {
   list-style: none;
   padding: 0;
+  padding-bottom: 16px;
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
 }
 
@@ -4740,7 +4742,7 @@ a {
   background: rgba(9, 14, 26, 0.7);
   border: 1px solid rgba(56, 189, 248, 0.08);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   min-height: 48px;
 }
 
