@@ -4743,12 +4743,22 @@ a {
 }
 
 .roi-panel__model-header {
-  padding: 10px 12px;
+  padding: 12px;
   cursor: pointer;
   transition: background 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.roi-panel__model-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.85);
+  line-height: 1.5;
+  padding-bottom: 4px;
 }
 
 .roi-panel__model-header:hover {
@@ -4771,14 +4781,6 @@ a {
   background: rgba(56, 189, 248, 0.2);
   color: #38bdf8;
   flex-shrink: 0;
-}
-
-.roi-panel__model-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: rgba(148, 163, 184, 0.85);
 }
 
 .roi-panel__model-savings {
