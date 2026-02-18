@@ -478,11 +478,12 @@ const RoiPanel: React.FC<{
   const formatUsd = (amount: number) => {
     const value = showCad ? amount * exchangeRate : amount;
     const currency = showCad ? "CAD" : "USD";
+    const decimals = Math.abs(value) < 0.01 ? 6 : 2;
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
     }).format(value);
   };
 
