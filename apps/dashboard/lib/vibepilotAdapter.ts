@@ -781,9 +781,9 @@ export function adaptVibePilotToDashboard(
     roi: {
       totals: {
         total_tokens: roi.total_tokens_in + roi.total_tokens_out,
-        total_theoretical_usd: Math.round(roi.total_theoretical_usd * 100) / 100,
-        total_actual_usd: Math.round(roi.total_actual_usd * 100) / 100,
-        total_savings_usd: Math.round(roi.total_savings_usd * 100) / 100,
+        total_theoretical_usd: roi.total_theoretical_usd,
+        total_actual_usd: roi.total_actual_usd,
+        total_savings_usd: roi.total_savings_usd,
         total_tasks: tasks.length,
         total_completed: completedTasks,
       },

@@ -75,6 +75,16 @@ function formatTokenCount(value: number): string {
   return value.toLocaleString();
 }
 
+function formatUsd(amount: number): string {
+  const decimals = Math.abs(amount) < 0.01 ? 6 : 2;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(amount);
+}
+
 const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
   {
     key: "complete",
@@ -320,8 +330,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           <div className="mission-header__stat-body">
             <span className="mission-header__stat-primary">
               <span className="mission-header__stat-label">Tokens</span>
+              <strong className="mission-header__stat-value mission-header__stat-value--tokens">{formattedTokens}</strong>
             </span>
-            <strong className="mission-header__stat-value mission-header__stat-value--tokens">ROI</strong>
+            <span className="mission-header__stat-primary">
+              <span className="mission-header__stat-label">ROI</span>
+              <strong className="mission-header__stat-value mission-header__stat-value--roi">{roi ? formatUsd(roi.totals.total_savings_usd) : '$0'}</strong>
+            </span>
           </div>
         </button>
       </div>
