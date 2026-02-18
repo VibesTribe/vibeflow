@@ -4740,8 +4740,6 @@ a {
   background: rgba(9, 14, 26, 0.7);
   border: 1px solid rgba(56, 189, 248, 0.08);
   border-radius: 8px;
-  overflow: hidden;
-  min-height: 48px;
 }
 
 .roi-panel__model-header {
