@@ -205,6 +205,9 @@ export function transformTasks(
       ),
       dependencies: task.dependencies || [],
       summary: task.routing_flag_reason || undefined,
+      packet: task.result?.prompt_packet
+        ? { prompt: String(task.result.prompt_packet) }
+        : undefined,
       metrics: {
         tokensUsed: run?.tokens_used || 0,
         runtimeSeconds,
