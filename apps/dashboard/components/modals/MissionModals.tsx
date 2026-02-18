@@ -464,6 +464,8 @@ const RoiPanel: React.FC<{
 }> = ({ agents, slices, roi }) => {
   const [showCad, setShowCad] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number>(1.36);
+  const [showSlices, setShowSlices] = useState(false);
+  const [showModels, setShowModels] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
 
@@ -614,71 +616,60 @@ const RoiPanel: React.FC<{
 
       {roi?.slices && roi.slices.length > 0 && (
         <div className="roi-panel__section">
-          <h4>By Slice (click to expand)</h4>
-          <ul className="roi-panel__slice-list">
-            {roi.slices.slice(0, 10).map((slice) => (
-              <li key={slice.slice_id} className="roi-panel__slice-item roi-panel__slice-item--clickable">
-                <div 
-                  className="roi-panel__slice-header"
-                  onClick={() => setExpandedSlice(expandedSlice === slice.slice_id ? null : slice.slice_id)}
-                >
-                  <div className="roi-panel__slice-name">
-                    {slice.slice_name}
-                    <span className="roi-panel__expand-icon">{expandedSlice === slice.slice_id ? "−" : "+"}</span>
+          <h4 
+            className="roi-panel__section-header" 
+            onClick={() => setShowSlices(!showSlices)}
+          >
+            By Slice {showSlices ? "−" : "+"}
+          </h4>
+          {showSlices && (
+            <ul className="roi-panel__slice-list">
+              {roi.slices.slice(0, 10).map((slice) => (
+                <li key={slice.slice_id} className="roi-panel__slice-item">
+                  <div className="roi-panel__slice-header">
+                    <div className="roi-panel__slice-name">
+                      {slice.slice_name}
+                    </div>
+                    <div className="roi-panel__slice-stats">
+                      <span>{slice.completed_tasks}/{slice.total_tasks} tasks</span>
+                      <span>{formatTokens(slice.total_tokens_in + slice.total_tokens_out)} tokens</span>
+                      <span className="roi-panel__slice-savings">{formatUsd(slice.savings_usd)} saved</span>
+                    </div>
                   </div>
-                  <div className="roi-panel__slice-stats">
-                    <span>{slice.completed_tasks}/{slice.total_tasks} tasks</span>
-                    <span>{formatTokens(slice.total_tokens_in + slice.total_tokens_out)} tokens</span>
-                    <span className="roi-panel__slice-savings">{formatUsd(slice.savings_usd)} saved</span>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
       {roi?.models && roi.models.length > 0 && (
         <div className="roi-panel__section">
-          <h4>By Model (click to expand)</h4>
-          <ul className="roi-panel__model-list">
-            {roi.models.slice(0, 10).map((model) => (
-              <li key={model.model_id} className="roi-panel__model-item">
-                <div 
-                  className="roi-panel__model-header"
-                  onClick={() => setExpandedModel(expandedModel === model.model_id ? null : model.model_id)}
-                >
-                  <div className="roi-panel__model-name">
-                    {model.model_name || model.model_id}
-                    <span className="roi-panel__model-role">{getRoleLabel(model.role)}</span>
-                    <span className="roi-panel__expand-icon">{expandedModel === model.model_id ? "−" : "+"}</span>
+          <h4 
+            className="roi-panel__section-header" 
+            onClick={() => setShowModels(!showModels)}
+          >
+            By Model {showModels ? "−" : "+"}
+          </h4>
+          {showModels && (
+            <ul className="roi-panel__model-list">
+              {roi.models.slice(0, 10).map((model) => (
+                <li key={model.model_id} className="roi-panel__model-item">
+                  <div className="roi-panel__model-header">
+                    <div className="roi-panel__model-name">
+                      {model.model_name || model.model_id}
+                      <span className="roi-panel__model-role">{getRoleLabel(model.role)}</span>
+                    </div>
+                    <div className="roi-panel__model-stats">
+                      <span>{model.total_runs} runs</span>
+                      <span>{formatTokens(model.total_tokens_in + model.total_tokens_out)} tokens</span>
+                      <span className="roi-panel__model-savings">{formatUsd(model.savings_usd)} saved</span>
+                    </div>
                   </div>
-                  <div className="roi-panel__model-stats">
-                    <span>{model.total_runs} runs</span>
-                    <span>{formatTokens(model.total_tokens_in + model.total_tokens_out)} tokens</span>
-                    <span className="roi-panel__model-savings">{formatUsd(model.savings_usd)} saved</span>
-                  </div>
-                </div>
-                {expandedModel === model.model_id && model.tasks.length > 0 && (
-                  <ul className="roi-panel__task-list">
-                    {model.tasks.map((task) => (
-                      <li key={task.run_id} className="roi-panel__task-item">
-                        <div className="roi-panel__task-name">{task.task_title}</div>
-                        <div className="roi-panel__task-stats">
-                          <span className="roi-panel__task-slice">{task.slice_id || "General"}</span>
-                          <span>{formatTokens(task.tokens_in + task.tokens_out)} tokens</span>
-                          <span className="roi-panel__task-savings">{formatUsd(task.savings_usd)} saved</span>
-                          <span className={`roi-panel__task-status roi-panel__task-status--${task.status}`}>
-                            {task.status}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
