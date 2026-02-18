@@ -11,6 +11,11 @@ interface MissionHeaderProps {
   events: MissionEvent[];
   snapshotTime: string;
   tokenUsage: number;
+  roi: {
+    totals: {
+      total_savings_usd: number;
+    };
+  } | null;
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
 }
@@ -131,6 +136,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   events,
   snapshotTime,
   tokenUsage,
+  roi,
   onOpenTokens,
   onOpenReviewTask,
 }) => {

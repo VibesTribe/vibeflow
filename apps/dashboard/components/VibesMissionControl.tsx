@@ -133,6 +133,7 @@ const VibesMissionControl: React.FC = () => {
           events={events}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
+          roi={roi}
           onOpenTokens={handleOpenRoi}
           onOpenReviewTask={openReviewByTask}
         />
