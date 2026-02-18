@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VibeFlow</title>
+    <script>
+        // Check if this is an OAuth callback
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const error = params.get('error');
+        
+        if (code || error) {
+            // Redirect to the auth handler page
+            window.location.href = '/vibeflow/raindrop-auth.html' + window.location.search;
+        }
+    </script>
+</head>
+<body>
+    <h1>VibeFlow Dashboard</h1>
+    <p>Loading...</p>
+</body>
+</html>
