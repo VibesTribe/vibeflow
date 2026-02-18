@@ -4735,7 +4735,9 @@ a {
   margin-bottom: 4px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .roi-panel__model-role {
@@ -4745,11 +4747,13 @@ a {
   border-radius: 3px;
   background: rgba(56, 189, 248, 0.15);
   color: #38bdf8;
+  flex-shrink: 0;
 }
 
 .roi-panel__model-stats {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   font-size: 0.7rem;
   color: rgba(148, 163, 184, 0.75);
 }
