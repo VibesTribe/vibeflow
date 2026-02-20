@@ -54,6 +54,25 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const isIdeaMessage = (message: string): boolean => {
+    const lower = message.toLowerCase();
+    const ideaPatterns = [
+      /^i want\s/i,
+      /^i need\s/i,
+      /^i'd like\s/i,
+      /^add\s/i,
+      /^create\s/i,
+      /^build\s/i,
+      /^implement\s/i,
+      /^change\s/i,
+      /^fix\s/i,
+      /^update\s/i,
+      /^make\s/i,
+      /^help me\s/i,
+    ];
+    return ideaPatterns.some(pattern => pattern.test(lower));
+  };
+
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return;
 
@@ -72,17 +91,32 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
       let responseText: string;
 
       if (isSupabaseConfigured() && supabase) {
-        const { data, error } = await supabase.rpc("vibes_query", {
-          p_user_id: "anonymous",
-          p_question: userMessage.content,
-          p_context: {},
-        });
+        if (isIdeaMessage(userMessage.content)) {
+          const { data, error } = await supabase.rpc("vibes_submit_idea", {
+            p_user_id: "anonymous",
+            p_idea: userMessage.content,
+            p_project_id: null,
+          });
 
-        if (error) {
-          console.warn("Supabase vibes_query error, using mock:", error);
-          responseText = getMockResponse(userMessage.content);
+          if (error) {
+            console.warn("Supabase vibes_submit_idea error:", error);
+            responseText = "I've noted your idea but hit a technical issue. Please try again.";
+          } else {
+            responseText = `Got it! I'm processing your request: "${userMessage.content.slice(0, 50)}${userMessage.content.length > 50 ? '...' : ''}"\n\nThe system will create a plan and start working on it. Check back for updates!`;
+          }
         } else {
-          responseText = data?.response || getMockResponse(userMessage.content);
+          const { data, error } = await supabase.rpc("vibes_query", {
+            p_user_id: "anonymous",
+            p_question: userMessage.content,
+            p_context: {},
+          });
+
+          if (error) {
+            console.warn("Supabase vibes_query error, using mock:", error);
+            responseText = getMockResponse(userMessage.content);
+          } else {
+            responseText = data?.response || getMockResponse(userMessage.content);
+          }
         }
       } else {
         await new Promise((r) => setTimeout(r, 500));
