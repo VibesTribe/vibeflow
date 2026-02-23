@@ -1255,6 +1255,7 @@ const AssignmentDetails: React.FC<{
   const runtimeSeconds = task.metrics?.runtimeSeconds;
   const costPerTask = tokensUsed !== undefined && agent?.costPer1kTokensUsd ? (tokensUsed / 1000) * agent.costPer1kTokensUsd : null;
   const showReviewAction = Boolean(onOpenReview && (task.status === "supervisor_review" || task.status === "supervisor_approval"));
+  const mergePending = task.mergePending ?? false;
 
   return (
     <div className="mission-modal__section assignment-detail">
@@ -1268,6 +1269,11 @@ const AssignmentDetails: React.FC<{
           <span className="assignment-detail__status-pill" style={{ borderColor: `${statusMeta.accent}66`, color: statusMeta.accent }}>
             <span aria-hidden="true">{statusMeta.icon}</span> {statusMeta.label}
           </span>
+          {mergePending && (
+            <span className="assignment-detail__status-pill assignment-detail__status-pill--merge-pending" title="Merge pending - system resolving">
+              ⚠ Merge pending
+            </span>
+          )}
           {agent && (
             <div className="assignment-detail__agent">
               <span>{agent.name}</span>

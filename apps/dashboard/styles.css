@@ -3809,6 +3809,13 @@ a {
   gap: 6px;
 }
 
+.assignment-detail__status-pill--merge-pending {
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.1);
+  margin-top: 4px;
+}
+
 .assignment-detail__agent {
   display: flex;
   flex-direction: column;

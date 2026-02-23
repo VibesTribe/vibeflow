@@ -85,6 +85,7 @@ export interface MissionSlice {
   active: number;
   blocked: number;
   tokens?: number;
+  mergePending?: number;
   expectedTotal?: number;
   expectedCompleted?: number;
   agents: MissionAgent[];

@@ -50,6 +50,7 @@ export interface TaskSnapshot {
   dependencies?: string[];
   packet?: TaskPacketDetails;
   summary?: string;
+  mergePending?: boolean;
   metrics?: {
     tokensUsed?: number;
     runtimeSeconds?: number;
