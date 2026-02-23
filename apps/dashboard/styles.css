@@ -2687,6 +2687,12 @@ a {
   border-color: rgba(165, 180, 252, 0.45);
 }
 
+.task-chip--merge-pending {
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+}
+
 .task-chip__summary {
   font-size: 0.6rem;
   color: rgba(203, 213, 225, 0.92);

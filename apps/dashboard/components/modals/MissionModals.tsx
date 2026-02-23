@@ -1422,6 +1422,11 @@ export const TaskDetail: React.FC<{
         >
           {statusMeta.label}
         </span>
+        {task.mergePending && (
+          <span className="task-chip task-chip--merge-pending">
+            △ Merge pending
+          </span>
+        )}
       </header>
       {assignment?.agent && (
         <p className="task-detail__agent">
