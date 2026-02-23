@@ -189,7 +189,6 @@ export function transformTasks(
       status: mapTaskStatus(task.status),
       confidence: 0.85,
       updatedAt: task.updated_at,
-      // Clear owner for completed tasks - they should "vanish" from orbit
       owner:
         task.status === "merged"
           ? null
@@ -208,6 +207,7 @@ export function transformTasks(
       packet: task.result?.prompt_packet
         ? { prompt: String(task.result.prompt_packet) }
         : undefined,
+      mergePending: task.status === "approval",
       metrics: {
         tokensUsed: run?.tokens_used || 0,
         runtimeSeconds,
@@ -348,14 +348,17 @@ export function transformAgents(
  * Build SliceCatalog[] from tasks grouped by slice_id
  */
 export function transformSlices(tasks: VibePilotTask[]): SliceCatalog[] {
-  const sliceMap = new Map<string, { total: number; done: number; tokens: number }>();
+  const sliceMap = new Map<string, { total: number; done: number; tokens: number; mergePending: number }>();
 
   for (const task of tasks) {
     const sliceId = task.slice_id || "general";
-    const stats = sliceMap.get(sliceId) || { total: 0, done: 0, tokens: 0 };
+    const stats = sliceMap.get(sliceId) || { total: 0, done: 0, tokens: 0, mergePending: 0 };
     stats.total += 1;
     if (task.status === "merged") {
       stats.done += 1;
+    }
+    if (task.status === "approval") {
+      stats.mergePending += 1;
     }
     sliceMap.set(sliceId, stats);
   }
@@ -366,6 +369,7 @@ export function transformSlices(tasks: VibePilotTask[]): SliceCatalog[] {
     tasksTotal: stats.total,
     tasksDone: stats.done,
     tokens: stats.tokens,
+    mergePending: stats.mergePending,
     accent: SLICE_ACCENTS[sliceId] || "#94a3b8",
   }));
 }

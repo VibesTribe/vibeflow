@@ -2576,6 +2576,20 @@ a {
   color: var(--slice-orbit-core-tokens);
 }
 
+.slice-orbit__merge-pending {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #fbbf24;
+  line-height: 1;
+}
+
 .slice-orbit__node {
   position: absolute;
   top: 50%;

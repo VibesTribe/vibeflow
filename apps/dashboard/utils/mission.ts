@@ -102,6 +102,7 @@ export interface SliceCatalog {
   tokens?: number;
   tasksTotal?: number;
   tasksDone?: number;
+  mergePending?: number;
 }
 
 const GENERAL_BLUEPRINT: SliceBlueprint = {
@@ -137,6 +138,7 @@ export function deriveSlices(
       completed: 0,
       active: 0,
       blocked: 0,
+      mergePending: 0,
       tokens: sliceMeta.tokens,
       expectedTotal: sliceMeta.tasksTotal,
       expectedCompleted: sliceMeta.tasksDone,
@@ -160,6 +162,10 @@ export function deriveSlices(
         break;
     }
     slice.total += 1;
+
+    if (task.mergePending) {
+      slice.mergePending = (slice.mergePending ?? 0) + 1;
+    }
 
     const mappedAgent = task.owner ? agentMap.get(task.owner) ?? null : null;
     // Only add agent to slice.agents if task is active (not completed/blocked)
