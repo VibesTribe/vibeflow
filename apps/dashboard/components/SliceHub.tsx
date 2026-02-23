@@ -154,6 +154,11 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
         {slice.completed}/{slice.total}
       </span>
       {slice.tokens !== undefined && <span className="slice-orbit__tokens">{formatTokenCount(slice.tokens)} tokens</span>}
+      {slice.mergePending && slice.mergePending > 0 && (
+        <span className="slice-orbit__merge-pending" title="Merge pending">
+          △ {slice.mergePending} merge pending
+        </span>
+      )}
     </button>
   );
 };

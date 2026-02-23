@@ -3,6 +3,7 @@ import { TaskSnapshot, TaskStatus } from "@core/types";
 import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
 import { MissionEvent } from "../../../src/utils/events";
 import { TaskDetail } from "./modals/MissionModals";
+import VibesChatPanel from "./vibes/VibesChatPanel";
 
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
@@ -142,6 +143,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [isVibesChatOpen, setIsVibesChatOpen] = useState(false);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -288,9 +290,15 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   return (
     <header className="mission-header">
       <div className="mission-header__identity">
-        <span className="vibes-orb" aria-hidden="true">
+        <button
+          className="vibes-orb vibes-orb--interactive"
+          onClick={() => setIsVibesChatOpen(true)}
+          aria-label="Open Vibes chat"
+          title="Chat with Vibes"
+        >
           <span className="vibes-orb__label">Vibes</span>
-        </span>
+          <span className="vibes-orb__text-label">Text me</span>
+        </button>
         <div className="mission-header__titles">
           <p className="mission-header__eyebrow">
             <span>Mission Control</span>
@@ -469,6 +477,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
+      <VibesChatPanel isOpen={isVibesChatOpen} onClose={() => setIsVibesChatOpen(false)} />
     </header>
   );
 };
