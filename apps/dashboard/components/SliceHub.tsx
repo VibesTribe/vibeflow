@@ -153,12 +153,12 @@ const OrbitCenter: React.FC<{ slice: MissionSlice; progress: number; onClick: ()
       <span className="slice-orbit__value">
         {slice.completed}/{slice.total}
       </span>
+      {slice.tokens !== undefined && <span className="slice-orbit__tokens">{formatTokenCount(slice.tokens)} tokens</span>}
       {slice.mergePending && slice.mergePending > 0 && (
         <span className="slice-orbit__merge-pending" title="Merge pending">
-          △ {slice.mergePending}
+          △ {slice.mergePending} merge pending
         </span>
       )}
-      {slice.tokens !== undefined && <span className="slice-orbit__tokens">{formatTokenCount(slice.tokens)} tokens</span>}
     </button>
   );
 };
@@ -217,7 +217,6 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onOpenAs
       <span className="slice-orbit__model" aria-hidden="true">
         {agent.name}
       </span>
-      {assignment.task.mergePending && <span className="slice-orbit__merge-icon" title="Merge pending">△</span>}
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
   );
