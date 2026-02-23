@@ -1147,6 +1147,16 @@ const SliceDetails: React.FC<{ slice: MissionSlice; events: MissionEvent[]; onOp
                       >
                         {statusMeta.label ?? assignment.task.status.replace(/_/g, " ")}
                       </span>
+                      {assignment.task.mergePending && (
+                        <>
+                          <span className="slice-task-list__meta-divider" aria-hidden="true">
+                            {"\u00B7"}
+                          </span>
+                          <span className="slice-task-list__merge-pending">
+                            △ Merge pending
+                          </span>
+                        </>
+                      )}
                       {isReviewTask && onOpenReview && (
                         <>
                           <span className="slice-task-list__meta-divider" aria-hidden="true">

@@ -4177,6 +4177,16 @@ a {
   text-transform: uppercase;
 }
 
+.slice-task-list__merge-pending {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
 .slice-task-list__summary {
   grid-column: span 2;
   font-size: 0.95rem;
