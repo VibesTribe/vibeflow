@@ -138,7 +138,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
       break;
     case "assignment":
-      content = <AssignmentDetails assignment={modal.assignment} slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
+      content = <AssignmentDetails assignment={modal.assignment} slice={modal.slice} events={events} />;
       break;
     case "add":
       content = <AddAgentForm onClose={onClose} />;
@@ -1217,8 +1217,7 @@ const AssignmentDetails: React.FC<{
   assignment: SliceAssignment;
   slice: MissionSlice;
   events: MissionEvent[];
-  onOpenReview?: (taskId: string) => void;
-}> = ({ assignment, slice, events, onOpenReview }) => {
+}> = ({ assignment, slice, events }) => {
   const [activityExpanded, setActivityExpanded] = useState(false);
   const task = assignment.task;
   const agent = assignment.agent;
@@ -1265,7 +1264,6 @@ const AssignmentDetails: React.FC<{
   const tokensUsed = task.metrics?.tokensUsed;
   const runtimeSeconds = task.metrics?.runtimeSeconds;
   const costPerTask = tokensUsed !== undefined && agent?.costPer1kTokensUsd ? (tokensUsed / 1000) * agent.costPer1kTokensUsd : null;
-  const showReviewAction = Boolean(onOpenReview && (task.status === "supervisor_review" || task.status === "supervisor_approval"));
   const mergePending = task.mergePending ?? false;
 
   return (
@@ -1395,14 +1393,6 @@ const AssignmentDetails: React.FC<{
           </>
         )}
       </section>
-
-      {showReviewAction && onOpenReview && (
-        <div className="assignment-detail__actions">
-          <button type="button" className="mission-button mission-button--primary" onClick={() => onOpenReview(task.id)}>
-            Open Review
-          </button>
-        </div>
-      )}
     </div>
   );
 };
