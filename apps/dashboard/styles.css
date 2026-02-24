@@ -4077,7 +4077,7 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.12);
   background: rgba(6, 10, 20, 0.85);
   padding: 10px 12px;
-  scroll-margin-top: 180px;
+  scroll-margin-top: 200px;
 }
 
 .slice-task-list li:first-child {
@@ -4202,13 +4202,13 @@ a {
 .slice-task-list__accordion {
   margin-top: 10px;
   border-top: 1px solid rgba(56, 189, 248, 0.15);
-  padding-top: 6px;
+  padding-top: 12px;
 }
 
 .slice-task-list__accordion .task-detail {
   background: rgba(8, 13, 26, 0.9);
   border-radius: 14px;
-  padding: 12px;
+  padding: 16px;
 }
 
 .slice-panel__details {
@@ -4271,10 +4271,6 @@ a {
 .task-detail__deps button:hover {
   border-color: rgba(125, 211, 252, 0.85);
   color: #f0fdfa;
-}
-
-.task-detail__routing {
-  margin: 12px 0;
 }
 
 .task-detail__events ul li strong {

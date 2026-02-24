@@ -34,7 +34,6 @@ interface VibePilotTask {
   task_number: string | null;
   routing_flag: string;
   routing_flag_reason: string | null;
-  routing_history?: { from?: string; to?: string; reason?: string; at?: string }[];
   assigned_to: string | null;
   dependencies: string[] | null;
   result: Record<string, unknown> | null;
@@ -209,9 +208,6 @@ export function transformTasks(
         ? { prompt: String(task.result.prompt_packet) }
         : undefined,
       mergePending: task.status === "approval",
-      routingHistory: task.routing_history && task.routing_history.length > 0
-        ? task.routing_history
-        : undefined,
       metrics: {
         tokensUsed: run?.tokens_used || 0,
         runtimeSeconds,

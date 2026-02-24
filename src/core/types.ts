@@ -36,13 +36,6 @@ export interface TaskPacketDetails {
   attachments?: TaskAssetLink[];
 }
 
-export interface RoutingStep {
-  from?: string;
-  to?: string;
-  reason?: string;
-  at?: string;
-}
-
 export interface TaskSnapshot {
   id: string;
   title: string;
@@ -58,7 +51,6 @@ export interface TaskSnapshot {
   packet?: TaskPacketDetails;
   summary?: string;
   mergePending?: boolean;
-  routingHistory?: RoutingStep[];
   metrics?: {
     tokensUsed?: number;
     runtimeSeconds?: number;
