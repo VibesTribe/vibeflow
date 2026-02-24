@@ -1219,6 +1219,7 @@ const AssignmentDetails: React.FC<{
   events: MissionEvent[];
   onOpenReview?: (taskId: string) => void;
 }> = ({ assignment, slice, events, onOpenReview }) => {
+  const [activityExpanded, setActivityExpanded] = useState(false);
   const task = assignment.task;
   const agent = assignment.agent;
   const sortedEvents = useMemo(
@@ -1336,53 +1337,63 @@ const AssignmentDetails: React.FC<{
       </section>
 
       <section className="assignment-detail__section">
-        <header>
+        <button
+          type="button"
+          className="task-detail__section-header"
+          onClick={() => setActivityExpanded(!activityExpanded)}
+          aria-expanded={activityExpanded}
+        >
           <h4>Activity</h4>
-        </header>
-        {warningMessages.length > 0 && (
-          <div className="assignment-detail__activity-warnings">
-            {warningMessages.map((entry) => (
-              <article key={entry.id} className={`assignment-detail__activity-warning assignment-detail__activity-warning--${entry.category}`}>
-                <div>
-                  <strong>{entry.message}</strong>
-                  <small>{entry.timestamp}</small>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-        <ul className="mission-log-list assignment-detail__log">
-          {activityLogs.length > 0 ? (
-            activityLogs.map((event) => {
-              const category = deriveLogCategory(event);
-              const summary = extractEventMessage(event) ?? event.reasonCode ?? null;
-              const participants = deriveEventParticipants(event);
-              return (
-                <li key={event.id}>
-                  <span className={`mission-log__bullet mission-log__bullet--${category}`} />
-                  <div className="mission-log__entry">
-                    <div className="mission-log__headline">
-                      <strong className={`mission-log__title mission-log__title--${category}`}>{formatEventLabel(event.type)}</strong>
-                      {summary && <span className="mission-log__summary">. {summary}</span>}
+          <span className="task-detail__toggle">{activityExpanded ? "Collapse −" : "Expand +"}</span>
+        </button>
+        {activityExpanded && (
+          <>
+            {warningMessages.length > 0 && (
+              <div className="assignment-detail__activity-warnings">
+                {warningMessages.map((entry) => (
+                  <article key={entry.id} className={`assignment-detail__activity-warning assignment-detail__activity-warning--${entry.category}`}>
+                    <div>
+                      <strong>{entry.message}</strong>
+                      <small>{entry.timestamp}</small>
                     </div>
-                    {participants.length > 0 && (
-                      <div className="mission-log__participants">
-                        {participants.map((participant) => (
-                          <span key={`${event.id}-${participant}`} className="mission-log__participant">
-                            {participant}
-                          </span>
-                        ))}
+                  </article>
+                ))}
+              </div>
+            )}
+            <ul className="mission-log-list assignment-detail__log">
+              {activityLogs.length > 0 ? (
+                activityLogs.map((event) => {
+                  const category = deriveLogCategory(event);
+                  const summary = extractEventMessage(event) ?? event.reasonCode ?? null;
+                  const participants = deriveEventParticipants(event);
+                  return (
+                    <li key={event.id}>
+                      <span className={`mission-log__bullet mission-log__bullet--${category}`} />
+                      <div className="mission-log__entry">
+                        <div className="mission-log__headline">
+                          <strong className={`mission-log__title mission-log__title--${category}`}>{formatEventLabel(event.type)}</strong>
+                          {summary && <span className="mission-log__summary">. {summary}</span>}
+                        </div>
+                        {participants.length > 0 && (
+                          <div className="mission-log__participants">
+                            {participants.map((participant) => (
+                              <span key={`${event.id}-${participant}`} className="mission-log__participant">
+                                {participant}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <span className="mission-log__timestamp">{new Date(event.timestamp).toLocaleString()}</span>
                       </div>
-                    )}
-                    <span className="mission-log__timestamp">{new Date(event.timestamp).toLocaleString()}</span>
-                  </div>
-                </li>
-              );
-            })
-          ) : (
-            <li>No activity recorded for this task yet.</li>
-          )}
-        </ul>
+                    </li>
+                  );
+                })
+              ) : (
+                <li>No activity recorded for this task yet.</li>
+              )}
+            </ul>
+          </>
+        )}
       </section>
 
       {showReviewAction && onOpenReview && (

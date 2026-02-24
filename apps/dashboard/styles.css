@@ -4398,7 +4398,8 @@ a {
   margin-bottom: 8px;
 }
 
-.task-detail__section-header h5 {
+.task-detail__section-header h5,
+.task-detail__section-header h4 {
   margin: 0;
   color: #5eead4;
   font-size: 0.9rem;
