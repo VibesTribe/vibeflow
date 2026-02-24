@@ -1410,7 +1410,7 @@ export const TaskDetail: React.FC<{
   onCollapse,
 }) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
-  const [activityExpanded, setActivityExpanded] = useState(true);
+  const [activityExpanded, setActivityExpanded] = useState(false);
   const statusMeta = resolveStatusMeta(task.status);
 
   return (
@@ -1538,7 +1538,7 @@ export const TaskDetail: React.FC<{
       {onCollapse && (
         <div className="task-detail__actions">
           <button type="button" className="task-detail__collapse" onClick={onCollapse}>
-            Collapse Detail
+            Return to task list
           </button>
         </div>
       )}
