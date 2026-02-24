@@ -1493,7 +1493,7 @@ export const TaskDetail: React.FC<{
           aria-expanded={activityExpanded}
         >
           <h5>Recent activity</h5>
-          <span className="task-detail__toggle">{activityExpanded ? "−" : "+"}</span>
+          <span className="task-detail__toggle">{activityExpanded ? "Collapse −" : "Expand +"}</span>
         </button>
         {activityExpanded && (
           <ul className="task-activity-list">
