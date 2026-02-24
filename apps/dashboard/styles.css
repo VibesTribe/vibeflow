@@ -4394,24 +4394,29 @@ a {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 4px 0;
   margin-bottom: 8px;
 }
 
 .task-detail__section-header h5 {
   margin: 0;
+  color: #5eead4;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .task-detail__toggle {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #22d3ee;
+  color: #22d3ee !important;
   line-height: 1;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .task-detail__section-header:hover .task-detail__toggle {
-  color: #5eead4;
+  color: #5eead4 !important;
+  transform: scale(1.1);
 }
 
 .task-activity-list {
