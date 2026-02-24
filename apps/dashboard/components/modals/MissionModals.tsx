@@ -1469,6 +1469,25 @@ export const TaskDetail: React.FC<{
           </ul>
         </div>
       )}
+      {task.routingHistory && task.routingHistory.length > 0 && (
+        <div className="task-detail__routing">
+          <h5>Routing History</h5>
+          <ul className="agent-panel__routing-inline">
+            {task.routingHistory.map((step, idx) => (
+              <li key={idx}>
+                <span className={`agent-routing__badge ${step.from ? "agent-routing__badge--from" : "agent-routing__badge--to"}`}>
+                  {step.from ? "from" : "to"}
+                </span>
+                <div>
+                  <strong>{step.from || step.to || "Unknown"}</strong>
+                  {step.reason && <small>{step.reason}</small>}
+                  {step.at && <small style={{ marginLeft: "8px" }}>{new Date(step.at).toLocaleString()}</small>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="task-detail__prompt">
         <h5>Prompt Packet</h5>
         <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} />

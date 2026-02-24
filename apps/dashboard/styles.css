@@ -4273,6 +4273,10 @@ a {
   color: #f0fdfa;
 }
 
+.task-detail__routing {
+  margin: 12px 0;
+}
+
 .task-detail__events ul li strong {
   display: inline-flex;
   align-items: center;
