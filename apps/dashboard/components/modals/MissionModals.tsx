@@ -1410,6 +1410,7 @@ export const TaskDetail: React.FC<{
   onCollapse,
 }) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
+  const [activityExpanded, setActivityExpanded] = useState(true);
   const statusMeta = resolveStatusMeta(task.status);
 
   return (
@@ -1485,44 +1486,54 @@ export const TaskDetail: React.FC<{
         )}
       </div>
       <div className="task-detail__events">
-        <h5>Recent activity</h5>
-        <ul className="task-activity-list">
-          {events.map((event) => {
-            const eventMeta = getEventMeta(event);
-            return (
-              <li key={event.id} className={`task-activity-item task-activity-item--${eventMeta.tone}`}>
-                <span className={`task-activity__badge task-activity__badge--${eventMeta.tone}`}>
-                  {eventMeta.icon}
-                </span>
-                <div className="task-activity__content">
-                  <div className="task-activity__header">
-                    <strong className={`task-activity__title task-activity__title--${eventMeta.tone}`}>
-                      {eventMeta.label}
-                    </strong>
-                    <span className="task-activity__time">{new Date(event.timestamp).toLocaleString()}</span>
+        <button 
+          type="button"
+          className="task-detail__section-header"
+          onClick={() => setActivityExpanded(!activityExpanded)}
+          aria-expanded={activityExpanded}
+        >
+          <h5>Recent activity</h5>
+          <span className="task-detail__toggle">{activityExpanded ? "−" : "+"}</span>
+        </button>
+        {activityExpanded && (
+          <ul className="task-activity-list">
+            {events.map((event) => {
+              const eventMeta = getEventMeta(event);
+              return (
+                <li key={event.id} className={`task-activity-item task-activity-item--${eventMeta.tone}`}>
+                  <span className={`task-activity__badge task-activity__badge--${eventMeta.tone}`}>
+                    {eventMeta.icon}
+                  </span>
+                  <div className="task-activity__content">
+                    <div className="task-activity__header">
+                      <strong className={`task-activity__title task-activity__title--${eventMeta.tone}`}>
+                        {eventMeta.label}
+                      </strong>
+                      <span className="task-activity__time">{new Date(event.timestamp).toLocaleString()}</span>
+                    </div>
+                    {(() => {
+                      const modelId = event.details?.modelId;
+                      return modelId ? <span className="task-activity__model">{String(modelId)}</span> : null;
+                    })()}
+                    {event.reasonCode && (
+                      <p className="task-activity__reason">{event.reasonCode}</p>
+                    )}
+                    {(() => {
+                      const from = event.details?.fromRunnerId;
+                      const to = event.details?.toRunnerId;
+                      return from && to ? (
+                        <p className="task-activity__route">
+                          {String(from)} → {String(to)}
+                        </p>
+                      ) : null;
+                    })()}
                   </div>
-                  {(() => {
-                    const modelId = event.details?.modelId;
-                    return modelId ? <span className="task-activity__model">{String(modelId)}</span> : null;
-                  })()}
-                  {event.reasonCode && (
-                    <p className="task-activity__reason">{event.reasonCode}</p>
-                  )}
-                  {(() => {
-                    const from = event.details?.fromRunnerId;
-                    const to = event.details?.toRunnerId;
-                    return from && to ? (
-                      <p className="task-activity__route">
-                        {String(from)} → {String(to)}
-                      </p>
-                    ) : null;
-                  })()}
-                </div>
-              </li>
-            );
-          })}
-          {events.length === 0 && <li className="task-activity-item--empty">No activity recorded for this task yet.</li>}
-        </ul>
+                </li>
+              );
+            })}
+            {events.length === 0 && <li className="task-activity-item--empty">No activity recorded for this task yet.</li>}
+          </ul>
+        )}
       </div>
       {onCollapse && (
         <div className="task-detail__actions">

@@ -4386,6 +4386,33 @@ a {
   gap: 10px;
 }
 
+.task-detail__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.task-detail__section-header h5 {
+  margin: 0;
+}
+
+.task-detail__toggle {
+  font-size: 1.2rem;
+  color: rgba(148, 163, 184, 0.8);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.task-detail__section-header:hover .task-detail__toggle {
+  color: #5eead4;
+}
+
 .task-activity-list {
   list-style: none;
   padding: 0;
