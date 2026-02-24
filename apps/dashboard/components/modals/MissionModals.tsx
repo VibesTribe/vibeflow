@@ -1486,20 +1486,42 @@ export const TaskDetail: React.FC<{
       </div>
       <div className="task-detail__events">
         <h5>Recent activity</h5>
-        <ul>
-          {events.map((event) => (
-            <li key={event.id}>
-              <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
-              <div className="mission-log__entry">
-                <div className="mission-log__header">
-                  <strong>{formatEventLabel(event.type)}</strong>
-                  <span>{new Date(event.timestamp).toLocaleString()}</span>
+        <ul className="task-activity-list">
+          {events.map((event) => {
+            const eventMeta = getEventMeta(event);
+            return (
+              <li key={event.id} className={`task-activity-item task-activity-item--${eventMeta.tone}`}>
+                <span className={`task-activity__badge task-activity__badge--${eventMeta.tone}`}>
+                  {eventMeta.icon}
+                </span>
+                <div className="task-activity__content">
+                  <div className="task-activity__header">
+                    <strong className={`task-activity__title task-activity__title--${eventMeta.tone}`}>
+                      {eventMeta.label}
+                    </strong>
+                    <span className="task-activity__time">{new Date(event.timestamp).toLocaleString()}</span>
+                  </div>
+                  {(() => {
+                    const modelId = event.details?.modelId;
+                    return modelId ? <span className="task-activity__model">{String(modelId)}</span> : null;
+                  })()}
+                  {event.reasonCode && (
+                    <p className="task-activity__reason">{event.reasonCode}</p>
+                  )}
+                  {(() => {
+                    const from = event.details?.fromRunnerId;
+                    const to = event.details?.toRunnerId;
+                    return from && to ? (
+                      <p className="task-activity__route">
+                        {String(from)} → {String(to)}
+                      </p>
+                    ) : null;
+                  })()}
                 </div>
-                {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
-              </div>
-            </li>
-          ))}
-          {events.length === 0 && <li>No activity recorded for this task yet.</li>}
+              </li>
+            );
+          })}
+          {events.length === 0 && <li className="task-activity-item--empty">No activity recorded for this task yet.</li>}
         </ul>
       </div>
       {onCollapse && (
@@ -1599,6 +1621,43 @@ function formatEventLabel(value?: string) {
   return value
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note";
+
+interface EventMeta {
+  label: string;
+  icon: string;
+  tone: EventTone;
+}
+
+function getEventMeta(event: MissionEvent): EventMeta {
+  const type = event.type.toLowerCase();
+  
+  if (type.includes("assigned")) {
+    return { label: "Assigned", icon: "→", tone: "assigned" };
+  }
+  if (type.includes("route") || type.includes("reroute")) {
+    return { label: "Rerouted", icon: "↻", tone: "route" };
+  }
+  if (type.includes("completed")) {
+    return { label: "Completed", icon: "✓", tone: "completed" };
+  }
+  if (type.includes("testing") || type.includes("test")) {
+    const passed = event.details?.passed === true || event.details?.tests_passed === true;
+    return { 
+      label: passed ? "Tests Passed" : "Testing", 
+      icon: passed ? "✓" : "⚙", 
+      tone: passed ? "testing" : "note" 
+    };
+  }
+  if (type.includes("approved") || type.includes("approval")) {
+    return { label: "Approved", icon: "✓", tone: "approved" };
+  }
+  if (type.includes("fail") || type.includes("error") || type.includes("reject")) {
+    return { label: "Failed", icon: "✗", tone: "failed" };
+  }
+  return { label: formatEventLabel(event.type), icon: "•", tone: "note" };
 }
 
 function deriveLogCategory(event: MissionEvent): MissionLogCategory {
