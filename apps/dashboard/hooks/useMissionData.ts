@@ -205,6 +205,37 @@ export function useMissionData(): MissionData {
     if (!mountedRef.current) return;
     setLoading((prev) => ({ ...prev, events: true }));
     try {
+      if (isSupabaseConfigured() && supabase) {
+        const { data, error } = await supabase
+          .from("orchestrator_events")
+          .select("id, event_type, task_id, runner_id, from_runner_id, to_runner_id, model_id, reason, details, created_at")
+          .order("created_at", { ascending: false })
+          .limit(500);
+
+        if (error) {
+          console.warn("[mission-data] Supabase orchestrator_events query failed:", error);
+        } else if (data) {
+          const mapped: MissionEvent[] = data.map((row) => ({
+            id: row.id,
+            taskId: row.task_id || "unknown",
+            type: row.event_type || "unknown",
+            timestamp: row.created_at || new Date().toISOString(),
+            reasonCode: row.reason || undefined,
+            details: {
+              ...((row.details as Record<string, unknown>) || {}),
+              runnerId: row.runner_id,
+              fromRunnerId: row.from_runner_id,
+              toRunnerId: row.to_runner_id,
+              modelId: row.model_id,
+            },
+          }));
+          if (!mountedRef.current) return;
+          setEvents(mapped);
+          setLoading((prev) => ({ ...prev, events: false }));
+          return;
+        }
+      }
+
       const response = await fetch(resolveDashboardPath("data/state/events.log.jsonl"), { cache: "no-store" });
       if (!response.ok) {
         throw new Error(`Failed to load events (${response.status})`);

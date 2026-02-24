@@ -138,7 +138,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <SliceDetails slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
       break;
     case "assignment":
-      content = <AssignmentDetails assignment={modal.assignment} slice={modal.slice} events={events} onOpenReview={onOpenReview} />;
+      content = <AssignmentDetails assignment={modal.assignment} slice={modal.slice} events={events} />;
       break;
     case "add":
       content = <AddAgentForm onClose={onClose} />;
@@ -1217,8 +1217,8 @@ const AssignmentDetails: React.FC<{
   assignment: SliceAssignment;
   slice: MissionSlice;
   events: MissionEvent[];
-  onOpenReview?: (taskId: string) => void;
-}> = ({ assignment, slice, events, onOpenReview }) => {
+}> = ({ assignment, slice, events }) => {
+  const [activityExpanded, setActivityExpanded] = useState(false);
   const task = assignment.task;
   const agent = assignment.agent;
   const sortedEvents = useMemo(
@@ -1264,7 +1264,6 @@ const AssignmentDetails: React.FC<{
   const tokensUsed = task.metrics?.tokensUsed;
   const runtimeSeconds = task.metrics?.runtimeSeconds;
   const costPerTask = tokensUsed !== undefined && agent?.costPer1kTokensUsd ? (tokensUsed / 1000) * agent.costPer1kTokensUsd : null;
-  const showReviewAction = Boolean(onOpenReview && (task.status === "supervisor_review" || task.status === "supervisor_approval"));
   const mergePending = task.mergePending ?? false;
 
   return (
@@ -1336,62 +1335,64 @@ const AssignmentDetails: React.FC<{
       </section>
 
       <section className="assignment-detail__section">
-        <header>
+        <button
+          type="button"
+          className="task-detail__section-header"
+          onClick={() => setActivityExpanded(!activityExpanded)}
+          aria-expanded={activityExpanded}
+        >
           <h4>Activity</h4>
-        </header>
-        {warningMessages.length > 0 && (
-          <div className="assignment-detail__activity-warnings">
-            {warningMessages.map((entry) => (
-              <article key={entry.id} className={`assignment-detail__activity-warning assignment-detail__activity-warning--${entry.category}`}>
-                <div>
-                  <strong>{entry.message}</strong>
-                  <small>{entry.timestamp}</small>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-        <ul className="mission-log-list assignment-detail__log">
-          {activityLogs.length > 0 ? (
-            activityLogs.map((event) => {
-              const category = deriveLogCategory(event);
-              const summary = extractEventMessage(event) ?? event.reasonCode ?? null;
-              const participants = deriveEventParticipants(event);
-              return (
-                <li key={event.id}>
-                  <span className={`mission-log__bullet mission-log__bullet--${category}`} />
-                  <div className="mission-log__entry">
-                    <div className="mission-log__headline">
-                      <strong className={`mission-log__title mission-log__title--${category}`}>{formatEventLabel(event.type)}</strong>
-                      {summary && <span className="mission-log__summary">. {summary}</span>}
+          <span className="task-detail__toggle">{activityExpanded ? "Collapse −" : "Expand +"}</span>
+        </button>
+        {activityExpanded && (
+          <>
+            {warningMessages.length > 0 && (
+              <div className="assignment-detail__activity-warnings">
+                {warningMessages.map((entry) => (
+                  <article key={entry.id} className={`assignment-detail__activity-warning assignment-detail__activity-warning--${entry.category}`}>
+                    <div>
+                      <strong>{entry.message}</strong>
+                      <small>{entry.timestamp}</small>
                     </div>
-                    {participants.length > 0 && (
-                      <div className="mission-log__participants">
-                        {participants.map((participant) => (
-                          <span key={`${event.id}-${participant}`} className="mission-log__participant">
-                            {participant}
-                          </span>
-                        ))}
+                  </article>
+                ))}
+              </div>
+            )}
+            <ul className="mission-log-list assignment-detail__log">
+              {activityLogs.length > 0 ? (
+                activityLogs.map((event) => {
+                  const category = deriveLogCategory(event);
+                  const summary = extractEventMessage(event) ?? event.reasonCode ?? null;
+                  const participants = deriveEventParticipants(event);
+                  return (
+                    <li key={event.id}>
+                      <span className={`mission-log__bullet mission-log__bullet--${category}`} />
+                      <div className="mission-log__entry">
+                        <div className="mission-log__headline">
+                          <strong className={`mission-log__title mission-log__title--${category}`}>{formatEventLabel(event.type)}</strong>
+                          {summary && <span className="mission-log__summary">. {summary}</span>}
+                        </div>
+                        {participants.length > 0 && (
+                          <div className="mission-log__participants">
+                            {participants.map((participant) => (
+                              <span key={`${event.id}-${participant}`} className="mission-log__participant">
+                                {participant}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <span className="mission-log__timestamp">{new Date(event.timestamp).toLocaleString()}</span>
                       </div>
-                    )}
-                    <span className="mission-log__timestamp">{new Date(event.timestamp).toLocaleString()}</span>
-                  </div>
-                </li>
-              );
-            })
-          ) : (
-            <li>No activity recorded for this task yet.</li>
-          )}
-        </ul>
+                    </li>
+                  );
+                })
+              ) : (
+                <li>No activity recorded for this task yet.</li>
+              )}
+            </ul>
+          </>
+        )}
       </section>
-
-      {showReviewAction && onOpenReview && (
-        <div className="assignment-detail__actions">
-          <button type="button" className="mission-button mission-button--primary" onClick={() => onOpenReview(task.id)}>
-            Open Review
-          </button>
-        </div>
-      )}
     </div>
   );
 };
@@ -1410,6 +1411,7 @@ export const TaskDetail: React.FC<{
   onCollapse,
 }) => {
   const [prompt, setPrompt] = useState(task.packet?.prompt ?? "");
+  const [activityExpanded, setActivityExpanded] = useState(false);
   const statusMeta = resolveStatusMeta(task.status);
 
   return (
@@ -1485,27 +1487,59 @@ export const TaskDetail: React.FC<{
         )}
       </div>
       <div className="task-detail__events">
-        <h5>Recent activity</h5>
-        <ul>
-          {events.map((event) => (
-            <li key={event.id}>
-              <span className={`mission-log__bullet mission-log__bullet--${inferLogTone(event)}`} />
-              <div className="mission-log__entry">
-                <div className="mission-log__header">
-                  <strong>{formatEventLabel(event.type)}</strong>
-                  <span>{new Date(event.timestamp).toLocaleString()}</span>
-                </div>
-                {extractEventMessage(event) && <p>{extractEventMessage(event)}</p>}
-              </div>
-            </li>
-          ))}
-          {events.length === 0 && <li>No activity recorded for this task yet.</li>}
-        </ul>
+        <button 
+          type="button"
+          className="task-detail__section-header"
+          onClick={() => setActivityExpanded(!activityExpanded)}
+          aria-expanded={activityExpanded}
+        >
+          <h5>Recent activity</h5>
+          <span className="task-detail__toggle">{activityExpanded ? "Collapse −" : "Expand +"}</span>
+        </button>
+        {activityExpanded && (
+          <ul className="task-activity-list">
+            {events.map((event) => {
+              const eventMeta = getEventMeta(event);
+              return (
+                <li key={event.id} className={`task-activity-item task-activity-item--${eventMeta.tone}`}>
+                  <span className={`task-activity__badge task-activity__badge--${eventMeta.tone}`}>
+                    {eventMeta.icon}
+                  </span>
+                  <div className="task-activity__content">
+                    <div className="task-activity__header">
+                      <strong className={`task-activity__title task-activity__title--${eventMeta.tone}`}>
+                        {eventMeta.label}
+                      </strong>
+                      <span className="task-activity__time">{new Date(event.timestamp).toLocaleString()}</span>
+                    </div>
+                    {(() => {
+                      const modelId = event.details?.modelId;
+                      return modelId ? <span className="task-activity__model">{String(modelId)}</span> : null;
+                    })()}
+                    {event.reasonCode && (
+                      <p className="task-activity__reason">{event.reasonCode}</p>
+                    )}
+                    {(() => {
+                      const from = event.details?.fromRunnerId;
+                      const to = event.details?.toRunnerId;
+                      return from && to ? (
+                        <p className="task-activity__route">
+                          {String(from)} → {String(to)}
+                        </p>
+                      ) : null;
+                    })()}
+                  </div>
+                </li>
+              );
+            })}
+            {events.length === 0 && <li className="task-activity-item--empty">No activity recorded for this task yet.</li>}
+          </ul>
+        )}
       </div>
       {onCollapse && (
         <div className="task-detail__actions">
           <button type="button" className="task-detail__collapse" onClick={onCollapse}>
-            Collapse Detail
+            Return to task list
           </button>
         </div>
       )}
@@ -1599,6 +1633,43 @@ function formatEventLabel(value?: string) {
   return value
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note";
+
+interface EventMeta {
+  label: string;
+  icon: string;
+  tone: EventTone;
+}
+
+function getEventMeta(event: MissionEvent): EventMeta {
+  const type = event.type.toLowerCase();
+  
+  if (type.includes("assigned")) {
+    return { label: "Assigned", icon: "→", tone: "assigned" };
+  }
+  if (type.includes("route") || type.includes("reroute")) {
+    return { label: "Rerouted", icon: "↻", tone: "route" };
+  }
+  if (type.includes("completed")) {
+    return { label: "Completed", icon: "✓", tone: "completed" };
+  }
+  if (type.includes("testing") || type.includes("test")) {
+    const passed = event.details?.passed === true || event.details?.tests_passed === true;
+    return { 
+      label: passed ? "Tests Passed" : "Testing", 
+      icon: passed ? "✓" : "⚙", 
+      tone: passed ? "testing" : "note" 
+    };
+  }
+  if (type.includes("approved") || type.includes("approval")) {
+    return { label: "Approved", icon: "✓", tone: "approved" };
+  }
+  if (type.includes("fail") || type.includes("error") || type.includes("reject")) {
+    return { label: "Failed", icon: "✗", tone: "failed" };
+  }
+  return { label: formatEventLabel(event.type), icon: "•", tone: "note" };
 }
 
 function deriveLogCategory(event: MissionEvent): MissionLogCategory {
