@@ -37,6 +37,8 @@ interface VibePilotTask {
   assigned_to: string | null;
   dependencies: string[] | null;
   result: Record<string, unknown> | null;
+  confidence: number | null;
+  category: string | null;
   created_at: string;
   updated_at: string;
   started_at: string | null;
@@ -189,7 +191,7 @@ export function transformTasks(
       id: task.id,
       title: task.title || "Untitled Task",
       status: mapTaskStatus(task.status),
-      confidence: 0.85,
+      confidence: task.confidence ?? 0.85,
       updatedAt: task.updated_at,
       owner:
         task.status === "merged"
