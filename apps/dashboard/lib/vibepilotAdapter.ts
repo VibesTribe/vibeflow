@@ -122,17 +122,19 @@ interface VibePilotPlatform {
  */
 function mapTaskStatus(status: string): TaskSnapshot["status"] {
   const statusMap: Record<string, TaskSnapshot["status"]> = {
-    pending: "assigned",
-    available: "assigned",
+    pending: "pending",
+    available: "pending",
     in_progress: "in_progress",
+    review: "supervisor_review",
     awaiting_human: "supervisor_review",
     testing: "testing",
     approval: "supervisor_approval",
     merged: "complete",
+    complete: "complete",
     failed: "blocked",
     escalated: "blocked",
   };
-  return statusMap[status] || "assigned";
+  return statusMap[status] || "pending";
 }
 
 /**

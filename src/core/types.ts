@@ -11,6 +11,7 @@
 
 /* @editable:core-types */
 export type TaskStatus =
+  | "pending"
   | "assigned"
   | "in_progress"
   | "received"
