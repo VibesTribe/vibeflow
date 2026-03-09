@@ -4,6 +4,7 @@ import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/uti
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { adaptVibePilotToDashboard, ROITotals, SliceROI, SubscriptionROI, ModelROI } from "../lib/vibepilotAdapter";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 function resolveDashboardPath(path: string): string {
   const base = import.meta.env.BASE_URL ?? "/";
@@ -82,197 +83,192 @@ const initialRunMetrics: RunMetrics = {
   updated_at: new Date().toISOString(),
 };
 
-const SNAPSHOT_POLL_MS = 5_000;
-const METRICS_POLL_MS = 25_000;
-const EVENTS_POLL_MS = 5_000;
-
 export function useMissionData(): MissionData {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>(initialSnapshot);
   const [runMetrics, setRunMetrics] = useState<RunMetrics>(initialRunMetrics);
   const [events, setEvents] = useState<MissionEvent[]>([]);
   const [loading, setLoading] = useState<MissionLoadingState>({ snapshot: true, metrics: true, events: true });
 
-  const snapshotRawRef = useRef<string>("");
-  const metricsRawRef = useRef<string>("");
-  const eventsRawRef = useRef<string>("");
+  const channelsRef = useRef<RealtimeChannel[]>([]);
   const mountedRef = useRef(true);
 
   useEffect(() => () => {
     mountedRef.current = false;
+    channelsRef.current.forEach(ch => ch.unsubscribe());
   }, []);
 
-  const fetchSnapshot = useCallback(async () => {
+  const fetchInitialData = useCallback(async () => {
     if (!mountedRef.current) return;
-    setLoading((prev) => ({ ...prev, snapshot: true }));
-    try {
-      // Try Supabase first if configured
-      if (isSupabaseConfigured() && supabase) {
-        const [tasksRes, runsRes, modelsRes, platformsRes] = await Promise.all([
-          supabase.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
-          supabase.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
-          supabase.from("models").select("*").in("status", ["active", "paused"]),
-          supabase.from("platforms").select("*").in("status", ["active", "paused"]),
-        ]);
-
-        if (tasksRes.error) {
-          console.warn("[mission-data] Supabase tasks query failed:", tasksRes.error);
-        } else if (runsRes.error) {
-          console.warn("[mission-data] Supabase task_runs query failed:", runsRes.error);
-        } else {
-          // Transform Supabase data to dashboard shape
-          // Use live models/platforms from DB, fallback to empty array
-          const adapted = adaptVibePilotToDashboard(
-            tasksRes.data || [],
-            runsRes.data || [],
-            modelsRes.data || [],
-            platformsRes.data || []
-          );
-          if (!mountedRef.current) return;
-          setSnapshot({
-            tasks: adapted.tasks,
-            agents: adapted.agents,
-            failures: [],
-            mergeCandidates: [],
-            metrics: adapted.metrics,
-            sliceCatalog: adapted.slices,
-            roi: adapted.roi,
-            updatedAt: adapted.updated_at,
-          });
-          setLoading((prev) => ({ ...prev, snapshot: false }));
-          return;
-        }
-      }
-
-      // Fallback to mock data
-      const response = await fetch(resolveDashboardPath("data/state/dashboard.mock.json"), { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Failed to load snapshot (${response.status})`);
-      }
-      const raw = await response.text();
-      if (raw === snapshotRawRef.current) {
-        return;
-      }
-      snapshotRawRef.current = raw;
-      const parsed = JSON.parse(raw);
-      if (!mountedRef.current) return;
-      setSnapshot({
-        tasks: parsed.tasks ?? [],
-        agents: parsed.agents ?? [],
-        failures: parsed.failures ?? [],
-        mergeCandidates: parsed.merge_candidates ?? [],
-        metrics: parsed.metrics ?? {},
-        sliceCatalog: Array.isArray(parsed.slices) ? parsed.slices : [],
-        updatedAt: parsed.updated_at ?? new Date().toISOString(),
-      });
-    } catch (error) {
-      console.warn("[mission-data] snapshot fetch failed", error);
-    } finally {
-      if (mountedRef.current) {
-        setLoading((prev) => ({ ...prev, snapshot: false }));
-      }
-    }
-  }, []);
-
-  const fetchRunMetrics = useCallback(async () => {
-    if (!mountedRef.current) return;
-    setLoading((prev) => ({ ...prev, metrics: true }));
-    try {
-      const response = await fetch(resolveDashboardPath("data/metrics/run_metrics.json"), { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Failed to load metrics (${response.status})`);
-      }
-      const raw = await response.text();
-      if (raw === metricsRawRef.current) {
-        return;
-      }
-      metricsRawRef.current = raw;
-      const parsed = JSON.parse(raw);
-      if (!mountedRef.current) return;
-      setRunMetrics({
-        runs: Array.isArray(parsed.runs) ? parsed.runs : [],
-        updated_at: parsed.updated_at ?? new Date().toISOString(),
-      });
-    } catch (error) {
-      console.warn("[mission-data] metrics fetch failed", error);
-    } finally {
-      if (mountedRef.current) {
-        setLoading((prev) => ({ ...prev, metrics: false }));
-      }
-    }
-  }, []);
-
-  const fetchEvents = useCallback(async () => {
-    if (!mountedRef.current) return;
-    setLoading((prev) => ({ ...prev, events: true }));
-    try {
-      if (isSupabaseConfigured() && supabase) {
-        const { data, error } = await supabase
+    
+    if (isSupabaseConfigured() && supabase) {
+      setLoading((prev) => ({ ...prev, snapshot: true, events: true }));
+      
+      const [tasksRes, runsRes, modelsRes, platformsRes, eventsRes] = await Promise.all([
+        supabase.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
+        supabase.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
+        supabase.from("models").select("*").in("status", ["active", "paused"]),
+        supabase.from("platforms").select("*").in("status", ["active", "paused"]),
+        supabase
           .from("orchestrator_events")
           .select("id, event_type, task_id, runner_id, from_runner_id, to_runner_id, model_id, reason, details, created_at")
           .order("created_at", { ascending: false })
-          .limit(500);
+          .limit(500),
+      ]);
 
-        if (error) {
-          console.warn("[mission-data] Supabase orchestrator_events query failed:", error);
-        } else if (data) {
-          const mapped: MissionEvent[] = data.map((row) => ({
-            id: row.id,
-            taskId: row.task_id || "unknown",
-            type: row.event_type || "unknown",
-            timestamp: row.created_at || new Date().toISOString(),
-            reasonCode: row.reason || undefined,
-            details: {
-              ...((row.details as Record<string, unknown>) || {}),
-              runnerId: row.runner_id,
-              fromRunnerId: row.from_runner_id,
-              toRunnerId: row.to_runner_id,
-              modelId: row.model_id,
-            },
-          }));
-          if (!mountedRef.current) return;
-          setEvents(mapped);
-          setLoading((prev) => ({ ...prev, events: false }));
-          return;
-        }
-      }
-
-      const response = await fetch(resolveDashboardPath("data/state/events.log.jsonl"), { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Failed to load events (${response.status})`);
-      }
-      const raw = await response.text();
-      if (raw === eventsRawRef.current) {
-        return;
-      }
-      eventsRawRef.current = raw;
       if (!mountedRef.current) return;
-      setEvents(parseEventsLog(raw));
-    } catch (error) {
-      console.warn("[mission-data] events fetch failed", error);
-    } finally {
-      if (mountedRef.current) {
-        setLoading((prev) => ({ ...prev, events: false }));
+
+      if (!tasksRes.error && !runsRes.error) {
+        const adapted = adaptVibePilotToDashboard(
+          tasksRes.data || [],
+          runsRes.data || [],
+          modelsRes.data || [],
+          platformsRes.data || []
+        );
+        setSnapshot({
+          tasks: adapted.tasks,
+          agents: adapted.agents,
+          failures: [],
+          mergeCandidates: [],
+          metrics: adapted.metrics,
+          sliceCatalog: adapted.slices,
+          roi: adapted.roi,
+          updatedAt: adapted.updated_at,
+        });
       }
+
+      if (!eventsRes.error && eventsRes.data) {
+        const mapped: MissionEvent[] = eventsRes.data.map((row) => ({
+          id: row.id,
+          taskId: row.task_id || "unknown",
+          type: row.event_type || "unknown",
+          timestamp: row.created_at || new Date().toISOString(),
+          reasonCode: row.reason || undefined,
+          details: {
+            ...((row.details as Record<string, unknown>) || {}),
+            runnerId: row.runner_id,
+            fromRunnerId: row.from_runner_id,
+            toRunnerId: row.to_runner_id,
+            modelId: row.model_id,
+          },
+        }));
+        setEvents(mapped);
+      }
+
+      setLoading((prev) => ({ ...prev, snapshot: false, events: false }));
+    } else {
+      setLoading((prev) => ({ ...prev, snapshot: true, events: true }));
+      try {
+        const [snapshotRes, eventsRes] = await Promise.all([
+          fetch(resolveDashboardPath("data/state/dashboard.mock.json"), { cache: "no-store" }),
+          fetch(resolveDashboardPath("data/state/events.log.jsonl"), { cache: "no-store" }),
+        ]);
+        
+        if (snapshotRes.ok) {
+          const parsed = await snapshotRes.json();
+          setSnapshot({
+            tasks: parsed.tasks ?? [],
+            agents: parsed.agents ?? [],
+            failures: parsed.failures ?? [],
+            mergeCandidates: parsed.merge_candidates ?? [],
+            metrics: parsed.metrics ?? {},
+            sliceCatalog: Array.isArray(parsed.slices) ? parsed.slices : [],
+            updatedAt: parsed.updated_at ?? new Date().toISOString(),
+          });
+        }
+        
+        if (eventsRes.ok) {
+          const raw = await eventsRes.text();
+          setEvents(parseEventsLog(raw));
+        }
+      } catch (error) {
+        console.warn("[mission-data] fallback fetch failed", error);
+      }
+      setLoading((prev) => ({ ...prev, snapshot: false, events: false }));
     }
   }, []);
 
   useEffect(() => {
-    fetchSnapshot();
-    const interval = setInterval(fetchSnapshot, SNAPSHOT_POLL_MS);
-    return () => clearInterval(interval);
-  }, [fetchSnapshot]);
+    fetchInitialData();
 
-  useEffect(() => {
-    fetchRunMetrics();
-    const interval = setInterval(fetchRunMetrics, METRICS_POLL_MS);
-    return () => clearInterval(interval);
-  }, [fetchRunMetrics]);
+    if (!isSupabaseConfigured() || !supabase) return;
 
-  useEffect(() => {
-    fetchEvents();
-    const interval = setInterval(fetchEvents, EVENTS_POLL_MS);
-    return () => clearInterval(interval);
-  }, [fetchEvents]);
+    const sb = supabase;
+
+    const handleSnapshotUpdate = async () => {
+      const [tasksRes, runsRes, modelsRes, platformsRes] = await Promise.all([
+        sb.from("tasks").select("*").order("updated_at", { ascending: false }).limit(100),
+        sb.from("task_runs").select("*").order("started_at", { ascending: false }).limit(500),
+        sb.from("models").select("*").in("status", ["active", "paused"]),
+        sb.from("platforms").select("*").in("status", ["active", "paused"]),
+      ]);
+
+      if (!mountedRef.current) return;
+
+      if (!tasksRes.error && !runsRes.error) {
+        const adapted = adaptVibePilotToDashboard(
+          tasksRes.data || [],
+          runsRes.data || [],
+          modelsRes.data || [],
+          platformsRes.data || []
+        );
+        setSnapshot(prev => ({
+          ...prev,
+          tasks: adapted.tasks,
+          agents: adapted.agents,
+          metrics: adapted.metrics,
+          sliceCatalog: adapted.slices,
+          roi: adapted.roi,
+          updatedAt: adapted.updated_at,
+        }));
+      }
+    };
+
+    const handleEventsUpdate = async () => {
+      const { data, error } = await sb
+        .from("orchestrator_events")
+        .select("id, event_type, task_id, runner_id, from_runner_id, to_runner_id, model_id, reason, details, created_at")
+        .order("created_at", { ascending: false })
+        .limit(500);
+
+      if (!mountedRef.current || error || !data) return;
+
+      const mapped: MissionEvent[] = data.map((row) => ({
+        id: row.id,
+        taskId: row.task_id || "unknown",
+        type: row.event_type || "unknown",
+        timestamp: row.created_at || new Date().toISOString(),
+        reasonCode: row.reason || undefined,
+        details: {
+          ...((row.details as Record<string, unknown>) || {}),
+          runnerId: row.runner_id,
+          fromRunnerId: row.from_runner_id,
+          toRunnerId: row.to_runner_id,
+          modelId: row.model_id,
+        },
+      }));
+      setEvents(mapped);
+    };
+
+    const tasksChannel = sb
+      .channel("dashboard-tasks")
+      .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, handleSnapshotUpdate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "task_runs" }, handleSnapshotUpdate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "models" }, handleSnapshotUpdate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "platforms" }, handleSnapshotUpdate)
+      .subscribe();
+
+    const eventsChannel = sb
+      .channel("dashboard-events")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orchestrator_events" }, handleEventsUpdate)
+      .subscribe();
+
+    channelsRef.current = [tasksChannel, eventsChannel];
+
+    return () => {
+      tasksChannel.unsubscribe();
+      eventsChannel.unsubscribe();
+    };
+  }, [fetchInitialData]);
 
   const mappedAgents = useMemo(() => snapshot.agents.map(mapAgent), [snapshot.agents]);
   const slices = useMemo(() => deriveSlices(snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog), [snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog]);
@@ -287,10 +283,8 @@ export function useMissionData(): MissionData {
   }, [snapshot.metrics, runMetrics.runs]);
 
   const refresh = useCallback(() => {
-    fetchSnapshot();
-    fetchRunMetrics();
-    fetchEvents();
-  }, [fetchSnapshot, fetchRunMetrics, fetchEvents]);
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   return {
     snapshot,
@@ -306,7 +300,3 @@ export function useMissionData(): MissionData {
     refresh,
   };
 }
-
-
-
-
