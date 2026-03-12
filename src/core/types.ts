@@ -20,6 +20,7 @@ export type TaskStatus =
   | "supervisor_approval"
   | "ready_to_merge"
   | "complete"
+  | "merged"
   | "blocked";
 
 export type TaskLocation =

@@ -130,7 +130,7 @@ function mapTaskStatus(status: string): TaskSnapshot["status"] {
     review: "supervisor_review",
     testing: "testing",
     approval: "supervisor_approval",
-    merged: "complete",
+    merged: "merged",
     complete: "complete",
     failed: "pending",
     escalated: "pending",

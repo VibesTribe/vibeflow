@@ -174,10 +174,11 @@ const TASK_STATUS_LABELS: Partial<Record<TaskSnapshot["status"], string>> = {
   in_progress: "In Progress",
   received: "Received",
   testing: "Testing",
-  supervisor_review: "Needs Review",
+  supervisor_review: "Reviewing",
   supervisor_approval: "Supervisor Approval",
   ready_to_merge: "Ready to Merge",
-  complete: "Completed",
+  complete: "Complete",
+  merged: "Merged",
   blocked: "Blocked",
 };
 
