@@ -8,9 +8,9 @@ const ACTIVE_STATUSES = new Set([
   "assigned",
   "in_progress",
   "received",
-  "supervisor_review",
+  "review",
   "testing",
-  "supervisor_approval",
+  "human_review",
 ]);
 
 const CANVAS_SIZE = 440;
@@ -173,10 +173,9 @@ const TASK_STATUS_LABELS: Partial<Record<TaskSnapshot["status"], string>> = {
   assigned: "Assigned",
   in_progress: "In Progress",
   received: "Received",
+  review: "Review",
   testing: "Testing",
-  supervisor_review: "Reviewing",
-  supervisor_approval: "Supervisor Approval",
-  ready_to_merge: "Ready to Merge",
+  human_review: "Human Review",
   complete: "Complete",
   merged: "Merged",
   merge_pending: "Merge Pending",

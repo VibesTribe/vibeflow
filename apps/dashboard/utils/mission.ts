@@ -274,7 +274,7 @@ function inferTier(name: string): AgentTier {
 }
 
 function isCompleted(status: TaskStatus): boolean {
-  return ["ready_to_merge", "complete", "supervisor_approval", "merged", "merge_pending"].includes(status);
+  return ["complete", "merged", "merge_pending"].includes(status);
 }
 
 export interface StatusSummary {

@@ -16,11 +16,12 @@ const STATUS_LABELS: Record<string, string> = {
   assigned: 'Assigned',
   in_progress: 'In Progress',
   received: 'Received',
-  supervisor_review: 'Supervisor Review',
+  review: 'Review',
   testing: 'Testing',
-  supervisor_approval: 'Awaiting Approval',
-  ready_to_merge: 'Ready to Merge',
+  human_review: 'Human Review',
   complete: 'Complete',
+  merged: 'Merged',
+  merge_pending: 'Merge Pending',
   blocked: 'Blocked',
 };
 

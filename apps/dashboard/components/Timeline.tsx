@@ -12,11 +12,11 @@ const order = [
   "assigned",
   "in_progress",
   "received",
-  "supervisor_review",
+  "review",
   "testing",
-  "supervisor_approval",
-  "ready_to_merge",
+  "human_review",
   "complete",
+  "merged",
 ];
 
 const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading, qualityByTask }) => {

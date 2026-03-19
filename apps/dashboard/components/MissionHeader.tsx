@@ -34,10 +34,10 @@ interface HeaderPillConfig {
   filter: (task: TaskSnapshot) => boolean;
 }
 
-const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval", "merged", "merge_pending"]);
-const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "testing"]);
+const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
+const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "assigned", "blocked"]);
-const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
+const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["human_review"]);
 
 type HeaderStatusMeta = {
   label: string;
@@ -51,10 +51,9 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   pending: { label: "Queued", tone: "active", icon: "\u21BB", accent: "#60a5fa" },
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
+  review: { label: "Review", tone: "active", icon: "\u2699", accent: "#a78bfa" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  supervisor_review: { label: "Needs Review", tone: "flagged", icon: "\u{1F6A9}", accent: "#ff3b6f" },
-  ready_to_merge: { label: "Ready to Merge", tone: "complete", icon: "\u2713", accent: "#34d399" },
-  supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  human_review: { label: "Needs Review", tone: "flagged", icon: "\u{1F6A9}", accent: "#ff3b6f" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
   merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
   merge_pending: { label: "Merge Pending", tone: "complete", icon: "\u23F3", accent: "#f0ad4b" },
