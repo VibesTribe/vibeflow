@@ -179,6 +179,7 @@ const TASK_STATUS_LABELS: Partial<Record<TaskSnapshot["status"], string>> = {
   ready_to_merge: "Ready to Merge",
   complete: "Complete",
   merged: "Merged",
+  merge_pending: "Merge Pending",
   blocked: "Blocked",
 };
 

@@ -61,7 +61,7 @@ const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "receive
 
 type SliceFilterKey = "complete" | "active" | "pending" | "review";
 
-const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval", "merged"]);
+const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval", "merged", "merge_pending"]);
 const REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
 const PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
 
@@ -1751,7 +1751,7 @@ function formatLogCategory(category: MissionLogCategory) {
 }
 
 function isCompleted(status: TaskSnapshot["status"]) {
-  return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval" || status === "merged";
+  return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval" || status === "merged" || status === "merge_pending";
 }
 
 function formatTokenCount(value: number): string {

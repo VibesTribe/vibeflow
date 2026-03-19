@@ -34,7 +34,7 @@ interface HeaderPillConfig {
   filter: (task: TaskSnapshot) => boolean;
 }
 
-const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval", "merged"]);
+const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "ready_to_merge", "supervisor_approval", "merged", "merge_pending"]);
 const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "testing"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "assigned", "blocked"]);
 const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["supervisor_review"]);
@@ -57,6 +57,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   supervisor_approval: { label: "Approved", tone: "complete", icon: "\u2713", accent: "#34d399" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
   merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  merge_pending: { label: "Merge Pending", tone: "complete", icon: "\u23F3", accent: "#f0ad4b" },
   blocked: { label: "Blocked", tone: "locked", icon: "\u23F3", accent: "#facc15" },
 };
 

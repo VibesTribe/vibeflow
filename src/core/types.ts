@@ -21,6 +21,7 @@ export type TaskStatus =
   | "ready_to_merge"
   | "complete"
   | "merged"
+  | "merge_pending"
   | "blocked";
 
 export type TaskLocation =
