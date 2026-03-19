@@ -1752,7 +1752,7 @@ function formatLogCategory(category: MissionLogCategory) {
 }
 
 function isCompleted(status: TaskSnapshot["status"]) {
-  return status === "ready_to_merge" || status === "complete" || status === "supervisor_approval" || status === "merged" || status === "merge_pending";
+  return status === "complete" || status === "merged" || status === "merge_pending";
 }
 
 function formatTokenCount(value: number): string {
