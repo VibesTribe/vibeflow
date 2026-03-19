@@ -65,7 +65,7 @@ export function deriveTaskQuality(events: MissionEvent[]): MissionEventQuality {
   return "pending";
 }
 
-const POSITIVE_STATUSES = new Set(["supervisor_approval", "ready_to_merge", "complete"]);
+const POSITIVE_STATUSES = new Set(["supervisor_approval", "ready_to_merge", "complete", "merged"]);
 const NEGATIVE_STATUSES = new Set(["blocked"]);
 const POSITIVE_EVENT_TYPES = new Set(["ready_to_merge", "complete", "testing_passed", "supervisor_approved"]);
 
