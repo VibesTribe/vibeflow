@@ -157,8 +157,11 @@ export function deriveSlices(
       case "blocked":
         slice.blocked += 1;
         break;
-      default:
+      case "active":
         slice.active += 1;
+        break;
+      case "pending":
+      default:
         break;
     }
     slice.total += 1;
@@ -168,8 +171,8 @@ export function deriveSlices(
     }
 
     const mappedAgent = task.owner ? agentMap.get(task.owner) ?? null : null;
-    // Only add agent to slice.agents if task is active (not completed/blocked)
-    const isActiveTask = !isCompleted(task.status) && bucket !== "blocked";
+    // Only add agent to slice.agents if task is truly active (in_progress, review, testing, etc.)
+    const isActiveTask = bucket === "active";
     if (mappedAgent && isActiveTask && !slice.agents.some((item) => item.id === mappedAgent.id)) {
       slice.agents.push(mappedAgent);
     }
@@ -244,14 +247,29 @@ function inferBlueprint(task: TaskSnapshot): SliceBlueprint {
   return GENERAL_BLUEPRINT;
 }
 
-function classifyTask(status: TaskStatus, event?: MissionEvent): "completed" | "blocked" | "active" {
+const TRULY_ACTIVE_STATUSES = new Set<TaskStatus>([
+  "in_progress",
+  "received", 
+  "review",
+  "testing",
+  "human_review",
+]);
+
+function isTrulyActive(status: TaskStatus): boolean {
+  return TRULY_ACTIVE_STATUSES.has(status);
+}
+
+function classifyTask(status: TaskStatus, event?: MissionEvent): "completed" | "blocked" | "active" | "pending" {
   if (status === "blocked" || event?.reasonCode?.startsWith("E/")) {
     return "blocked";
   }
   if (isCompleted(status)) {
     return "completed";
   }
-  return "active";
+  if (isTrulyActive(status)) {
+    return "active";
+  }
+  return "pending";
 }
 
 function normalizeTier(input: string): AgentTier {
@@ -293,9 +311,10 @@ export function buildStatusSummary(tasks: TaskSnapshot[]): StatusSummary {
         acc.completed += 1;
       } else if (bucket === "blocked") {
         acc.blocked += 1;
-      } else {
+      } else if (bucket === "active") {
         acc.active += 1;
       }
+      // "pending" bucket doesn't increment any counter
       return acc;
     },
     { total: 0, completed: 0, active: 0, blocked: 0 }
