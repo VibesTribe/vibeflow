@@ -90,27 +90,9 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
       };
       tryAudio(); // fire and forget
     }
-    // Poll for Hermes action result in background
-    if (data.action_id) {
-      const actionId = data.action_id;
-      const pollAction = async () => {
-        for (let i = 0; i < 20; i++) {
-          await new Promise(r => setTimeout(r, 5000));
-          try {
-            const check = await fetch(`${PIPELINE_URL}/action/${actionId}`);
-            const result = await check.json();
-            if (result.status === "completed" && result.hermes_reply) {
-              // Add Hermes response as a new chat message
-              setMessages(prev => [
-                ...prev,
-                { id: `hermes-${Date.now()}`, type: "vibes", content: `Hermes: ${result.hermes_reply}`, timestamp: new Date() },
-              ]);
-              return;
-            }
-          } catch {}
-        }
-      };
-      pollAction(); // fire and forget
+    // If action was run directly, include its result
+    if (data.action_result) {
+      return data.reply + "\n\n" + data.action_result;
     }
     return data.reply || "Hmm, couldn't get a response.";
   };
@@ -144,7 +126,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
     }
     return {
       transcript: data.transcript || "(couldn't understand)",
-      reply: data.reply || "Hmm, couldn't get a response.",
+      reply: data.action_result ? data.reply + "\n\n" + data.action_result : (data.reply || "Hmm, couldn't get a response."),
     };
   };
 
