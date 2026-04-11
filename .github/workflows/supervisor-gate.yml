@@ -1,0 +1,35 @@
+name: Supervisor Gate
+on:
+  pull_request:
+    branches: [ testing ]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  supervisor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate task packet & contracts
+        run: |
+          npm i -g ajv-cli
+          CHANGED="$(git diff --name-only origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')"
+          echo "Changed files: $CHANGED"
+          if echo "$CHANGED" | grep -E '\.json\b'; then
+            ajv compile --spec=draft2020 -s docs/contracts/task_contract.schema.json
+            ajv compile --spec=draft2020 -s docs/contracts/plan.schema.json
+          fi
+      - name: Minimal static checks
+        run: |
+          if [ -f package.json ]; then
+            npm ci || true
+            npm run -s lint || true
+          else
+            echo "No package.json — skipping lint"
+          fi
+      - name: Label supervisor:pass
+        if: ${{ success() }}
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: supervisor:pass

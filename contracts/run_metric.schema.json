@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run Metrics",
+  "type": "object",
+  "required": [
+    "roi_score",
+    "success_rate",
+    "cost_usd",
+    "latency_seconds"
+  ],
+  "properties": {
+    "roi_score": {
+      "type": "number",
+      "minimum": 0
+    },
+    "success_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cost_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "latency_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sample_size": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

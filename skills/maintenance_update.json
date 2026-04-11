@@ -1,0 +1,17 @@
+{
+  "id": "maintenance_update",
+  "name": "Maintenance Update",
+  "category": "maintenance",
+  "description": "Applies scheduled maintenance operations (keys, sessions).",
+  "runner": "./maintenance_update.runner.mjs",
+  "inputs": [
+    "instructions"
+  ],
+  "outputs": [
+    "events"
+  ],
+  "ok_probe": {
+    "command": "node skills/maintenance_update.runner.mjs --probe",
+    "timeout_seconds": 25
+  }
+}

@@ -1,0 +1,49 @@
+name: review-plane-restore-preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: "Task identifier to restore"
+        required: true
+      source_ref:
+        description: "Baseline ref"
+        required: false
+        default: origin/main
+      branch:
+        description: "Target branch"
+        required: false
+        default: task/mission-control-layout
+      preview_branch:
+        description: "Rollback branch"
+        required: false
+      preview_url:
+        description: "Optional preview URL"
+        required: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+
+      - name: Record restore metadata
+        run: |
+          node scripts/restore_preview.mjs --task=${{ inputs.task_id }} --from=${{ inputs.source_ref }} --branch=${{ inputs.preview_branch }} --preview=${{ inputs.preview_url }}
+
+      - name: Commit changes
+        run: |
+          if git status --short | grep -q "data/state/restores"; then
+            git config user.name "vibeflow-bot"
+            git config user.email "bot@vibeflow.ai"
+            git add data/state/restores
+            git commit -m "review: restore metadata for ${{ inputs.task_id }}"
+            git push origin HEAD:${{ inputs.branch }}
+          else
+            echo "No restore metadata changes detected."
+          fi

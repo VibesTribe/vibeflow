@@ -1,0 +1,82 @@
+{
+  "phase_id": "R0",
+  "name": "Idea → PRD → Plan Generator",
+  "goal": "Enable Vibeflow to capture a user idea, generate a market research report, produce a full PRD, and create a validated vertical-slice plan automatically. Outputs feed the orchestrator and dashboard.",
+  "tasks": [
+    {
+      "task_id": "R0.1",
+      "title": "Idea Capture UI + Schema",
+      "context": "Provide a simple dashboard form to submit new project ideas and store them as idea_packet.json under data/ideas/.",
+      "files": [
+        "apps/dashboard/components/IdeaForm.tsx",
+        "contracts/idea_packet.schema.json"
+      ],
+      "acceptance_criteria": [
+        "Dashboard shows a visible 'Submit Idea' button and modal form.",
+        "Form fields: project title, summary, target audience, desired features.",
+        "On submit, creates data/ideas/<slug>/idea_packet.json (validated by schema).",
+        "No external dependencies; passes ci-contracts."
+      ]
+    },
+    {
+      "task_id": "R0.2",
+      "title": "Research Agent Pipeline",
+      "context": "ResearchAgent converts idea_packet.json into a structured market_research_report.json using active system LLM.",
+      "files": [
+        "src/agents/researchAgent.ts",
+        "skills/research_probe.runner.mjs",
+        "contracts/market_research_report.schema.json"
+      ],
+      "acceptance_criteria": [
+        "Reads idea_packet.json, calls llmProvider.callLLM().",
+        "Outputs validated market_research_report.json following schema.",
+        "Emits event 'research_complete' in events.log.jsonl.",
+        "If quota or key missing, runs in dry mode; no crash."
+      ]
+    },
+    {
+      "task_id": "R0.3",
+      "title": "PRD Agent & Supervisor Validation",
+      "context": "Generate comprehensive PRD from research report and idea data; Supervisor ensures completeness (≥0.95 confidence).",
+      "files": [
+        "src/agents/prdAgent.ts",
+        "contracts/prd_full.schema.json"
+      ],
+      "acceptance_criteria": [
+        "prdAgent reads market_research_report.json + idea_packet.json.",
+        "Produces prd_full.json validated by schema.",
+        "Supervisor emits 'prd_validated' event; rejects if <0.95 confidence."
+      ]
+    },
+    {
+      "task_id": "R0.4",
+      "title": "Planner Agent → Vertical Slice Plan",
+      "context": "PlannerAgent turns the PRD into a vertical-slice DAG of atomic tasks ready for orchestrator.",
+      "files": [
+        "src/agents/plannerAgent.ts",
+        "contracts/plan.slice.schema.json"
+      ],
+      "acceptance_criteria": [
+        "PlannerAgent reads prd_full.json and outputs plan.slice.json with ≥0.95 confidence.",
+        "Each slice has dependencies, confidence scores, and deliverables list.",
+        "Validated by schema and CI."
+      ]
+    },
+    {
+      "task_id": "R0.5",
+      "title": "Dashboard Integration – Idea → Plan Flow",
+      "context": "Display idea submissions, research summaries, PRD, and plan results inside dashboard; trigger each agent automatically.",
+      "files": [
+        "apps/dashboard/pages/IdeaToPlanView.tsx",
+        "apps/dashboard/main.tsx"
+      ],
+      "acceptance_criteria": [
+        "Dashboard page shows stages: Idea → Research → PRD → Plan with progress badges.",
+        "Submitting idea triggers R0.2 automatically via mission loop endpoint.",
+        "Displays generated reports and PRD/plan summaries.",
+        "No manual CLI involvement; updates live via Supabase telemetry."
+      ]
+    }
+  ],
+  "echo_check": "Implements fully automated Idea → Research → PRD → Plan generation loop. A user submits an idea in Mission Control; ResearchAgent, PRDAgent, and PlannerAgent generate validated artifacts and emit events visible in the dashboard."
+}

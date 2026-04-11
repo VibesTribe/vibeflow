@@ -1,0 +1,36 @@
+name: Auto Generate Manifest and Keep/Delete Lists
+
+on:
+  push:
+    branches: [codex]
+    paths:
+      - 'docs/system_plan_v5.md'
+  workflow_dispatch: {}
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (if any)
+        run: npm ci || true
+
+      - name: Generate Manifest
+        run: node scripts/generate_manifest.mjs
+
+      - name: Compute Keep/Delete Lists
+        run: node scripts/compute_keep_delete.mjs --from-branch=codex
+
+      - name: Commit and push updated files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/registry/system_manifest.json docs/keep_delete_v5.md
+          git commit -m "auto: update manifest and keep/delete list" || echo "No changes"
+          git push

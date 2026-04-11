@@ -1,0 +1,22 @@
+# .github/workflows/weekly-handoff.yml
+name: Weekly Handoff Updater
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  handoff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build weekly & latest handoff
+        run: node scripts/weeklyHandoff.mjs
+      - name: Commit updates
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add docs/updates/
+          git commit -m "Update weekly handoff & latest digest" || echo "No changes"
+          git push
+

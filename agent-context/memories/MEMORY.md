@@ -1,0 +1,11 @@
+VibePilot: Go=plumbing, config-driven, no hardcoding/monolith/cascade/crash-loss/shortcut-prompts. Pipeline: PRD→Plan→QC→Orchestrator→Security→Test→Merge. Daily landscape research. Rate limits across ALL time windows, 80% threshold, cooldown, auto-learn routing. Dashboard SACRED. Sources: GitHub+Supabase. Browser Use works: Chrome CDP on port 9222 via bind mount (/home/vibes/.config/chrome-debug→google-chrome). DeepSeek/ChatGPT/Qwen/HuggingChat all accessible with real cookies. Venv ~/browser-use-env. Sudo:L0g0n. Gmail:L0g0nvibesagent(needs app pw). Supabase:${SUPABASE_PROJECT_ID}, login vibesagentai@gmail.com/L0g0nvibepilot. Keys in ~/.governor_env. GCE webhook dead until cloudflared. Claude Opus burned $14/$16 OpenRouter credit—NEVER default expensive.
+§
+VibesTribe: VibePilot repo (Go, broken) + vibeflow repo (dashboard, Vercel auto-deploy). Dashboard: https://vibeflow-dashboard.vercel.app/ — SACRED, never modify. Supabase: ${SUPABASE_PROJECT_ID}, login vibesagentai@gmail.com/L0g0nvibepilot. Keys in ~/.governor_env: SEE ~/.governor_env (bypass RLS), SEE ~/.governor_env. Legacy JWT dead. RLS on. Tables: tasks(2), models(3), platforms(3). GitHub secrets hold vault keys.
+§
+CHROME CDP: bind mount ~/.config/chrome-debug, --remote-debugging-port=9222. Playwright connects via CDP. Don't close browser.
+§
+PIPELINE: ~/pipeline/server.py:8090. Async JSON+background TTS. zai GLM-5.1 primary(~6-16s w/context), local qwen2.5:0.5b fallback(~2-3s, gemma4-fast dead at 120s). Deepgram->whisper.cpp fallback. Kokoro async. Keys in ~/.governor_env incl GLM_API_KEY. CPU=performance. Tunnel vibes.vibestribe.rocks->8090.
+§
+LESSON: git push silent fails — ALWAYS rebase. agent_messages: message_type="chat" only (CHECK). Bridge daemon 30s NOT cron. Hermes CLI needs PTY (script -qc). auto_approve:true for bridge. Ollama: qwen2.5:0.5b only (gemma4 dead). OpenVINO dead (no AVX2).
+§
+DEEPGRAM: key ~/.governor_env, free 200min/mo. JMUNCH(jgravelle): jCodeMunch, jDocMunch, jOutputMunch(prompt rules, 65% token cut, free), jDataMunch. Free non-commercial. CONTEXT CONTINUITY: maintain current-state.md any model can read if Hermes swapped.

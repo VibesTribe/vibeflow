@@ -1,0 +1,94 @@
+{
+  "skills": [
+    {
+      "id": "dag_executor",
+      "name": "DAG Executor",
+      "category": "core",
+      "runner": "./dag_executor.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/dag_executor.runner.mjs --probe",
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "id": "visual_execution",
+      "name": "Visual Execution",
+      "category": "execution",
+      "runner": "./visual_execution.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/visual_execution.runner.mjs --probe",
+        "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "text_completion",
+      "name": "Text Completion",
+      "category": "execution",
+      "runner": "./text_completion.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/text_completion.runner.mjs --probe",
+        "timeout_seconds": 20
+      }
+    },
+    {
+      "id": "cli_exec",
+      "name": "CLI Executor",
+      "category": "execution",
+      "runner": "./cli_exec.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/cli_exec.runner.mjs --probe",
+        "timeout_seconds": 20
+      }
+    },
+    {
+      "id": "research_probe",
+      "name": "Research Probe",
+      "category": "execution",
+      "runner": "./research_probe.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/research_probe.runner.mjs --probe",
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "id": "maintenance_update",
+      "name": "Maintenance Update",
+      "category": "maintenance",
+      "runner": "./maintenance_update.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/maintenance_update.runner.mjs --probe",
+        "timeout_seconds": 25
+      }
+    },
+    {
+      "id": "validate_output",
+      "name": "Validate Output",
+      "category": "execution",
+      "runner": "./validate_output.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/validate_output.runner.mjs --probe",
+        "timeout_seconds": 15
+      }
+    },
+    {
+      "id": "run_visual_tests",
+      "name": "Run Visual Tests",
+      "category": "execution",
+      "runner": "./run_visual_tests.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/run_visual_tests.runner.mjs --probe",
+        "timeout_seconds": 90
+      }
+    },
+    {
+      "id": "generate_prd",
+      "name": "Generate PRD",
+      "category": "execution",
+      "runner": "./generate_prd.runner.mjs",
+      "ok_probe": {
+        "command": "node skills/generate_prd.runner.mjs --probe",
+        "timeout_seconds": 30
+      }
+    }
+  ]
+}

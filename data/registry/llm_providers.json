@@ -1,0 +1,81 @@
+﻿{
+  "providers": [
+    {
+      "id": "openrouter",
+      "label": "OpenRouter GPT-4.1 Mini",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "gpt-4.1-mini",
+      "priority": 1,
+      "enabled": true,
+      "modes": [
+        "text",
+        "code"
+      ],
+      "api_key_env": "OPENROUTER_API_KEY",
+      "max_output_tokens": 4096
+    },
+    {
+      "id": "gemini",
+      "label": "Google Gemini 1.5 Pro",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/models",
+      "model": "gemini-1.5-pro-latest",
+      "priority": 2,
+      "enabled": true,
+      "modes": [
+        "text",
+        "code",
+        "vision"
+      ],
+      "api_key_env": "GEMINI_API_KEY",
+      "max_output_tokens": 8192
+    },
+    {
+      "id": "deepseek",
+      "label": "DeepSeek Reasoner",
+      "base_url": "https://api.deepseek.com/v1",
+      "model": "deepseek-reasoner",
+      "priority": 3,
+      "enabled": true,
+      "modes": [
+        "text",
+        "code"
+      ],
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "max_output_tokens": 4096
+    },
+    {
+      "id": "glm46",
+      "label": "GLM 4.6 Ultra",
+      "base_url": "https://open.bigmodel.cn/api/paas/v4",
+      "model": "glm-4.6-ultra",
+      "priority": 4,
+      "enabled": true,
+      "modes": [
+        "text",
+        "code"
+      ],
+      "api_key_env": "GLM_API_KEY",
+      "max_output_tokens": 4096
+    },
+    {
+      "id": "openinference",
+      "label": "OpenInference Mix",
+      "base_url": "https://api.openinference.org/v1",
+      "model": "mixtral-8x7b-inference",
+      "priority": 5,
+      "enabled": true,
+      "modes": [
+        "text",
+        "code"
+      ],
+      "api_key_env": "OPENINFERENCE_API_KEY",
+      "max_output_tokens": 4096
+    }
+  ],
+  "dry_run": {
+    "provider": "dry-run-fallback",
+    "model": "stub-v1",
+    "message": "All primary LLM providers exhausted or unavailable. Returning fallback content."
+  },
+  "generated_at": "2025-10-29T20:25:00.000Z"
+}

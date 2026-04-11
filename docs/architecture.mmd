@@ -1,0 +1,11 @@
+﻿```mermaid
+graph TD
+  Research[Research Agent] --> PRD[PRD Agent]
+  PRD --> Planner[Planner]
+  Planner -->|Tasks| Orchestrator
+  Orchestrator --> Router
+  Router -->|Selects| Skills
+  Skills -->|Emit events| State[(Task State)]
+  State --> Dashboard
+  Voice --> Orchestrator
+```

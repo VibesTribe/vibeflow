@@ -1,0 +1,17 @@
+{
+  "id": "validate_output",
+  "name": "Validate Output",
+  "category": "execution",
+  "description": "Validates agent output against schemas and conventions.",
+  "runner": "./validate_output.runner.mjs",
+  "inputs": [
+    "artifact"
+  ],
+  "outputs": [
+    "report"
+  ],
+  "ok_probe": {
+    "command": "node skills/validate_output.runner.mjs --probe",
+    "timeout_seconds": 15
+  }
+}

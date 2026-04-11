@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vibeflow ROI Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        background: #050b16;
+        color: #e2e8f0;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 40px 24px;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin-bottom: 8px;
+        color: #5eead4;
+      }
+      p {
+        color: #94a3b8;
+      }
+      section {
+        margin-top: 32px;
+        padding: 24px;
+        border-radius: 16px;
+        background: rgba(9, 16, 32, 0.9);
+        box-shadow: 0 18px 32px rgba(5, 11, 24, 0.45);
+      }
+      ul {
+        padding-left: 18px;
+      }
+      a {
+        color: #38bdf8;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>ROI Calculator Workspace</h1>
+      <p>
+        Use this worksheet to reconcile mission telemetry with financial targets. Replace the placeholders with live data feeds
+        once the telemetry exporters are wired in.
+      </p>
+      <section>
+        <h2>Inputs</h2>
+        <ul>
+          <li>Total tokens consumed per slice and agent</li>
+          <li>Unit economics (USD per 1K tokens / per minute)</li>
+          <li>Product metrics (activation, retention, conversion)</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Outputs</h2>
+        <ul>
+          <li>Blended cost per mission and per slice</li>
+          <li>Estimated payback in days</li>
+          <li>Net contribution margin per release</li>
+        </ul>
+      </section>
+      <p>
+        Drop your existing spreadsheets or embed a Looker/Airtable dashboard here. The deploy pipeline copies this file directly
+        to GitHub Pages so you can use it as a launch point for a richer calculator.
+      </p>
+    </main>
+  </body>
+</html>

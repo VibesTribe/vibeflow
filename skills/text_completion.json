@@ -1,0 +1,17 @@
+{
+  "id": "text_completion",
+  "name": "Text Completion",
+  "category": "execution",
+  "description": "Calls OpenRouter for structured completions.",
+  "runner": "./text_completion.runner.mjs",
+  "inputs": [
+    "prompt"
+  ],
+  "outputs": [
+    "completion"
+  ],
+  "ok_probe": {
+    "command": "node skills/text_completion.runner.mjs --probe",
+    "timeout_seconds": 20
+  }
+}

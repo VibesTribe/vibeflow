@@ -1,0 +1,11 @@
+{
+  "runs": [
+    {
+      "id": "run/placeholder",
+      "started_at": "1970-01-01T00:00:00.000Z",
+      "status": "pending",
+      "notes": "Bootstrap entry"
+    }
+  ],
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}

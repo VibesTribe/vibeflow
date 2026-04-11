@@ -1,0 +1,18 @@
+{
+  "id": "run_visual_tests",
+  "name": "Run Visual Tests",
+  "category": "execution",
+  "description": "Executes Playwright regression suites for visual changes.",
+  "runner": "./run_visual_tests.runner.mjs",
+  "inputs": [
+    "scenario"
+  ],
+  "outputs": [
+    "screenshots",
+    "report"
+  ],
+  "ok_probe": {
+    "command": "node skills/run_visual_tests.runner.mjs --probe",
+    "timeout_seconds": 90
+  }
+}

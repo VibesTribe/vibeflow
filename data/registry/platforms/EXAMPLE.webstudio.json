@@ -1,0 +1,10 @@
+{
+  "id": "example-webstudio",
+  "provider": "browser_use",
+  "base_url": "https://studio.example.com",
+  "ok_probe": {
+    "command": "npm run okprobe:visual",
+    "timeout_seconds": 90
+  },
+  "notes": "Sample configuration used for CI validation"
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Role Prompt",
+  "type": "object",
+  "required": [
+    "role",
+    "tone",
+    "objectives",
+    "restrictions",
+    "success_criteria"
+  ],
+  "properties": {
+    "role": {
+      "type": "string"
+    },
+    "tone": {
+      "type": "string"
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

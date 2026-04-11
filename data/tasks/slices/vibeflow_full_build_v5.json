@@ -1,0 +1,173 @@
+{
+  "context_snapshot_id": "v5_canonical_2025_10_29",
+  "project": "Vibeflow Orchestrator Build",
+  "goal": "Construct a fully functional Vibeflow system following System Plan v5 — from dashboard visibility to orchestration, multi-LLM routing, task agents, and watcher safety. Each task is atomic and self-verifiable.",
+  "phases": [
+    {
+      "phase_id": "P0",
+      "name": "Dashboard & Telemetry Bootstrap",
+      "description": "Provide visual control and data flow before orchestration runs.",
+      "tasks": [
+        {
+          "task_id": "S5.0",
+          "title": "Initialize telemetry data files",
+          "context": "Empty state/metrics files allow dashboard and CI to run with no errors.",
+          "files": [
+            "data/state/task.state.json",
+            "data/state/events.log.jsonl",
+            "data/metrics/run_metrics.json"
+          ],
+          "acceptance_criteria": [
+            "All three files exist and contain minimal valid JSON structures.",
+            "CI and dashboard load with no Supabase errors."
+          ]
+        },
+        {
+          "task_id": "S5.1",
+          "title": "Create Mission Control dashboard base",
+          "context": "Implements the React/Tailwind UI shell rendering local telemetry data.",
+          "files": [
+            "apps/dashboard/main.tsx",
+            "apps/dashboard/components/SliceDock.tsx",
+            "apps/dashboard/components/AgentHangar.tsx",
+            "apps/dashboard/components/AgentOverviewModal.tsx",
+            "src/dashboard/ModelAnalyticsView.tsx"
+          ],
+          "acceptance_criteria": [
+            "Dashboard renders with left/right docks, sticky titles, modals (Docs, Logs, Overview).",
+            "No external dependencies; TypeScript only; passes ci-tests."
+          ]
+        }
+      ]
+    },
+    {
+      "phase_id": "PA",
+      "name": "Core Control & Safety",
+      "description": "Establish orchestrator, routing, and validation chain.",
+      "tasks": [
+        {
+          "task_id": "A1.1",
+          "title": "Implement Orchestrator runtime",
+          "context": "Generates task packets, emits events, updates task.state.json.",
+          "files": ["src/core/orchestrator.ts"],
+          "acceptance_criteria": [
+            "Calling Orchestrator with mock task emits 'assigned' event to data/state/events.log.jsonl.",
+            "Typecheck + schema validation pass."
+          ]
+        },
+        {
+          "task_id": "A1.2",
+          "title": "Implement Router scoring & selection",
+          "context": "Chooses provider/model using registry metrics.",
+          "files": [
+            "src/core/router.ts",
+            "data/registry/platforms/index.json",
+            "data/metrics/run_metrics.json"
+          ],
+          "acceptance_criteria": [
+            "Implements weighted scoring (priority+confidence+success-latency-penalty).",
+            "Returns provider/model; passes ci-tests."
+          ]
+        },
+        {
+          "task_id": "A1.3",
+          "title": "Multi-LLM Registry + Fallback Adapter",
+          "context": "Ensures Vibeflow never halts if API key or quota fails.",
+          "files": [
+            "data/registry/llm_providers.json",
+            "src/adapters/llmProvider.ts"
+          ],
+          "acceptance_criteria": [
+            "Registry lists Gemini, DeepSeek, GLM4.6, OpenRouter, OpenInference.",
+            "Adapter reads GitHub Actions secrets via process.env.",
+            "If provider fails or quota exhausted → auto-fallback to next enabled.",
+            "If all fail → dry-run output; no thrown error.",
+            "WatcherAgent handles reason_code E/QUOTA_EXCEEDED."
+          ]
+        },
+        {
+          "task_id": "A1.4",
+          "title": "Watcher loop/timeout guard",
+          "context": "Detects stalled or looping tasks, emits reassignment signals.",
+          "files": ["src/core/watcher.ts"],
+          "acceptance_criteria": [
+            "Implements 3-strike timeout policy.",
+            "Emits 'reassigned' event with reason_code E/TIMEOUT."
+          ]
+        },
+        {
+          "task_id": "A1.5",
+          "title": "Supervisor validation",
+          "context": "Validates outputs vs schemas and updates task.state.json.",
+          "files": [
+            "src/agents/supervisorAgent.ts",
+            "contracts/task_state.schema.json"
+          ],
+          "acceptance_criteria": [
+            "Reads output file, validates schema, writes updated state.",
+            "No other files modified; passes ci-tests."
+          ]
+        }
+      ]
+    },
+    {
+      "phase_id": "PB",
+      "name": "Adapters & Skill Bridge",
+      "description": "Enable task agents to run on real web platforms.",
+      "tasks": [
+        {
+          "task_id": "A2.1",
+          "title": "Activate MCP server with tools",
+          "context": "Expose runSkill/queryEvents/getTaskState/emitNote endpoints.",
+          "files": ["src/mcp/server.ts", "src/mcp/tools/*"],
+          "acceptance_criteria": [
+            "Server starts and registers all 4 tools without error.",
+            "runSkill executes local skill runner and returns JSON."
+          ]
+        },
+        {
+          "task_id": "A2.2",
+          "title": "Visual Execution Runner (Browser-Use)",
+          "context": "Connects Orchestrator to online AI studios via shared Google session.",
+          "files": ["skills/visual_execution.runner.mjs", "src/adapters/browserUseRunner.ts"],
+          "acceptance_criteria": [
+            "Executes a test prompt on configured studio and returns structured output JSON.",
+            "No dashboard or dependency changes."
+          ]
+        }
+      ]
+    },
+    {
+      "phase_id": "PC",
+      "name": "Validation & Watcher Safety",
+      "description": "Self-healing and continuous monitoring layer.",
+      "tasks": [
+        {
+          "task_id": "C1.1",
+          "title": "Tester Agents integration",
+          "context": "Link validate_output and run_visual_tests runners to Supervisor flow.",
+          "files": [
+            "skills/validate_output.runner.mjs",
+            "skills/run_visual_tests.runner.mjs",
+            "src/agents/testerAgent.ts"
+          ],
+          "acceptance_criteria": [
+            "Supervisor invokes testers post-review; dashboard reflects pass/fail state.",
+            "All schemas validated; passes ci-tests."
+          ]
+        },
+        {
+          "task_id": "C1.2",
+          "title": "Repair & Rollback automation",
+          "context": "Convert failure reason codes into repair tasks and safe rollbacks.",
+          "files": ["scripts/repair_from_reason.mjs"],
+          "acceptance_criteria": [
+            "E/SCHEMA_INVALID or E/SELECTOR_CHANGED → creates repair task JSON.",
+            "Auto-rollback verified in CI backup workflow."
+          ]
+        }
+      ]
+    }
+  ],
+  "echo_check": "Phase 0 establishes dashboard visibility; Phase A implements orchestrator, router, and resilient multi-LLM adapter; Phase B connects to real AI platforms; Phase C adds tester, watcher, and repair logic. Each task runs independently and merges safely through CI."
+}

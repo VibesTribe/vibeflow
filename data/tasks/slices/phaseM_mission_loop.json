@@ -1,0 +1,76 @@
+{
+  "phase_id": "PM",
+  "name": "Mission Loop Automation",
+  "goal": "Connect Vibeflow's orchestrator, MCP server, and dashboard into a fully automated event-driven mission loop that dispatches, executes, validates, and displays tasks without manual CLI steps.",
+  "tasks": [
+    {
+      "task_id": "M0.1",
+      "title": "Auto Runner Script",
+      "context": "Continuously watches /data/tasks/queued/ for new task packets and triggers orchestration automatically. Replaces all manual CLI runs.",
+      "files": ["scripts/orchestrator/auto_runner.mjs"],
+      "acceptance_criteria": [
+        "Detects new JSON files under data/tasks/queued/.",
+        "Calls MCP endpoint /run-task or directly invokes Orchestrator dispatch function.",
+        "Moves processed packets to data/tasks/processed/ with timestamp.",
+        "Logs events to data/state/events.log.jsonl.",
+        "Handles errors gracefully; no crash when queue empty or invalid file found."
+      ]
+    },
+    {
+      "task_id": "M0.2",
+      "title": "MCP Run-Task Endpoint",
+      "context": "Extend MCP server to expose POST /run-task, allowing GitHub Actions or Supabase to trigger orchestration with a TaskPacket payload.",
+      "files": ["src/mcp/server.ts"],
+      "acceptance_criteria": [
+        "Implements /run-task route that validates incoming packet (AJV/Zod).",
+        "Internally calls orchestrator.dispatchTask().",
+        "Returns structured JSON {status:'queued', task_id, provider}.",
+        "Requires valid API token or GitHub Action context (no open endpoint)."
+      ]
+    },
+    {
+      "task_id": "M0.3",
+      "title": "Mission Loop Workflow",
+      "context": "Create GitHub Actions workflow that runs auto_runner on schedule or when queued tasks change, ensuring orchestration keeps running autonomously.",
+      "files": [".github/workflows/mission-loop.yml"],
+      "acceptance_criteria": [
+        "Runs every 15 minutes and on push to data/tasks/queued/**.json.",
+        "Sets env vars from repository secrets (VIBEFLOW_LLM, *_API_KEY).",
+        "Executes node scripts/orchestrator/auto_runner.mjs.",
+        "Publishes workflow logs to Supabase telemetry via notify-brevo or console output."
+      ]
+    },
+    {
+      "task_id": "M0.4",
+      "title": "Dashboard Wiring — Run Task & Live Telemetry",
+      "context": "Wire Mission Control dashboard to the orchestration loop: display queued/active/completed tasks and allow dispatch via UI button.",
+      "files": [
+        "apps/dashboard/main.tsx",
+        "apps/dashboard/components/RunTaskButton.tsx",
+        "src/utils/events.ts"
+      ],
+      "acceptance_criteria": [
+        "Dashboard shows live task list using data/state/task.state.json and events.log.jsonl.",
+        "Clicking 'Run Task' posts TaskPacket JSON to Supabase or Pages API route triggering mission-loop.yml.",
+        "Progress updates visually in real time.",
+        "No manual terminal interaction required."
+      ]
+    },
+    {
+      "task_id": "M0.5",
+      "title": "Dashboard Integration — Supervisor & Tester Results",
+      "context": "Connect Supervisor/Testers results back into dashboard so validation outcomes and ROI appear automatically.",
+      "files": [
+        "apps/dashboard/components/TaskCard.tsx",
+        "src/agents/supervisorAgent.ts",
+        "src/agents/testerAgent.ts"
+      ],
+      "acceptance_criteria": [
+        "When Supervisor/Testers write new entries to task.state.json, dashboard updates pass/fail badges in real time.",
+        "ROI and success-rate indicators refresh from data/metrics/run_metrics.json.",
+        "UI stable; no layout regressions."
+      ]
+    }
+  ],
+  "echo_check": "Implements full autonomous mission loop linking MCP, orchestrator, and dashboard; Vibeflow can accept queued tasks, execute them on web platforms, validate results, and display progress automatically with zero manual commands."
+}

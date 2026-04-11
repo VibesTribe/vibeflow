@@ -1,0 +1,16 @@
+name: Visual Gate
+on:
+  pull_request:
+    branches: [ approved ]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  visual_check:
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'ui')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run visual regression/checks
+        run: |
+          echo "Stub visual checks. Integrate your MCP/DevTools runner here."
