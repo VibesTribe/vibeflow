@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 interface ChatMessage {
   id: string;
@@ -6,6 +6,7 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   audioUrl?: string;
+  isStreaming?: boolean;
 }
 
 interface VibesChatPanelProps {
@@ -13,19 +14,8 @@ interface VibesChatPanelProps {
   onClose: () => void;
 }
 
-const PIPELINE_URL = "https://vibes.vibestribe.rocks";
-
-const ACK_RESPONSES = [
-  "On it, thinking...",
-  "Let me work on that...",
-  "Processing, this may take a moment...",
-  "Got it, working on it...",
-  "Give me a sec...",
-];
-
-function randomAck(): string {
-  return ACK_RESPONSES[Math.floor(Math.random() * ACK_RESPONSES.length)];
-}
+const API_BASE = "https://api.vibestribe.rocks";
+const SESSION_ID = "dashboard-chat";
 
 const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -34,10 +24,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -51,200 +41,211 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
 
   // Stop audio when panel closes
   useEffect(() => {
-    if (!isOpen && currentAudioRef.current) {
-      currentAudioRef.current.pause();
-      currentAudioRef.current = null;
+    if (!isOpen) {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current = null;
+      }
+      if (abortRef.current) {
+        abortRef.current.abort();
+      }
     }
   }, [isOpen]);
 
-  const playAudio = (url: string) => {
+  const playAudio = useCallback((url: string) => {
     if (currentAudioRef.current) currentAudioRef.current.pause();
     const audio = new Audio(url);
     currentAudioRef.current = audio;
     audio.play().catch(console.warn);
-  };
+  }, []);
 
-  // --- Send text to pipeline ---
-  const sendTextToPipeline = async (text: string): Promise<string> => {
-    const res = await fetch(`${PIPELINE_URL}/text`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text, mode: "vibes", audio: true }),
-    });
-    if (!res.ok) throw new Error(`Pipeline error: ${res.status}`);
-    const data = await res.json();
-    // Poll for audio in background (TTS generates async)
-    if (data.audio_id) {
-      const audioId = data.audio_id;
-      const tryAudio = async () => {
-        for (let i = 0; i < 10; i++) {
-          await new Promise(r => setTimeout(r, 3000));
-          try {
-            const check = await fetch(`${PIPELINE_URL}/audio/${audioId}_out.wav`, { method: "HEAD" });
-            if (check.ok) {
-              playAudio(`${PIPELINE_URL}/audio/${audioId}_out.wav`);
-              return;
-            }
-          } catch {}
-        }
-      };
-      tryAudio(); // fire and forget
+  // Generate TTS audio for a response
+  const generateTTS = useCallback(async (text: string, messageId: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voice: "af_heart" }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.audio_url) {
+        // Convert localhost URL to tunnel URL
+        const audioUrl = data.audio_url.replace("http://127.0.0.1:8642", API_BASE);
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId ? { ...m, audioUrl } : m
+          )
+        );
+        playAudio(audioUrl);
+      }
+    } catch (err) {
+      console.warn("TTS failed:", err);
     }
-    // If action was run directly, include its result
-    if (data.action_result) {
-      return data.reply + "\n\n" + data.action_result;
-    }
-    return data.reply || "Hmm, couldn't get a response.";
-  };
+  }, [playAudio]);
 
-  // --- Send audio to pipeline ---
-  const sendAudioToPipeline = async (audioBlob: Blob): Promise<{ transcript: string; reply: string }> => {
-    const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.webm");
-    const res = await fetch(`${PIPELINE_URL}/chat`, {
-      method: "POST",
-      body: formData,
-    });
-    if (!res.ok) throw new Error(`Pipeline error: ${res.status}`);
-    const data = await res.json();
-    // Poll for audio in background
-    if (data.audio_id) {
-      const audioId = data.audio_id;
-      const tryAudio = async () => {
-        for (let i = 0; i < 10; i++) {
-          await new Promise(r => setTimeout(r, 3000));
-          try {
-            const check = await fetch(`${PIPELINE_URL}/audio/${audioId}_out.wav`, { method: "HEAD" });
-            if (check.ok) {
-              playAudio(`${PIPELINE_URL}/audio/${audioId}_out.wav`);
-              return;
-            }
-          } catch {}
-        }
-      };
-      tryAudio();
-    }
-    return {
-      transcript: data.transcript || "(couldn't understand)",
-      reply: data.action_result ? data.reply + "\n\n" + data.action_result : (data.reply || "Hmm, couldn't get a response."),
-    };
-  };
+  // Send message via SSE streaming
+  const sendMessage = useCallback(async (text: string) => {
+    if (!text.trim() || isLoading) return;
 
-  // --- Handle text send ---
-  const handleSend = async () => {
-    if (!inputValue.trim() || isLoading) return;
-    const text = inputValue.trim();
-
-    // Show user message
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       type: "human",
-      content: text,
+      content: text.trim(),
       timestamp: new Date(),
     };
-    // Show ack immediately
-    const ackMsg: ChatMessage = {
+    const botMsg: ChatMessage = {
       id: (Date.now() + 1).toString(),
       type: "vibes",
-      content: randomAck(),
+      content: "",
       timestamp: new Date(),
+      isStreaming: true,
     };
-    setMessages((prev) => [...prev, userMsg, ackMsg]);
+    setMessages((prev) => [...prev, userMsg, botMsg]);
     setInputValue("");
     setIsLoading(true);
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let fullText = "";
+
     try {
-      const replyText = await sendTextToPipeline(text);
-      // Replace ack with real response
-      setMessages((prev) =>
-        prev.map((m) => m.id === ackMsg.id ? { ...m, content: replyText } : m)
+      const res = await fetch(
+        `${API_BASE}/api/sessions/${SESSION_ID}/chat/stream`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text.trim() }),
+          signal: controller.signal,
+        }
       );
-    } catch {
+
+      if (!res.ok || !res.body) {
+        throw new Error(`API error: ${res.status}`);
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const jsonStr = line.slice(6).trim();
+          if (!jsonStr || jsonStr === "[DONE]") continue;
+
+          try {
+            const event = JSON.parse(jsonStr);
+
+            // Handle delta (streaming text)
+            if (event.delta) {
+              fullText += event.delta;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === botMsg.id ? { ...m, content: fullText } : m
+                )
+              );
+            }
+
+            // Handle final completion
+            if (event.content !== undefined && event.state === "final") {
+              fullText = event.content || fullText;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === botMsg.id
+                    ? { ...m, content: fullText, isStreaming: false }
+                    : m
+                )
+              );
+            }
+          } catch {
+            // skip malformed SSE lines
+          }
+        }
+      }
+
+      // Mark streaming done and generate TTS
       setMessages((prev) =>
         prev.map((m) =>
-          m.id === ackMsg.id
-            ? { ...m, content: "Sorry, I'm having trouble connecting. Try again?" }
-            : m
+          m.id === botMsg.id ? { ...m, isStreaming: false } : m
         )
       );
+
+      if (fullText.trim()) {
+        generateTTS(fullText, botMsg.id);
+      }
+    } catch (err: any) {
+      if (err.name !== "AbortError") {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === botMsg.id
+              ? { ...m, content: "Sorry, I'm having trouble connecting. Try again?", isStreaming: false }
+              : m
+          )
+        );
+      }
     } finally {
       setIsLoading(false);
+      abortRef.current = null;
     }
-  };
+  }, [isLoading, generateTTS]);
 
-  // --- Handle mic recording ---
-  const toggleRecording = async () => {
+  // Voice input using Web Speech API
+  const toggleRecording = useCallback(() => {
     if (isRecording) {
-      mediaRecorderRef.current?.stop();
+      recognitionRef.current?.stop();
       setIsRecording(false);
       return;
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      mediaRecorderRef.current = recorder;
-      audioChunksRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-
-        // Show ack
-        const ackMsg: ChatMessage = {
-          id: (Date.now() + 2).toString(),
-          type: "vibes",
-          content: "Listening... give me a sec...",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, ackMsg]);
-        setIsLoading(true);
-
-        try {
-          const { transcript, reply } = await sendAudioToPipeline(blob);
-
-          // Replace ack with transcript + reply
-          setMessages((prev) => [
-            ...prev.filter((m) => m.id !== ackMsg.id),
-            { id: Date.now().toString(), type: "human", content: transcript, timestamp: new Date() },
-            { id: (Date.now() + 1).toString(), type: "vibes", content: reply, timestamp: new Date() },
-          ]);
-        } catch {
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === ackMsg.id
-                ? { ...m, content: "Couldn't process that. Try again?" }
-                : m
-            )
-          );
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      recorder.start();
-      setIsRecording(true);
-    } catch {
-      // Mic denied - just show a message
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
       setMessages((prev) => [
         ...prev,
-        { id: Date.now().toString(), type: "vibes", content: "Can't access mic. Try typing instead?", timestamp: new Date() },
+        { id: Date.now().toString(), type: "vibes" as const, content: "Voice input not supported in this browser. Try Chrome?", timestamp: new Date() },
       ]);
+      return;
     }
-  };
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      if (transcript.trim()) {
+        sendMessage(transcript);
+      }
+    };
+
+    recognition.onerror = () => {
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsRecording(true);
+  }, [isRecording, sendMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      sendMessage(inputValue);
     }
   };
 
-  // Don't render at all if never opened
   if (!isOpen) return null;
 
   return (
@@ -279,6 +280,11 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
             >
               <div className="vibes-chat-panel__message-content">
                 {msg.content}
+                {msg.isStreaming && !msg.content && (
+                  <span className="vibes-chat-panel__typing">
+                    <span></span><span></span><span></span>
+                  </span>
+                )}
                 {msg.audioUrl && (
                   <button
                     className="vibes-chat-panel__play-btn"
@@ -298,12 +304,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           ))}
-          {isLoading && (
+          {isLoading && !messages.some(m => m.isStreaming && m.content) && (
             <div className="vibes-chat-panel__message vibes-chat-panel__message--vibes">
               <div className="vibes-chat-panel__typing">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
               </div>
             </div>
           )}
@@ -332,7 +336,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
           </button>
           <button
             className="vibes-chat-panel__send"
-            onClick={handleSend}
+            onClick={() => sendMessage(inputValue)}
             disabled={!inputValue.trim() || isLoading}
             aria-label="Send message"
           >
