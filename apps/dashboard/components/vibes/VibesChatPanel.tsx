@@ -65,7 +65,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
       const res = await fetch(`${API_BASE}/api/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, voice: "en-US-AriaNeural", engine: "edge" }),
+        body: JSON.stringify({ text, voice: "en-US-AvaNeural", engine: "edge" }),
       });
       if (!res.ok) return;
       const data = await res.json();
