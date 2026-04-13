@@ -1,120 +1,130 @@
-# Vibes Master TODO List - April 13, 2026
+# Vibes Master TODO List - Updated April 14, 2026
 
 Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432), Gemini optimization research, and session history.
 
-## DONE (This Session)
+---
 
-1. CORS fixed for dashboard -> API (was blocking Vercel origin)
-2. Edge TTS wired as default (1s vs 20s Kokoro, Ava voice selected)
-3. Chrome CDP profile fixed - Google cookies copied to chrome-debug
-4. BROWSER_CDP_URL set in Hermes .env
-5. Gmail verified working through API agent
-6. VibesChatPanel deployed with SSE streaming + auto-TTS
+## DONE (Verified Working)
 
-## P0 - CRITICAL (Do First)
+### Core Infrastructure
+- [x] **CORS fixed** -- wildcard + localhost origins, Vercel can reach API
+- [x] **Edge TTS as default** -- 1s generation, en-US-AvaNeural voice, dual-engine (kokoro still available)
+- [x] **Chrome CDP profile** -- cookies copied to chrome-debug, BROWSER_CDP_URL set
+- [x] **Hermes API running** -- port 8642, Gemini 2.5 Flash primary, OpenRouter fallback chain, Ollama offline backup
+- [x] **Cloudflare tunnel** -- api.vibestribe.rocks -> 8642, vibes.vibestribe.rocks -> 8090, systemd user service
+- [x] **Vercel deployed** -- vibeflow-dashboard.vercel.app serving committed dist/
+- [x] **VibesChatPanel** -- SSE streaming + auto-TTS + Web Speech API voice input
+- [x] **Hermes Studio** -- running on port 3002, enhanced mode (sessions/memory/skills/config)
 
-1. **SUPABASE PURGE** - Delete spam rows (~40 min)
-   - security_audit: 48,863 rows (97% "webhook_secret not found" spam)
-   - chat_queue: 64,570 rows (old test poem outputs from Feb 2026)
-   - failure_records: 1,232 rows (empty glm-5 failure stubs)
-   - Frees 99.7% of storage on free tier (115K -> 413 rows)
+### P0 Critical (Completed April 14)
+- [x] **Supabase purge** -- deleted 114,665 rows (48,863 security_audit + 64,570 chat_queue + 1,232 failure_records). All 3 tables at 0 rows. Dashboard verified unaffected.
+- [x] **Manifest drift cleanup** -- closed ~150 auto-generated spam issues. Clean slate: 2 vibeflow audits + 3 VibePilot issues remain.
+- [x] **Webhook secret fix** -- disabled webhooks in system.json (were enabled without VAULT_KEY, spamming 48K failed reads)
 
-2. **CLOSE MANIFEST DRIFT ISSUES** - 19+ auto-generated duplicates (#414-#433)
-   - Fix the codex branch sync or disable the auto-watcher
-   - Merge/close existing drift issues
+### P4 Maintenance (Completed April 14)
+- [x] **Himalaya email auth** -- Gmail app password "vibes" generated, plugged into config. IMAP reads + SMTP sends working. Email sent to Allyson with TODO list.
+- [x] **Ollama local backup** -- qwen2.5:0.5b installed (not gemma 4 -- free API access is more efficient, qwen is lighter for offline fallback on i5)
 
-3. **WEBHOOK SECRET FIX** - vault lookup is broken
-   - Go governor spam-creates "secret not found" errors
-   - Root cause: vault_secret key missing or lookup path wrong
+### Config & Architecture
+- [x] **Multi-provider fallback** -- Gemini -> OpenRouter free tier -> Ollama local
+- [x] **Email CLI** -- himalaya working for read + Python smtplib for send
 
-## P1 - HIGH VALUE
+---
 
-4. **INSTALL OLLAMA + GEMMA 4**
-   - Local model for offline fallback + visual QA courier agent
-   - gemma4:e4b (9.6GB) or e2b if too slow on i5
-   - Already configured as fallback in Hermes config
+## TODO
 
-5. **CLOSE LEARNING LOOP** (VibePilot)
+### P1 - HIGH VALUE
+
+1. **CLOSE LEARNING LOOP** (VibePilot)
    - Council creates planner rules but supervisor feedback not wired to rule creation
+   - `get_planner_rules` RPC exists, write-back does not
    - Agents learn from failures but never write rules back
 
-6. **TYPE SYSTEM CLEANUP** (VibePilot Go)
-   - pkg/types structs vs map[string]any mismatch throughout handlers
+2. **TYPE SYSTEM CLEANUP** (VibePilot Go)
+   - `map[string]any` still in handlers_council, handlers_maint, handlers_plan
    - Proper struct unmarshaling instead of type assertions
 
-7. **MCP SERVER** (VibePilot)
+3. **MCP SERVER** (VibePilot)
    - Expose Go governor tool registry as MCP server
    - Makes any agent plug in without custom adapters
-   - JourneyKits schemas as starting point
+   - No MCP files exist yet in governor
 
-8. **CONTEXT COMPACTION** (VibePilot)
+4. **CONTEXT COMPACTION** (VibePilot)
+   - Summary structs exist in decision.go but not automated
    - Auto-generate session summaries after each agent run
-   - current_state.md exists but not automated
 
-## P2 - ARCHITECTURE IMPROVEMENTS
+### P2 - ARCHITECTURE IMPROVEMENTS
 
-9. **YAML DAG WORKFLOWS** (from Archon v5 research)
+5. **YAML DAG WORKFLOWS** (from Archon v5 research)
    - Replace hardcoded routing with declarative YAML pipelines
    - Visual config-driven orchestration (n8n-like)
+   - Currently only CI workflows exist, no runtime DAG
 
-10. **3-LAYER MEMORY SYSTEM**
-    - Short-term (session), mid-term (project), long-term (learned rules)
-    - Supabase tables exist but not fully wired
+6. **3-LAYER MEMORY SYSTEM**
+   - Short-term (session), mid-term (project), long-term (learned rules)
+   - Supabase tables exist but not fully wired
 
-11. **GIT WORKTREES** (from Archon)
-    - Isolated workspaces per task instead of branch switching
-    - Prevents merge conflicts in parallel agent execution
+7. **GIT WORKTREES** (from Archon)
+   - Isolated workspaces per task instead of branch switching
+   - Currently only main worktree on research-update-april2026 branch
 
-12. **ADVISOR PATTERN**
-    - Senior agent reviews junior agent work before merge
-    - Council system exists, needs advisor wiring
+8. **ADVISOR PATTERN**
+   - Senior agent reviews junior agent work before merge
+   - Council system exists, needs advisor wiring
 
-13. **JCODEMUNCH MCP INTEGRATION**
-    - MCP server for VibePilot agent code analysis
+9. **JCODEMUNCH MCP INTEGRATION**
+   - MCP server for VibePilot agent code analysis
+   - Not started
 
-## P3 - DASHBOARD & UX
+### P3 - DASHBOARD & UX
 
-14. **HERMES STUDIO VIA TUNNEL**
-    - Add studio.vibestribe.rocks route to Cloudflare tunnel
+10. **HERMES STUDIO VIA TUNNEL**
+    - Add studio.vibestribe.rocks route to Cloudflare tunnel config
     - Link in dashboard admin section
     - Full web UI with sessions, memory, skills, config
 
-15. **HONEYCOMB LANDING PAGE**
+11. **HONEYCOMB LANDING PAGE**
     - hub.vibestribe.rocks with project cells
     - Each cell opens project-specific agent dashboard
+    - No route exists yet
 
-16. **TOOL PROGRESS DISPLAY**
-    - Show agent tool calls in VibesChatPanel (terminal, file ops)
-    - SSE emits tool.started/tool.completed but UI only shows text
+12. **TOOL PROGRESS DISPLAY**
+    - Show agent tool calls in VibesChatPanel (terminal, file ops, browser)
+    - SSE emits tool.started/tool.completed but UI only renders text deltas
+    - 0 references in current component
 
-17. **SSE RECONNECTION LOGIC**
-    - Handle dropped connections for long operations
-    - Auto-reconnect with session state recovery
+13. **SSE RECONNECTION LOGIC**
+    - Only 1 minimal reconnect reference
+    - Need auto-reconnect with session state recovery for long operations
 
-## P4 - MAINTENANCE
+### P4 - MAINTENANCE
 
-18. **ROTATE GITHUB PAT**
-    - Current token missing read:org scope
-    - Generate fresh token with full repo scope
+14. **ROTATE GITHUB PAT**
+    - Current token has repo, workflow scopes (missing read:org)
+    - Generate fresh token with full scopes
 
-19. **FIX HIMALAYA EMAIL AUTH**
-    - Gmail app password expired/never set properly
-    - Generate new app password, update himalaya config
-    - Enables CLI email from any channel (Telegram + dashboard)
+15. **HERMES MEMORY CLEANUP**
+    - Trim PERSONA.md and memory entries to essentials
 
-20. **HERMES MEMORY CLEANUP**
-    - Currently ~80% full
-    - Archive old session data, keep only active facts
+16. **DOCKER ON X220**
+    - Not installed, needed for isolated agent workspaces eventually
 
-21. **DOCKER ON X220**
-    - Not installed yet
-    - Needed for isolated agent workspaces eventually
-
-22. **TEST ON PHONE BROWSER**
+17. **TEST ON PHONE BROWSER**
     - Full voice-in/audio-out on mobile Chrome
-    - Verify Web Speech API works
+    - Verify Web Speech API works reliably
 
 ---
-Total: 6 done, 3 critical, 5 high, 5 architecture, 4 UX, 5 maintenance = 28 items
 
-Constraints: GLM subscription expires May 1 (budget cliff). i5-2520M, 16GB RAM, no GPU, phone tethering.
+## Summary
+
+| Category | Done | Remaining |
+|----------|------|-----------|
+| Core Infrastructure | 8 | 0 |
+| P0 Critical | 3 | 0 |
+| P1 High Value | 1 (Ollama) | 4 |
+| P2 Architecture | 0 | 5 |
+| P3 Dashboard & UX | 0 | 4 |
+| P4 Maintenance | 2 | 4 |
+| **Total** | **14** | **17** |
+
+**Constraints:** GLM subscription expires May 1 (budget cliff). i5-2520M (no AVX2), 16GB RAM, no GPU, phone tethering. Free tier everything.
