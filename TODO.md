@@ -1,4 +1,4 @@
-# Vibes Master TODO List - Updated April 14, 2026
+# Vibes Master TODO List - Updated April 15, 2026
 
 Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432), Gemini optimization research, and session history.
 
@@ -28,6 +28,8 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 ### Config & Architecture
 - [x] **Multi-provider fallback** -- Gemini -> OpenRouter free tier -> Ollama local
 - [x] **Email CLI** -- himalaya working for read + Python smtplib for send
+- [x] **MCP Client Integration (Phase 1)** -- mark3labs/mcp-go SDK wired into governor. Registry connects to approved servers, discovers tools, registers them in ToolRegistry. ContextBuilder injects MCP tool list into agent context. Clean build, all tests pass.
+- [x] **MCP Tools Installed** -- jcodemunch-mcp 1.43.0, jdocmunch-mcp 1.8.0, jdatamunch-mcp 0.8.3 (via pipx, ready in ~/.local/bin/)
 
 ---
 
@@ -47,10 +49,8 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
    - Proper struct unmarshaling instead of type assertions
 
 3. **MCP SERVER** (VibePilot)
-   - **AS an MCP server**: expose tool registry (git ops, task mgmt, routing, council reviews) so any agent plugs in
-   - **USING MCP servers**: connect to jCodeMunch and other MCP servers for code analysis, external tools
-   - No MCP files exist yet in governor
-   - Key to agnostic/modular architecture -- any agent, any tool, no custom adapters
+   - ~~USING MCP servers: connect to jCodeMunch and other MCP servers~~ DONE (Phase 1)
+   - **AS an MCP server**: expose tool registry (git ops, task mgmt, routing, council reviews) so any agent plugs in (Phase 2, not started)
 
 4. **CONTEXT COMPACTION** (VibePilot)
    - Summary structs exist in decision.go but not automated
@@ -80,8 +80,10 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
    - May already be adequately handled by existing supervisor + council flow
 
 9. **JCODEMUNCH MCP INTEGRATION**
-   - MCP server for VibePilot agent code analysis
-   - Not started
+   - MCP tools installed (jcodemunch, jdocmunch, jdatamunch via pipx)
+   - Governor MCP client wired and building clean
+   - Ready to enable: just add to system.json mcp_servers section
+   - Not yet enabled in config (install now, use later)
 
 ### P3 - DASHBOARD & UX
 
@@ -126,12 +128,12 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 
 | Category | Done | Remaining |
 |----------|------|-----------|
-| Core Infrastructure | 8 | 0 |
+| Core Infrastructure | 10 | 0 |
 | P0 Critical | 3 | 0 |
-| P1 High Value | 1 (Ollama) | 4 |
+| P1 High Value | 1 (Ollama) | 3 |
 | P2 Architecture | 0 | 5 |
 | P3 Dashboard & UX | 0 | 4 |
 | P4 Maintenance | 2 | 4 |
-| **Total** | **14** | **17** |
+| **Total** | **16** | **16** |
 
 **Constraints:** GLM subscription expires May 1 (budget cliff). i5-2520M (no AVX2), 16GB RAM, no GPU, phone tethering. Free tier everything.
