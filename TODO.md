@@ -23,7 +23,9 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 
 ### P4 Maintenance (Completed April 14)
 - [x] **Himalaya email auth** -- Gmail app password "vibes" generated, plugged into config. IMAP reads + SMTP sends working. Email sent to Allyson with TODO list.
-- [x] **Ollama local backup** -- qwen2.5:0.5b installed (not gemma 4 -- free API access is more efficient, qwen is lighter for offline fallback on i5)
+- [x] **Ollama local backup** -- qwen2.5:0.5b installed (lighter offline fallback on i5, free API preferred when online)
+- [x] **Cloudflare tunnel** -- running as systemd service, api.vibestribe.rocks + vibes.vibestribe.rocks
+- [x] **GitHub PAT** -- rotated April 13, full scopes
 
 ### Config & Architecture
 - [x] **Multi-provider fallback** -- Gemini -> OpenRouter free tier -> Ollama local
@@ -108,9 +110,7 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 
 ### P4 - MAINTENANCE
 
-14. **ROTATE GITHUB PAT**
-    - Current token has repo, workflow scopes (missing read:org)
-    - Generate fresh token with full scopes
+14. **ROTATE GITHUB PAT** -- DONE (April 13)
 
 15. **HERMES MEMORY CLEANUP**
     - Trim PERSONA.md and memory entries to essentials
@@ -133,7 +133,7 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 | P1 High Value | 1 (Ollama) | 3 |
 | P2 Architecture | 0 | 5 |
 | P3 Dashboard & UX | 0 | 4 |
-| P4 Maintenance | 2 | 4 |
-| **Total** | **16** | **16** |
+| P4 Maintenance | 5 | 3 |
+| **Total** | **19** | **15** |
 
 **Constraints:** GLM subscription expires May 1 (budget cliff). i5-2520M (no AVX2), 16GB RAM, no GPU, phone tethering. Free tier everything.
