@@ -47,9 +47,10 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
    - Proper struct unmarshaling instead of type assertions
 
 3. **MCP SERVER** (VibePilot)
-   - Expose Go governor tool registry as MCP server
-   - Makes any agent plug in without custom adapters
+   - **AS an MCP server**: expose tool registry (git ops, task mgmt, routing, council reviews) so any agent plugs in
+   - **USING MCP servers**: connect to jCodeMunch and other MCP servers for code analysis, external tools
    - No MCP files exist yet in governor
+   - Key to agnostic/modular architecture -- any agent, any tool, no custom adapters
 
 4. **CONTEXT COMPACTION** (VibePilot)
    - Summary structs exist in decision.go but not automated
