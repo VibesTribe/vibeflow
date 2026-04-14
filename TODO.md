@@ -36,9 +36,11 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 ### P1 - HIGH VALUE
 
 1. **CLOSE LEARNING LOOP** (VibePilot)
-   - Council creates planner rules but supervisor feedback not wired to rule creation
-   - `get_planner_rules` RPC exists, write-back does not
-   - Agents learn from failures but never write rules back
+   - Council creates rules from review concerns (works)
+   - Supervisor feedback does NOT create rules (broken)
+   - Needs multi-level rules: agent (how to code), planner (how to split tasks), orchestrator (how to route)
+   - Current system is flat "Avoid: X" strings -- needs structured auto-improvement
+   - Blocked on Archon/JourneyKits/AgentSkills architecture review
 
 2. **TYPE SYSTEM CLEANUP** (VibePilot Go)
    - `map[string]any` still in handlers_council, handlers_maint, handlers_plan
@@ -64,13 +66,17 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
    - Short-term (session), mid-term (project), long-term (learned rules)
    - Supabase tables exist but not fully wired
 
-7. **GIT WORKTREES** (from Archon)
-   - Isolated workspaces per task instead of branch switching
-   - Currently only main worktree on research-update-april2026 branch
+7. **GIT WORKTREES** (from Archon) -- CONFIRMED NEEDED
+   - Git only allows one branch active per directory -- parallel agents would overwrite each other's files
+   - Each task needs its own folder so multiple agents can work simultaneously
+   - `git worktree add ~/VibePilot-work/task-42 task/42` pattern
+   - Essential once parallel agent execution is active
 
 8. **ADVISOR PATTERN**
    - Senior agent reviews junior agent work before merge
-   - Council system exists, needs advisor wiring
+   - Council system already covers complex multi-model review
+   - Supervisor covers single-model QC before testing
+   - May already be adequately handled by existing supervisor + council flow
 
 9. **JCODEMUNCH MCP INTEGRATION**
    - MCP server for VibePilot agent code analysis
