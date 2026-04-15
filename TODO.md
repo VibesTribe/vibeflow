@@ -23,7 +23,7 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 
 ### P4 Maintenance (Completed April 14)
 - [x] **Himalaya email auth** -- Gmail app password "vibes" generated, plugged into config. IMAP reads + SMTP sends working. Email sent to Allyson with TODO list.
-- [x] **Ollama local backup** -- qwen2.5:0.5b installed (lighter offline fallback on i5, free API preferred when online)
+- [x] **Ollama local backup** -- tested qwen3:4b + qwen3-vl:4b, 2 tok/s on i5 (unusable). Deleted both. Daemon stopped/disabled. Cloud free tiers preferred when online.
 - [x] **Cloudflare tunnel** -- running as systemd service, api.vibestribe.rocks + vibes.vibestribe.rocks
 - [x] **GitHub PAT** -- rotated April 13, full scopes
 
@@ -32,6 +32,11 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 - [x] **Email CLI** -- himalaya working for read + Python smtplib for send
 - [x] **MCP Client Integration (Phase 1)** -- mark3labs/mcp-go SDK wired into governor. Registry connects to approved servers, discovers tools, registers them in ToolRegistry. ContextBuilder injects MCP tool list into agent context. Clean build, all tests pass.
 - [x] **MCP Tools Installed** -- jcodemunch-mcp 1.43.0, jdocmunch-mcp 1.8.0, jdatamunch-mcp 0.8.3 (via pipx, ready in ~/.local/bin/)
+- [x] **YAML DAG Workflows** -- DAG engine (engine.go, workflow.go, registry.go), code-pipeline.yaml, governor loads and executes on startup
+- [x] **Governor v2.0.0 rebuilt** -- compiled from current main, DAG+MCP+gitree+realtime all active, 7.5MB RAM
+- [x] **WYNTK doc updated** -- architecture tree, knowledge layer, governor internal structure, file paths all current
+- [x] **Hermes memories backed up** -- agent/HERMES_MEMORIES.md in VibePilot repo, recoverable from GitHub
+- [x] **Context knowledge layer** -- tier0-static.md (single source of truth), knowledge.db (2.3MB SQLite), boot.md (~2,804 tokens), auto-rebuild on commit
 
 ---
 
@@ -60,10 +65,11 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 
 ### P2 - ARCHITECTURE IMPROVEMENTS
 
-5. **YAML DAG WORKFLOWS** (from Archon v5 research)
-   - Replace hardcoded routing with declarative YAML pipelines
-   - Visual config-driven orchestration (n8n-like)
-   - Currently only CI workflows exist, no runtime DAG
+5. **YAML DAG WORKFLOWS** -- DONE (April 14)
+   - DAG engine built (governor/internal/dag/: engine.go, workflow.go, registry.go)
+   - code-pipeline.yaml defines runtime pipeline stages
+   - Governor loads and executes DAG on startup
+   - Visual config-driven orchestration foundation in place
 
 6. **3-LAYER MEMORY SYSTEM**
    - Short-term (session), mid-term (project), long-term (learned rules)
@@ -130,10 +136,10 @@ Compiled from: 4 audit reports, GitHub issues (VibePilot #1-3, vibeflow #431-432
 |----------|------|-----------|
 | Core Infrastructure | 10 | 0 |
 | P0 Critical | 3 | 0 |
-| P1 High Value | 1 (Ollama) | 3 |
-| P2 Architecture | 0 | 5 |
+| P1 High Value | 2 (Ollama tested, DAG done) | 3 |
+| P2 Architecture | 1 (DAG) | 4 |
 | P3 Dashboard & UX | 0 | 4 |
-| P4 Maintenance | 5 | 3 |
-| **Total** | **19** | **15** |
+| P4 Maintenance | 5 | 2 |
+| **Total** | **21** | **13** |
 
 **Constraints:** GLM subscription expires May 1 (budget cliff). i5-2520M (no AVX2), 16GB RAM, no GPU, phone tethering. Free tier everything.
