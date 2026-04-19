@@ -262,6 +262,7 @@ export function transformAgents(
     const statusReason = (model.status_reason || "").toLowerCase();
     const inCooldown = model.status === "paused" && model.cooldown_expires_at;
     const needsCredit = model.status === "paused" && statusReason.includes("credit");
+    const isDeprecated = model.status === "paused" && (statusReason.includes("deprecated") || statusReason.includes("sunset"));
     const cooldownExpiresAt = model.cooldown_expires_at || undefined;
     
     let agentStatus: AgentSnapshot["status"] = "idle";
@@ -269,6 +270,8 @@ export function transformAgents(
       agentStatus = "credit_needed";
     } else if (inCooldown) {
       agentStatus = "cooldown";
+    } else if (isDeprecated) {
+      agentStatus = "blocked";  // shows as ⚠ Issue
     } else if (stats.active > 0) {
       agentStatus = "in_progress";
     }
@@ -280,11 +283,13 @@ export function transformAgents(
       summary:
         needsCredit 
           ? "Credit needed - flagged for review"
-          : inCooldown 
-            ? model.status_reason || "In cooldown"
-            : stats.active > 0
-              ? `Working on ${stats.active} task(s)`
-              : "Available",
+          : isDeprecated
+            ? (model.status_reason || "Deprecated")
+            : inCooldown 
+              ? model.status_reason || "In cooldown"
+              : stats.active > 0
+                ? `Working on ${stats.active} task(s)`
+                : "Available",
       updatedAt: new Date().toISOString(),
       logo: model.logo_url || undefined,
       tier,
@@ -304,46 +309,10 @@ export function transformAgents(
     });
   }
 
-  // Add web platforms (W tier)
-  for (const platform of platforms) {
-    if (platform.status !== "active") continue;
-
-    // Use config if available, otherwise fall back to columns
-    const config = platform.config || {};
-    const platformName = config.name || platform.name || platform.id.charAt(0).toUpperCase() + platform.id.slice(1);
-    const freeTier = config.free_tier || {};
-    
-    // Derive logo from provider/id
-    const logoMap: Record<string, string> = {
-      gemini: "google-gemini",
-      claude: "anthropic",
-      chatgpt: "openai",
-      copilot: "github",
-      deepseek: "deepseek",
-      huggingchat: "huggingface",
-    };
-    const logoSlug = logoMap[platform.id] || "default";
-    
-    // Build summary from config
-    const summary = config.notes || `Free tier: ${freeTier.model || 'varies'}`;
-    
-    agents.push({
-      id: `agent.${platform.id}`,
-      name: platformName,
-      status: "idle",
-      summary,
-      updatedAt: new Date().toISOString(),
-      logo: `https://raw.githubusercontent.com/lobehub/lobe-icons/main/icons/${logoSlug}.svg`,
-      tier: "W",
-      vendor: config.provider || platform.vendor || undefined,
-      contextWindowTokens: freeTier.context_limit || platform.context_limit || undefined,
-      effectiveContextWindowTokens: platform.context_limit
-        ? Math.round(platform.context_limit * 0.75)
-        : undefined,
-      creditStatus: "available",
-      warnings: [],
-    });
-  }
+  // NOTE: Platforms are DESTINATIONS (where couriers go), not models.
+  // They should NOT render as model cards. W-tier models in the models table
+  // already represent what's available on each platform.
+  // Platform data is still available in the return for future routing UI.
 
   return agents;
 }
