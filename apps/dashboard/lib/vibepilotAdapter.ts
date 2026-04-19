@@ -252,44 +252,43 @@ export function transformAgents(
 
   // Add internal models (Q tier)
   for (const model of models) {
-    // Include paused models too (they're in cooldown)
-    if (!["active", "paused"].includes(model.status)) continue;
+    // Skip only truly nonexistent entries. All statuses render.
+    // active=Ready/Active, paused=Credit/Cooldown/Issue, benched=Issue
+    if (model.status === "deleted") continue;
 
     const stats = assignmentsByModel.get(model.id) || { active: 0, total: 0 };
     const tier =
       model.access_type === "web" ? "W" : model.access_type === "mcp" ? "M" : "Q";
 
     const statusReason = (model.status_reason || "").toLowerCase();
-    const inCooldown = model.status === "paused" && model.cooldown_expires_at;
+    const isActive = model.status === "active";
+    const inCooldown = model.status === "paused" && !!model.cooldown_expires_at;
     const needsCredit = model.status === "paused" && statusReason.includes("credit");
-    const isDeprecated = model.status === "paused" && (statusReason.includes("deprecated") || statusReason.includes("sunset"));
     const cooldownExpiresAt = model.cooldown_expires_at || undefined;
     
     let agentStatus: AgentSnapshot["status"] = "idle";
+    let displaySummary: string = "Available";
+    
     if (needsCredit) {
       agentStatus = "credit_needed";
+      displaySummary = "Credit needed - flagged for review";
     } else if (inCooldown) {
       agentStatus = "cooldown";
-    } else if (isDeprecated) {
-      agentStatus = "blocked";  // shows as ⚠ Issue
+      displaySummary = model.status_reason || "In cooldown";
+    } else if (!isActive) {
+      // All non-active, non-credit, non-cooldown = Issue
+      agentStatus = "blocked";
+      displaySummary = model.status_reason || "Not available";
     } else if (stats.active > 0) {
       agentStatus = "in_progress";
+      displaySummary = `Working on ${stats.active} task(s)`;
     }
 
     agents.push({
       id: `agent.${model.id}`,
       name: model.name || model.id,
       status: agentStatus,
-      summary:
-        needsCredit 
-          ? "Credit needed - flagged for review"
-          : isDeprecated
-            ? (model.status_reason || "Deprecated")
-            : inCooldown 
-              ? model.status_reason || "In cooldown"
-              : stats.active > 0
-                ? `Working on ${stats.active} task(s)`
-                : "Available",
+      summary: displaySummary,
       updatedAt: new Date().toISOString(),
       logo: model.logo_url || undefined,
       tier,
