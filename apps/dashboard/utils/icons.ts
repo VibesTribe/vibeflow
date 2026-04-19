@@ -9,6 +9,7 @@ import mistralIconUrl from "../assets/agents/mistral.svg?url";
 import grokIconUrl from "../assets/agents/grok.svg?url";
 import metaIconUrl from "../assets/agents/meta.svg?url";
 import qwenIconUrl from "../assets/agents/qwen.svg?url";
+import nvidiaIconUrl from "../assets/agents/nvidia.svg?url";
 
 const ICON_BASE = "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@latest/assets";
 
@@ -24,6 +25,7 @@ const LOCAL_ICON_MAP: Array<{ match: RegExp; path: string }> = [
   { match: /grok/i, path: grokIconUrl },
   { match: /meta|llama|facebook/i, path: metaIconUrl },
   { match: /qwen|gwen|alibaba/i, path: qwenIconUrl },
+  { match: /nvidia|nemotron/i, path: nvidiaIconUrl },
 ];
 
 const REMOTE_FALLBACK_MAP: Array<{ match: RegExp; path: string }> = [
