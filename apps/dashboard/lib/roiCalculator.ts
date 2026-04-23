@@ -9,7 +9,17 @@
 
 import { ROITotals, SliceROI, SubscriptionROI } from "./vibepilotAdapter";
 
-const GOVERNOR_API = import.meta.env.VITE_GOVERNOR_API || "http://localhost:8080";
+// Governor API URL — auto-detect based on where the dashboard is running.
+function resolveGovernorAPI(): string {
+  if (import.meta.env.VITE_GOVERNOR_API) {
+    return import.meta.env.VITE_GOVERNOR_API;
+  }
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    return "https://webhooks.vibestribe.rocks";
+  }
+  return "http://localhost:8080";
+}
+const GOVERNOR_API = resolveGovernorAPI();
 
 export interface ExchangeRate {
   rate: number;

@@ -4,8 +4,18 @@ import { MissionEvent, parseEventsLog, deriveQualityMap } from "../../../src/uti
 import { MissionSlice, MissionAgent, buildStatusSummary, deriveSlices, mapAgent, SliceCatalog } from "../utils/mission";
 import { adaptVibePilotToDashboard, ROITotals, SliceROI, SubscriptionROI, ModelROI } from "../lib/vibepilotAdapter";
 
-// Governor API URL — local PG backend, replaces Supabase
-const GOVERNOR_API = import.meta.env.VITE_GOVERNOR_API || "http://localhost:8080";
+// Governor API URL — auto-detect based on where the dashboard is running.
+// localhost: use direct connection. Deployed (Vercel/etc): use Cloudflare tunnel.
+function resolveGovernorAPI(): string {
+  if (import.meta.env.VITE_GOVERNOR_API) {
+    return import.meta.env.VITE_GOVERNOR_API;
+  }
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    return "https://webhooks.vibestribe.rocks";
+  }
+  return "http://localhost:8080";
+}
+const GOVERNOR_API = resolveGovernorAPI();
 const SSE_STREAM_PATH = "/api/dashboard/stream";
 const FALLBACK_POLL_MS = 15000; // fallback if SSE fails
 
