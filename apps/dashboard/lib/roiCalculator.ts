@@ -7,8 +7,9 @@
  * - ROI calculations for dashboard
  */
 
-import { supabase, isSupabaseConfigured } from "./supabase";
 import { ROITotals, SliceROI, SubscriptionROI } from "./vibepilotAdapter";
+
+const GOVERNOR_API = import.meta.env.VITE_GOVERNOR_API || "http://localhost:8080";
 
 export interface ExchangeRate {
   rate: number;
@@ -20,7 +21,7 @@ const CACHE_KEY = "vibepilot_exchange_rate";
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 /**
- * Fetch exchange rate from API
+ * Fetch exchange rate from Governor API (local PG)
  */
 export async function fetchExchangeRate(): Promise<ExchangeRate> {
   // Check cache first
@@ -29,27 +30,25 @@ export async function fetchExchangeRate(): Promise<ExchangeRate> {
     return cached;
   }
 
-  // Try to fetch from Supabase first
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      const { data, error } = await supabase
-        .from("exchange_rates")
-        .select("*")
-        .eq("id", "usd_cad")
-        .single();
-
-      if (!error && data) {
+  // Try governor API first (local PG has exchange_rates table)
+  try {
+    const res = await fetch(`${GOVERNOR_API}/api/dashboard`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      const rates = data.exchange_rates || [];
+      const usdCad = rates.find((r: any) => r.id === "usd_cad");
+      if (usdCad) {
         const result: ExchangeRate = {
-          rate: data.rate,
-          fetched_at: data.fetched_at,
-          source: data.source,
+          rate: usdCad.rate,
+          fetched_at: usdCad.fetched_at,
+          source: usdCad.source,
         };
         cacheExchangeRate(result);
         return result;
       }
-    } catch (e) {
-      console.warn("[roi] Failed to fetch exchange rate from Supabase:", e);
     }
+  } catch (e) {
+    console.warn("[roi] Failed to fetch exchange rate from governor:", e);
   }
 
   // Fallback to exchangerate-api.com (free tier)
@@ -67,19 +66,6 @@ export async function fetchExchangeRate(): Promise<ExchangeRate> {
           source: "exchangerate-api.com",
         };
         cacheExchangeRate(result);
-        
-        // Try to persist to Supabase (fire and forget)
-        if (isSupabaseConfigured() && supabase) {
-          void supabase
-            .from("exchange_rates")
-            .upsert({
-              id: "usd_cad",
-              rate: cadRate,
-              fetched_at: result.fetched_at,
-              source: result.source,
-            });
-        }
-        
         return result;
       }
     }
