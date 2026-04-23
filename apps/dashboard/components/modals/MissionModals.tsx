@@ -196,32 +196,80 @@ const DocumentList: React.FC = () => (
   </div>
 );
 
-const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => (
-  <div className="mission-modal__section mission-modal__section--sticky">
-    <h3>Recent Logs</h3>
-    <ul className="mission-log-list">
-      {events.slice(0, 40).map((event) => {
-        const detailMessage = extractEventMessage(event);
-        const eventLabel = formatEventLabel(event.type);
-        const category = deriveLogCategory(event);
-        return (
-          <li key={event.id}>
-            <span className={`mission-log__bullet mission-log__bullet--${category}`} />
-            <div className="mission-log__entry">
-              <div className="mission-log__header">
-                <strong>{eventLabel}</strong>
-                <span>{new Date(event.timestamp).toLocaleString()}</span>
-                <span className="mission-log__category">{formatLogCategory(category)}</span>
+const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => {
+  const [sourceFilter, setSourceFilter] = useState<string | null>(null);
+  
+  const sources = useMemo(() => {
+    const s = new Set<string>();
+    events.forEach(e => { if (e.details?.source) s.add(e.details.source as string); });
+    return Array.from(s).sort();
+  }, [events]);
+
+  const filtered = sourceFilter
+    ? events.filter(e => (e.details?.source as string) === sourceFilter)
+    : events;
+
+  return (
+    <div className="mission-modal__section mission-modal__section--sticky">
+      <h3>Pipeline Timeline</h3>
+      {sources.length > 1 && (
+        <div style={{ display: "flex", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+          <button
+            className={`mission-log__filter-btn ${!sourceFilter ? "active" : ""}`}
+            onClick={() => setSourceFilter(null)}
+            style={{
+              padding: "2px 8px", fontSize: 11, borderRadius: 4,
+              border: `1px solid ${sourceFilter ? "#444" : "#646cff"}`,
+              background: sourceFilter ? "transparent" : "#646cff20",
+              color: sourceFilter ? "#999" : "#646cff",
+              cursor: "pointer",
+            }}
+          >All</button>
+          {sources.map(s => (
+            <button
+              key={s}
+              className={`mission-log__filter-btn ${sourceFilter === s ? "active" : ""}`}
+              onClick={() => setSourceFilter(sourceFilter === s ? null : s)}
+              style={{
+                padding: "2px 8px", fontSize: 11, borderRadius: 4,
+                border: `1px solid ${sourceFilter === s ? "#646cff" : "#444"}`,
+                background: sourceFilter === s ? "#646cff20" : "transparent",
+                color: sourceFilter === s ? "#646cff" : "#999",
+                cursor: "pointer",
+              }}
+            >{s}</button>
+          ))}
+        </div>
+      )}
+      <ul className="mission-log-list">
+        {filtered.slice(0, 60).map((event) => {
+          const meta = getEventMeta(event);
+          const detailMessage = extractEventMessage(event);
+          const category = deriveLogCategory(event);
+          const source = event.details?.source as string | undefined;
+          return (
+            <li key={event.id}>
+              <span className={`mission-log__bullet mission-log__bullet--${category}`} />
+              <div className="mission-log__entry">
+                <div className="mission-log__header">
+                  <strong>{meta.icon} {meta.label}</strong>
+                  <span>{new Date(event.timestamp).toLocaleString()}</span>
+                  {source && <span className="mission-log__category" style={{ fontSize: 10, opacity: 0.7 }}>{source}</span>}
+                  {!source && <span className="mission-log__category">{formatLogCategory(category)}</span>}
+                </div>
+                {detailMessage && <p>{detailMessage}</p>}
+                {event.reasonCode && event.reasonCode !== detailMessage && (
+                  <p style={{ fontSize: 11, opacity: 0.6, marginTop: 2 }}>{event.reasonCode}</p>
+                )}
               </div>
-              {detailMessage && <p>{detailMessage}</p>}
-            </div>
-          </li>
-        );
-      })}
-      {events.length === 0 && <li>No events yet.</li>}
-    </ul>
-  </div>
-);
+            </li>
+          );
+        })}
+        {filtered.length === 0 && <li>No events yet.</li>}
+      </ul>
+    </div>
+  );
+};
 
 const MODEL_STATUS_LEGEND = [
   { key: "ready", label: "Ready", icon: "\u2713" },
@@ -1647,6 +1695,48 @@ interface EventMeta {
 function getEventMeta(event: MissionEvent): EventMeta {
   const type = event.type.toLowerCase();
   
+  // Pipeline lifecycle events
+  if (type.includes("prd_committed")) {
+    return { label: "PRD Committed", icon: "📄", tone: "note" };
+  }
+  if (type.includes("plan_created")) {
+    return { label: "Plan Created", icon: "📋", tone: "assigned" };
+  }
+  if (type.includes("plan_approved")) {
+    return { label: "Plan Approved", icon: "✓", tone: "approved" };
+  }
+  if (type.includes("plan_rejected")) {
+    return { label: "Plan Rejected", icon: "✗", tone: "failed" };
+  }
+  if (type.includes("council_approved")) {
+    return { label: "Council Pass", icon: "👍", tone: "approved" };
+  }
+  if (type.includes("council_rejected")) {
+    return { label: "Council Reject", icon: "👎", tone: "failed" };
+  }
+  if (type.includes("task_started")) {
+    return { label: "Agent Dispatched", icon: "🚀", tone: "assigned" };
+  }
+  if (type.includes("run_completed")) {
+    return { label: "Run Done", icon: "✓", tone: "completed" };
+  }
+  if (type.includes("run_failed")) {
+    return { label: "Run Failed", icon: "✗", tone: "failed" };
+  }
+  if (type.includes("task_completed")) {
+    return { label: "Task Complete", icon: "✓", tone: "completed" };
+  }
+  if (type.includes("task_failed")) {
+    return { label: "Task Failed", icon: "✗", tone: "failed" };
+  }
+  if (type.includes("test_passed")) {
+    return { label: "Tests Passed", icon: "✓", tone: "testing" };
+  }
+  if (type.includes("test_failed")) {
+    return { label: "Tests Failed", icon: "✗", tone: "failed" };
+  }
+  
+  // Legacy event types
   if (type.includes("assigned")) {
     return { label: "Assigned", icon: "→", tone: "assigned" };
   }
@@ -1687,10 +1777,14 @@ function deriveLogCategory(event: MissionEvent): MissionLogCategory {
   if (event.reasonCode?.startsWith("E/") || type === "failure") {
     return "error";
   }
+  // Pipeline failure states
+  if (type.includes("failed") || type.includes("reject")) {
+    return "error";
+  }
   if (type === "warning") {
     return "warning";
   }
-  if (type === "note") {
+  if (type === "note" || type === "prd_committed") {
     return "note";
   }
   return "success";

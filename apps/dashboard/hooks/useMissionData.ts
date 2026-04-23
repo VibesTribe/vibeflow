@@ -96,6 +96,9 @@ interface GovernorDashboardResponse {
   models: any[];
   platforms: any[];
   orchestrator_events: any[];
+  plans: any[];
+  council_reviews: any[];
+  test_results: any[];
   exchange_rates: any[];
 }
 
@@ -172,24 +175,185 @@ export function useMissionData(): MissionData {
         updatedAt: adapted.updated_at,
       });
 
-      // Map orchestrator events
+      // Build unified pipeline timeline from all sources
+      const pipelineEvents: MissionEvent[] = [];
+
+      // 1. Orchestrator events (approvals, failures, routing)
       if (gov.orchestrator_events) {
-        const mapped: MissionEvent[] = gov.orchestrator_events.map((row: any) => ({
-          id: row.id,
-          taskId: row.task_id || "unknown",
-          type: row.event_type || "unknown",
-          timestamp: row.created_at || new Date().toISOString(),
-          reasonCode: row.reason || undefined,
-          details: {
-            ...((row.details as Record<string, unknown>) || {}),
-            runnerId: row.runner_id,
-            fromRunnerId: row.from_runner_id,
-            toRunnerId: row.to_runner_id,
-            modelId: row.model_id,
-          },
-        }));
-        setEvents(mapped);
+        for (const row of gov.orchestrator_events) {
+          pipelineEvents.push({
+            id: row.id,
+            taskId: row.task_id || "unknown",
+            type: row.event_type || "unknown",
+            timestamp: row.created_at || new Date().toISOString(),
+            reasonCode: row.reason || undefined,
+            details: {
+              ...((row.details as Record<string, unknown>) || {}),
+              runnerId: row.runner_id,
+              fromRunnerId: row.from_runner_id,
+              toRunnerId: row.to_runner_id,
+              modelId: row.model_id,
+              source: "orchestrator",
+            },
+          });
+        }
       }
+
+      // 2. Task state transitions (PRD committed → available → in_progress → review → complete)
+      if (gov.tasks) {
+        for (const task of gov.tasks) {
+          const taskId = task.id;
+          const title = task.title || "Untitled";
+
+          // Task creation = PRD committed
+          if (task.created_at) {
+            pipelineEvents.push({
+              id: `${taskId}-created`,
+              taskId,
+              type: "prd_committed",
+              timestamp: task.created_at,
+              details: { message: `PRD: ${title}`, phase: task.phase, source: "task" },
+            });
+          }
+
+          // Task started
+          if (task.started_at) {
+            pipelineEvents.push({
+              id: `${taskId}-started`,
+              taskId,
+              type: "task_started",
+              timestamp: task.started_at,
+              reasonCode: task.status === "in_progress" ? "in_progress" : undefined,
+              details: { message: `Agent dispatched: ${task.assigned_to || "unknown"}`, source: "task" },
+            });
+          }
+
+          // Task completed
+          if (task.completed_at) {
+            const isFailed = task.status === "failed" || task.failure_notes;
+            pipelineEvents.push({
+              id: `${taskId}-completed`,
+              taskId,
+              type: isFailed ? "task_failed" : "task_completed",
+              timestamp: task.completed_at,
+              reasonCode: task.failure_notes || undefined,
+              details: {
+                message: isFailed ? `Failed: ${task.failure_notes || "unknown error"}` : `Completed: ${title}`,
+                status: task.status,
+                source: "task",
+              },
+            });
+          }
+        }
+      }
+
+      // 3. Plans (planner output, supervisor review)
+      if (gov.plans) {
+        for (const plan of gov.plans) {
+          const taskId = plan.prd_path || plan.id;
+          // Plan created = planner finished
+          if (plan.created_at) {
+            pipelineEvents.push({
+              id: `plan-${plan.id}-created`,
+              taskId,
+              type: "plan_created",
+              timestamp: plan.created_at,
+              details: {
+                message: `Plan v${plan.plan_version || "?"} created`,
+                complexity: plan.complexity,
+                councilMode: plan.council_mode,
+                source: "plan",
+              },
+            });
+          }
+          // Plan approved/rejected
+          if (plan.approved_at) {
+            const isRejected = plan.human_decision === "rejected" || plan.human_decision === "revision_needed";
+            pipelineEvents.push({
+              id: `plan-${plan.id}-reviewed`,
+              taskId,
+              type: isRejected ? "plan_rejected" : "plan_approved",
+              timestamp: plan.approved_at,
+              reasonCode: plan.human_decision || undefined,
+              details: {
+                message: isRejected
+                  ? `Plan ${plan.human_decision}: ${plan.council_consensus || ""}`
+                  : `Plan approved (v${plan.plan_version})`,
+                councilConsensus: plan.council_consensus,
+                source: "plan",
+              },
+            });
+          }
+        }
+      }
+
+      // 4. Council reviews (individual reviewer votes)
+      if (gov.council_reviews) {
+        for (const review of gov.council_reviews) {
+          pipelineEvents.push({
+            id: `review-${review.id}`,
+            taskId: review.plan_id,
+            type: review.vote === "reject" ? "council_rejected" : "council_approved",
+            timestamp: review.created_at,
+            details: {
+              message: `${review.lens || "Reviewer"}: ${review.vote} (confidence: ${review.confidence || "?"})`,
+              model: review.model_id,
+              concerns: review.concerns,
+              suggestions: review.suggestions,
+              source: "council",
+            },
+          });
+        }
+      }
+
+      // 5. Task runs (agent execution results)
+      if (gov.task_runs) {
+        for (const run of gov.task_runs) {
+          if (run.completed_at) {
+            const isFailed = run.status === "failed";
+            pipelineEvents.push({
+              id: `run-${run.id}`,
+              taskId: run.task_id,
+              type: isFailed ? "run_failed" : "run_completed",
+              timestamp: run.completed_at,
+              reasonCode: run.error || undefined,
+              details: {
+                message: isFailed
+                  ? `Run failed: ${run.error || "unknown"}`
+                  : `Run completed (${run.tokens_used || 0} tokens)`,
+                model: run.model_id,
+                platform: run.platform,
+                courier: run.courier,
+                chatUrl: run.chat_url,
+                source: "task_run",
+              },
+            });
+          }
+        }
+      }
+
+      // 6. Test results
+      if (gov.test_results) {
+        for (const test of gov.test_results) {
+          pipelineEvents.push({
+            id: `test-${test.id}`,
+            taskId: test.task_id,
+            type: test.passed ? "test_passed" : "test_failed",
+            timestamp: test.created_at,
+            details: {
+              message: test.passed ? "Tests passed" : `Tests failed: ${test.error || ""}`,
+              source: "test",
+            },
+          });
+        }
+      }
+
+      // Sort all events by timestamp (newest first)
+      pipelineEvents.sort((a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+
+      setEvents(pipelineEvents);
 
       setLoading((prev) => ({ ...prev, snapshot: false, events: false }));
       return;
