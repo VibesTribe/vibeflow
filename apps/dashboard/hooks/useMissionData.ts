@@ -100,6 +100,8 @@ interface GovernorDashboardResponse {
   council_reviews: any[];
   test_results: any[];
   exchange_rates: any[];
+  failure_records: any[];
+  maintenance_commands: any[];
 }
 
 async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
@@ -343,6 +345,51 @@ export function useMissionData(): MissionData {
             details: {
               message: test.passed ? "Tests passed" : `Tests failed: ${test.error || ""}`,
               source: "test",
+            },
+          });
+        }
+      }
+
+      // 7. Failure records (quality issues, broken output, routing failures)
+      if (gov.failure_records) {
+        for (const fail of gov.failure_records) {
+          pipelineEvents.push({
+            id: `failure-${fail.id}`,
+            taskId: fail.task_id || fail.task_run_id || "system",
+            type: "failure_detected",
+            timestamp: fail.created_at,
+            reasonCode: fail.failure_type || undefined,
+            details: {
+              message: `Failure: ${fail.failure_type || "unknown"} (${fail.failure_category || "unknown"})`,
+              model: fail.model_id,
+              platform: fail.platform,
+              durationSec: fail.duration_sec,
+              tokensUsed: fail.tokens_used,
+              source: "failure_record",
+            },
+          });
+        }
+      }
+
+      // 8. Maintenance commands (branch create/merge, cleanup operations)
+      if (gov.maintenance_commands) {
+        for (const cmd of gov.maintenance_commands) {
+          const payload = typeof cmd.payload === "string" ? JSON.parse(cmd.payload || "{}") : (cmd.payload || {});
+          const isCompleted = cmd.status === "completed";
+          const isFailed = cmd.status === "failed";
+          pipelineEvents.push({
+            id: `maint-${cmd.id}`,
+            taskId: payload.source?.replace("task/", "") || cmd.id,
+            type: isFailed ? "maintenance_failed" : isCompleted ? "maintenance_completed" : "maintenance_started",
+            timestamp: cmd.approved_at || cmd.created_at,
+            reasonCode: cmd.error_message || undefined,
+            details: {
+              message: `${cmd.command_type}: ${isCompleted ? "done" : isFailed ? `failed — ${cmd.error_message || "unknown"}` : cmd.status}`,
+              commandType: cmd.command_type,
+              payload,
+              approvedBy: cmd.approved_by,
+              retryCount: cmd.retry_count,
+              source: "maintenance",
             },
           });
         }

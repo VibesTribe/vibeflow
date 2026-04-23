@@ -1735,6 +1735,18 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("test_failed")) {
     return { label: "Tests Failed", icon: "✗", tone: "failed" };
   }
+  if (type.includes("failure_detected")) {
+    return { label: "Failure", icon: "⚠", tone: "failed" };
+  }
+  if (type.includes("maintenance_completed")) {
+    return { label: "Maintenance Done", icon: "🔧", tone: "completed" };
+  }
+  if (type.includes("maintenance_failed")) {
+    return { label: "Maintenance Failed", icon: "🔧", tone: "failed" };
+  }
+  if (type.includes("maintenance_started")) {
+    return { label: "Maintenance", icon: "🔧", tone: "assigned" };
+  }
   
   // Legacy event types
   if (type.includes("assigned")) {
@@ -1778,8 +1790,12 @@ function deriveLogCategory(event: MissionEvent): MissionLogCategory {
     return "error";
   }
   // Pipeline failure states
-  if (type.includes("failed") || type.includes("reject")) {
+  if (type.includes("failed") || type.includes("reject") || type.includes("failure_detected")) {
     return "error";
+  }
+  // Maintenance events
+  if (type.includes("maintenance")) {
+    return "note";
   }
   if (type === "warning") {
     return "warning";
