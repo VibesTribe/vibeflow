@@ -38,11 +38,9 @@ const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "mer
 const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 // REVIEW_STATUS is used for supervisor automated output review (not human).
-// Header review button is reserved for: (1) visual UI/UX review,
-// (2) architecture decisions after Council, (3) API key credit exhausted.
-// Those scenarios will use a separate mechanism (e.g. human_review flag).
-// Until that mechanism exists, no task status triggers the header review pill.
-const HEADER_REVIEW_STATUSES = new Set<TaskStatus>([]);
+// Header review pill shows tasks needing human action.
+// Triggered by: (1) visual UI/UX tasks after testing, (2) researcher suggestions after council, (3) API credit exhaustion.
+const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["human_review"]);
 
 type HeaderStatusMeta = {
   label: string;
