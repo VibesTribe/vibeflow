@@ -225,16 +225,16 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onOpenAs
         />
         <span className={`slice-orbit__badge slice-orbit__badge--${agent.tier.toLowerCase()}`}>{agent.tier}</span>
       </span>
-      <span className="slice-orbit__task">{assignment.task.taskNumber ?? assignment.task.title}</span>
-      <span className="slice-orbit__model" aria-hidden="true">
-        {agent.name}
-      </span>
       <span
         className="slice-orbit__status"
         style={{ color: STATUS_ACCENT[assignment.task.status] ?? "#94a3b8" }}
         aria-hidden="true"
       >
         {TASK_STATUS_LABELS[assignment.task.status] ?? formatTaskStatus(assignment.task.status)}
+      </span>
+      <span className="slice-orbit__task">{assignment.task.taskNumber ?? assignment.task.title}</span>
+      <span className="slice-orbit__model" aria-hidden="true">
+        {agent.name}
       </span>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
