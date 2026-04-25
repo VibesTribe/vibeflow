@@ -5729,6 +5729,22 @@ a {
   text-align: right;
 }
 
+.slice-orbit__status {
+  position: absolute;
+  top: calc(100% + 24px);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 0.46rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(2, 6, 23, 0.85);
+  z-index: 5;
+}
+
 .slice-orbit__location {
   font-size: 0.52rem;
   letter-spacing: 0.16em;
@@ -7263,6 +7279,22 @@ a {
 .slice-orbit__node--north.slice-orbit__node--west .slice-orbit__model {
   transform: translateX(-60%) !important;
   text-align: right !important;
+}
+
+.slice-orbit__status {
+  position: absolute !important;
+  top: calc(100% + 24px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  font-size: 0.58rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 6px rgba(2, 6, 23, 0.85) !important;
+  z-index: 5 !important;
 }
 
 .slice-orbit__location {

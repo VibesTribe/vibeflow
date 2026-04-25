@@ -5,12 +5,12 @@ import { FALLBACK_ICON } from "../utils/icons";
 import { MissionEvent } from "../../../src/utils/events";
 
 const ACTIVE_STATUSES = new Set([
-  "assigned",
+  "pending",
   "in_progress",
   "received",
   "review",
   "testing",
-  "human_review",
+  "merge_pending",
 ]);
 
 const CANVAS_SIZE = 440;
@@ -170,16 +170,27 @@ interface OrbitNodeProps {
 }
 
 const TASK_STATUS_LABELS: Partial<Record<TaskSnapshot["status"], string>> = {
-  assigned: "Assigned",
+  pending: "Pending",
   in_progress: "In Progress",
   received: "Received",
   review: "Review",
   testing: "Testing",
-  human_review: "Human Review",
   complete: "Complete",
   merged: "Merged",
   merge_pending: "Merge Pending",
-  blocked: "Blocked",
+  failed: "Failed",
+};
+
+const STATUS_ACCENT: Partial<Record<TaskSnapshot["status"], string>> = {
+  pending: "#94a3b8",
+  in_progress: "#67e8f9",
+  received: "#86efac",
+  review: "#a78bfa",
+  testing: "#facc15",
+  complete: "#34d399",
+  merge_pending: "#f0ad4b",
+  merged: "#34d399",
+  failed: "#f87171",
 };
 
 const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onOpenAssignment }) => {
@@ -218,6 +229,13 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onOpenAs
       <span className="slice-orbit__model" aria-hidden="true">
         {agent.name}
       </span>
+      <span
+        className="slice-orbit__status"
+        style={{ color: STATUS_ACCENT[assignment.task.status] ?? "#94a3b8" }}
+        aria-hidden="true"
+      >
+        {TASK_STATUS_LABELS[assignment.task.status] ?? formatTaskStatus(assignment.task.status)}
+      </span>
       {assignment.isBlocking && <span className="slice-orbit__alert">!</span>}
     </button>
   );
@@ -233,7 +251,7 @@ function buildOrbitAssignments(slice: MissionSlice): SliceAssignment[] {
     slice.tasks[0] ?? {
       id: `${slice.id}-placeholder`,
       title: slice.name,
-      status: "assigned",
+      status: "pending",
       confidence: 1,
       updatedAt: slice.assignments[0]?.task.updatedAt ?? new Date().toISOString(),
     };
