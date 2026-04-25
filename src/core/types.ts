@@ -12,16 +12,14 @@
 /* @editable:core-types */
 export type TaskStatus =
   | "pending"
-  | "assigned"
   | "in_progress"
   | "received"
   | "review"
   | "testing"
-  | "human_review"
   | "complete"
-  | "merged"
   | "merge_pending"
-  | "blocked";
+  | "merged"
+  | "failed";
 
 export type TaskLocation =
   | { kind: "platform"; label: string; link?: string }

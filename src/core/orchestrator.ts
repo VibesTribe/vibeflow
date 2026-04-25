@@ -54,7 +54,7 @@ export class Orchestrator {
       type: "status_change",
       timestamp,
       details: {
-        to: "assigned",
+        to: "in_progress",
         provider: decision.provider,
         confidence: decision.confidence,
         title: packet.title,
@@ -107,7 +107,7 @@ export class Orchestrator {
     return {
       id: packet.taskId,
       title: packet.title,
-      status: "assigned",
+      status: "in_progress",
       confidence: packet.confidence,
       owner: decision.provider,
       lessons: [],

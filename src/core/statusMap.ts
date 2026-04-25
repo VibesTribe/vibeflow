@@ -13,19 +13,19 @@
 import { TaskStatus } from "./types";
 
 export const STATUS_ORDER: TaskStatus[] = [
-  "assigned",
+  "pending",
   "in_progress",
   "received",
   "review",
   "testing",
-  "human_review",
   "complete",
+  "merge_pending",
   "merged",
-  "blocked",
+  "failed",
 ];
 
 export function canTransition(from: TaskStatus, to: TaskStatus): boolean {
-  if (to === "blocked") return true;
+  if (to === "failed") return true;
   const fromIndex = STATUS_ORDER.indexOf(from);
   const toIndex = STATUS_ORDER.indexOf(to);
   return toIndex >= fromIndex;

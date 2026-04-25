@@ -66,7 +66,7 @@ export function deriveTaskQuality(events: MissionEvent[]): MissionEventQuality {
 }
 
 const POSITIVE_STATUSES = new Set(["complete", "merged", "merge_pending"]);
-const NEGATIVE_STATUSES = new Set(["blocked"]);
+const NEGATIVE_STATUSES = new Set(["failed"]);
 const POSITIVE_EVENT_TYPES = new Set(["complete", "merged", "testing_passed", "human_approved"]);
 
 function normalizeEvent(entry: Record<string, unknown>): MissionEvent {
