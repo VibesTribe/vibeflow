@@ -46,6 +46,7 @@ interface DashboardSnapshot {
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
   };
+  systemCounters?: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
 }
 
 interface RunMetricEntry {
@@ -80,7 +81,9 @@ export interface MissionData {
     slices: SliceROI[];
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
+    tasks: import("../lib/vibepilotAdapter").TaskRunROI[];
   } | null;
+  systemCounters: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
   loading: MissionLoadingState;
   refresh: () => void;
 }
@@ -174,7 +177,8 @@ export function useMissionData(): MissionData {
         gov.tasks || [],
         gov.task_runs || [],
         gov.models || [],
-        gov.platforms || []
+        gov.platforms || [],
+        gov.system_counters
       );
       setSnapshot({
         tasks: adapted.tasks,
@@ -184,6 +188,7 @@ export function useMissionData(): MissionData {
         metrics: adapted.metrics,
         sliceCatalog: adapted.slices,
         roi: adapted.roi,
+        systemCounters: adapted.system_counters,
         updatedAt: adapted.updated_at,
       });
 
@@ -529,6 +534,7 @@ export function useMissionData(): MissionData {
     qualityByTask,
     tokenUsage,
     roi: snapshot.roi || null,
+    systemCounters: snapshot.systemCounters || null,
     loading,
     refresh,
   };

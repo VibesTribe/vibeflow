@@ -1,0 +1,203 @@
+/**
+ * ROI Calculator Utilities
+ *
+ * Handles:
+ * - Exchange rate fetching (USD → CAD)
+ * - Cost formatting
+ * - ROI calculations for dashboard
+ */
+// Governor API URL — auto-detect based on where the dashboard is running.
+function resolveGovernorAPI() {
+    if (import.meta.env.VITE_GOVERNOR_API) {
+        return import.meta.env.VITE_GOVERNOR_API;
+    }
+    if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+        return "https://webhooks.vibestribe.rocks";
+    }
+    return "http://localhost:8080";
+}
+const GOVERNOR_API = resolveGovernorAPI();
+const CACHE_KEY = "vibepilot_exchange_rate";
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+/**
+ * Fetch exchange rate from Governor API (local PG)
+ */
+export async function fetchExchangeRate() {
+    // Check cache first
+    const cached = getCachedExchangeRate();
+    if (cached) {
+        return cached;
+    }
+    // Try governor API first (local PG has exchange_rates table)
+    try {
+        const res = await fetch(`${GOVERNOR_API}/api/dashboard`, { cache: "no-store" });
+        if (res.ok) {
+            const data = await res.json();
+            const rates = data.exchange_rates || [];
+            const usdCad = rates.find((r) => r.id === "usd_cad");
+            if (usdCad) {
+                const result = {
+                    rate: usdCad.rate,
+                    fetched_at: usdCad.fetched_at,
+                    source: usdCad.source,
+                };
+                cacheExchangeRate(result);
+                return result;
+            }
+        }
+    }
+    catch (e) {
+        console.warn("[roi] Failed to fetch exchange rate from governor:", e);
+    }
+    // Fallback to exchangerate-api.com (free tier)
+    try {
+        const response = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+        if (response.ok) {
+            const data = await response.json();
+            const cadRate = data.rates?.CAD;
+            if (cadRate) {
+                const result = {
+                    rate: cadRate,
+                    fetched_at: new Date().toISOString(),
+                    source: "exchangerate-api.com",
+                };
+                cacheExchangeRate(result);
+                return result;
+            }
+        }
+    }
+    catch (e) {
+        console.warn("[roi] Failed to fetch from exchange API:", e);
+    }
+    // Final fallback
+    return {
+        rate: 1.36,
+        fetched_at: new Date().toISOString(),
+        source: "fallback",
+    };
+}
+function getCachedExchangeRate() {
+    try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw)
+            return null;
+        const cached = JSON.parse(raw);
+        const age = Date.now() - new Date(cached.fetched_at).getTime();
+        if (age < CACHE_TTL_MS) {
+            return cached;
+        }
+    }
+    catch {
+        // Ignore parse errors
+    }
+    return null;
+}
+function cacheExchangeRate(rate) {
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(rate));
+    }
+    catch {
+        // Ignore storage errors
+    }
+}
+/**
+ * Convert USD to CAD
+ */
+export function usdToCad(usd, rate) {
+    return Math.round(usd * rate * 100) / 100;
+}
+/**
+ * Format currency
+ */
+export function formatCurrency(amount, currency = "USD") {
+    const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
+    });
+    return formatter.format(amount);
+}
+/**
+ * Format tokens with K/M suffix
+ */
+export function formatTokens(tokens) {
+    if (tokens >= 1_000_000) {
+        return `${(tokens / 1_000_000).toFixed(1)}M`;
+    }
+    if (tokens >= 1_000) {
+        return `${(tokens / 1_000).toFixed(1)}K`;
+    }
+    return tokens.toString();
+}
+/**
+ * Format percentage
+ */
+export function formatPercent(value) {
+    return `${value.toFixed(1)}%`;
+}
+/**
+ * Calculate ROI percentage
+ */
+export function calculateROIPercent(savings, actual) {
+    if (actual <= 0)
+        return 0;
+    return Math.round((savings / actual) * 100 * 10) / 10;
+}
+/**
+ * Get recommendation label and color
+ */
+export function getRecommendationMeta(recommendation) {
+    switch (recommendation) {
+        case "expired":
+            return { label: "Expired", color: "#ef4444", icon: "!" };
+        case "renew_soon":
+            return { label: "Renew Soon", color: "#f59e0b", icon: "!" };
+        case "good_value_renew":
+            return { label: "Good Value", color: "#22c55e", icon: "+" };
+        default:
+            return { label: "Evaluate", color: "#6b7280", icon: "?" };
+    }
+}
+/**
+ * Aggregate ROI totals from slices
+ */
+export function aggregateSliceROI(slices) {
+    return slices.reduce((acc, slice) => ({
+        total_tokens: acc.total_tokens + slice.total_tokens_in + slice.total_tokens_out,
+        total_theoretical_usd: acc.total_theoretical_usd + slice.theoretical_cost_usd,
+        total_actual_usd: acc.total_actual_usd + slice.actual_cost_usd,
+        total_savings_usd: acc.total_savings_usd + slice.savings_usd,
+        total_tasks: acc.total_tasks + slice.total_tasks,
+        total_completed: acc.total_completed + slice.completed_tasks,
+    }), {
+        total_tokens: 0,
+        total_theoretical_usd: 0,
+        total_actual_usd: 0,
+        total_savings_usd: 0,
+        total_tasks: 0,
+        total_completed: 0,
+    });
+}
+/**
+ * Subscription summary
+ */
+export function getSubscriptionSummary(subscriptions) {
+    const totalMonthlyCost = subscriptions.reduce((sum, s) => sum + (s.subscription_cost_usd || 0), 0);
+    const totalTasksCompleted = subscriptions.reduce((sum, s) => sum + s.tasks_completed, 0);
+    const avgCostPerTask = totalTasksCompleted > 0 ? totalMonthlyCost / totalTasksCompleted : 0;
+    const expiringWithin7Days = subscriptions.filter(s => s.days_remaining <= 7).length;
+    return {
+        totalMonthlyCost,
+        totalTasksCompleted,
+        avgCostPerTask,
+        expiringWithin7Days,
+    };
+}
+/**
+ * Hook-style getter for exchange rate
+ */
+export async function getExchangeRate() {
+    const result = await fetchExchangeRate();
+    return result.rate;
+}

@@ -722,6 +722,14 @@ export function calculateMetrics(
 /**
  * Full adapter: Transform Supabase data to Dashboard shape
  */
+export interface SystemCounters {
+  id: string;
+  total_tokens: number;
+  total_cost_usd: number;
+  total_runs: number;
+  updated_at: string;
+}
+
 export interface DashboardData {
   tasks: TaskSnapshot[];
   agents: AgentSnapshot[];
@@ -732,7 +740,9 @@ export interface DashboardData {
     slices: SliceROI[];
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
+    tasks: TaskRunROI[];
   };
+  system_counters: SystemCounters | null;
   updated_at: string;
 }
 
@@ -740,12 +750,33 @@ export function adaptVibePilotToDashboard(
   tasks: VibePilotTask[],
   runs: VibePilotTaskRun[],
   models: VibePilotModel[],
-  platforms: VibePilotPlatform[]
+  platforms: VibePilotPlatform[],
+  systemCounters?: SystemCounters[]
 ): DashboardData {
   const roi = calculateROI(runs);
   const sliceROI = calculateSliceROI(tasks, runs);
   const subscriptionROI = calculateSubscriptionROI(models);
   const modelROI = calculateModelROI(runs, models, tasks);
+  
+  // Build per-task ROI from runs
+  const taskROI: TaskRunROI[] = runs.map(run => {
+    const task = tasks.find(t => t.id === run.task_id);
+    return {
+      task_id: run.task_id,
+      task_title: task?.title || "Unknown",
+      slice_id: task?.phase || null,
+      run_id: run.id,
+      tokens_in: run.tokens_in || 0,
+      tokens_out: run.tokens_out || 0,
+      courier_tokens: run.courier_tokens || 0,
+      theoretical_cost_usd: run.platform_theoretical_cost_usd || 0,
+      actual_cost_usd: run.total_actual_cost_usd || 0,
+      savings_usd: run.total_savings_usd || 0,
+      status: run.status || "unknown",
+      started_at: run.started_at || "",
+      completed_at: run.completed_at || null,
+    };
+  });
   
   const completedTasks = tasks.filter(t => t.status === "merged").length;
   
@@ -766,7 +797,9 @@ export function adaptVibePilotToDashboard(
       slices: sliceROI,
       models: modelROI,
       subscriptions: subscriptionROI,
+      tasks: taskROI,
     },
+    system_counters: systemCounters?.[0] || null,
     updated_at: new Date().toISOString(),
   };
 }

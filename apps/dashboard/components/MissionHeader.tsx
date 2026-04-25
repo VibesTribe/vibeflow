@@ -37,7 +37,12 @@ interface HeaderPillConfig {
 const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
 const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
-const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["review"]);
+// REVIEW_STATUS is used for supervisor automated output review (not human).
+// Header review button is reserved for: (1) visual UI/UX review,
+// (2) architecture decisions after Council, (3) API key credit exhausted.
+// Those scenarios will use a separate mechanism (e.g. human_review flag).
+// Until that mechanism exists, no task status triggers the header review pill.
+const HEADER_REVIEW_STATUSES = new Set<TaskStatus>([]);
 
 type HeaderStatusMeta = {
   label: string;
@@ -123,9 +128,9 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
   {
     key: "review",
     label: "Review",
-    description: "Needs human approval",
-    subtitle: "Needs review",
-    icon: "\u{1F6A9}",
+    description: "Supervisor reviewing output",
+    subtitle: "In review",
+    icon: "\u{1F504}",
     tone: "pill-flagged",
     filter: (task) => HEADER_REVIEW_STATUSES.has(task.status),
   },
