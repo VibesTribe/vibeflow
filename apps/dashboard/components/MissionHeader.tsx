@@ -42,7 +42,7 @@ const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 // (2) architecture decisions after Council, (3) API key credit exhausted.
 // Those scenarios will use a separate mechanism (e.g. human_review flag).
 // Until that mechanism exists, no task status triggers the header review pill.
-const HEADER_REVIEW_STATUSES = new Set<TaskStatus>([]);
+const HEADER_REVIEW_STATUSES = new Set<TaskStatus>(["review"]);
 
 type HeaderStatusMeta = {
   label: string;
