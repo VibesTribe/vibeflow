@@ -2164,7 +2164,7 @@ a {
   color: rgba(248, 250, 252, 0.85);
 }
 .mission-header__stat-pill--tokens .mission-header__stat-value {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: #fefad8;
 }
 
@@ -2245,7 +2245,13 @@ a {
 
 .mission-header__stat-value--tokens {
   color: #fefad8;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.mission-header__stat-value--roi {
+  color: #fefad8;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
 }
 
