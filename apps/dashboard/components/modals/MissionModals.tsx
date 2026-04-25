@@ -123,7 +123,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <DocumentList />;
       break;
     case "logs":
-      content = <LogList events={events} />;
+      content = <LogList events={events} slices={slices} />;
       break;
     case "roi":
       content = <RoiPanel agents={agents} slices={slices} roi={roi} />;
@@ -196,9 +196,21 @@ const DocumentList: React.FC = () => (
   </div>
 );
 
-const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => {
+const LogList: React.FC<{ events: MissionEvent[]; slices: MissionSlice[] }> = ({ events, slices }) => {
   const [sourceFilter, setSourceFilter] = useState<string | null>(null);
   
+  // Build a lookup map: taskId → task title
+  const taskTitles = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const slice of slices) {
+      for (const task of slice.tasks ?? []) {
+        if (task.id) map.set(task.id, task.title ?? "");
+        if (task.taskNumber) map.set(task.taskNumber, task.title ?? "");
+      }
+    }
+    return map;
+  }, [slices]);
+
   const sources = useMemo(() => {
     const s = new Set<string>();
     events.forEach(e => { if (e.details?.source) s.add(e.details.source as string); });
@@ -247,12 +259,13 @@ const LogList: React.FC<{ events: MissionEvent[] }> = ({ events }) => {
           const detailMessage = extractEventMessage(event);
           const category = deriveLogCategory(event);
           const source = event.details?.source as string | undefined;
+          const taskTitle = taskTitles.get(event.taskId) ?? "";
           return (
             <li key={event.id}>
               <span className={`mission-log__bullet mission-log__bullet--${category}`} />
               <div className="mission-log__entry">
                 <div className="mission-log__header">
-                  <strong>{meta.icon} {meta.label}</strong>
+                  <strong>{meta.icon} {meta.label}{taskTitle ? ` — ${taskTitle}` : ""}</strong>
                   <span>{new Date(event.timestamp).toLocaleString()}</span>
                   {source && <span className="mission-log__category" style={{ fontSize: 10, opacity: 0.7 }}>{source}</span>}
                   {!source && <span className="mission-log__category">{formatLogCategory(category)}</span>}

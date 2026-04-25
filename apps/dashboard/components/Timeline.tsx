@@ -9,14 +9,15 @@ interface TimelineProps {
 }
 
 const order = [
-  "assigned",
+  "pending",
   "in_progress",
   "received",
   "review",
   "testing",
-  "human_review",
   "complete",
+  "merge_pending",
   "merged",
+  "failed",
 ];
 
 const Timeline: React.FC<TimelineProps> = ({ tasks, isLoading, qualityByTask }) => {
