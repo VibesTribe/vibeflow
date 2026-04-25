@@ -57,13 +57,13 @@ const DOC_LINKS = [
   { label: "Runbook", path: "/docs/runbook.html" },
 ];
 
-const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "review", "testing"]);
+const ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
 
 type SliceFilterKey = "complete" | "active" | "pending" | "review";
 
 const COMPLETED_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
-const REVIEW_STATUSES = new Set<TaskStatus>(["human_review"]);
-const PENDING_STATUSES = new Set<TaskStatus>(["assigned", "blocked"]);
+const REVIEW_STATUSES = new Set<TaskStatus>(["review"]);
+const PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 
 const SLICE_FILTER_META: Record<
   SliceFilterKey,
@@ -997,16 +997,15 @@ const STATUS_META: Partial<
     }
   >
 > = {
-  assigned: { label: "Assigned", tone: "active", icon: "\u21BB", accent: "#60a5fa" },
+  pending: { label: "Pending", tone: "default", icon: "\u2022", accent: "#94a3b8" },
   in_progress: { label: "In Progress", tone: "active", icon: "\u21BB", accent: "#67e8f9" },
   received: { label: "Received", tone: "active", icon: "\u21BB", accent: "#86efac" },
   review: { label: "Review", tone: "active", icon: "\u2699", accent: "#a78bfa" },
   testing: { label: "Testing", tone: "active", icon: "\u2699", accent: "#facc15" },
-  human_review: { label: "Needs Review", tone: "flagged", icon: "\u{1F6A9}", accent: "#ff3b6f" },
   complete: { label: "Completed", tone: "complete", icon: "\u2713", accent: "#34d399" },
-  merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
   merge_pending: { label: "Merge Pending", tone: "complete", icon: "\u23F3", accent: "#f0ad4b" },
-  blocked: { label: "Blocked", tone: "locked", icon: "\u{1F512}", accent: "#f87171" },
+  merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
+  failed: { label: "Failed", tone: "locked", icon: "\u2717", accent: "#f87171" },
 };
 
 const DEFAULT_STATUS_META = {

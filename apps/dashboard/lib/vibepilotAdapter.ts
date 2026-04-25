@@ -127,14 +127,14 @@ function mapTaskStatus(status: string): TaskSnapshot["status"] {
     pending: "pending",
     available: "pending",
     in_progress: "in_progress",
-    review: "review",              // AI supervisor reviewing output
+    review: "review",
     testing: "testing",
-    awaiting_human: "human_review", // Human review needed (visual UI/UX only)
+    awaiting_human: "failed",
     merged: "merged",
     complete: "complete",
     merge_pending: "merge_pending",
-    failed: "pending",
-    escalated: "pending",
+    failed: "failed",
+    escalated: "failed",
   };
   return statusMap[status] || "pending";
 }

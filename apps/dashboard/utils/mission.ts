@@ -154,7 +154,7 @@ export function deriveSlices(
       case "completed":
         slice.completed += 1;
         break;
-      case "blocked":
+      case "failed":
         slice.blocked += 1;
         break;
       case "active":
@@ -178,7 +178,7 @@ export function deriveSlices(
     }
 
     slice.tasks.push(task);
-    slice.assignments.push({ task, agent: mappedAgent, isBlocking: bucket === "blocked" });
+    slice.assignments.push({ task, agent: mappedAgent, isBlocking: bucket === "failed" });
     sliceAccumulator.set(slice.id, slice);
   }
 
@@ -252,16 +252,15 @@ const TRULY_ACTIVE_STATUSES = new Set<TaskStatus>([
   "received", 
   "review",
   "testing",
-  "human_review",
 ]);
 
 function isTrulyActive(status: TaskStatus): boolean {
   return TRULY_ACTIVE_STATUSES.has(status);
 }
 
-function classifyTask(status: TaskStatus, event?: MissionEvent): "completed" | "blocked" | "active" | "pending" {
-  if (status === "blocked" || event?.reasonCode?.startsWith("E/")) {
-    return "blocked";
+function classifyTask(status: TaskStatus, event?: MissionEvent): "completed" | "failed" | "active" | "pending" {
+  if (status === "failed" || event?.reasonCode?.startsWith("E/")) {
+    return "failed";
   }
   if (isCompleted(status)) {
     return "completed";
@@ -309,7 +308,7 @@ export function buildStatusSummary(tasks: TaskSnapshot[]): StatusSummary {
       acc.total += 1;
       if (bucket === "completed") {
         acc.completed += 1;
-      } else if (bucket === "blocked") {
+      } else if (bucket === "failed") {
         acc.blocked += 1;
       } else if (bucket === "active") {
         acc.active += 1;
@@ -454,13 +453,13 @@ function formatDuration(ms: number): string {
   return `${Math.max(1, minutes)}m`;
 }
 
-const ACTIVE_STATUSES = new Set<TaskStatus>(["assigned", "in_progress", "received", "testing"]);
+const ACTIVE_STATUSES = new Set<TaskStatus>(["pending", "in_progress", "received", "testing"]);
 
 export function normalizeAgentStatus(status: string) {
   const lower = (status ?? "").toLowerCase().trim();
   if (lower.includes("credit")) return "credit";
   if (lower.includes("cooldown") || lower.includes("cool down")) return "cooldown";
-  if (lower.includes("issue") || lower.includes("error") || lower.includes("blocked")) return "issue";
+  if (lower.includes("issue") || lower.includes("error") || lower.includes("failed")) return "issue";
   if (
     lower.includes("active") ||
     lower.includes("in_progress") ||
