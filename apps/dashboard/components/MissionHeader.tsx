@@ -82,12 +82,13 @@ function formatTokenCount(value: number): string {
 }
 
 function formatUsd(amount: number): string {
-  const decimals = Math.abs(amount) < 0.01 ? 6 : 2;
+  if (amount === 0) return "$0";
+  if (Math.abs(amount) < 0.01) return "<$0.01";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 
