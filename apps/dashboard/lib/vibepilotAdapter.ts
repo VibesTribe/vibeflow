@@ -130,6 +130,7 @@ function mapTaskStatus(status: string): TaskSnapshot["status"] {
     review: "review",
     testing: "testing",
     awaiting_human: "failed",
+    human_review: "human_review",
     merged: "merged",
     complete: "complete",
     merge_pending: "merge_pending",
@@ -211,7 +212,7 @@ export function transformTasks(
       packet: task.result?.prompt_packet
         ? { prompt: String(task.result.prompt_packet) }
         : undefined,
-      mergePending: task.status === "approval",
+      mergePending: task.status === "merge_pending",
       metrics: {
         tokensUsed: run?.tokens_used || 0,
         runtimeSeconds,
@@ -329,7 +330,7 @@ export function transformSlices(tasks: VibePilotTask[]): SliceCatalog[] {
     if (task.status === "merged") {
       stats.done += 1;
     }
-    if (task.status === "approval") {
+    if (task.status === "merge_pending") {
       stats.mergePending += 1;
     }
     sliceMap.set(sliceId, stats);

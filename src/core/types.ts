@@ -19,7 +19,8 @@ export type TaskStatus =
   | "complete"
   | "merge_pending"
   | "merged"
-  | "failed";
+  | "failed"
+  | "human_review";
 
 export type TaskLocation =
   | { kind: "platform"; label: string; link?: string }

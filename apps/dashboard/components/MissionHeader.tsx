@@ -59,6 +59,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   merge_pending: { label: "Merge Pending", tone: "complete", icon: "\u23F3", accent: "#f0ad4b" },
   merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
   failed: { label: "Failed", tone: "locked", icon: "\u2717", accent: "#f87171" },
+  human_review: { label: "Human Review", tone: "flagged", icon: "\u26A0", accent: "#f59e0b" },
 };
 
 const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
