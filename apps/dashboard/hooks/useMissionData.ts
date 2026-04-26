@@ -45,6 +45,7 @@ interface DashboardSnapshot {
     slices: SliceROI[];
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
+    tasks: import("../lib/vibepilotAdapter").TaskRunROI[];
   };
   systemCounters?: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
 }
@@ -115,6 +116,7 @@ interface GovernorDashboardResponse {
   exchange_rates: any[];
   failure_records: any[];
   maintenance_commands: any[];
+  system_counters?: any[];
 }
 
 async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
