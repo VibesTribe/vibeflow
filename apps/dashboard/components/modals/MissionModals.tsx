@@ -2207,6 +2207,25 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("test_failed")) {
     return { label: "Tests Failed", icon: "✗", tone: "failed" };
   }
+  // Merge lifecycle events
+  if (type.includes("task_merged_to_module")) {
+    return { label: "Merged to Module", icon: "🔀", tone: "completed" };
+  }
+  if (type.includes("merge_conflict_detected")) {
+    return { label: "Merge Conflict", icon: "⚠️", tone: "warning" };
+  }
+  if (type.includes("module_merged_to_testing")) {
+    return { label: "Module → Testing", icon: "📦", tone: "completed" };
+  }
+  if (type.includes("module_merge_failed")) {
+    return { label: "Module Merge Failed", icon: "✗", tone: "failed" };
+  }
+  if (type.includes("integration_merge_failed")) {
+    return { label: "Integration Merge Failed", icon: "✗", tone: "failed" };
+  }
+  if (type.includes("plan_complete")) {
+    return { label: "Plan Complete (merged to main)", icon: "🏁", tone: "approved" };
+  }
   if (type.includes("failure_detected")) {
     return { label: "Failure", icon: "⚠", tone: "failed" };
   }
