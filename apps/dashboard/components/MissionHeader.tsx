@@ -173,7 +173,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   }, [tasks]);
 
   const pills = useMemo(() => {
-    const totalTasks = Math.max(statusSummary.total, 1);
+    const totalTasks = statusSummary.total;
     return HEADER_PILL_CONFIGS.map((pill) => ({
       ...pill,
       value: pill.key === "complete" ? `${taskBuckets.complete}/${totalTasks}` : taskBuckets[pill.key],
