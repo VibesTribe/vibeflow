@@ -2174,6 +2174,21 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("task_dispatched")) {
     return { label: "Task Dispatched", icon: "🚀", tone: "assigned" };
   }
+  if (type.includes("output_received")) {
+    return { label: "Output Received", icon: "📥", tone: "completed" };
+  }
+  if (type.includes("planner_called")) {
+    return { label: "Planner Called", icon: "🧠", tone: "assigned" };
+  }
+  if (type.includes("supervisor_called")) {
+    return { label: "Supervisor Called", icon: "👨‍💼", tone: "assigned" };
+  }
+  if (type.includes("revision_needed")) {
+    return { label: "Revision Needed", icon: "🔄", tone: "warning" };
+  }
+  if (type.includes("reroute")) {
+    return { label: "Rerouted", icon: "↻", tone: "route" };
+  }
   if (type.includes("run_completed")) {
     return { label: "Run Done", icon: "✓", tone: "completed" };
   }
