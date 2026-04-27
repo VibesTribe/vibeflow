@@ -1683,13 +1683,24 @@ function extractEventMessage(event: MissionEvent): string | null {
   if (!event.details) {
     return null;
   }
-  if ("message" in event.details) {
-    const value = (event.details as Record<string, unknown>).message;
-    if (value === undefined || value === null) {
-      return null;
+  const details = event.details as Record<string, unknown>;
+  
+  // Check for 'message' field first
+  if ("message" in details) {
+    const value = details.message;
+    if (value !== undefined && value !== null) {
+      return typeof value === "string" ? value : JSON.stringify(value);
     }
-    return typeof value === "string" ? value : JSON.stringify(value);
   }
+  
+  // Check for 'detail' field (used by orchestrator events)
+  if ("detail" in details) {
+    const value = details.detail;
+    if (value !== undefined && value !== null) {
+      return typeof value === "string" ? value : JSON.stringify(value);
+    }
+  }
+  
   return null;
 }
 
@@ -1702,7 +1713,7 @@ function formatEventLabel(value?: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note";
+type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note" | "error";
 
 interface EventMeta {
   label: string;
@@ -1787,7 +1798,22 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("approved") || type.includes("approval")) {
     return { label: "Approved", icon: "✓", tone: "approved" };
   }
+  // Check for specific failure types from details
   if (type.includes("fail") || type.includes("error") || type.includes("reject")) {
+    // Orchestrator events with broken_output etc.
+    if (event.details && typeof event.details === "object") {
+      const details = event.details as Record<string, unknown>;
+      if (details.class === "broken_output") {
+        return { label: "Broken Output", icon: "✗", tone: "error" };
+      }
+      if (details.class === "timeout") {
+        return { label: "Timeout", icon: "⏰", tone: "error" };
+      }
+      if (details.class === "validation_failed") {
+        return { label: "Validation Failed", icon: "✗", tone: "error" };
+      }
+      // Add more specific failure types as needed
+    }
     return { label: "Failed", icon: "✗", tone: "failed" };
   }
   return { label: formatEventLabel(event.type), icon: "•", tone: "note" };
