@@ -675,8 +675,7 @@ const RoiPanel: React.FC<{
         </div>
       </dl>
 
-      {roi?.slices && roi.slices.length > 0 && (
-        <div className="roi-panel__section">
+      <div className="roi-panel__section">
           <h4 
             className="roi-panel__section-header" 
             onClick={() => setShowSlices(!showSlices)}
@@ -684,28 +683,30 @@ const RoiPanel: React.FC<{
             By Slice {showSlices ? "−" : "+"}
           </h4>
           {showSlices && (
-            <ul className="roi-panel__slice-list">
-              {roi.slices.slice(0, 10).map((slice) => (
-                <li key={slice.slice_id} className="roi-panel__slice-item">
-                  <div className="roi-panel__slice-header">
-                    <div className="roi-panel__slice-name">
-                      {slice.slice_name}
+            roi?.slices && roi.slices.length > 0 ? (
+              <ul className="roi-panel__slice-list">
+                {roi.slices.slice(0, 10).map((slice) => (
+                  <li key={slice.slice_id} className="roi-panel__slice-item">
+                    <div className="roi-panel__slice-header">
+                      <div className="roi-panel__slice-name">
+                        {slice.slice_name}
+                      </div>
+                      <div className="roi-panel__slice-stats">
+                        <span>{slice.completed_tasks}/{slice.total_tasks} tasks</span>
+                        <span>{formatTokens(slice.total_tokens_in + slice.total_tokens_out)} tokens</span>
+                        <span className="roi-panel__slice-savings">{formatUsd(slice.savings_usd)} saved</span>
+                      </div>
                     </div>
-                    <div className="roi-panel__slice-stats">
-                      <span>{slice.completed_tasks}/{slice.total_tasks} tasks</span>
-                      <span>{formatTokens(slice.total_tokens_in + slice.total_tokens_out)} tokens</span>
-                      <span className="roi-panel__slice-savings">{formatUsd(slice.savings_usd)} saved</span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="roi-panel__note">No slice data yet. Run tasks to see per-slice costs.</p>
+            )
           )}
         </div>
-      )}
 
-      {roi?.models && roi.models.length > 0 && (
-        <div className="roi-panel__section">
+      <div className="roi-panel__section">
           <h4 
             className="roi-panel__section-header" 
             onClick={() => setShowModels(!showModels)}
@@ -713,30 +714,33 @@ const RoiPanel: React.FC<{
             By Model {showModels ? "−" : "+"}
           </h4>
           {showModels && (
-            <ul className="roi-panel__model-list">
-              {roi.models.slice(0, 10).map((model) => (
-                <li key={model.model_id} className="roi-panel__model-item">
-                  <div className="roi-panel__model-header">
-                    <div className="roi-panel__model-name">
-                      {model.model_name || model.model_id}
-                      <span className="roi-panel__model-role">{getRoleLabel(model.role)}</span>
+            roi?.models && roi.models.length > 0 ? (
+              <ul className="roi-panel__model-list">
+                {roi.models.slice(0, 10).map((model) => (
+                  <li key={model.model_id} className="roi-panel__model-item">
+                    <div className="roi-panel__model-header">
+                      <div className="roi-panel__model-name">
+                        {model.model_name || model.model_id}
+                        <span className="roi-panel__model-role">{getRoleLabel(model.role)}</span>
+                      </div>
+                      <div className="roi-panel__model-stats">
+                        <span>{model.total_runs} runs</span>
+                        <span>{formatTokens(model.total_tokens_in + model.total_tokens_out)} tokens</span>
+                        <span className="roi-panel__model-savings">{formatUsd(model.savings_usd)} saved</span>
+                      </div>
                     </div>
-                    <div className="roi-panel__model-stats">
-                      <span>{model.total_runs} runs</span>
-                      <span>{formatTokens(model.total_tokens_in + model.total_tokens_out)} tokens</span>
-                      <span className="roi-panel__model-savings">{formatUsd(model.savings_usd)} saved</span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="roi-panel__note">No model data yet. Run tasks to see per-model costs.</p>
+            )
           )}
         </div>
-      )}
 
-      {roi?.subscriptions && roi.subscriptions.length > 0 && (
-        <div className="roi-panel__section">
-          <h4>Active Subscriptions</h4>
+      <div className="roi-panel__section">
+        <h4>Active Subscriptions</h4>
+        {roi?.subscriptions && roi.subscriptions.length > 0 ? (
           <ul className="roi-panel__subscription-list">
             {roi.subscriptions.map((sub) => {
               const rec = getRecommendationMeta(sub.recommendation);
@@ -761,12 +765,14 @@ const RoiPanel: React.FC<{
               );
             })}
           </ul>
-        </div>
-      )}
+        ) : (
+          <p className="roi-panel__note">No active subscriptions tracked.</p>
+        )}
+      </div>
 
       {!roi && (
         <p className="roi-panel__note">
-          Connect to Supabase to see live ROI data including theoretical costs, savings, and subscription tracking.
+          Waiting for governor connection. ROI data loads automatically when tasks are processed.
         </p>
       )}
     </div>
