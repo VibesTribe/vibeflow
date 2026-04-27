@@ -2224,7 +2224,7 @@ function getEventMeta(event: MissionEvent): EventMeta {
     return { label: "Integration Merge Failed", icon: "✗", tone: "failed" };
   }
   if (type.includes("plan_complete")) {
-    return { label: "Plan Complete (merged to main)", icon: "🏁", tone: "approved" };
+    return { label: "Plan Complete (merged to main/testing/)", icon: "🏁", tone: "approved" };
   }
   if (type.includes("failure_detected")) {
     return { label: "Failure", icon: "⚠", tone: "failed" };
