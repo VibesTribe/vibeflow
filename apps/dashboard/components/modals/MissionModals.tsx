@@ -570,8 +570,10 @@ const RoiPanel: React.FC<{
         completedTasks: roi.totals.total_completed,
       };
     }
+
     const totalTokens = slices.reduce((sum, slice) => sum + (slice.tokens ?? 0), 0);
     const agentSpend = agents.reduce((sum, agent) => sum + (agent.costPerRunUsd ?? 0), 0);
+
     return {
       totalTokens,
       activeSlices: slices.filter((slice) => slice.active > 0).length,
@@ -770,6 +772,22 @@ const RoiPanel: React.FC<{
         )}
       </div>
 
+      <div className="roi-panel__section">
+        <h4>Project-to-Date</h4>
+        <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
+          Cumulative totals persisted in your browser. Survives database clears.
+        </p>
+        <ProjectTracker totals={totals} models={roi?.models ?? []} slices={roi?.slices ?? []} formatUsd={formatUsd} formatTokens={formatTokens} />
+      </div>
+
+      <div className="roi-panel__section">
+        <h4>Session</h4>
+        <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
+          Track tokens/cost for a specific feature or work session. Reset anytime.
+        </p>
+        <SessionTracker totals={totals} formatUsd={formatUsd} formatTokens={formatTokens} />
+      </div>
+
       {!roi && (
         <p className="roi-panel__note">
           Waiting for governor connection. ROI data loads automatically when tasks are processed.
@@ -778,6 +796,413 @@ const RoiPanel: React.FC<{
     </div>
   );
 };
+
+/* ------------------------------------------------------------------ */
+/* ProjectTracker – persists cumulative totals + models/slices        */
+/* ------------------------------------------------------------------ */
+const LS_KEY_PROJECT = "vibepilot_project_roi";
+
+interface TrackerTotals {
+  totalTokens: number;
+  theoreticalCost: number;
+  actualCost: number;
+  savings: number;
+  totalTasks: number;
+  completedTasks: number;
+}
+
+interface PersistedModel {
+  model_id: string;
+  model_name: string | null;
+  role: string;
+  total_runs: number;
+  successful_runs: number;
+  total_tokens_in: number;
+  total_tokens_out: number;
+  theoretical_cost_usd: number;
+  actual_cost_usd: number;
+  savings_usd: number;
+}
+
+interface PersistedSlice {
+  slice_id: string;
+  slice_name: string;
+  total_tasks: number;
+  completed_tasks: number;
+  total_tokens_in: number;
+  total_tokens_out: number;
+  theoretical_cost_usd: number;
+  actual_cost_usd: number;
+  savings_usd: number;
+}
+
+interface ProjectData {
+  totals: TrackerTotals;
+  models: PersistedModel[];
+  slices: PersistedSlice[];
+}
+
+const EMPTY_PROJECT: ProjectData = {
+  totals: { totalTokens: 0, theoreticalCost: 0, actualCost: 0, savings: 0, totalTasks: 0, completedTasks: 0 },
+  models: [],
+  slices: [],
+};
+
+function readProjectRoi(): ProjectData {
+  try {
+    const raw = localStorage.getItem(LS_KEY_PROJECT);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return { ...EMPTY_PROJECT, models: [], slices: [] };
+}
+
+function mergeModels(persisted: PersistedModel[], incoming: ModelROI[]): PersistedModel[] {
+  const map = new Map<string, PersistedModel>();
+  for (const m of persisted) map.set(m.model_id, { ...m });
+  for (const m of incoming) {
+    const existing = map.get(m.model_id);
+    if (existing) {
+      // Only update if incoming has higher values (new data)
+      existing.total_runs = Math.max(existing.total_runs, m.total_runs);
+      existing.successful_runs = Math.max(existing.successful_runs, m.successful_runs);
+      existing.total_tokens_in = Math.max(existing.total_tokens_in, m.total_tokens_in);
+      existing.total_tokens_out = Math.max(existing.total_tokens_out, m.total_tokens_out);
+      existing.theoretical_cost_usd = Math.max(existing.theoretical_cost_usd, m.theoretical_cost_usd);
+      existing.actual_cost_usd = Math.max(existing.actual_cost_usd, m.actual_cost_usd);
+      existing.savings_usd = Math.max(existing.savings_usd, m.savings_usd);
+    } else {
+      map.set(m.model_id, {
+        model_id: m.model_id,
+        model_name: m.model_name,
+        role: m.role,
+        total_runs: m.total_runs,
+        successful_runs: m.successful_runs,
+        total_tokens_in: m.total_tokens_in,
+        total_tokens_out: m.total_tokens_out,
+        theoretical_cost_usd: m.theoretical_cost_usd,
+        actual_cost_usd: m.actual_cost_usd,
+        savings_usd: m.savings_usd,
+      });
+    }
+  }
+  return Array.from(map.values());
+}
+
+function mergeSlices(persisted: PersistedSlice[], incoming: SliceROI[]): PersistedSlice[] {
+  const map = new Map<string, PersistedSlice>();
+  for (const s of persisted) map.set(s.slice_id, { ...s });
+  for (const s of incoming) {
+    const existing = map.get(s.slice_id);
+    if (existing) {
+      existing.total_tasks = Math.max(existing.total_tasks, s.total_tasks);
+      existing.completed_tasks = Math.max(existing.completed_tasks, s.completed_tasks);
+      existing.total_tokens_in = Math.max(existing.total_tokens_in, s.total_tokens_in);
+      existing.total_tokens_out = Math.max(existing.total_tokens_out, s.total_tokens_out);
+      existing.theoretical_cost_usd = Math.max(existing.theoretical_cost_usd, s.theoretical_cost_usd);
+      existing.actual_cost_usd = Math.max(existing.actual_cost_usd, s.actual_cost_usd);
+      existing.savings_usd = Math.max(existing.savings_usd, s.savings_usd);
+    } else {
+      map.set(s.slice_id, {
+        slice_id: s.slice_id,
+        slice_name: s.slice_name,
+        total_tasks: s.total_tasks,
+        completed_tasks: s.completed_tasks,
+        total_tokens_in: s.total_tokens_in,
+        total_tokens_out: s.total_tokens_out,
+        theoretical_cost_usd: s.theoretical_cost_usd,
+        actual_cost_usd: s.actual_cost_usd,
+        savings_usd: s.savings_usd,
+      });
+    }
+  }
+  return Array.from(map.values());
+}
+
+const ProjectTracker: React.FC<{
+  totals: TrackerTotals;
+  models: ModelROI[];
+  slices: SliceROI[];
+  formatUsd: (n: number) => string;
+  formatTokens: (n: number) => string;
+}> = ({ totals, models, slices, formatUsd, formatTokens }) => {
+  const [project, setProject] = useState<ProjectData>(readProjectRoi);
+  const [showProjectModels, setShowProjectModels] = useState(false);
+  const [showProjectSlices, setShowProjectSlices] = useState(false);
+  const prevTokens = useRef(totals.totalTokens);
+
+  // Accumulate: whenever the incoming totals increase, add the delta + merge models/slices
+  useEffect(() => {
+    const deltaTokens = totals.totalTokens - prevTokens.current;
+    if (deltaTokens > 0 || models.length > 0 || slices.length > 0) {
+      setProject(prev => {
+        const next: ProjectData = {
+          totals: {
+            totalTokens: prev.totals.totalTokens + (deltaTokens > 0 ? deltaTokens : 0),
+            theoreticalCost: prev.totals.theoreticalCost + totals.theoreticalCost,
+            actualCost: prev.totals.actualCost + totals.actualCost,
+            savings: prev.totals.savings + totals.savings,
+            totalTasks: prev.totals.totalTasks + totals.totalTasks,
+            completedTasks: prev.totals.completedTasks + totals.completedTasks,
+          },
+          models: mergeModels(prev.models, models),
+          slices: mergeSlices(prev.slices, slices),
+        };
+        localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(next));
+        return next;
+      });
+    }
+    prevTokens.current = totals.totalTokens;
+  }, [totals, models, slices]);
+
+  const handleClear = () => {
+    localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(EMPTY_PROJECT));
+    setProject({ ...EMPTY_PROJECT, models: [], slices: [] });
+    prevTokens.current = totals.totalTokens;
+  };
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case "executor": return "Executor";
+      case "courier": return "Courier";
+      case "both": return "Executor + Courier";
+      default: return role;
+    }
+  };
+
+  return (
+    <div>
+      <dl className="roi-panel__grid">
+        <div><dt>Tokens</dt><dd>{formatTokens(project.totals.totalTokens)}</dd></div>
+        <div><dt>Actual Cost</dt><dd>{formatUsd(project.totals.actualCost)}</dd></div>
+        <div><dt>Savings</dt><dd>{formatUsd(project.totals.savings)}</dd></div>
+        <div><dt>Tasks</dt><dd>{project.totals.completedTasks} / {project.totals.totalTasks}</dd></div>
+      </dl>
+
+      <div className="roi-panel__section">
+        <h4 className="roi-panel__section-header" onClick={() => setShowProjectModels(!showProjectModels)}>
+          Persisted Models ({project.models.length}) {showProjectModels ? "−" : "+"}
+        </h4>
+        {showProjectModels && (
+          project.models.length > 0 ? (
+            <ul className="roi-panel__model-list">
+              {project.models.map(m => (
+                <li key={m.model_id} className="roi-panel__model-item">
+                  <div className="roi-panel__model-header">
+                    <div className="roi-panel__model-name">
+                      {m.model_name || m.model_id}
+                      <span className="roi-panel__model-role">{getRoleLabel(m.role)}</span>
+                    </div>
+                    <div className="roi-panel__model-stats">
+                      <span>{m.total_runs} runs</span>
+                      <span>{formatTokens(m.total_tokens_in + m.total_tokens_out)} tokens</span>
+                      <span className="roi-panel__model-savings">{formatUsd(m.savings_usd)} saved</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="roi-panel__note">No persisted model data yet.</p>
+          )
+        )}
+      </div>
+
+      <div className="roi-panel__section">
+        <h4 className="roi-panel__section-header" onClick={() => setShowProjectSlices(!showProjectSlices)}>
+          Persisted Slices ({project.slices.length}) {showProjectSlices ? "−" : "+"}
+        </h4>
+        {showProjectSlices && (
+          project.slices.length > 0 ? (
+            <ul className="roi-panel__slice-list">
+              {project.slices.map(s => (
+                <li key={s.slice_id} className="roi-panel__slice-item">
+                  <div className="roi-panel__slice-header">
+                    <div className="roi-panel__slice-name">{s.slice_name}</div>
+                    <div className="roi-panel__slice-stats">
+                      <span>{s.completed_tasks}/{s.total_tasks} tasks</span>
+                      <span>{formatTokens(s.total_tokens_in + s.total_tokens_out)} tokens</span>
+                      <span className="roi-panel__slice-savings">{formatUsd(s.savings_usd)} saved</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="roi-panel__note">No persisted slice data yet.</p>
+          )
+        )}
+      </div>
+
+      <button type="button" className="roi-panel__toggle" onClick={handleClear} style={{ marginTop: "8px" }}>
+        Clear Project
+      </button>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* SessionTracker – labeled session tracking in localStorage          */
+/* ------------------------------------------------------------------ */
+const LS_KEY_SESSIONS = "vibepilot_session_roi";
+
+interface SessionData {
+  id: string;
+  label: string;
+  startedAt: string;
+  tokens: number;
+  theoreticalCost: number;
+  actualCost: number;
+  savings: number;
+  totalTasks: number;
+  completedTasks: number;
+}
+
+function readSessions(): SessionData[] {
+  try {
+    const raw = localStorage.getItem(LS_KEY_SESSIONS);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return [];
+}
+
+const SessionTracker: React.FC<{ totals: TrackerTotals; formatUsd: (n: number) => string; formatTokens: (n: number) => string }> = ({ totals, formatUsd, formatTokens }) => {
+  const [sessions, setSessions] = useState<SessionData[]>(readSessions);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [label, setLabel] = useState("");
+  const prevTokens = useRef(totals.totalTokens);
+
+  // Accumulate into active session
+  useEffect(() => {
+    if (!activeId) return;
+    const deltaTokens = totals.totalTokens - prevTokens.current;
+    if (deltaTokens > 0) {
+      setSessions(prev => {
+        const next = prev.map(s => {
+          if (s.id !== activeId) return s;
+          return {
+            ...s,
+            tokens: s.tokens + deltaTokens,
+            theoreticalCost: s.theoreticalCost + totals.theoreticalCost,
+            actualCost: s.actualCost + totals.actualCost,
+            savings: s.savings + totals.savings,
+            totalTasks: s.totalTasks + totals.totalTasks,
+            completedTasks: s.completedTasks + totals.completedTasks,
+          };
+        });
+        localStorage.setItem(LS_KEY_SESSIONS, JSON.stringify(next));
+        return next;
+      });
+    }
+    prevTokens.current = totals.totalTokens;
+  }, [totals, activeId]);
+
+  const handleStart = () => {
+    const id = Date.now().toString(36);
+    const newSession: SessionData = {
+      id,
+      label: label.trim() || `Session ${sessions.length + 1}`,
+      startedAt: new Date().toISOString(),
+      tokens: 0,
+      theoreticalCost: 0,
+      actualCost: 0,
+      savings: 0,
+      totalTasks: 0,
+      completedTasks: 0,
+    };
+    const next = [...sessions, newSession];
+    localStorage.setItem(LS_KEY_SESSIONS, JSON.stringify(next));
+    setSessions(next);
+    setActiveId(id);
+    setLabel("");
+    prevTokens.current = totals.totalTokens;
+  };
+
+  const handleStop = () => {
+    setActiveId(null);
+  };
+
+  const handleClearAll = () => {
+    localStorage.setItem(LS_KEY_SESSIONS, JSON.stringify([]));
+    setSessions([]);
+    setActiveId(null);
+  };
+
+  const activeSession = sessions.find(s => s.id === activeId);
+
+  return (
+    <div>
+      {activeSession ? (
+        <div>
+          <div style={{ marginBottom: "8px" }}>
+            <strong>Tracking: {activeSession.label}</strong>
+            <span style={{ marginLeft: "8px", color: "#5eead4", fontSize: "0.75rem" }}>● LIVE</span>
+          </div>
+          <dl className="roi-panel__grid">
+            <div><dt>Tokens</dt><dd>{formatTokens(activeSession.tokens)}</dd></div>
+            <div><dt>Actual Cost</dt><dd>{formatUsd(activeSession.actualCost)}</dd></div>
+            <div><dt>Savings</dt><dd>{formatUsd(activeSession.savings)}</dd></div>
+            <div><dt>Tasks</dt><dd>{activeSession.completedTasks} / {activeSession.totalTasks}</dd></div>
+          </dl>
+          <button type="button" className="roi-panel__toggle" onClick={handleStop} style={{ marginTop: "8px" }}>
+            Stop Session
+          </button>
+        </div>
+      ) : (
+        <div>
+          <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+            <input
+              type="text"
+              placeholder="Session label (e.g. auth-feature)"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              style={{
+                flex: 1,
+                background: "rgba(8, 15, 29, 0.85)",
+                border: "1px solid rgba(148, 163, 184, 0.35)",
+                borderRadius: "6px",
+                padding: "6px 10px",
+                color: "#e2e8f0",
+                fontSize: "0.8rem",
+              }}
+            />
+            <button type="button" className="roi-panel__toggle is-active" onClick={handleStart}>
+              Start Session
+            </button>
+          </div>
+        </div>
+      )}
+
+      {sessions.length > 0 && (
+        <div style={{ marginTop: "12px" }}>
+          <h4 className="roi-panel__section-header">Past Sessions</h4>
+          <ul className="roi-panel__slice-list">
+            {sessions.map(s => (
+              <li key={s.id} className="roi-panel__slice-item">
+                <div className="roi-panel__slice-header">
+                  <div className="roi-panel__slice-name">
+                    {s.label}
+                    <span style={{ color: "#94a3b8", fontSize: "0.7rem", marginLeft: "6px" }}>
+                      {new Date(s.startedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="roi-panel__slice-stats">
+                    <span>{formatTokens(s.tokens)} tokens</span>
+                    <span>{formatUsd(s.actualCost)}</span>
+                    <span className="roi-panel__slice-savings">{formatUsd(s.savings)} saved</span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <button type="button" className="roi-panel__toggle" onClick={handleClearAll} style={{ marginTop: "8px" }}>
+            Clear All Sessions
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AgentDetails: React.FC<{ 
   agent: MissionAgent; 
   events: MissionEvent[]; 
@@ -1746,6 +2171,9 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("task_started")) {
     return { label: "Agent Dispatched", icon: "🚀", tone: "assigned" };
   }
+  if (type.includes("task_dispatched")) {
+    return { label: "Task Dispatched", icon: "🚀", tone: "assigned" };
+  }
   if (type.includes("run_completed")) {
     return { label: "Run Done", icon: "✓", tone: "completed" };
   }
@@ -1776,6 +2204,45 @@ function getEventMeta(event: MissionEvent): EventMeta {
   if (type.includes("maintenance_started")) {
     return { label: "Maintenance", icon: "🔧", tone: "assigned" };
   }
+  // Orchestrator pipeline events
+  if (type.includes("orchestrator")) {
+    // Handle orchestrator events based on detail.class
+    if (event.details && typeof event.details === "object") {
+      const details = event.details as Record<string, unknown>;
+      if (details.class === "prd_committed") {
+        return { label: "PRD Committed to Location", icon: "📍", tone: "note" };
+      }
+      if (details.class === "webhook_fired") {
+        return { label: "Webhook Fired", icon: "🔗", tone: "note" };
+      }
+      if (details.class === "planner_called") {
+        return { label: "Planner Called", icon: "🧠", tone: "assigned" };
+      }
+      if (details.class === "plan_submitted") {
+        return { label: "Task Plan Submitted to Location", icon: "📋", tone: "assigned" };
+      }
+      if (details.class === "supervisor_called") {
+        return { label: "Supervisor Called", icon: "👨‍💼", tone: "assigned" };
+      }
+      if (details.class === "plan_approved") {
+        return { label: "Plan Approved by Supervisor", icon: "✓", tone: "approved" };
+      }
+      if (details.class === "tasks_sent") {
+        return { label: "Tasks Sent to Orchestrator", icon: "📤", tone: "assigned" };
+      }
+      if (details.class === "agent_assigned") {
+        return { label: "Task Assigned to Gemini", icon: "🤖", tone: "assigned" };
+      }
+      if (details.class === "output_received") {
+        return { label: "Output Received", icon: "📥", tone: "completed" };
+      }
+      // Failure cases will be handled in the failure detection section below
+    }
+    // Fallback for orchestrator events without specific class
+    return { label: "Orchestrator Activity", icon: "⚙️", tone: "note" };
+  }
+
+
   
   // Legacy event types
   if (type.includes("assigned")) {
@@ -1804,13 +2271,26 @@ function getEventMeta(event: MissionEvent): EventMeta {
     if (event.details && typeof event.details === "object") {
       const details = event.details as Record<string, unknown>;
       if (details.class === "broken_output") {
-        return { label: "Broken Output", icon: "✗", tone: "error" };
+        return { label: "Output Validation Failed", icon: "✗", tone: "error" };
       }
       if (details.class === "timeout") {
         return { label: "Timeout", icon: "⏰", tone: "error" };
       }
       if (details.class === "validation_failed") {
         return { label: "Validation Failed", icon: "✗", tone: "error" };
+      }
+      // Orchestrator success events that might come through as non-failure types
+      if (details.class === "review_passed") {
+        return { label: "Plan Review Passed", icon: "✓", tone: "approved" };
+      }
+      if (details.class === "plan_submitted") {
+        return { label: "Task Plan Submitted", icon: "📋", tone: "assigned" };
+      }
+      if (details.class === "orchestrator_assignment") {
+        return { label: "Task Assigned to Agent", icon: "👥", tone: "assigned" };
+      }
+      if (details.class === "output_received") {
+        return { label: "Output Received", icon: "📥", tone: "completed" };
       }
       // Add more specific failure types as needed
     }
