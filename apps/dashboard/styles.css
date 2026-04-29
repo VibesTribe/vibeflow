@@ -1415,7 +1415,7 @@ a {
   background: rgba(8, 11, 22, 1);
   border: 1px solid rgba(79, 129, 255, 0.25);
   border-radius: 24px;
-  padding: 12px 24px 24px;
+  padding: 52px 24px 24px;
   overflow-y: auto;
   position: relative;
   display: flex;
@@ -4782,15 +4782,29 @@ a {
 }
 
 .roi-panel__note {
-  font-size: 0.65rem;
-  color: rgba(176, 190, 197, 0.75);
+  font-size: 0.7rem;
+  color: #b0bec5;
+}
+
+.roi-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.roi-panel__header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
 
 .roi-panel__totals {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 2px;
 }
 
 .roi-panel__savings {
@@ -4799,52 +4813,35 @@ a {
   color: #22c55e;
 }
 
-.roi-panel__currency-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 12px;
-  margin-bottom: 8px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 8px;
-}
-
-.roi-panel__currency-label {
-  font-size: 0.75rem;
-  color: #38bdf8;
-  font-weight: 600;
-}
-
 .roi-panel__currency-toggle {
   display: flex;
   gap: 0;
   background: rgba(6, 12, 24, 0.8);
-  border: 1px solid #475569;
+  border: 2px solid #38bdf8;
   border-radius: 6px;
   overflow: hidden;
 }
 
 .roi-panel__currency-btn {
-  padding: 5px 16px;
+  padding: 4px 14px;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #b0bec5;
+  color: #e2e8f0;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .roi-panel__currency-btn.is-active {
-  background: rgba(56, 189, 248, 0.25);
-  color: #38bdf8;
+  background: #38bdf8;
+  color: #0a0e1a;
 }
 
 .roi-panel__currency-btn:hover:not(.is-active) {
-  color: #e2e8f0;
+  color: #38bdf8;
   background: rgba(56, 189, 248, 0.1);
 }
 
