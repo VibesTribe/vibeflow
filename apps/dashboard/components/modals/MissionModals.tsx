@@ -599,8 +599,10 @@ const RoiPanel: React.FC<{
 
   const totals = useMemo(() => {
     if (roi) {
+      const persistedTokens = persistedProject.totals.totalTokens;
+      const liveTokens = roi.totals.total_tokens;
       return {
-        totalTokens: roi.totals.total_tokens,
+        totalTokens: Math.max(persistedTokens, liveTokens),
         activeSlices: slices.filter((slice) => slice.active > 0).length,
         blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
         completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
