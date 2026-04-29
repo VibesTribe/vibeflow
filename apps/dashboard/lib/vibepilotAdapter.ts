@@ -448,6 +448,20 @@ export interface TaskRunROI {
 }
 
 /**
+ * Project Cost — real-world expense tracking for ROI overhead
+ */
+export interface ProjectCost {
+  id: string;
+  category: string;
+  description: string;
+  amount_usd: number;
+  frequency: "one_time" | "monthly" | "quarterly" | "annual";
+  incurred_at: string;
+  created_at: string;
+  archived_at: string | null;
+}
+
+/**
  * Calculate ROI from task runs
  */
 export function calculateROI(
@@ -744,6 +758,7 @@ export interface DashboardData {
     tasks: TaskRunROI[];
   };
   system_counters: SystemCounters | null;
+  project_costs: ProjectCost[];
   updated_at: string;
 }
 
@@ -752,7 +767,8 @@ export function adaptVibePilotToDashboard(
   runs: VibePilotTaskRun[],
   models: VibePilotModel[],
   platforms: VibePilotPlatform[],
-  systemCounters?: SystemCounters[]
+  systemCounters?: SystemCounters[],
+  projectCosts?: ProjectCost[]
 ): DashboardData {
   const roi = calculateROI(runs);
   const sliceROI = calculateSliceROI(tasks, runs);
@@ -801,6 +817,7 @@ export function adaptVibePilotToDashboard(
       tasks: taskROI,
     },
     system_counters: systemCounters?.[0] || null,
+    project_costs: projectCosts || [],
     updated_at: new Date().toISOString(),
   };
 }

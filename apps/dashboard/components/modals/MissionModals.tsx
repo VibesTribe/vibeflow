@@ -46,6 +46,7 @@ interface MissionModalsProps {
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
   } | null;
+  projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -107,7 +108,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, projectCosts, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -126,7 +127,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <LogList events={events} slices={slices} />;
       break;
     case "roi":
-      content = <RoiPanel agents={agents} slices={slices} roi={roi} />;
+      content = <RoiPanel agents={agents} slices={slices} roi={roi} projectCosts={projectCosts || []} />;
       break;
     case "models":
       content = <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />;
@@ -522,13 +523,15 @@ const RoiPanel: React.FC<{
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
   } | null;
-}> = ({ agents, slices, roi }) => {
+  projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
+}> = ({ agents, slices, roi, projectCosts }) => {
   const [showCad, setShowCad] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number>(1.36);
   const [showSlices, setShowSlices] = useState(false);
   const [showModels, setShowModels] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
+  const [includeOverhead, setIncludeOverhead] = useState(false);
 
   useEffect(() => {
     if (showCad) {
@@ -781,6 +784,14 @@ const RoiPanel: React.FC<{
       </div>
 
       <SubscriptionHistorySection formatUsd={formatUsd} formatTokens={formatTokens} />
+
+      <ProjectCostsSection 
+        costs={projectCosts || []} 
+        tokenSavings={totals.savings}
+        includeOverhead={includeOverhead}
+        onToggleOverhead={() => setIncludeOverhead(!includeOverhead)}
+        formatUsd={formatUsd}
+      />
 
       <div className="roi-panel__section">
         <h4>Session</h4>
@@ -1287,6 +1298,303 @@ const SubscriptionHistorySection: React.FC<{
         ) : (
           <p className="roi-panel__note">No subscription history yet.</p>
         )
+      )}
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* ProjectCostsSection – project cost ledger for ROI overhead          */
+/* ------------------------------------------------------------------ */
+const ProjectCostsSection: React.FC<{
+  costs: import("../../lib/vibepilotAdapter").ProjectCost[];
+  tokenSavings: number;
+  includeOverhead: boolean;
+  onToggleOverhead: () => void;
+  formatUsd: (n: number) => string;
+}> = ({ costs, tokenSavings, includeOverhead, onToggleOverhead, formatUsd }) => {
+  const [showCosts, setShowCosts] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newCost, setNewCost] = useState({
+    category: "cloud_compute",
+    description: "",
+    amount_usd: "",
+    frequency: "one_time" as "one_time" | "monthly" | "quarterly" | "annual",
+  });
+  const [localCosts, setLocalCosts] = useState(costs);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Sync local costs when prop changes (dashboard refresh)
+  useEffect(() => { setLocalCosts(costs); }, [costs]);
+
+  // Only show active (non-archived) costs
+  const activeCosts = localCosts.filter(c => !c.archived_at);
+
+  // Calculate totals
+  const totalOneTime = activeCosts
+    .filter(c => c.frequency === "one_time")
+    .reduce((sum, c) => sum + c.amount_usd, 0);
+  const monthlyRecurring = activeCosts
+    .filter(c => c.frequency === "monthly")
+    .reduce((sum, c) => sum + c.amount_usd, 0);
+  const quarterlyRecurring = activeCosts
+    .filter(c => c.frequency === "quarterly")
+    .reduce((sum, c) => sum + c.amount_usd / 3, 0); // normalize to monthly
+  const annualRecurring = activeCosts
+    .filter(c => c.frequency === "annual")
+    .reduce((sum, c) => sum + c.amount_usd / 12, 0); // normalize to monthly
+  const monthlyEquivalent = monthlyRecurring + quarterlyRecurring + annualRecurring;
+  const totalProjectCosts = totalOneTime + (monthlyEquivalent * 12); // annualized for comparison
+
+  // Break-even math
+  const netPosition = tokenSavings - totalProjectCosts;
+  const breakEvenPct = totalProjectCosts > 0 ? Math.min(100, (tokenSavings / totalProjectCosts) * 100) : 0;
+
+  const handleAdd = async () => {
+    const amount = parseFloat(newCost.amount_usd);
+    if (!newCost.description || isNaN(amount) || amount <= 0) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch("http://localhost:8080/api/project-costs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add",
+          category: newCost.category,
+          description: newCost.description,
+          amount_usd: amount,
+          frequency: newCost.frequency,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.cost) {
+        setLocalCosts(prev => [...prev, data.cost]);
+        setNewCost(prev => ({ ...prev, description: "", amount_usd: "" }));
+        setShowAddForm(false);
+      }
+    } catch { /* silent */ }
+    setSubmitting(false);
+  };
+
+  const handleArchive = async (id: string) => {
+    try {
+      const res = await fetch("http://localhost:8080/api/project-costs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "archive", id }),
+      });
+      const data = await res.json();
+      if (data.archived) {
+        setLocalCosts(prev => prev.map(c => c.id === id ? { ...c, archived_at: new Date().toISOString() } : c));
+      }
+    } catch { /* silent */ }
+  };
+
+  // Group costs by category for display
+  const categoryLabels: Record<string, string> = {
+    cloud_compute: "Cloud Compute",
+    subscription: "Subscriptions",
+    api_credits: "API Credits",
+    utilities: "Utilities",
+    hardware: "Hardware",
+    other: "Other",
+  };
+  const grouped = activeCosts.reduce<Record<string, import("../../lib/vibepilotAdapter").ProjectCost[]>>((acc, c) => {
+    const key = c.category || "other";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(c);
+    return acc;
+  }, {});
+
+  const frequencyLabel = (f: string) => ({ one_time: "One-time", monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" }[f] || f);
+
+  return (
+    <div className="roi-panel__section">
+      <h4
+        className="roi-panel__section-header"
+        onClick={() => setShowCosts(!showCosts)}
+      >
+        Project Cost Ledger {showCosts ? "−" : "+"}
+      </h4>
+
+      {showCosts && (
+        <>
+          {/* Overhead toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+            <span className="roi-panel__note" style={{ margin: 0 }}>Include overhead in ROI</span>
+            <button
+              className={`roi-panel__toggle ${includeOverhead ? "is-active" : ""}`}
+              onClick={onToggleOverhead}
+            >
+              {includeOverhead ? "ON" : "OFF"}
+            </button>
+          </div>
+
+          {/* Cost list grouped by category */}
+          {activeCosts.length > 0 ? (
+            <ul className="roi-panel__cost-list">
+              {Object.entries(grouped).map(([cat, items]) => (
+                <li key={cat} className="roi-panel__cost-group">
+                  <div className="roi-panel__cost-group-header">
+                    {categoryLabels[cat] || cat}
+                    <span className="roi-panel__cost-group-total">
+                      {formatUsd(items.reduce((s, c) => s + c.amount_usd, 0))}
+                    </span>
+                  </div>
+                  <ul className="roi-panel__cost-items">
+                    {items.map(cost => (
+                      <li key={cost.id} className="roi-panel__cost-item">
+                        <div className="roi-panel__cost-item-main">
+                          <span className="roi-panel__cost-desc">{cost.description}</span>
+                          <span className="roi-panel__cost-freq">{frequencyLabel(cost.frequency)}</span>
+                        </div>
+                        <div className="roi-panel__cost-item-actions">
+                          <span className="roi-panel__cost-amount">{formatUsd(cost.amount_usd)}</span>
+                          <button
+                            className="roi-panel__cost-archive"
+                            onClick={() => handleArchive(cost.id)}
+                            title="Archive this cost"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="roi-panel__note">No project costs recorded yet.</p>
+          )}
+
+          {/* Summary */}
+          {activeCosts.length > 0 && (
+            <div className="roi-panel__cost-summary">
+              <div className="roi-panel__cost-summary-row">
+                <span>One-time costs</span>
+                <span>{formatUsd(totalOneTime)}</span>
+              </div>
+              {monthlyEquivalent > 0 && (
+                <div className="roi-panel__cost-summary-row">
+                  <span>Monthly recurring (equiv.)</span>
+                  <span>{formatUsd(monthlyEquivalent)}</span>
+                </div>
+              )}
+              <div className="roi-panel__cost-summary-row roi-panel__cost-summary-row--total">
+                <span>Total project costs (annualized)</span>
+                <span>{formatUsd(totalProjectCosts)}</span>
+              </div>
+
+              {includeOverhead && (
+                <>
+                  <div className="roi-panel__cost-summary-row">
+                    <span>Token savings (actual)</span>
+                    <span style={{ color: "#5eead4" }}>{formatUsd(tokenSavings)}</span>
+                  </div>
+                  <div className="roi-panel__cost-summary-row roi-panel__cost-summary-row--net">
+                    <span>Net position</span>
+                    <span style={{ color: netPosition >= 0 ? "#5eead4" : "#f87171" }}>
+                      {netPosition >= 0 ? "+" : ""}{formatUsd(netPosition)}
+                    </span>
+                  </div>
+                  {totalProjectCosts > 0 && (
+                    <div style={{ marginTop: "8px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "#94a3b8", marginBottom: "4px" }}>
+                        <span>Break-even progress</span>
+                        <span>{breakEvenPct.toFixed(0)}%</span>
+                      </div>
+                      <div style={{ background: "#1e293b", borderRadius: "4px", height: "8px", overflow: "hidden" }}>
+                        <div style={{
+                          background: breakEvenPct >= 100 ? "#22c55e" : breakEvenPct >= 50 ? "#eab308" : "#f87171",
+                          height: "100%",
+                          width: `${breakEvenPct}%`,
+                          borderRadius: "4px",
+                          transition: "width 0.3s",
+                        }} />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Add Expense button / form */}
+          {!showAddForm ? (
+            <button
+              className="roi-panel__toggle"
+              onClick={() => setShowAddForm(true)}
+              style={{ marginTop: "10px" }}
+            >
+              + Add Expense
+            </button>
+          ) : (
+            <div className="roi-panel__cost-form">
+              <div className="roi-panel__cost-form-row">
+                <label>Category</label>
+                <select
+                  value={newCost.category}
+                  onChange={e => setNewCost(prev => ({ ...prev, category: e.target.value }))}
+                >
+                  <option value="cloud_compute">Cloud Compute</option>
+                  <option value="subscription">Subscription</option>
+                  <option value="api_credits">API Credits</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="hardware">Hardware</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="roi-panel__cost-form-row">
+                <label>Description</label>
+                <input
+                  type="text"
+                  value={newCost.description}
+                  onChange={e => setNewCost(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="e.g. GCE compute March 2026"
+                />
+              </div>
+              <div className="roi-panel__cost-form-row">
+                <label>Amount ($)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={newCost.amount_usd}
+                  onChange={e => setNewCost(prev => ({ ...prev, amount_usd: e.target.value }))}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="roi-panel__cost-form-row">
+                <label>Frequency</label>
+                <select
+                  value={newCost.frequency}
+                  onChange={e => setNewCost(prev => ({ ...prev, frequency: e.target.value as typeof newCost.frequency }))}
+                >
+                  <option value="one_time">One-time</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="annual">Annual</option>
+                </select>
+              </div>
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <button
+                  className="roi-panel__toggle is-active"
+                  onClick={handleAdd}
+                  disabled={submitting}
+                >
+                  {submitting ? "Adding..." : "Save"}
+                </button>
+                <button
+                  className="roi-panel__toggle"
+                  onClick={() => setShowAddForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
