@@ -619,28 +619,29 @@ const RoiPanel: React.FC<{
           <h3>ROI Dashboard</h3>
           <p>Theoretical vs actual costs across all tasks</p>
         </div>
-        <div className="roi-panel__totals">
-          <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
-          <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
+        <div className="roi-panel__header-right">
+          <div className="roi-panel__totals">
+            <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
+            <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
+          </div>
+          <div className="roi-panel__currency-toggle">
+            <button
+              type="button"
+              className={`roi-panel__toggle ${!showCad ? "is-active" : ""}`}
+              onClick={() => setShowCad(false)}
+            >
+              USD
+            </button>
+            <button
+              type="button"
+              className={`roi-panel__toggle ${showCad ? "is-active" : ""}`}
+              onClick={() => setShowCad(true)}
+            >
+              CAD
+            </button>
+          </div>
         </div>
       </header>
-
-      <div className="roi-panel__currency-toggle">
-        <button 
-          type="button"
-          className={`roi-panel__toggle ${!showCad ? "is-active" : ""}`}
-          onClick={() => setShowCad(false)}
-        >
-          USD
-        </button>
-        <button 
-          type="button"
-          className={`roi-panel__toggle ${showCad ? "is-active" : ""}`}
-          onClick={() => setShowCad(true)}
-        >
-          CAD
-        </button>
-      </div>
 
       <div className="roi-panel__summary-grid">
         <div className="roi-panel__summary-item">
