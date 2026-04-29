@@ -1519,7 +1519,7 @@ a {
 }
 .mission-modal:has(.roi-panel)::before,
 .mission-modal:has(.roi-panel)::after {
-  background: transparent;
+  display: none;
 }
 
 .mission-modal__section:first-of-type {
