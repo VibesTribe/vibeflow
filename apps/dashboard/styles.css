@@ -1415,7 +1415,7 @@ a {
   background: rgba(8, 11, 22, 1);
   border: 1px solid rgba(79, 129, 255, 0.25);
   border-radius: 24px;
-  padding: 16px 24px 24px;
+  padding: 20px 24px 24px;
   overflow-y: auto;
   position: relative;
   display: flex;
@@ -1517,8 +1517,13 @@ a {
   gap: 8px;
   padding-top: 28px;
 }
+.mission-modal:has(.roi-panel)::before,
+.mission-modal:has(.roi-panel)::after {
+  background: transparent;
+}
+
 .mission-modal__section:first-of-type {
-  padding-top: calc(var(--modal-sticky-offset) + 48px);
+  padding-top: 0;
 }
 
 .mission-modal__section--sticky > header,
