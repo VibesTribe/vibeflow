@@ -308,6 +308,20 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const displayTokens = headerMode === "project" ? projectTokens : tokenUsage;
   const formattedDisplayTokens = useMemo(() => formatTokenCount(displayTokens), [displayTokens]);
 
+  // Fetch subscription/credit threshold alerts
+  const [alerts, setAlerts] = useState<Array<{ model_id: string; alert_type: string; message: string }>>([]);
+  useEffect(() => {
+    const fetchAlerts = () => {
+      fetch("http://localhost:8080/api/project/alerts")
+        .then(r => r.ok ? r.json() : { alerts: [] })
+        .then(data => setAlerts(data.alerts || []))
+        .catch(() => {});
+    };
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 60_000); // check every minute
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <header className="mission-header">
       <div className="mission-header__identity">
@@ -374,6 +388,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </button>
       </div>
+        {alerts.length > 0 && (
+          <div style={{
+            marginTop: "8px",
+            padding: "8px 12px",
+            background: "rgba(245, 158, 11, 0.15)",
+            border: "1px solid rgba(245, 158, 11, 0.4)",
+            borderRadius: "8px",
+            fontSize: "0.75rem",
+            color: "#fbbf24",
+          }}>
+            {alerts.map((a, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span aria-hidden="true">&#9888;</span>
+                <span>{a.message}</span>
+              </div>
+            ))}
+          </div>
+        )}
         {activeDetail && (
           <div className="mission-header__pill-detail" role="region" aria-live="polite">
             <div className={`mission-header__pill-detail-card mission-header__pill-detail-card--${activeDetail.pill.tone}`}>
