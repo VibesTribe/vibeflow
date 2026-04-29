@@ -802,7 +802,7 @@ const RoiPanel: React.FC<{
         alignItems: "center",
         justifyContent: "center",
         gap: "10px",
-        padding: "8px 0 4px"
+        padding: "4px 0 2px"
       }}>
         <span style={{ color: "#e2e8f0", fontSize: "0.8rem", fontWeight: 600 }}>Currency:</span>
         <div style={{

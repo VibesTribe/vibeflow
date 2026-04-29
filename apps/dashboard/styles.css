@@ -1420,7 +1420,7 @@ a {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   scroll-padding-top: var(--modal-sticky-offset);
 }
 
@@ -1518,7 +1518,7 @@ a {
   padding-top: 28px;
 }
 .mission-modal__section:first-of-type {
-  padding-top: var(--modal-sticky-offset);
+  padding-top: calc(var(--modal-sticky-offset) + 48px);
 }
 
 .mission-modal__section--sticky > header,
@@ -4913,9 +4913,9 @@ a {
 }
 
 .roi-panel__section {
-  margin-top: 4px;
-  padding-top: 3px;
-  border-top: 1px solid rgba(56, 189, 248, 0.08);
+  margin-top: 2px;
+  padding-top: 1px;
+  border-top: 1px solid rgba(56, 189, 248, 0.06);
 }
 
 .roi-panel__section h4 {
@@ -4923,7 +4923,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: rgba(176, 190, 197, 0.85);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .roi-panel__section-header {
@@ -4931,11 +4931,11 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #b0bec5;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   cursor: pointer;
-  padding: 3px 8px;
+  padding: 2px 6px;
   background: rgba(56, 189, 248, 0.08);
-  border-radius: 4px;
+  border-radius: 3px;
   transition: all 0.2s ease;
   display: flex;
   justify-content: space-between;
