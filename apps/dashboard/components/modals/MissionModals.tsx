@@ -1315,6 +1315,13 @@ const ProjectCostsSection: React.FC<{
 }> = ({ costs, tokenSavings, includeOverhead, onToggleOverhead, formatUsd }) => {
   const [showCosts, setShowCosts] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<{
+    category: string;
+    description: string;
+    amount_usd: string;
+    frequency: string;
+  }>({ category: "", description: "", amount_usd: "", frequency: "" });
   const [newCost, setNewCost] = useState({
     category: "cloud_compute",
     description: "",
@@ -1330,7 +1337,8 @@ const ProjectCostsSection: React.FC<{
   // Only show active (non-archived) costs
   const activeCosts = localCosts.filter(c => !c.archived_at);
 
-  // Calculate totals
+  // Calculate totals - raw sum is what you actually spent
+  const rawTotal = activeCosts.reduce((sum, c) => sum + c.amount_usd, 0);
   const totalOneTime = activeCosts
     .filter(c => c.frequency === "one_time")
     .reduce((sum, c) => sum + c.amount_usd, 0);
@@ -1339,34 +1347,37 @@ const ProjectCostsSection: React.FC<{
     .reduce((sum, c) => sum + c.amount_usd, 0);
   const quarterlyRecurring = activeCosts
     .filter(c => c.frequency === "quarterly")
-    .reduce((sum, c) => sum + c.amount_usd / 3, 0); // normalize to monthly
+    .reduce((sum, c) => sum + c.amount_usd / 3, 0);
   const annualRecurring = activeCosts
     .filter(c => c.frequency === "annual")
-    .reduce((sum, c) => sum + c.amount_usd / 12, 0); // normalize to monthly
+    .reduce((sum, c) => sum + c.amount_usd / 12, 0);
   const monthlyEquivalent = monthlyRecurring + quarterlyRecurring + annualRecurring;
-  const totalProjectCosts = totalOneTime + (monthlyEquivalent * 12); // annualized for comparison
+  const annualizedTotal = totalOneTime + (monthlyEquivalent * 12);
 
-  // Break-even math
-  const netPosition = tokenSavings - totalProjectCosts;
-  const breakEvenPct = totalProjectCosts > 0 ? Math.min(100, (tokenSavings / totalProjectCosts) * 100) : 0;
+  // Break-even uses raw total (actual money out)
+  const netPosition = tokenSavings - rawTotal;
+  const breakEvenPct = rawTotal > 0 ? Math.min(100, (tokenSavings / rawTotal) * 100) : 0;
+
+  const apiCall = async (body: Record<string, unknown>) => {
+    return fetch("http://localhost:8080/api/project-costs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(r => r.json());
+  };
 
   const handleAdd = async () => {
     const amount = parseFloat(newCost.amount_usd);
     if (!newCost.description || isNaN(amount) || amount <= 0) return;
     setSubmitting(true);
     try {
-      const res = await fetch("http://localhost:8080/api/project-costs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "add",
-          category: newCost.category,
-          description: newCost.description,
-          amount_usd: amount,
-          frequency: newCost.frequency,
-        }),
+      const data = await apiCall({
+        action: "add",
+        category: newCost.category,
+        description: newCost.description,
+        amount_usd: amount,
+        frequency: newCost.frequency,
       });
-      const data = await res.json();
       if (data.success && data.cost) {
         setLocalCosts(prev => [...prev, data.cost]);
         setNewCost(prev => ({ ...prev, description: "", amount_usd: "" }));
@@ -1378,16 +1389,43 @@ const ProjectCostsSection: React.FC<{
 
   const handleArchive = async (id: string) => {
     try {
-      const res = await fetch("http://localhost:8080/api/project-costs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "archive", id }),
-      });
-      const data = await res.json();
+      const data = await apiCall({ action: "archive", id });
       if (data.archived) {
         setLocalCosts(prev => prev.map(c => c.id === id ? { ...c, archived_at: new Date().toISOString() } : c));
+        setEditingId(null);
       }
     } catch { /* silent */ }
+  };
+
+  const handleUpdate = async (id: string) => {
+    const amount = parseFloat(editForm.amount_usd);
+    if (!editForm.description || isNaN(amount) || amount <= 0) return;
+    setSubmitting(true);
+    try {
+      const data = await apiCall({
+        action: "update",
+        id,
+        category: editForm.category,
+        description: editForm.description,
+        amount_usd: amount,
+        frequency: editForm.frequency,
+      });
+      if (data.success && data.cost) {
+        setLocalCosts(prev => prev.map(c => c.id === id ? { ...c, ...data.cost } : c));
+        setEditingId(null);
+      }
+    } catch { /* silent */ }
+    setSubmitting(false);
+  };
+
+  const openEdit = (cost: import("../../lib/vibepilotAdapter").ProjectCost) => {
+    setEditingId(cost.id);
+    setEditForm({
+      category: cost.category || "other",
+      description: cost.description,
+      amount_usd: String(cost.amount_usd),
+      frequency: cost.frequency,
+    });
   };
 
   // Group costs by category for display
@@ -1407,6 +1445,50 @@ const ProjectCostsSection: React.FC<{
   }, {});
 
   const frequencyLabel = (f: string) => ({ one_time: "One-time", monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" }[f] || f);
+
+  const editFormEl = (id: string) => (
+    <div className="roi-panel__cost-edit-form">
+      <div className="roi-panel__cost-form-row">
+        <label>Category</label>
+        <select value={editForm.category} onChange={e => setEditForm(p => ({ ...p, category: e.target.value }))}>
+          <option value="cloud_compute">Cloud Compute</option>
+          <option value="subscription">Subscription</option>
+          <option value="api_credits">API Credits</option>
+          <option value="utilities">Utilities</option>
+          <option value="hardware">Hardware</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div className="roi-panel__cost-form-row">
+        <label>Description</label>
+        <input type="text" value={editForm.description} onChange={e => setEditForm(p => ({ ...p, description: e.target.value }))} />
+      </div>
+      <div className="roi-panel__cost-form-row">
+        <label>Amount ($)</label>
+        <input type="number" step="0.01" min="0" value={editForm.amount_usd} onChange={e => setEditForm(p => ({ ...p, amount_usd: e.target.value }))} />
+      </div>
+      <div className="roi-panel__cost-form-row">
+        <label>Frequency</label>
+        <select value={editForm.frequency} onChange={e => setEditForm(p => ({ ...p, frequency: e.target.value }))}>
+          <option value="one_time">One-time</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annual">Annual</option>
+        </select>
+      </div>
+      <div className="roi-panel__cost-edit-actions">
+        <button className="roi-panel__cost-action-btn roi-panel__cost-action-btn--save" onClick={() => handleUpdate(id)} disabled={submitting}>
+          {submitting ? "..." : "Save"}
+        </button>
+        <button className="roi-panel__cost-action-btn roi-panel__cost-action-btn--archive" onClick={() => handleArchive(id)}>
+          Archive
+        </button>
+        <button className="roi-panel__cost-action-btn" onClick={() => setEditingId(null)}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="roi-panel__section">
@@ -1451,13 +1533,14 @@ const ProjectCostsSection: React.FC<{
                         <div className="roi-panel__cost-item-actions">
                           <span className="roi-panel__cost-amount">{formatUsd(cost.amount_usd)}</span>
                           <button
-                            className="roi-panel__cost-archive"
-                            onClick={() => handleArchive(cost.id)}
-                            title="Archive this cost"
+                            className="roi-panel__cost-edit-btn"
+                            onClick={() => editingId === cost.id ? setEditingId(null) : openEdit(cost)}
+                            title="Edit this cost"
                           >
-                            ×
+                            ✎
                           </button>
                         </div>
+                        {editingId === cost.id && editFormEl(cost.id)}
                       </li>
                     ))}
                   </ul>
@@ -1471,23 +1554,26 @@ const ProjectCostsSection: React.FC<{
           {/* Summary */}
           {activeCosts.length > 0 && (
             <div className="roi-panel__cost-summary">
-              <div className="roi-panel__cost-summary-row">
-                <span>One-time costs</span>
-                <span>{formatUsd(totalOneTime)}</span>
+              <div className="roi-panel__cost-summary-row roi-panel__cost-summary-row--total">
+                <span>Total spent</span>
+                <span>{formatUsd(rawTotal)}</span>
               </div>
               {monthlyEquivalent > 0 && (
-                <div className="roi-panel__cost-summary-row">
-                  <span>Monthly recurring (equiv.)</span>
-                  <span>{formatUsd(monthlyEquivalent)}</span>
-                </div>
+                <>
+                  <div className="roi-panel__cost-summary-row">
+                    <span style={{ color: "#94a3b8" }}>Recurring (monthly equiv.)</span>
+                    <span style={{ color: "#94a3b8" }}>{formatUsd(monthlyEquivalent)}/mo</span>
+                  </div>
+                  <div className="roi-panel__cost-summary-row">
+                    <span style={{ color: "#64748b" }}>Annualized projection</span>
+                    <span style={{ color: "#64748b" }}>{formatUsd(annualizedTotal)}</span>
+                  </div>
+                </>
               )}
-              <div className="roi-panel__cost-summary-row roi-panel__cost-summary-row--total">
-                <span>Total project costs (annualized)</span>
-                <span>{formatUsd(totalProjectCosts)}</span>
-              </div>
 
               {includeOverhead && (
                 <>
+                  <div style={{ borderTop: "1px solid #1e293b", margin: "6px 0" }} />
                   <div className="roi-panel__cost-summary-row">
                     <span>Token savings (actual)</span>
                     <span style={{ color: "#5eead4" }}>{formatUsd(tokenSavings)}</span>
@@ -1498,7 +1584,7 @@ const ProjectCostsSection: React.FC<{
                       {netPosition >= 0 ? "+" : ""}{formatUsd(netPosition)}
                     </span>
                   </div>
-                  {totalProjectCosts > 0 && (
+                  {rawTotal > 0 && (
                     <div style={{ marginTop: "8px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "#94a3b8", marginBottom: "4px" }}>
                         <span>Break-even progress</span>
