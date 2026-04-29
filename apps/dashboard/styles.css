@@ -1518,7 +1518,7 @@ a {
   padding-top: 28px;
 }
 .mission-modal__section:first-of-type {
-  padding-top: calc(var(--modal-sticky-offset) + 36px);
+  padding-top: calc(var(--modal-sticky-offset) + 56px);
 }
 
 .mission-modal__section--sticky > header,

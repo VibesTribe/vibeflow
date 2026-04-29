@@ -698,55 +698,6 @@ const RoiPanel: React.FC<{
         </div>
       </dl>
 
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-        padding: "6px 0 2px"
-      }}>
-        <span style={{ color: "#e2e8f0", fontSize: "0.8rem", fontWeight: 600 }}>Currency:</span>
-        <div style={{
-          display: "flex",
-          border: "2px solid #38bdf8",
-          borderRadius: "6px",
-          overflow: "hidden"
-        }}>
-          <button
-            type="button"
-            style={{
-              padding: "5px 18px",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              border: "none",
-              background: !showCad ? "#38bdf8" : "transparent",
-              color: !showCad ? "#0a0e1a" : "#e2e8f0",
-              cursor: "pointer"
-            }}
-            onClick={() => setShowCad(false)}
-          >
-            USD
-          </button>
-          <button
-            type="button"
-            style={{
-              padding: "5px 18px",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              border: "none",
-              background: showCad ? "#38bdf8" : "transparent",
-              color: showCad ? "#0a0e1a" : "#e2e8f0",
-              cursor: "pointer"
-            }}
-            onClick={() => setShowCad(true)}
-          >
-            CAD
-          </button>
-        </div>
-      </div>
-
       <div className="roi-panel__section">
         <h4 
           className="roi-panel__section-header" 
@@ -853,6 +804,55 @@ const RoiPanel: React.FC<{
         subscriptions={roi?.subscriptions ?? []}
         totalTokens={totals.totalTokens}
       />
+
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        padding: "8px 0 4px"
+      }}>
+        <span style={{ color: "#e2e8f0", fontSize: "0.8rem", fontWeight: 600 }}>Currency:</span>
+        <div style={{
+          display: "flex",
+          border: "2px solid #38bdf8",
+          borderRadius: "6px",
+          overflow: "hidden"
+        }}>
+          <button
+            type="button"
+            style={{
+              padding: "5px 18px",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              border: "none",
+              background: !showCad ? "#38bdf8" : "transparent",
+              color: !showCad ? "#0a0e1a" : "#e2e8f0",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowCad(false)}
+          >
+            USD
+          </button>
+          <button
+            type="button"
+            style={{
+              padding: "5px 18px",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              border: "none",
+              background: showCad ? "#38bdf8" : "transparent",
+              color: showCad ? "#0a0e1a" : "#e2e8f0",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowCad(true)}
+          >
+            CAD
+          </button>
+        </div>
+      </div>
 
       <ProjectCostsSection 
         costs={projectCosts || []} 
