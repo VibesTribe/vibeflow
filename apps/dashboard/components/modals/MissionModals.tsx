@@ -664,28 +664,28 @@ const RoiPanel: React.FC<{
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
         gap: "3px",
-        fontSize: "0.9rem",
+        fontSize: "1.05rem",
         lineHeight: 1.4,
         marginBottom: "2px"
       }}>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>If paying per token</div>
+          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>If paying per token</div>
           <div className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Subscription cost</div>
+          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Subscription cost</div>
           <div className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>You saved</div>
+          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>You saved</div>
           <div className="roi-panel__cost--savings">{formatUsd(totals.savings)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Tasks done</div>
+          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Tasks done</div>
           <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Subscription ROI</div>
+          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Subscription ROI</div>
           <div>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
         </div>
       </div>
