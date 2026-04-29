@@ -678,6 +678,14 @@ const RoiPanel: React.FC<{
       </dl>
 
       <div className="roi-panel__section">
+        <h4>Project-to-Date</h4>
+        <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
+          Cumulative totals persisted in your browser. Survives database clears.
+        </p>
+        <ProjectTracker totals={totals} models={roi?.models ?? []} slices={roi?.slices ?? []} formatUsd={formatUsd} formatTokens={formatTokens} />
+      </div>
+
+      <div className="roi-panel__section">
           <h4 
             className="roi-panel__section-header" 
             onClick={() => setShowSlices(!showSlices)}
@@ -772,13 +780,7 @@ const RoiPanel: React.FC<{
         )}
       </div>
 
-      <div className="roi-panel__section">
-        <h4>Project-to-Date</h4>
-        <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
-          Cumulative totals persisted in your browser. Survives database clears.
-        </p>
-        <ProjectTracker totals={totals} models={roi?.models ?? []} slices={roi?.slices ?? []} formatUsd={formatUsd} formatTokens={formatTokens} />
-      </div>
+      <SubscriptionHistorySection formatUsd={formatUsd} formatTokens={formatTokens} />
 
       <div className="roi-panel__section">
         <h4>Session</h4>
@@ -1198,6 +1200,93 @@ const SessionTracker: React.FC<{ totals: TrackerTotals; formatUsd: (n: number) =
             Clear All Sessions
           </button>
         </div>
+      )}
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* SubscriptionHistorySection – archived subscription history          */
+/* ------------------------------------------------------------------ */
+const SubscriptionHistorySection: React.FC<{
+  formatUsd: (n: number) => string;
+  formatTokens: (n: number) => string;
+}> = ({ formatUsd, formatTokens }) => {
+  const [history, setHistory] = useState<Array<{
+    id: string;
+    model_id: string;
+    provider: string | null;
+    cost_usd: number;
+    period_type: string;
+    started_at: string;
+    ended_at: string | null;
+    tokens_consumed: number;
+    tasks_completed: number;
+    api_equivalent_cost_usd: number;
+    roi_percentage: number;
+    archived_at: string | null;
+    notes: string | null;
+  }> | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+
+  useEffect(() => {
+    if (!showHistory) return;
+    fetch("http://localhost:8080/api/project/history")
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setHistory(Array.isArray(data) ? data : []))
+      .catch(() => setHistory([]));
+  }, [showHistory]);
+
+  return (
+    <div className="roi-panel__section">
+      <h4 
+        className="roi-panel__section-header"
+        onClick={() => setShowHistory(!showHistory)}
+      >
+        Subscription History {showHistory ? "−" : "+"}
+      </h4>
+      {showHistory && (
+        history === null ? (
+          <p className="roi-panel__note">Loading...</p>
+        ) : history.length > 0 ? (
+          <ul className="roi-panel__subscription-list">
+            {history.map((entry) => (
+              <li key={entry.id} className="roi-panel__subscription-item">
+                <div className="roi-panel__subscription-header">
+                  <strong>{entry.model_id}</strong>
+                  <span 
+                    className="roi-panel__recommendation"
+                    style={{ backgroundColor: entry.archived_at ? "#6b7280" : "#22c55e" }}
+                  >
+                    {entry.archived_at ? "Archived" : entry.ended_at ? "Expired" : "Active"}
+                  </span>
+                </div>
+                <div className="roi-panel__subscription-stats">
+                  <span>{formatUsd(entry.cost_usd)} ({entry.period_type})</span>
+                  <span>{formatTokens(entry.tokens_consumed)} tokens</span>
+                  <span>{entry.tasks_completed} tasks</span>
+                  <span>API equiv: {formatUsd(entry.api_equivalent_cost_usd)}</span>
+                </div>
+                {entry.roi_percentage > 0 && (
+                  <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
+                    <span style={{ color: "#5eead4" }}>ROI: {entry.roi_percentage.toFixed(0)}%</span>
+                    <span style={{ color: "#94a3b8" }}>
+                      {entry.started_at ? new Date(entry.started_at).toLocaleDateString() : ""}
+                      {entry.ended_at ? ` → ${new Date(entry.ended_at).toLocaleDateString()}` : ""}
+                    </span>
+                  </div>
+                )}
+                {entry.notes && (
+                  <p className="roi-panel__note" style={{ marginTop: "4px", fontSize: "0.7rem" }}>
+                    {entry.notes}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="roi-panel__note">No subscription history yet.</p>
+        )
       )}
     </div>
   );
@@ -2138,7 +2227,7 @@ function formatEventLabel(value?: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note" | "error";
+type EventTone = "assigned" | "route" | "completed" | "testing" | "approved" | "failed" | "note" | "error" | "warning";
 
 interface EventMeta {
   label: string;

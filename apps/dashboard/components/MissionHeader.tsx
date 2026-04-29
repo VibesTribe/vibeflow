@@ -149,6 +149,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isVibesChatOpen, setIsVibesChatOpen] = useState(false);
+  const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -292,6 +293,21 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 
   const formattedTokens = useMemo(() => formatTokenCount(tokenUsage), [tokenUsage]);
 
+  // Project totals from localStorage (same key as ProjectTracker in MissionModals)
+  const projectTokens = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("vibepilot_project_roi");
+      if (raw) {
+        const data = JSON.parse(raw);
+        return data?.totals?.totalTokens ?? 0;
+      }
+    } catch { /* ignore */ }
+    return 0;
+  }, [tokenUsage]); // re-read when live tokens change
+
+  const displayTokens = headerMode === "project" ? projectTokens : tokenUsage;
+  const formattedDisplayTokens = useMemo(() => formatTokenCount(displayTokens), [displayTokens]);
+
   return (
     <header className="mission-header">
       <div className="mission-header__identity">
@@ -342,14 +358,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         <button
           type="button"
           className="mission-header__stat-pill mission-header__stat-pill--tokens"
-          title="Open ROI + token usage"
-          aria-label={`Open ROI + token usage`}
-          onClick={onOpenTokens}
+          title={headerMode === "project" ? "Showing project totals – click to switch to live" : "Showing live tokens – click to switch to project"}
+          aria-label={`Token usage: ${headerMode} mode`}
+          onClick={() => setHeaderMode(headerMode === "live" ? "project" : "live")}
         >
           <div className="mission-header__stat-body">
             <span className="mission-header__stat-primary">
-              <span className="mission-header__stat-label">Tokens</span>
-              <strong className="mission-header__stat-value mission-header__stat-value--tokens">{formattedTokens}</strong>
+              <span className="mission-header__stat-label">{headerMode === "project" ? "Project" : "Tokens"}</span>
+              <strong className="mission-header__stat-value mission-header__stat-value--tokens">{formattedDisplayTokens}</strong>
             </span>
             <span className="mission-header__stat-primary">
               <span className="mission-header__stat-label">ROI</span>
