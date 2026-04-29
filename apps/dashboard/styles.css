@@ -1514,11 +1514,11 @@ a {
 .mission-modal__section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   padding-top: 28px;
 }
 .mission-modal__section:first-of-type {
-  padding-top: calc(var(--modal-sticky-offset) + 56px);
+  padding-top: var(--modal-sticky-offset);
 }
 
 .mission-modal__section--sticky > header,
