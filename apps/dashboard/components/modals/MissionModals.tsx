@@ -653,31 +653,10 @@ const RoiPanel: React.FC<{
   return (
     <div className="mission-modal__section roi-panel">
       <header className="roi-panel__header">
-        <div>
-          <h3>ROI Dashboard</h3>
-          <p>Theoretical vs actual costs across all tasks</p>
-        </div>
-        <div className="roi-panel__header-actions">
-          <div className="roi-panel__totals">
-            <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
-            <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
-          </div>
-          <div className="roi-panel__currency-toggle">
-            <button
-              type="button"
-              className={`roi-panel__currency-btn ${!showCad ? "is-active" : ""}`}
-              onClick={() => setShowCad(false)}
-            >
-              USD
-            </button>
-            <button
-              type="button"
-              className={`roi-panel__currency-btn ${showCad ? "is-active" : ""}`}
-              onClick={() => setShowCad(true)}
-            >
-              CAD
-            </button>
-          </div>
+        <h3>ROI Dashboard</h3>
+        <div className="roi-panel__totals">
+          <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
+          <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
         </div>
       </header>
 
@@ -718,6 +697,26 @@ const RoiPanel: React.FC<{
           <dd>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</dd>
         </div>
       </dl>
+
+      <div className="roi-panel__currency-row">
+        <span className="roi-panel__currency-label">Currency:</span>
+        <div className="roi-panel__currency-toggle">
+          <button
+            type="button"
+            className={`roi-panel__currency-btn ${!showCad ? "is-active" : ""}`}
+            onClick={() => setShowCad(false)}
+          >
+            USD
+          </button>
+          <button
+            type="button"
+            className={`roi-panel__currency-btn ${showCad ? "is-active" : ""}`}
+            onClick={() => setShowCad(true)}
+          >
+            CAD
+          </button>
+        </div>
+      </div>
 
       <div className="roi-panel__section">
         <h4 

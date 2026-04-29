@@ -1415,7 +1415,7 @@ a {
   background: rgba(8, 11, 22, 1);
   border: 1px solid rgba(79, 129, 255, 0.25);
   border-radius: 24px;
-  padding: 52px 24px 24px;
+  padding: 64px 24px 24px;
   overflow-y: auto;
   position: relative;
   display: flex;
@@ -4793,13 +4793,6 @@ a {
   margin-bottom: 8px;
 }
 
-.roi-panel__header-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
 .roi-panel__totals {
   display: flex;
   flex-direction: column;
@@ -4813,18 +4806,31 @@ a {
   color: #22c55e;
 }
 
+.roi-panel__currency-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+  margin-bottom: 4px;
+}
+
+.roi-panel__currency-label {
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
 .roi-panel__currency-toggle {
   display: flex;
-  gap: 0;
-  background: rgba(6, 12, 24, 0.8);
   border: 2px solid #38bdf8;
   border-radius: 6px;
   overflow: hidden;
 }
 
 .roi-panel__currency-btn {
-  padding: 4px 14px;
-  font-size: 0.8rem;
+  padding: 6px 18px;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   border: none;
@@ -4907,29 +4913,29 @@ a {
 }
 
 .roi-panel__section {
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(56, 189, 248, 0.1);
+  margin-top: 4px;
+  padding-top: 3px;
+  border-top: 1px solid rgba(56, 189, 248, 0.08);
 }
 
 .roi-panel__section h4 {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   color: rgba(176, 190, 197, 0.85);
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .roi-panel__section-header {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #b0bec5;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 3px 8px;
   background: rgba(56, 189, 248, 0.08);
-  border-radius: 6px;
+  border-radius: 4px;
   transition: all 0.2s ease;
   display: flex;
   justify-content: space-between;
