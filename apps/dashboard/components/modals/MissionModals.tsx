@@ -663,30 +663,79 @@ const RoiPanel: React.FC<{
       <div className="roi-panel__summary" style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
-        gap: "2px",
-        fontSize: "0.75rem",
-        lineHeight: 1.3,
-        marginBottom: "4px"
+        gap: "3px",
+        fontSize: "0.9rem",
+        lineHeight: 1.4,
+        marginBottom: "2px"
       }}>
-        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>If paying per token</div>
+        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>If paying per token</div>
           <div className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</div>
         </div>
-        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Subscription cost</div>
+        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Subscription cost</div>
           <div className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</div>
         </div>
-        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>You saved</div>
+        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>You saved</div>
           <div className="roi-panel__cost--savings">{formatUsd(totals.savings)}</div>
         </div>
-        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Tasks done</div>
+        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Tasks done</div>
           <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
-        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Subscription ROI</div>
-          <dd>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</dd>
+        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.78rem" }}>Subscription ROI</div>
+          <div>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
+        </div>
+      </div>
+
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        padding: "4px 0 2px"
+      }}>
+        <span style={{ color: "#e2e8f0", fontSize: "0.85rem", fontWeight: 600 }}>Currency:</span>
+        <div style={{
+          display: "flex",
+          border: "2px solid #38bdf8",
+          borderRadius: "6px",
+          overflow: "hidden"
+        }}>
+          <button
+            type="button"
+            style={{
+              padding: "5px 18px",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              border: "none",
+              background: !showCad ? "#38bdf8" : "transparent",
+              color: !showCad ? "#0a0e1a" : "#e2e8f0",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowCad(false)}
+          >
+            USD
+          </button>
+          <button
+            type="button"
+            style={{
+              padding: "5px 18px",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              border: "none",
+              background: showCad ? "#38bdf8" : "transparent",
+              color: showCad ? "#0a0e1a" : "#e2e8f0",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowCad(true)}
+          >
+            CAD
+          </button>
         </div>
       </div>
 
@@ -796,55 +845,6 @@ const RoiPanel: React.FC<{
         subscriptions={roi?.subscriptions ?? []}
         totalTokens={totals.totalTokens}
       />
-
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-        padding: "4px 0 2px"
-      }}>
-        <span style={{ color: "#e2e8f0", fontSize: "0.8rem", fontWeight: 600 }}>Currency:</span>
-        <div style={{
-          display: "flex",
-          border: "2px solid #38bdf8",
-          borderRadius: "6px",
-          overflow: "hidden"
-        }}>
-          <button
-            type="button"
-            style={{
-              padding: "5px 18px",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              border: "none",
-              background: !showCad ? "#38bdf8" : "transparent",
-              color: !showCad ? "#0a0e1a" : "#e2e8f0",
-              cursor: "pointer"
-            }}
-            onClick={() => setShowCad(false)}
-          >
-            USD
-          </button>
-          <button
-            type="button"
-            style={{
-              padding: "5px 18px",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              border: "none",
-              background: showCad ? "#38bdf8" : "transparent",
-              color: showCad ? "#0a0e1a" : "#e2e8f0",
-              cursor: "pointer"
-            }}
-            onClick={() => setShowCad(true)}
-          >
-            CAD
-          </button>
-        </div>
-      </div>
 
       <ProjectCostsSection 
         costs={projectCosts || []} 
