@@ -4808,14 +4808,28 @@ a {
 
 .roi-panel__currency-toggle {
   display: flex;
-  gap: 6px;
+  gap: 0;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid #334155;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .roi-panel__currency-toggle .roi-panel__toggle {
-  padding: 2px 10px;
-  font-size: 0.65rem;
+  padding: 4px 14px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #64748b;
+}
+
+.roi-panel__currency-toggle .roi-panel__toggle.is-active {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  border: none;
 }
 
 .roi-panel__toggle {
