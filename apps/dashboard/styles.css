@@ -288,7 +288,7 @@ a {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #94a3b8;
+  color: #b0bec5;
   margin: 0;
 }
 
@@ -493,7 +493,7 @@ a {
 
 .rail__empty {
   font-size: 0.65rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
   text-align: center;
   padding: 24px 0;
 }
@@ -645,7 +645,7 @@ a {
   font-size: 0.55rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .agent-pill__status--in_progress,
@@ -787,7 +787,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.7rem;
-  color: #64748b;
+  color: #8b9bb0;
 }
 
 .mission-header__stats dd {
@@ -934,7 +934,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #b0bec5;
 }
 
 .run-task__panel input,
@@ -987,7 +987,7 @@ a {
 .run-task__hint {
   margin: 4px 0 0;
   font-size: 0.7rem;
-  color: #64748b;
+  color: #8b9bb0;
 }
 
 .run-task__remember {
@@ -995,7 +995,7 @@ a {
   align-items: center;
   gap: 8px;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #b0bec5;
 }
 
 .run-task__remember input {
@@ -1086,7 +1086,7 @@ a {
 .mission-empty {
   margin: 0;
   font-size: 0.72rem;
-  color: #94a3b8;
+  color: #b0bec5;
 }
 
 .slice-chip {
@@ -1095,7 +1095,7 @@ a {
   align-items: center;
   padding: 12px;
   border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--slice-accent, #94a3b8) 25%, rgba(148, 163, 184, 0.18));
+  border: 1px solid color-mix(in srgb, var(--slice-accent, #b0bec5) 25%, rgba(148, 163, 184, 0.18));
   background: rgba(15, 23, 42, 0.82);
   text-align: left;
   color: inherit;
@@ -1415,12 +1415,12 @@ a {
   background: rgba(8, 11, 22, 1);
   border: 1px solid rgba(79, 129, 255, 0.25);
   border-radius: 24px;
-  padding: 0 24px 24px;
+  padding: 12px 24px 24px;
   overflow-y: auto;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   scroll-padding-top: var(--modal-sticky-offset);
 }
 
@@ -1610,7 +1610,7 @@ a {
 }
 
 .mission-log__bullet--note {
-  background: #94a3b8;
+  background: #b0bec5;
 }
 
 .mission-log__bullet--route {
@@ -1752,7 +1752,7 @@ a {
 
 .mission-modal__hint {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #b0bec5;
 }
 
 @keyframes goldPulse {
@@ -1895,7 +1895,7 @@ a {
 .slice-placeholder__legend {
   margin-top: 12px;
   font-size: 0.75rem;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
   text-align: center;
 }
 
@@ -2315,7 +2315,7 @@ a {
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .mission-header__stats dd {
@@ -2413,7 +2413,7 @@ a {
   font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .agent-pill__summary {
@@ -2513,7 +2513,7 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .slice-orbit-card__cta {
@@ -2524,7 +2524,7 @@ a {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   background: rgba(8, 19, 35, 0.8);
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
 }
 
 .slice-orbit-card__body {
@@ -2662,7 +2662,7 @@ a {
   font-size: 0.55rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .slice-orbit__alert {
@@ -2988,7 +2988,7 @@ a {
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .model-panel__status-line {
@@ -3137,7 +3137,7 @@ a {
   font-size: 0.62rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
 }
 
 .model-panel__recent-item {
@@ -3663,7 +3663,7 @@ a {
 .agent-detail__empty {
   margin: 0;
   font-size: 0.75rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .agent-routing {
@@ -3709,7 +3709,7 @@ a {
 .agent-routing small {
   display: block;
   font-size: 0.62rem;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .agent-recent {
@@ -3747,7 +3747,7 @@ a {
   font-size: 0.6rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
 }
 
 .agent-warnings {
@@ -3820,7 +3820,7 @@ a {
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .assignment-detail__summary {
@@ -3870,7 +3870,7 @@ a {
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
 }
 
 .assignment-detail__section {
@@ -3947,7 +3947,7 @@ a {
   font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
 }
 
 .assignment-detail__log {
@@ -3957,7 +3957,7 @@ a {
 .assignment-detail__empty {
   margin: 0;
   font-size: 0.75rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .assignment-detail__actions {
@@ -4332,7 +4332,7 @@ a {
 }
 
 .mission-log__title--note {
-  color: #94a3b8;
+  color: #b0bec5;
 }
 
 .mission-log__title--route {
@@ -4376,7 +4376,7 @@ a {
   font-size: 0.64rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
 }
 
 .mission-log__header {
@@ -4493,11 +4493,11 @@ a {
 }
 
 .task-activity-item--note {
-  border-left-color: #94a3b8;
+  border-left-color: #b0bec5;
 }
 
 .task-activity-item--empty {
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
   font-style: italic;
   padding: 8px 0;
 }
@@ -4576,7 +4576,7 @@ a {
 
 .task-activity__time {
   font-size: 0.65rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
   letter-spacing: 0.02em;
 }
 
@@ -4772,7 +4772,7 @@ a {
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .roi-panel__grid dd {
@@ -4783,7 +4783,7 @@ a {
 
 .roi-panel__note {
   font-size: 0.65rem;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .roi-panel__totals {
@@ -4833,7 +4833,7 @@ a {
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #94a3b8;
+  color: #b0bec5;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -4853,7 +4853,7 @@ a {
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 6px;
   background: rgba(9, 14, 26, 0.6);
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
   font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -4888,7 +4888,7 @@ a {
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .roi-panel__summary-item dd {
@@ -4919,7 +4919,7 @@ a {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
   margin-bottom: 6px;
 }
 
@@ -4927,7 +4927,7 @@ a {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #94a3b8;
+  color: #b0bec5;
   margin-bottom: 4px;
   cursor: pointer;
   padding: 4px 10px;
@@ -4951,7 +4951,7 @@ a {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   max-height: 200px;
   overflow-y: auto;
 }
@@ -4960,8 +4960,8 @@ a {
 .roi-panel__subscription-item {
   background: rgba(9, 14, 26, 0.7);
   border: 1px solid rgba(56, 189, 248, 0.08);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 6px;
+  padding: 6px 8px;
 }
 
 .roi-panel__slice-name,
@@ -4979,7 +4979,7 @@ a {
   display: flex;
   gap: 12px;
   font-size: 0.7rem;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .roi-panel__slice-savings {
@@ -5013,7 +5013,7 @@ a {
 .roi-panel__expand-icon {
   margin-left: 8px;
   font-size: 0.8rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .roi-panel__model-list,
@@ -5023,7 +5023,7 @@ a {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   max-height: 400px;
   overflow-y: auto;
 }
@@ -5031,26 +5031,26 @@ a {
 .roi-panel__model-item {
   background: rgba(9, 14, 26, 0.7);
   border: 1px solid rgba(56, 189, 248, 0.08);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .roi-panel__model-header {
-  padding: 12px;
+  padding: 6px 8px;
   cursor: pointer;
   transition: background 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 }
 
 .roi-panel__model-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: rgba(148, 163, 184, 0.85);
-  line-height: 1.5;
-  padding-bottom: 4px;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: rgba(176, 190, 197, 0.85);
+  line-height: 1.3;
+  padding-bottom: 2px;
 }
 
 .roi-panel__model-header:hover {
@@ -5104,7 +5104,7 @@ a {
   display: flex;
   gap: 8px;
   font-size: 0.65rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
   flex-wrap: wrap;
 }
 
@@ -5144,27 +5144,27 @@ a {
 .roi-panel__cost-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 12px;
+  margin: 0 0 6px;
 }
 
 .roi-panel__cost-group {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .roi-panel__cost-group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #e2e8f0;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.08);
-  margin-bottom: 4px;
+  color: #b0bec5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
 }
 
 .roi-panel__cost-group-total {
-  color: #94a3b8;
+  color: #b0bec5;
   font-weight: 400;
 }
 
@@ -5204,7 +5204,7 @@ a {
 }
 
 .roi-panel__cost-freq {
-  color: #64748b;
+  color: #8b9bb0;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -5218,7 +5218,7 @@ a {
 }
 
 .roi-panel__cost-amount {
-  color: #94a3b8;
+  color: #b0bec5;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -5226,7 +5226,7 @@ a {
 .roi-panel__cost-edit-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: #8b9bb0;
   cursor: pointer;
   font-size: 0.85rem;
   padding: 2px 6px;
@@ -5259,7 +5259,7 @@ a {
   border: 1px solid #334155;
   border-radius: 4px;
   background: transparent;
-  color: #94a3b8;
+  color: #b0bec5;
   font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.15s;
@@ -5303,7 +5303,7 @@ a {
   justify-content: space-between;
   align-items: center;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #b0bec5;
   padding: 3px 0;
 }
 
@@ -5325,20 +5325,20 @@ a {
   background: rgba(4, 7, 15, 0.5);
   border: 1px solid rgba(56, 189, 248, 0.08);
   border-radius: 6px;
-  padding: 10px 12px;
-  margin-top: 8px;
+  padding: 6px 8px;
+  margin-top: 4px;
 }
 
 .roi-panel__cost-form-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 3px;
 }
 
 .roi-panel__cost-form-row label {
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #b0bec5;
   min-width: 70px;
   text-align: right;
 }
@@ -5366,7 +5366,7 @@ a {
 }
 
 .model-panel__roi {
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
   font-size: 0.75rem;
 }
 
@@ -6035,7 +6035,7 @@ a {
   font-size: 0.52rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .slice-orbit__location--mcp {
@@ -6164,7 +6164,7 @@ a {
   font-size: 0.5rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .agent-pill__summary {
@@ -6452,7 +6452,7 @@ a {
   font-size: 0.48rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .mission-header__stats-label {
@@ -6730,7 +6730,7 @@ a {
   font-size: 0.48rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .mission-header__stats-label {
@@ -6938,7 +6938,7 @@ a {
   font-size: 0.48rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(176, 190, 197, 0.7);
 }
 
 .mission-header__stats-label {
@@ -7879,7 +7879,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.22em;
   font-size: 0.58rem;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
   margin: 0 0 2px;
 }
 .mission-header__pill-detail-header strong {
@@ -8284,7 +8284,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-size: 0.58rem;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
   margin: 0 0 6px;
 }
 
@@ -8372,7 +8372,7 @@ a {
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
 }
 .review-panel__meta dt {
   font-weight: 600;
@@ -8456,7 +8456,7 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.85);
+  color: rgba(176, 190, 197, 0.85);
 }
 
 .review-panel__textarea {
@@ -9309,7 +9309,7 @@ a {
 .review-queue__timestamp {
   font-size: 0.6rem;
   letter-spacing: 0.08em;
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(176, 190, 197, 0.75);
 }
 
 .review-queue__title {
@@ -9333,7 +9333,7 @@ a {
   font-size: 0.58rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.8);
+  color: rgba(176, 190, 197, 0.8);
 }
 
 .review-queue__notes {
@@ -9809,7 +9809,7 @@ a {
 .vibes-chat-panel__close {
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: #b0bec5;
   font-size: 24px;
   cursor: pointer;
   padding: 4px 8px;
@@ -9880,7 +9880,7 @@ a {
 
 .vibes-chat-panel__message-time {
   font-size: 10px;
-  color: #64748b;
+  color: #8b9bb0;
   margin-top: 4px;
   padding: 0 4px;
 }
@@ -9900,7 +9900,7 @@ a {
 .vibes-chat-panel__typing span {
   width: 8px;
   height: 8px;
-  background: #64748b;
+  background: #8b9bb0;
   border-radius: 50%;
   animation: vibes-typing 1.4s infinite both;
 }
@@ -9944,7 +9944,7 @@ a {
 }
 
 .vibes-chat-panel__input::placeholder {
-  color: #64748b;
+  color: #8b9bb0;
 }
 
 .vibes-chat-panel__send {
@@ -10027,7 +10027,7 @@ a {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #94a3b8;
+  color: #b0bec5;
   font-size: 12px;
   margin-left: 8px;
   transition: all 0.15s ease;
@@ -10056,7 +10056,7 @@ a {
   left: 50%;
   transform: translateX(-50%);
   font-size: 10px;
-  color: #64748b;
+  color: #8b9bb0;
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.2s ease;
