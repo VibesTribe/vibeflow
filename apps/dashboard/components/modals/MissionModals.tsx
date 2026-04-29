@@ -549,7 +549,7 @@ const RoiPanel: React.FC<{
   const formatUsd = (amount: number) => {
     const value = showCad ? amount * exchangeRate : amount;
     const currency = showCad ? "CAD" : "USD";
-    const decimals = Math.abs(value) < 0.01 ? 6 : 2;
+    const decimals = 2;
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency,
@@ -660,43 +660,35 @@ const RoiPanel: React.FC<{
         </div>
       </header>
 
-      <div className="roi-panel__summary-grid">
-        <div className="roi-panel__summary-item">
-          <dt>Would Have Cost</dt>
-          <dd className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</dd>
+      <div className="roi-panel__summary" style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "2px",
+        fontSize: "0.75rem",
+        lineHeight: 1.3,
+        marginBottom: "4px"
+      }}>
+        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>If paying per token</div>
+          <div className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</div>
         </div>
-        <div className="roi-panel__summary-item">
-          <dt>Actually Cost</dt>
-          <dd className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</dd>
+        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Subscription cost</div>
+          <div className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</div>
         </div>
-        <div className="roi-panel__summary-item">
-          <dt>Total Savings</dt>
-          <dd className="roi-panel__cost--savings">{formatUsd(totals.savings)}</dd>
+        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>You saved</div>
+          <div className="roi-panel__cost--savings">{formatUsd(totals.savings)}</div>
         </div>
-        <div className="roi-panel__summary-item">
-          <dt>Tasks Completed</dt>
-          <dd>{totals.completedTasks} / {totals.totalTasks}</dd>
+        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Tasks done</div>
+          <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
-      </div>
-
-      <dl className="roi-panel__grid">
-        <div>
-          <dt>Active slices</dt>
-          <dd>{totals.activeSlices}</dd>
-        </div>
-        <div>
-          <dt>Blocked slices</dt>
-          <dd>{totals.blockedSlices}</dd>
-        </div>
-        <div>
-          <dt>Completed slices</dt>
-          <dd>{totals.completedSlices}</dd>
-        </div>
-        <div>
-          <dt>ROI %</dt>
+        <div style={{ padding: "4px 6px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#b0bec5", fontSize: "0.65rem" }}>Subscription ROI</div>
           <dd>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</dd>
         </div>
-      </dl>
+      </div>
 
       <div className="roi-panel__section">
         <h4 

@@ -1420,7 +1420,7 @@ a {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   scroll-padding-top: var(--modal-sticky-offset);
 }
 
