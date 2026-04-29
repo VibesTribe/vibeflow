@@ -664,28 +664,28 @@ const RoiPanel: React.FC<{
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
         gap: "3px",
-        fontSize: "1.05rem",
+        fontSize: "1.2rem",
         lineHeight: 1.4,
         marginBottom: "2px"
       }}>
-        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>If paying per token</div>
+        <div style={{ padding: "6px 10px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>If paying per token</div>
           <div className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Subscription cost</div>
+          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription cost</div>
           <div className="roi-panel__cost--actual">{formatUsd(totals.actualCost)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>You saved</div>
+          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>You saved</div>
           <div className="roi-panel__cost--savings">{formatUsd(totals.savings)}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Tasks done</div>
+          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Tasks done</div>
           <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#e2e8f0", fontSize: "0.85rem" }}>Subscription ROI</div>
+          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription ROI</div>
           <div>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
         </div>
       </div>
@@ -1255,7 +1255,7 @@ const SessionTracker: React.FC<{ totals: TrackerTotals; formatUsd: (n: number) =
                 <div className="roi-panel__slice-header">
                   <div className="roi-panel__slice-name">
                     {s.label}
-                    <span style={{ color: "#94a3b8", fontSize: "0.7rem", marginLeft: "6px" }}>
+                    <span style={{ color: "#ffffff", fontSize: "0.7rem", marginLeft: "6px" }}>
                       {new Date(s.startedAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -1357,7 +1357,7 @@ const SubscriptionHistorySection: React.FC<{
                     </div>
                     <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
                       <span style={{ color: "#5eead4" }}>{formatTokens(totalTokens)} tokens</span>
-                      <span style={{ color: "#94a3b8" }}>{tokensPerDollar > 0 ? `${(tokensPerDollar / 1000).toFixed(0)}K tokens/$` : ""}</span>
+                      <span style={{ color: "#ffffff" }}>{tokensPerDollar > 0 ? `${(tokensPerDollar / 1000).toFixed(0)}K tokens/$` : ""}</span>
                     </div>
                   </li>
                 );
@@ -1390,7 +1390,7 @@ const SubscriptionHistorySection: React.FC<{
                   {entry.roi_percentage > 0 && (
                     <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
                       <span style={{ color: "#5eead4" }}>ROI: {entry.roi_percentage.toFixed(0)}%</span>
-                      <span style={{ color: "#94a3b8" }}>
+                      <span style={{ color: "#ffffff" }}>
                         {entry.started_at ? new Date(entry.started_at).toLocaleDateString() : ""}
                         {entry.ended_at ? ` → ${new Date(entry.ended_at).toLocaleDateString()}` : ""}
                       </span>
@@ -1671,12 +1671,12 @@ const ProjectCostsSection: React.FC<{
               {monthlyEquivalent > 0 && (
                 <>
                   <div className="roi-panel__cost-summary-row">
-                    <span style={{ color: "#94a3b8" }}>Recurring (monthly equiv.)</span>
-                    <span style={{ color: "#94a3b8" }}>{formatUsd(monthlyEquivalent)}/mo</span>
+                    <span style={{ color: "#ffffff" }}>Recurring (monthly equiv.)</span>
+                    <span style={{ color: "#ffffff" }}>{formatUsd(monthlyEquivalent)}/mo</span>
                   </div>
                   <div className="roi-panel__cost-summary-row">
-                    <span style={{ color: "#64748b" }}>Annualized projection</span>
-                    <span style={{ color: "#64748b" }}>{formatUsd(annualizedTotal)}</span>
+                    <span style={{ color: "#ffffff" }}>Annualized projection</span>
+                    <span style={{ color: "#ffffff" }}>{formatUsd(annualizedTotal)}</span>
                   </div>
                 </>
               )}
@@ -1696,7 +1696,7 @@ const ProjectCostsSection: React.FC<{
                   </div>
                   {rawTotal > 0 && (
                     <div style={{ marginTop: "8px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "#94a3b8", marginBottom: "4px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "#ffffff", marginBottom: "4px" }}>
                         <span>Break-even progress</span>
                         <span>{breakEvenPct.toFixed(0)}%</span>
                       </div>
