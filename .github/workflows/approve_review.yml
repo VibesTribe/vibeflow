@@ -57,3 +57,9 @@ jobs:
           else
             echo "No review changes detected."
           fi
+
+      - name: Notify governor of approval
+        run: |
+          curl -X POST https://webhooks.vibestribe.rocks/api/task/review \
+            -H "Content-Type: application/json" \
+            -d '{"task_id":"${{ inputs.task_id }}","action":"approve","notes":"${{ inputs.notes }}"}'

@@ -372,13 +372,22 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         <button
           type="button"
           className="mission-header__stat-pill mission-header__stat-pill--tokens"
-          title={headerMode === "project" ? "Showing project totals – click to switch to live" : "Showing live tokens – click to switch to project"}
-          aria-label={`Token usage: ${headerMode} mode`}
-          onClick={() => setHeaderMode(headerMode === "live" ? "project" : "live")}
+          title="Open ROI + token usage"
+          aria-label="Open ROI + token usage"
+          onClick={onOpenTokens}
         >
           <div className="mission-header__stat-body">
             <span className="mission-header__stat-primary">
-              <span className="mission-header__stat-label">{headerMode === "project" ? "Project" : "Tokens"}</span>
+              <span
+                className="mission-header__mode-toggle"
+                title={headerMode === "project" ? "Showing project totals – click to switch to live" : "Showing live tokens – click to switch to project"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setHeaderMode(headerMode === "live" ? "project" : "live");
+                }}
+              >
+                {headerMode === "project" ? "Project" : "Now"}
+              </span>
               <strong className="mission-header__stat-value mission-header__stat-value--tokens">{formattedDisplayTokens}</strong>
             </span>
             <span className="mission-header__stat-primary">

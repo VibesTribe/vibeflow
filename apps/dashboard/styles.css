@@ -2163,6 +2163,21 @@ a {
 .mission-header__stat-pill--tokens .mission-header__stat-label {
   color: rgba(248, 250, 252, 0.85);
 }
+.mission-header__mode-toggle {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(120, 230, 255, 0.8);
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 3px;
+  transition: background 0.15s, color 0.15s;
+}
+.mission-header__mode-toggle:hover {
+  background: rgba(120, 230, 255, 0.15);
+  color: #78e6ff;
+}
 .mission-header__stat-pill--tokens .mission-header__stat-value {
   font-size: 0.6rem;
   color: #fefad8;
