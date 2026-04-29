@@ -529,9 +529,14 @@ const RoiPanel: React.FC<{
   const [exchangeRate, setExchangeRate] = useState<number>(1.36);
   const [showSlices, setShowSlices] = useState(false);
   const [showModels, setShowModels] = useState(false);
+  const [showProject, setShowProject] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [includeOverhead, setIncludeOverhead] = useState(false);
+
+  // Read persisted project data (models, slices, totals from localStorage)
+  const [persistedProject, setPersistedProject] = useState<ProjectData>(readProjectRoi);
+  const prevTokens = useRef(0);
 
   useEffect(() => {
     if (showCad) {
@@ -557,6 +562,39 @@ const RoiPanel: React.FC<{
     if (tokens >= 1_000_000) return `${(tokens / 1_000_000).toFixed(1)}M`;
     if (tokens >= 1_000) return `${(tokens / 1_000).toFixed(1)}K`;
     return tokens.toString();
+  };
+
+  // Accumulate persisted totals whenever live data increases
+  const liveModels = roi?.models ?? [];
+  const liveSlices = roi?.slices ?? [];
+  useEffect(() => {
+    const liveTokens = roi?.totals.total_tokens ?? 0;
+    const deltaTokens = liveTokens - prevTokens.current;
+    if (deltaTokens > 0 || liveModels.length > 0 || liveSlices.length > 0) {
+      setPersistedProject(prev => {
+        const next: ProjectData = {
+          totals: {
+            totalTokens: prev.totals.totalTokens + (deltaTokens > 0 ? deltaTokens : 0),
+            theoreticalCost: prev.totals.theoreticalCost + (roi?.totals.total_theoretical_usd ?? 0),
+            actualCost: prev.totals.actualCost + (roi?.totals.total_actual_usd ?? 0),
+            savings: prev.totals.savings + (roi?.totals.total_savings_usd ?? 0),
+            totalTasks: prev.totals.totalTasks + (roi?.totals.total_tasks ?? 0),
+            completedTasks: prev.totals.completedTasks + (roi?.totals.total_completed ?? 0),
+          },
+          models: mergeModels(prev.models, liveModels),
+          slices: mergeSlices(prev.slices, liveSlices),
+        };
+        localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(next));
+        return next;
+      });
+    }
+    prevTokens.current = liveTokens;
+  }, [roi?.totals, liveModels, liveSlices]);
+
+  const handleClearProject = () => {
+    localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(EMPTY_PROJECT));
+    setPersistedProject({ ...EMPTY_PROJECT, models: [], slices: [] });
+    prevTokens.current = roi?.totals.total_tokens ?? 0;
   };
 
   const totals = useMemo(() => {
@@ -619,29 +657,31 @@ const RoiPanel: React.FC<{
           <h3>ROI Dashboard</h3>
           <p>Theoretical vs actual costs across all tasks</p>
         </div>
-        <div className="roi-panel__header-right">
-          <div className="roi-panel__totals">
-            <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
-            <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
-          </div>
-          <div className="roi-panel__currency-toggle">
-            <button
-              type="button"
-              className={`roi-panel__toggle ${!showCad ? "is-active" : ""}`}
-              onClick={() => setShowCad(false)}
-            >
-              USD
-            </button>
-            <button
-              type="button"
-              className={`roi-panel__toggle ${showCad ? "is-active" : ""}`}
-              onClick={() => setShowCad(true)}
-            >
-              CAD
-            </button>
-          </div>
+        <div className="roi-panel__totals">
+          <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
+          <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
         </div>
       </header>
+
+      <div className="roi-panel__currency-bar">
+        <span className="roi-panel__currency-label">Currency</span>
+        <div className="roi-panel__currency-toggle">
+          <button
+            type="button"
+            className={`roi-panel__currency-btn ${!showCad ? "is-active" : ""}`}
+            onClick={() => setShowCad(false)}
+          >
+            USD
+          </button>
+          <button
+            type="button"
+            className={`roi-panel__currency-btn ${showCad ? "is-active" : ""}`}
+            onClick={() => setShowCad(true)}
+          >
+            CAD
+          </button>
+        </div>
+      </div>
 
       <div className="roi-panel__summary-grid">
         <div className="roi-panel__summary-item">
@@ -682,11 +722,28 @@ const RoiPanel: React.FC<{
       </dl>
 
       <div className="roi-panel__section">
-        <h4>Project-to-Date</h4>
-        <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
-          Cumulative totals persisted in your browser. Survives database clears.
-        </p>
-        <ProjectTracker totals={totals} models={roi?.models ?? []} slices={roi?.slices ?? []} formatUsd={formatUsd} formatTokens={formatTokens} />
+        <h4 
+          className="roi-panel__section-header" 
+          onClick={() => setShowProject(!showProject)}
+        >
+          Project-to-Date {showProject ? "−" : "+"}
+        </h4>
+        {showProject && (
+          <>
+            <p className="roi-panel__note" style={{ marginBottom: "8px" }}>
+              Cumulative totals persisted in your browser. Survives database clears.
+            </p>
+            <dl className="roi-panel__grid">
+              <div><dt>Tokens</dt><dd>{formatTokens(persistedProject.totals.totalTokens)}</dd></div>
+              <div><dt>Actual Cost</dt><dd>{formatUsd(persistedProject.totals.actualCost)}</dd></div>
+              <div><dt>Savings</dt><dd>{formatUsd(persistedProject.totals.savings)}</dd></div>
+              <div><dt>Tasks</dt><dd>{persistedProject.totals.completedTasks} / {persistedProject.totals.totalTasks}</dd></div>
+            </dl>
+            <button type="button" className="roi-panel__toggle" onClick={handleClearProject} style={{ marginTop: "8px" }}>
+              Clear Project
+            </button>
+          </>
+        )}
       </div>
 
       <div className="roi-panel__section">
@@ -720,21 +777,33 @@ const RoiPanel: React.FC<{
           )}
         </div>
 
+      {/* Single Models section — merges persisted + current session */}
       <div className="roi-panel__section">
           <h4 
             className="roi-panel__section-header" 
             onClick={() => setShowModels(!showModels)}
           >
-            By Model {showModels ? "−" : "+"}
+            Models ({persistedProject.models.length}) {showModels ? "−" : "+"}
           </h4>
-          {showModels && (
-            roi?.models && roi.models.length > 0 ? (
+          {showModels && (() => {
+            const currentModelIds = new Set((roi?.models || []).map(m => m.model_id));
+            const allModels = persistedProject.models.map(m => ({
+              ...m,
+              isActive: currentModelIds.has(m.model_id),
+            }));
+            return allModels.length > 0 ? (
               <ul className="roi-panel__model-list">
-                {roi.models.slice(0, 10).map((model) => (
+                {allModels.map(model => (
                   <li key={model.model_id} className="roi-panel__model-item">
                     <div className="roi-panel__model-header">
                       <div className="roi-panel__model-name">
                         {model.model_name || model.model_id}
+                        <span 
+                          className={`roi-panel__recommendation ${model.isActive ? "" : "is-inactive"}`}
+                          style={{ backgroundColor: model.isActive ? "#22c55e" : "#6b7280" }}
+                        >
+                          {model.isActive ? "Active" : "Inactive"}
+                        </span>
                         <span className="roi-panel__model-role">{getRoleLabel(model.role)}</span>
                       </div>
                       <div className="roi-panel__model-stats">
@@ -748,43 +817,16 @@ const RoiPanel: React.FC<{
               </ul>
             ) : (
               <p className="roi-panel__note">No model data yet. Run tasks to see per-model costs.</p>
-            )
-          )}
+            );
+          })()}
         </div>
 
-      <div className="roi-panel__section">
-        <h4>Active Subscriptions</h4>
-        {roi?.subscriptions && roi.subscriptions.length > 0 ? (
-          <ul className="roi-panel__subscription-list">
-            {roi.subscriptions.map((sub) => {
-              const rec = getRecommendationMeta(sub.recommendation);
-              return (
-                <li key={sub.model_id} className="roi-panel__subscription-item">
-                  <div className="roi-panel__subscription-header">
-                    <strong>{sub.model_name || sub.model_id}</strong>
-                    <span 
-                      className="roi-panel__recommendation"
-                      style={{ backgroundColor: rec.color }}
-                    >
-                      {rec.label}
-                    </span>
-                  </div>
-                  <div className="roi-panel__subscription-stats">
-                    <span>{formatUsd(sub.subscription_cost_usd || 0)}/mo</span>
-                    <span>{sub.days_remaining} days left</span>
-                    <span>{sub.tasks_completed} tasks</span>
-                    <span>{formatUsd(sub.cost_per_task)}/task</span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="roi-panel__note">No active subscriptions tracked.</p>
-        )}
-      </div>
-
-      <SubscriptionHistorySection formatUsd={formatUsd} formatTokens={formatTokens} />
+      <SubscriptionHistorySection 
+        formatUsd={formatUsd} 
+        formatTokens={formatTokens} 
+        subscriptions={roi?.subscriptions ?? []}
+        totalTokens={totals.totalTokens}
+      />
 
       <ProjectCostsSection 
         costs={projectCosts || []} 
@@ -1218,12 +1260,14 @@ const SessionTracker: React.FC<{ totals: TrackerTotals; formatUsd: (n: number) =
 };
 
 /* ------------------------------------------------------------------ */
-/* SubscriptionHistorySection – archived subscription history          */
+/* SubscriptionHistorySection – active + archived subscriptions       */
 /* ------------------------------------------------------------------ */
 const SubscriptionHistorySection: React.FC<{
   formatUsd: (n: number) => string;
   formatTokens: (n: number) => string;
-}> = ({ formatUsd, formatTokens }) => {
+  subscriptions: import("../../lib/vibepilotAdapter").SubscriptionROI[];
+  totalTokens: number;
+}> = ({ formatUsd, formatTokens, subscriptions, totalTokens }) => {
   const [history, setHistory] = useState<Array<{
     id: string;
     model_id: string;
@@ -1249,56 +1293,103 @@ const SubscriptionHistorySection: React.FC<{
       .catch(() => setHistory([]));
   }, [showHistory]);
 
+  const activeCount = subscriptions.length;
+  const historyCount = history?.length ?? 0;
+  const totalCount = activeCount + historyCount;
+
   return (
     <div className="roi-panel__section">
       <h4 
         className="roi-panel__section-header"
         onClick={() => setShowHistory(!showHistory)}
       >
-        Subscription History {showHistory ? "−" : "+"}
+        Subscriptions ({totalCount}) {showHistory ? "−" : "+"}
       </h4>
       {showHistory && (
-        history === null ? (
-          <p className="roi-panel__note">Loading...</p>
-        ) : history.length > 0 ? (
-          <ul className="roi-panel__subscription-list">
-            {history.map((entry) => (
-              <li key={entry.id} className="roi-panel__subscription-item">
-                <div className="roi-panel__subscription-header">
-                  <strong>{entry.model_id}</strong>
-                  <span 
-                    className="roi-panel__recommendation"
-                    style={{ backgroundColor: entry.archived_at ? "#6b7280" : "#22c55e" }}
-                  >
-                    {entry.archived_at ? "Archived" : entry.ended_at ? "Expired" : "Active"}
-                  </span>
-                </div>
-                <div className="roi-panel__subscription-stats">
-                  <span>{formatUsd(entry.cost_usd)} ({entry.period_type})</span>
-                  <span>{formatTokens(entry.tokens_consumed)} tokens</span>
-                  <span>{entry.tasks_completed} tasks</span>
-                  <span>API equiv: {formatUsd(entry.api_equivalent_cost_usd)}</span>
-                </div>
-                {entry.roi_percentage > 0 && (
-                  <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
-                    <span style={{ color: "#5eead4" }}>ROI: {entry.roi_percentage.toFixed(0)}%</span>
-                    <span style={{ color: "#94a3b8" }}>
-                      {entry.started_at ? new Date(entry.started_at).toLocaleDateString() : ""}
-                      {entry.ended_at ? ` → ${new Date(entry.ended_at).toLocaleDateString()}` : ""}
+        <>
+          {/* Active subscriptions first */}
+          {activeCount > 0 && (
+            <ul className="roi-panel__subscription-list">
+              {subscriptions.map((sub) => {
+                const tokensPerDollar = (sub.subscription_cost_usd && sub.subscription_cost_usd > 0)
+                  ? Math.round(totalTokens / sub.subscription_cost_usd)
+                  : 0;
+                const apiEquivCost = sub.cost_per_task > 0 && sub.tasks_completed > 0
+                  ? sub.cost_per_task * sub.tasks_completed * 3  // rough API pay-per-use estimate
+                  : 0;
+                const subRoi = sub.subscription_cost_usd && sub.subscription_cost_usd > 0 && apiEquivCost > 0
+                  ? ((apiEquivCost - sub.subscription_cost_usd) / sub.subscription_cost_usd * 100)
+                  : 0;
+                return (
+                  <li key={sub.model_id} className="roi-panel__subscription-item">
+                    <div className="roi-panel__subscription-header">
+                      <strong>{sub.model_name || sub.model_id}</strong>
+                      <span 
+                        className="roi-panel__recommendation"
+                        style={{ backgroundColor: "#22c55e" }}
+                      >
+                        Active
+                      </span>
+                    </div>
+                    <div className="roi-panel__subscription-stats">
+                      <span>{formatUsd(sub.subscription_cost_usd || 0)}</span>
+                      <span>{sub.days_remaining} days left</span>
+                      <span>{sub.tasks_completed} tasks</span>
+                      <span>{formatUsd(sub.cost_per_task)}/task</span>
+                    </div>
+                    <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
+                      <span style={{ color: "#5eead4" }}>{formatTokens(totalTokens)} tokens</span>
+                      <span style={{ color: "#94a3b8" }}>{tokensPerDollar > 0 ? `${(tokensPerDollar / 1000).toFixed(0)}K tokens/$` : ""}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          {/* Historical subscriptions */}
+          {history === null ? (
+            activeCount === 0 && <p className="roi-panel__note">Loading...</p>
+          ) : historyCount > 0 ? (
+            <ul className="roi-panel__subscription-list" style={activeCount > 0 ? { marginTop: "8px" } : undefined}>
+              {history.map((entry) => (
+                <li key={entry.id} className="roi-panel__subscription-item">
+                  <div className="roi-panel__subscription-header">
+                    <strong>{entry.model_id}</strong>
+                    <span 
+                      className="roi-panel__recommendation"
+                      style={{ backgroundColor: entry.archived_at ? "#6b7280" : "#f59e0b" }}
+                    >
+                      {entry.archived_at ? "Archived" : entry.ended_at ? "Expired" : "Inactive"}
                     </span>
                   </div>
-                )}
-                {entry.notes && (
-                  <p className="roi-panel__note" style={{ marginTop: "4px", fontSize: "0.7rem" }}>
-                    {entry.notes}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="roi-panel__note">No subscription history yet.</p>
-        )
+                  <div className="roi-panel__subscription-stats">
+                    <span>{formatUsd(entry.cost_usd)} ({entry.period_type})</span>
+                    <span>{formatTokens(entry.tokens_consumed)} tokens</span>
+                    <span>{entry.tasks_completed} tasks</span>
+                    <span>API equiv: {formatUsd(entry.api_equivalent_cost_usd)}</span>
+                  </div>
+                  {entry.roi_percentage > 0 && (
+                    <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
+                      <span style={{ color: "#5eead4" }}>ROI: {entry.roi_percentage.toFixed(0)}%</span>
+                      <span style={{ color: "#94a3b8" }}>
+                        {entry.started_at ? new Date(entry.started_at).toLocaleDateString() : ""}
+                        {entry.ended_at ? ` → ${new Date(entry.ended_at).toLocaleDateString()}` : ""}
+                      </span>
+                    </div>
+                  )}
+                  {entry.notes && (
+                    <p className="roi-panel__note" style={{ marginTop: "4px", fontSize: "0.7rem" }}>
+                      {entry.notes}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : activeCount === 0 ? (
+            <p className="roi-panel__note">No subscriptions yet.</p>
+          ) : null}
+        </>
       )}
     </div>
   );
@@ -1314,7 +1405,7 @@ const ProjectCostsSection: React.FC<{
   onToggleOverhead: () => void;
   formatUsd: (n: number) => string;
 }> = ({ costs, tokenSavings, includeOverhead, onToggleOverhead, formatUsd }) => {
-  const [showCosts, setShowCosts] = useState(true);
+  const [showCosts, setShowCosts] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{
