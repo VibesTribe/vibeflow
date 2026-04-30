@@ -601,8 +601,10 @@ const RoiPanel: React.FC<{
     if (roi) {
       const persistedTokens = persistedProject.totals.totalTokens;
       const liveTokens = roi.totals.total_tokens;
+      // Also sum tokens from active subscriptions (real usage from subscription_history)
+      const subTokens = (roi.subscriptions || []).reduce((sum, s) => sum + (s.tokens_used || 0), 0);
       return {
-        totalTokens: Math.max(persistedTokens, liveTokens),
+        totalTokens: Math.max(persistedTokens, liveTokens, subTokens),
         activeSlices: slices.filter((slice) => slice.active > 0).length,
         blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
         completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
@@ -1358,8 +1360,8 @@ const SubscriptionHistorySection: React.FC<{
                       <span>{formatUsd(sub.cost_per_task)}/task</span>
                     </div>
                     <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
-                      <span style={{ color: "#5eead4" }}>{formatTokens(totalTokens)} tokens</span>
-                      <span style={{ color: "#ffffff" }}>{tokensPerDollar > 0 ? `${(tokensPerDollar / 1000).toFixed(0)}K tokens/$` : ""}</span>
+                      <span style={{ color: "#5eead4" }}>{formatTokens(sub.tokens_used)} tokens</span>
+                      <span style={{ color: "#ffffff" }}>{(sub.tokens_used > 0 && sub.subscription_cost_usd && sub.subscription_cost_usd > 0) ? `${Math.round(sub.tokens_used / sub.subscription_cost_usd / 1000)}K tokens/$` : ""}</span>
                     </div>
                   </li>
                 );
