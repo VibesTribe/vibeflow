@@ -170,11 +170,15 @@ export function transformTasks(
 ): TaskSnapshot[] {
   // Build run lookup by task_id (most recent)
   const latestRunByTask = new Map<string, VibePilotTaskRun>();
+  // Also build total tokens across ALL runs per task
+  const tokensByTask = new Map<string, number>();
   for (const run of runs) {
     const existing = latestRunByTask.get(run.task_id);
     if (!existing || new Date(run.started_at) > new Date(existing.started_at)) {
       latestRunByTask.set(run.task_id, run);
     }
+    const tok = run.tokens_used ?? (run.tokens_in ?? 0) + (run.tokens_out ?? 0);
+    tokensByTask.set(run.task_id, (tokensByTask.get(run.task_id) ?? 0) + tok);
   }
 
   return tasks.map((task) => {
@@ -194,12 +198,9 @@ export function transformTasks(
       status: mapTaskStatus(task.status),
       confidence: task.confidence ?? 0.85,
       updatedAt: task.updated_at,
-      owner:
-        task.status === "merged"
-          ? null
-          : task.assigned_to
-          ? `agent.${task.assigned_to}`
-          : null,
+      owner: task.assigned_to
+        ? task.assigned_to
+        : null,
       sliceId: task.slice_id ? `slice.${task.slice_id}` : undefined,
       taskNumber: task.task_number || undefined,
       location: deriveTaskLocation(
@@ -214,7 +215,7 @@ export function transformTasks(
         : undefined,
       mergePending: task.status === "merge_pending",
       metrics: {
-        tokensUsed: run?.tokens_used || 0,
+        tokensUsed: tokensByTask.get(task.id) ?? (run?.tokens_used ?? ((run?.tokens_in ?? 0) + (run?.tokens_out ?? 0))) ?? 0,
         runtimeSeconds,
         costUsd: 0,
       },
