@@ -39,6 +39,7 @@ interface VibePilotTask {
   result: Record<string, unknown> | null;
   confidence: number | null;
   category: string | null;
+  plan_id: string | null;
   total_tokens_in: number | null;
   total_tokens_out: number | null;
   total_cost_usd: number | null;
@@ -174,15 +175,31 @@ export function transformTasks(
 ): TaskSnapshot[] {
   // Build run lookup by task_id (most recent)
   const latestRunByTask = new Map<string, VibePilotTaskRun>();
-  // Also build total tokens across ALL runs per task
+  // Also build total tokens across ALL runs per task (including plan-stage runs)
   const tokensByTask = new Map<string, number>();
+
+  // Build a map: plan_id -> task_id so plan-stage runs (planner, plan_reviewer)
+  // get attributed to the task that came from that plan
+  const planToTask = new Map<string, string>();
+  for (const task of tasks) {
+    if (task.plan_id) planToTask.set(task.plan_id, task.id);
+  }
+
   for (const run of runs) {
-    const existing = latestRunByTask.get(run.task_id);
+    // Resolve run's task_id: if it's a plan ID, map to actual task
+    let effectiveTaskId = run.task_id;
+    if (planToTask.has(run.task_id)) {
+      effectiveTaskId = planToTask.get(run.task_id)!;
+    }
+    // Skip orphaned plan-stage runs with no matching task
+    if (!tasks.some(t => t.id === effectiveTaskId)) continue;
+
+    const existing = latestRunByTask.get(effectiveTaskId);
     if (!existing || new Date(run.started_at) > new Date(existing.started_at)) {
-      latestRunByTask.set(run.task_id, run);
+      latestRunByTask.set(effectiveTaskId, run);
     }
     const tok = run.tokens_used ?? (run.tokens_in ?? 0) + (run.tokens_out ?? 0);
-    tokensByTask.set(run.task_id, (tokensByTask.get(run.task_id) ?? 0) + tok);
+    tokensByTask.set(effectiveTaskId, (tokensByTask.get(effectiveTaskId) ?? 0) + tok);
   }
 
   return tasks.map((task) => {
