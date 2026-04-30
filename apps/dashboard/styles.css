@@ -1429,8 +1429,8 @@ a {
   position: sticky;
   top: -32px;
   display: block;
-  height: calc(var(--modal-sticky-offset) + 192px);
-  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 160px));
+  height: calc(var(--modal-sticky-offset) + 32px);
+  margin-bottom: calc(-1 * var(--modal-sticky-offset));
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 6;
@@ -1442,8 +1442,8 @@ a {
   position: sticky;
   top: -32px;
   display: block;
-  height: calc(var(--modal-sticky-offset) + 224px);
-  margin-bottom: calc(-1 * (var(--modal-sticky-offset) + 192px));
+  height: calc(var(--modal-sticky-offset) + 32px);
+  margin-bottom: calc(-1 * var(--modal-sticky-offset));
   background: rgba(8, 11, 22, 1);
   border-radius: 24px 24px 0 0;
   z-index: 5;

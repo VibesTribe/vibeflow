@@ -218,9 +218,22 @@ const LogList: React.FC<{ events: MissionEvent[]; slices: MissionSlice[] }> = ({
     return Array.from(s).sort();
   }, [events]);
 
+  // Sort events: actionable pipeline events first, prd_committed noise last
+  const sorted = useMemo(() => {
+    const priority = (e: MissionEvent) => {
+      if (e.type === "prd_committed") return 2;
+      return 1;
+    };
+    return [...events].sort((a, b) => {
+      const pa = priority(a), pb = priority(b);
+      if (pa !== pb) return pa - pb;
+      return new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf();
+    });
+  }, [events]);
+
   const filtered = sourceFilter
-    ? events.filter(e => (e.details?.source as string) === sourceFilter)
-    : events;
+    ? sorted.filter(e => (e.details?.source as string) === sourceFilter)
+    : sorted;
 
   return (
     <div className="mission-modal__section mission-modal__section--sticky">
