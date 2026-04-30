@@ -830,6 +830,12 @@ export function adaptVibePilotToDashboard(
   
   const completedTasks = tasks.filter(t => t.status === "merged").length;
   
+  // Include subscription savings in totals (actual cost vs API equivalent)
+  const subApiEquiv = subscriptionROI.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
+  const subActual = subscriptionROI.reduce((sum, s) => sum + (s.prorated_cost_usd || 0), 0);
+  const subSavings = subApiEquiv - subActual;
+  const subTokens = subscriptionROI.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
+
   return {
     tasks: transformTasks(tasks, runs),
     agents: transformAgents(tasks, runs, models, platforms),
@@ -837,10 +843,10 @@ export function adaptVibePilotToDashboard(
     metrics: calculateMetrics(tasks, runs),
     roi: {
       totals: {
-        total_tokens: roi.total_tokens_in + roi.total_tokens_out,
-        total_theoretical_usd: roi.total_theoretical_usd,
-        total_actual_usd: roi.total_actual_usd,
-        total_savings_usd: roi.total_savings_usd,
+        total_tokens: roi.total_tokens_in + roi.total_tokens_out + subTokens,
+        total_theoretical_usd: roi.total_theoretical_usd + subApiEquiv,
+        total_actual_usd: roi.total_actual_usd + subActual,
+        total_savings_usd: roi.total_savings_usd + subSavings,
         total_tasks: tasks.length,
         total_completed: completedTasks,
       },
