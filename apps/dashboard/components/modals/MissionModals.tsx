@@ -53,7 +53,8 @@ interface MissionModalsProps {
 }
 
 const DOC_LINKS = [
-  { label: "Knowledge Graph", path: "https://graphs.vibestribe.rocks/graph/vibepilot-graph.html", external: true },
+  { label: "VibePilot Code Graph", path: "https://graphs.vibestribe.rocks/graph/vibepilot-graph.html", external: true },
+  { label: "VibeFlow Code Graph", path: "https://graphs.vibestribe.rocks/graph/vibeflow-code-graph.html", external: true },
   { label: "Decision Log", path: "https://graphs.vibestribe.rocks/knowledge/decisions/decision-log.md", external: true },
   { label: "Tool Evaluations", path: "https://graphs.vibestribe.rocks/knowledge/tools/jmunch-ecosystem.md", external: true },
   { label: "Architecture (ADR-001)", path: "https://graphs.vibestribe.rocks/knowledge/architecture/adr-001-knowledgebase-architecture.md", external: true },
