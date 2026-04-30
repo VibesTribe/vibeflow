@@ -53,9 +53,12 @@ interface MissionModalsProps {
 }
 
 const DOC_LINKS = [
-  { label: "Product Requirements (PRD)", path: "/docs/overview.html" },
-  { label: "System Plan", path: "/docs/system_plan_v5.html" },
-  { label: "Runbook", path: "/docs/runbook.html" },
+  { label: "Knowledge Graph", path: "https://graphs.vibestribe.rocks/graph/vibepilot-graph.html", external: true },
+  { label: "Decision Log", path: "https://graphs.vibestribe.rocks/knowledge/decisions/decision-log.md", external: true },
+  { label: "Tool Evaluations", path: "https://graphs.vibestribe.rocks/knowledge/tools/jmunch-ecosystem.md", external: true },
+  { label: "Architecture (ADR-001)", path: "https://graphs.vibestribe.rocks/knowledge/architecture/adr-001-knowledgebase-architecture.md", external: true },
+  { label: "Free Model Rolodex", path: "https://graphs.vibestribe.rocks/knowledge/models/2026-04-14-free-model-rolodex.md", external: true },
+  { label: "Auto Research Analysis", path: "https://graphs.vibestribe.rocks/knowledge/research/auto-research-analysis.md", external: true },
 ];
 
 const ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
@@ -184,12 +187,18 @@ export default MissionModals;
 
 const DocumentList: React.FC = () => (
   <div className="mission-modal__section">
-    <h3>Project Docs</h3>
+    <h3>Knowledgebase</h3>
     <ul className="mission-list">
       {DOC_LINKS.map((doc) => (
         <li key={doc.label}>
-          <a href={doc.path} target="_blank" rel="noreferrer" className="mission-link">
+          <a
+            href={doc.path}
+            target="_blank"
+            rel="noreferrer"
+            className="mission-link"
+          >
             {doc.label}
+            {doc.external && <span style={{ marginLeft: 6, opacity: 0.5, fontSize: 11 }}>↗</span>}
           </a>
         </li>
       ))}
