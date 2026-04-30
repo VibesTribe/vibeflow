@@ -381,6 +381,8 @@ export interface SubscriptionROI {
   cost_per_task: number;
   success_rate: number;
   recommendation: string;
+  api_equivalent_cost_usd: number;
+  roi_percentage: number;
 }
 
 export interface ProjectROI {
@@ -550,16 +552,17 @@ export function calculateSliceROI(
  */
 export function calculateSubscriptionROI(
   models: VibePilotModel[],
-  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number }[]
+  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number; api_equivalent_cost_usd?: number; roi_percentage?: number }[]
 ): SubscriptionROI[] {
   // Build lookup from subscription_history for real token/task counts
-  const historyByModel = new Map<string, { tokens: number; tasks: number }>();
+  const historyByModel = new Map<string, { tokens: number; tasks: number; apiEquivCost: number; roiPct: number }>();
   if (subscriptionHistory) {
     for (const h of subscriptionHistory) {
-      // Sum across all history entries for this model
-      const existing = historyByModel.get(h.model_id) || { tokens: 0, tasks: 0 };
+      const existing = historyByModel.get(h.model_id) || { tokens: 0, tasks: 0, apiEquivCost: 0, roiPct: 0 };
       existing.tokens += h.tokens_consumed || 0;
       existing.tasks += h.tasks_completed || 0;
+      existing.apiEquivCost += h.api_equivalent_cost_usd || 0;
+      existing.roiPct = Math.max(existing.roiPct, h.roi_percentage || 0);
       historyByModel.set(h.model_id, existing);
     }
   }
@@ -608,6 +611,8 @@ export function calculateSubscriptionROI(
         cost_per_task: Math.round(costPerTask * 10000) / 10000,
         success_rate: model.success_rate || 0,
         recommendation,
+        api_equivalent_cost_usd: historyData?.apiEquivCost || 0,
+        roi_percentage: historyData?.roiPct || 0,
       };
     });
 }

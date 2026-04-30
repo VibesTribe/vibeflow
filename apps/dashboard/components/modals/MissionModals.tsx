@@ -601,18 +601,25 @@ const RoiPanel: React.FC<{
     if (roi) {
       const persistedTokens = persistedProject.totals.totalTokens;
       const liveTokens = roi.totals.total_tokens;
-      // Also sum tokens from active subscriptions (real usage from subscription_history)
-      const subTokens = (roi.subscriptions || []).reduce((sum, s) => sum + (s.tokens_used || 0), 0);
+      // Sum real data from active subscriptions (from subscription_history)
+      const subs = roi.subscriptions || [];
+      const subTokens = subs.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
+      const subTheoreticalCost = subs.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
+      const subActualCost = subs.reduce((sum, s) => sum + (s.subscription_cost_usd || 0), 0);
+      const subTasks = subs.reduce((sum, s) => sum + (s.tasks_completed || 0), 0);
+      const subRoi = subs.length > 0 ? Math.max(...subs.map(s => s.roi_percentage || 0)) : 0;
+
       return {
         totalTokens: Math.max(persistedTokens, liveTokens, subTokens),
         activeSlices: slices.filter((slice) => slice.active > 0).length,
         blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
         completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
-        theoreticalCost: roi.totals.total_theoretical_usd,
-        actualCost: roi.totals.total_actual_usd,
-        savings: roi.totals.total_savings_usd,
-        totalTasks: roi.totals.total_tasks,
-        completedTasks: roi.totals.total_completed,
+        theoreticalCost: roi.totals.total_theoretical_usd || subTheoreticalCost,
+        actualCost: roi.totals.total_actual_usd || subActualCost,
+        savings: roi.totals.total_savings_usd || (subTheoreticalCost - subActualCost),
+        totalTasks: roi.totals.total_tasks || subTasks,
+        completedTasks: roi.totals.total_completed || subTasks,
+        subscriptionRoi: subRoi,
       };
     }
 
@@ -690,7 +697,7 @@ const RoiPanel: React.FC<{
         </div>
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
           <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription ROI</div>
-          <div>{totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
+          <div>{(totals as any).subscriptionRoi > 0 ? (totals as any).subscriptionRoi : totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
         </div>
       </div>
 
@@ -1361,7 +1368,7 @@ const SubscriptionHistorySection: React.FC<{
                     </div>
                     <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
                       <span style={{ color: "#5eead4" }}>{formatTokens(sub.tokens_used)} tokens</span>
-                      <span style={{ color: "#ffffff" }}>{(sub.tokens_used > 0 && sub.subscription_cost_usd && sub.subscription_cost_usd > 0) ? `${Math.round(sub.tokens_used / sub.subscription_cost_usd / 1000)}K tokens/$` : ""}</span>
+                      <span style={{ color: "#ffffff" }}>{(sub.tokens_used > 0 && sub.subscription_cost_usd && sub.subscription_cost_usd > 0) ? `${(sub.tokens_used / sub.subscription_cost_usd / 1000).toFixed(1)}K tokens/$` : ""}</span>
                     </div>
                   </li>
                 );
