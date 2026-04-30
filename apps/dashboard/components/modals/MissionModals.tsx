@@ -53,13 +53,7 @@ interface MissionModalsProps {
 }
 
 const DOC_LINKS = [
-  { label: "VibePilot Code Graph", path: "https://graphs.vibestribe.rocks/graph/vibepilot-graph.html", external: true },
-  { label: "VibeFlow Code Graph", path: "https://graphs.vibestribe.rocks/graph/vibeflow-graph.html", external: true },
-  { label: "Decision Log", path: "https://graphs.vibestribe.rocks/knowledge/decisions/decision-log.md", external: true },
-  { label: "Tool Evaluations", path: "https://graphs.vibestribe.rocks/knowledge/tools/jmunch-ecosystem.md", external: true },
-  { label: "Architecture (ADR-001)", path: "https://graphs.vibestribe.rocks/knowledge/architecture/adr-001-knowledgebase-architecture.md", external: true },
-  { label: "Free Model Rolodex", path: "https://graphs.vibestribe.rocks/knowledge/models/2026-04-14-free-model-rolodex.md", external: true },
-  { label: "Auto Research Analysis", path: "https://graphs.vibestribe.rocks/knowledge/research/auto-research-analysis.md", external: true },
+  { label: "Knowledge Hub", path: "https://graphs.vibestribe.rocks/", external: true },
 ];
 
 const ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
