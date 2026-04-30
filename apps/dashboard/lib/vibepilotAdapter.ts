@@ -39,6 +39,10 @@ interface VibePilotTask {
   result: Record<string, unknown> | null;
   confidence: number | null;
   category: string | null;
+  total_tokens_in: number | null;
+  total_tokens_out: number | null;
+  total_cost_usd: number | null;
+  total_api_cost_usd: number | null;
   created_at: string;
   updated_at: string;
   started_at: string | null;
@@ -742,8 +746,14 @@ export function calculateMetrics(
   tasks: VibePilotTask[],
   runs: VibePilotTaskRun[]
 ): { tokens_used: number; active_tasks: number } {
-  const tokensUsed = runs.reduce(
-    (sum, run) => sum + (run.tokens_used || 0),
+  // Sum tokens from all task runs (pipeline usage)
+  const runTokens = runs.reduce(
+    (sum, run) => sum + (run.tokens_used || (run.tokens_in || 0) + (run.tokens_out || 0)),
+    0
+  );
+  // Sum tokens from all tasks (includes subscription-level totals)
+  const taskTokens = tasks.reduce(
+    (sum, t) => sum + (t.total_tokens_in || 0) + (t.total_tokens_out || 0),
     0
   );
   const activeTasks = tasks.filter((t) =>
@@ -751,7 +761,7 @@ export function calculateMetrics(
   ).length;
 
   return {
-    tokens_used: tokensUsed,
+    tokens_used: Math.max(runTokens, taskTokens),
     active_tasks: activeTasks,
   };
 }
