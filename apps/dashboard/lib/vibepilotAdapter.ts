@@ -549,8 +549,21 @@ export function calculateSliceROI(
  * Calculate subscription ROI for active subscriptions
  */
 export function calculateSubscriptionROI(
-  models: VibePilotModel[]
+  models: VibePilotModel[],
+  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number }[]
 ): SubscriptionROI[] {
+  // Build lookup from subscription_history for real token/task counts
+  const historyByModel = new Map<string, { tokens: number; tasks: number }>();
+  if (subscriptionHistory) {
+    for (const h of subscriptionHistory) {
+      // Sum across all history entries for this model
+      const existing = historyByModel.get(h.model_id) || { tokens: 0, tasks: 0 };
+      existing.tokens += h.tokens_consumed || 0;
+      existing.tasks += h.tasks_completed || 0;
+      historyByModel.set(h.model_id, existing);
+    }
+  }
+
   return models
     .filter(m => m.subscription_status === "active" && m.subscription_cost_usd)
     .map(model => {
@@ -563,7 +576,10 @@ export function calculateSubscriptionROI(
       const daysRemaining = Math.max(0, daysTotal - daysUsed);
       
       const proratedCost = (model.subscription_cost_usd || 0) * (daysUsed / daysTotal);
-      const tasksCompleted = model.tasks_completed || 0;
+      // Use history data if available, otherwise fall back to model fields
+      const historyData = historyByModel.get(model.id);
+      const tasksCompleted = historyData?.tasks || model.tasks_completed || 0;
+      const tokensUsed = historyData?.tokens || model.tokens_used || 0;
       const costPerTask = tasksCompleted > 0 ? proratedCost / tasksCompleted : 0;
       
       let recommendation = "evaluate";
@@ -588,7 +604,7 @@ export function calculateSubscriptionROI(
         prorated_cost_usd: Math.round(proratedCost * 100) / 100,
         tasks_completed: tasksCompleted,
         tasks_failed: model.tasks_failed || 0,
-        tokens_used: model.tokens_used || 0,
+        tokens_used: tokensUsed,
         cost_per_task: Math.round(costPerTask * 10000) / 10000,
         success_rate: model.success_rate || 0,
         recommendation,
@@ -768,11 +784,12 @@ export function adaptVibePilotToDashboard(
   models: VibePilotModel[],
   platforms: VibePilotPlatform[],
   systemCounters?: SystemCounters[],
-  projectCosts?: ProjectCost[]
+  projectCosts?: ProjectCost[],
+  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number }[]
 ): DashboardData {
   const roi = calculateROI(runs);
   const sliceROI = calculateSliceROI(tasks, runs);
-  const subscriptionROI = calculateSubscriptionROI(models);
+  const subscriptionROI = calculateSubscriptionROI(models, subscriptionHistory);
   const modelROI = calculateModelROI(runs, models, tasks);
   
   // Build per-task ROI from runs

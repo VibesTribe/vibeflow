@@ -120,6 +120,7 @@ interface GovernorDashboardResponse {
   maintenance_commands: any[];
   system_counters?: any[];
   project_costs?: any[];
+  subscription_history?: any[];
 }
 
 async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
@@ -184,7 +185,8 @@ export function useMissionData(): MissionData {
         gov.models || [],
         gov.platforms || [],
         gov.system_counters,
-        gov.project_costs
+        gov.project_costs,
+        gov.subscription_history
       );
       setSnapshot({
         tasks: adapted.tasks,
