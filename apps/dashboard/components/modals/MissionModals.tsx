@@ -1368,7 +1368,7 @@ const SubscriptionHistorySection: React.FC<{
                     </div>
                     <div className="roi-panel__subscription-stats" style={{ marginTop: "4px" }}>
                       <span style={{ color: "#5eead4" }}>{formatTokens(sub.tokens_used)} tokens</span>
-                      <span style={{ color: "#ffffff" }}>{(sub.tokens_used > 0 && sub.subscription_cost_usd && sub.subscription_cost_usd > 0) ? `${(sub.tokens_used / sub.subscription_cost_usd / 1000).toFixed(1)}K tokens/$` : ""}</span>
+                      <span style={{ color: "#ffffff" }}>{(sub.tokens_used > 0 && sub.subscription_cost_usd && sub.subscription_cost_usd > 0) ? `${(sub.tokens_used / sub.subscription_cost_usd / 1000).toFixed(1)}K tokens per $1` : ""}</span>
                     </div>
                   </li>
                 );
