@@ -52,9 +52,7 @@ interface MissionModalsProps {
   onShowModels?: () => void;
 }
 
-const DOC_LINKS = [
-  { label: "Knowledge Hub", path: "https://graphs.vibestribe.rocks/", external: true },
-];
+
 
 const ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
 
@@ -119,7 +117,16 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
   let content: React.ReactNode = null;
   switch (modal.type) {
     case "docs":
-      content = <DocumentList />;
+      content = (
+        <div className="mission-modal__section" style={{ padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column" }}>
+          <iframe
+            src="https://graphs.vibestribe.rocks/"
+            title="Knowledge Hub"
+            style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
+            loading="lazy"
+          />
+        </div>
+      );
       break;
     case "logs":
       content = <LogList events={events} slices={slices} />;
@@ -179,27 +186,6 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
 };
 
 export default MissionModals;
-
-const DocumentList: React.FC = () => (
-  <div className="mission-modal__section">
-    <h3>Knowledgebase</h3>
-    <ul className="mission-list">
-      {DOC_LINKS.map((doc) => (
-        <li key={doc.label}>
-          <a
-            href={doc.path}
-            target="_blank"
-            rel="noreferrer"
-            className="mission-link"
-          >
-            {doc.label}
-            {doc.external && <span style={{ marginLeft: 6, opacity: 0.5, fontSize: 11 }}>↗</span>}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
 
 const LogList: React.FC<{ events: MissionEvent[]; slices: MissionSlice[] }> = ({ events, slices }) => {
   const [sourceFilter, setSourceFilter] = useState<string | null>(null);
