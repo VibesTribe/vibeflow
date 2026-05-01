@@ -165,6 +165,9 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
   if (modal.type === "admin") {
     modalClasses.push("mission-modal--admin");
   }
+  if (modal.type === "docs") {
+    modalClasses.push("mission-modal--docs");
+  }
 
   return (
     <div className="mission-modal__overlay" role="dialog" aria-modal="true">

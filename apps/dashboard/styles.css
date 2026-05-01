@@ -9403,6 +9403,46 @@ a {
   box-shadow: 0 8px 30px rgba(0, 214, 255, 0.25);
 }
 
+/* Docs / Knowledge Hub (mission-modal--docs) */
+.mission-modal--docs {
+  width: min(1280px, calc(100% - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+.mission-modal--docs::before,
+.mission-modal--docs::after {
+  display: none;
+}
+
+.mission-modal--docs .mission-modal__controls {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: transparent;
+  padding: 0;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.mission-modal--docs .mission-modal__controls::before {
+  display: none;
+}
+
+.mission-modal--docs .mission-modal__back {
+  display: none;
+}
+
+.mission-modal--docs .mission-modal__close {
+  background: rgba(3, 7, 18, 0.65);
+  border: 1px solid rgba(0, 214, 255, 0.55);
+  box-shadow: 0 8px 30px rgba(0, 214, 255, 0.25);
+}
+
 .admin-console {
   background: radial-gradient(circle at 18% 12%, rgba(30, 203, 255, 0.09), transparent 35%), radial-gradient(circle at 82% 0%, rgba(72, 122, 255, 0.08), transparent 38%), linear-gradient(160deg, #060b16 0%, #050b14 45%, #030910 100%);
   border: 1px solid rgba(56, 189, 248, 0.22);
