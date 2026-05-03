@@ -1322,7 +1322,9 @@ const SubscriptionHistorySection: React.FC<{
 
   useEffect(() => {
     if (!showHistory) return;
-    fetch("http://localhost:8080/api/project/history")
+    const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+      ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+    fetch(`${govAPI}/api/project/history`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setHistory(Array.isArray(data) ? data : []))
       .catch(() => setHistory([]));
@@ -1485,8 +1487,11 @@ const ProjectCostsSection: React.FC<{
   const netPosition = tokenSavings - rawTotal;
   const breakEvenPct = rawTotal > 0 ? Math.min(100, (tokenSavings / rawTotal) * 100) : 0;
 
+  const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+    ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+
   const apiCall = async (body: Record<string, unknown>) => {
-    return fetch("http://localhost:8080/api/project-costs", {
+    return fetch(`${govAPI}/api/project-costs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

@@ -312,7 +312,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [alerts, setAlerts] = useState<Array<{ model_id: string; alert_type: string; message: string }>>([]);
   useEffect(() => {
     const fetchAlerts = () => {
-      fetch("http://localhost:8080/api/project/alerts")
+    const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+      ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+    fetch(`${govAPI}/api/project/alerts`)
         .then(r => r.ok ? r.json() : { alerts: [] })
         .then(data => setAlerts(data.alerts || []))
         .catch(() => {});
