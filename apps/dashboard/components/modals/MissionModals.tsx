@@ -1691,16 +1691,10 @@ const ProjectCostsSection: React.FC<{
                 <span>{formatUsd(rawTotal)}</span>
               </div>
               {monthlyEquivalent > 0 && (
-                <>
-                  <div className="roi-panel__cost-summary-row">
-                    <span style={{ color: "#ffffff" }}>Recurring (monthly equiv.)</span>
-                    <span style={{ color: "#ffffff" }}>{formatUsd(monthlyEquivalent)}/mo</span>
-                  </div>
-                  <div className="roi-panel__cost-summary-row">
-                    <span style={{ color: "#ffffff" }}>Annualized projection</span>
-                    <span style={{ color: "#ffffff" }}>{formatUsd(annualizedTotal)}</span>
-                  </div>
-                </>
+                <div className="roi-panel__cost-summary-row">
+                  <span style={{ color: "#ffffff" }}>Recurring (monthly equiv.)</span>
+                  <span style={{ color: "#ffffff" }}>{formatUsd(monthlyEquivalent)}/mo</span>
+                </div>
               )}
 
               {includeOverhead && (
