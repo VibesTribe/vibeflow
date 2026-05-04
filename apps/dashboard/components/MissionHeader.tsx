@@ -149,6 +149,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isVibesChatOpen, setIsVibesChatOpen] = useState(false);
+  const [chatTrigger, setChatTrigger] = useState(false);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
@@ -329,7 +330,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       <div className="mission-header__identity">
         <button
           className="vibes-orb vibes-orb--interactive"
-          onClick={() => setIsVibesChatOpen(true)}
+          onClick={() => setChatTrigger(true)}
           aria-label="Open Vibes chat"
           title="Chat with Vibes"
         >
@@ -541,7 +542,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
-      <VibesChatPanel isOpen={isVibesChatOpen} onClose={() => setIsVibesChatOpen(false)} />
+      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => setChatTrigger(false)} />
     </header>
   );
 };

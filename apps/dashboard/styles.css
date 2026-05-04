@@ -9791,44 +9791,96 @@ a {
    VIBES CHAT PANEL
    =========================================== */
 
-.vibes-chat-overlay {
+/* ── Chat Tab (minimized state, bottom-right) ── */
+.vibes-chat-tab {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(2, 6, 14, 0.55);
-  backdrop-filter: blur(8px);
+  bottom: 24px;
+  right: 24px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #0f172a 0%, #04070f 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 28px;
+  cursor: pointer;
   z-index: 1000;
-  animation: vibes-fade-in 0.2s ease-out;
+  box-shadow: 0 8px 32px rgba(2, 4, 12, 0.5), 0 0 20px rgba(56, 189, 248, 0.08);
+  transition: all 0.2s ease;
+  animation: vibes-tab-in 0.3s ease-out;
 }
 
-@keyframes vibes-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes vibes-tab-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
+.vibes-chat-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(2, 4, 12, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+}
+
+.vibes-chat-tab__icon {
+  font-size: 20px;
+}
+
+.vibes-chat-tab__label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #f1f5f9;
+}
+
+.vibes-chat-tab__badge {
+  background: #0ea5e9;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.vibes-chat-tab__close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-left: 4px;
+  transition: all 0.15s ease;
+}
+
+.vibes-chat-tab__close:hover {
+  color: #f1f5f9;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+/* ── Chat Panel (open state, bottom-right fixed) ── */
 .vibes-chat-panel {
-  width: 100%;
-  max-width: 400px;
-  height: 70vh;
-  max-height: 600px;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 420px;
+  height: 520px;
   background: linear-gradient(180deg, #0f172a 0%, #04070f 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  margin: 0 24px;
+  z-index: 1000;
   box-shadow: 0 25px 60px rgba(2, 4, 12, 0.5), 0 0 40px rgba(56, 189, 248, 0.1);
-  animation: vibes-slide-up 0.3s ease-out;
+  animation: vibes-panel-in 0.3s ease-out;
 }
 
-@keyframes vibes-slide-up {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+@keyframes vibes-panel-in {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 .vibes-chat-panel__header {
@@ -9854,20 +9906,43 @@ a {
   font-size: 20px;
 }
 
+.vibes-chat-panel__header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.vibes-chat-panel__minimize {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.vibes-chat-panel__minimize:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #f1f5f9;
+}
+
 .vibes-chat-panel__close {
   background: transparent;
   border: none;
   color: #e2e8f0;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 6px;
   transition: all 0.15s ease;
+  line-height: 1;
 }
 
 .vibes-chat-panel__close:hover {
-  background: rgba(148, 163, 184, 0.1);
-  color: #f1f5f9;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
 }
 
 .vibes-chat-panel__messages {
@@ -9916,7 +9991,7 @@ a {
 
 .vibes-chat-panel__message--vibes .vibes-chat-panel__message-content {
   background: rgba(148, 163, 184, 0.15);
-  color: #e2e8f0;
+  color: #ffffff;
   border-radius: 16px 16px 16px 4px;
 }
 
@@ -9972,6 +10047,7 @@ a {
   padding: 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.15);
   background: rgba(15, 23, 42, 0.5);
+  border-radius: 0 0 20px 20px;
 }
 
 .vibes-chat-panel__input {
@@ -9992,7 +10068,7 @@ a {
 }
 
 .vibes-chat-panel__input::placeholder {
-  color: #e2e8f0;
+  color: #94a3b8;
 }
 
 .vibes-chat-panel__send {
@@ -10017,17 +10093,7 @@ a {
   cursor: not-allowed;
 }
 
-/* Mobile adjustments */
-@media (max-width: 480px) {
-  .vibes-chat-panel {
-    max-width: 100%;
-    height: 80vh;
-    margin: 0 8px;
-    border-radius: 16px;
-  }
-}
-
-/* Mic button - matches send button style but amber */
+/* Mic button */
 .vibes-chat-panel__mic-btn {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   border: none;
@@ -10053,7 +10119,6 @@ a {
   cursor: not-allowed;
 }
 
-/* Recording pulse animation */
 .vibes-chat-panel__mic-btn--recording {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   animation: mic-pulse 1s infinite;
@@ -10085,6 +10150,21 @@ a {
 .vibes-chat-panel__play-btn:hover {
   border-color: #38bdf8;
   color: #38bdf8;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .vibes-chat-panel {
+    width: calc(100vw - 16px);
+    height: 60vh;
+    bottom: 8px;
+    right: 8px;
+    border-radius: 16px;
+  }
+  .vibes-chat-tab {
+    bottom: 8px;
+    right: 8px;
+  }
 }
 
 /* Vibes orb interactive styles */
