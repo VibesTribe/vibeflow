@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 interface ChatMessage {
   id: string;
@@ -50,12 +51,22 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
   }, [chatState]);
 
-  // Auto-scroll
+  // Auto-scroll messages container (not the page)
   useEffect(() => {
-    if (chatState === "open") {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatState === "open" && messagesEndRef.current) {
+      const container = messagesEndRef.current.parentElement;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
     }
   }, [messages, chatState]);
+
+  // Prevent page scroll when opening chat
+  useEffect(() => {
+    if (chatState === "open" || chatState === "minimized") {
+      document.body.style.overflow = "";
+    }
+  }, [chatState]);
 
   // Stop audio/abort when closed completely
   useEffect(() => {
@@ -275,9 +286,11 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   // CLOSED: show nothing (parent shows the trigger button)
   if (chatState === "closed") return null;
 
+  const chatRoot = document.body;
+
   // MINIMIZED: small floating tab at bottom-right
   if (chatState === "minimized") {
-    return (
+    return createPortal(
       <div className="vibes-chat-tab" onClick={openChat}>
         <span className="vibes-chat-tab__icon">🤖</span>
         <span className="vibes-chat-tab__label">Vibes</span>
@@ -289,12 +302,13 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         >
           ×
         </button>
-      </div>
+      </div>,
+      chatRoot
     );
   }
 
   // OPEN: full chat panel at bottom-right, no overlay blocking the dashboard
-  return (
+  return createPortal(
     <div className="vibes-chat-panel" ref={panelRef}>
       <header className="vibes-chat-panel__header">
         <div className="vibes-chat-panel__title">
@@ -399,7 +413,8 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           Send
         </button>
       </div>
-    </div>
+    </div>,
+    chatRoot
   );
 };
 

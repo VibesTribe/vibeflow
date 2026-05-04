@@ -705,6 +705,29 @@ const RoiPanel: React.FC<{
           <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription ROI</div>
           <div>{(totals as any).subscriptionRoi > 0 ? (totals as any).subscriptionRoi : totals.actualCost > 0 ? ((totals.savings / totals.actualCost) * 100).toFixed(1) : 0}%</div>
         </div>
+        {(() => {
+          const totalProjectCost = (projectCosts || [])
+            .filter(c => c.status !== "archived")
+            .reduce((sum, c) => sum + c.amount_usd, 0);
+          const overallRoi = totalProjectCost > 0
+            ? (((totals.savings - totalProjectCost) / totalProjectCost) * 100).toFixed(0)
+            : null;
+          return (
+            <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+              <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Overall ROI</div>
+              <div style={{ color: "#ffffff" }}>
+                {overallRoi !== null ? (
+                  <>{Number(overallRoi) >= 0 ? "+" : ""}{overallRoi}%</>
+                ) : (
+                  <span style={{ color: "#94a3b8" }}>N/A</span>
+                )}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>
+                Costs: {formatUsd(totalProjectCost)}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       <div style={{

@@ -5310,8 +5310,8 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.7rem;
-  color: #e2e8f0;
+  font-size: 0.9rem;
+  color: #ffffff;
   padding: 3px 0;
 }
 
@@ -5319,8 +5319,9 @@ a {
   border-top: 1px solid rgba(56, 189, 248, 0.1);
   margin-top: 4px;
   padding-top: 6px;
-  color: #e2e8f0;
-  font-weight: 600;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .roi-panel__cost-summary-row--net {
