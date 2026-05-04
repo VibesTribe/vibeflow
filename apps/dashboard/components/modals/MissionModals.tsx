@@ -707,7 +707,7 @@ const RoiPanel: React.FC<{
         </div>
         {(() => {
           const totalProjectCost = (projectCosts || [])
-            .filter(c => c.status !== "archived")
+            .filter(c => c.archived_at === null)
             .reduce((sum, c) => sum + c.amount_usd, 0);
           const overallRoi = totalProjectCost > 0
             ? (((totals.savings - totalProjectCost) / totalProjectCost) * 100).toFixed(0)
