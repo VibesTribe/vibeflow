@@ -28,6 +28,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<any>(null);
+  const inputModeRef = useRef<"text" | "voice">("text");
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -85,8 +86,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
   }, [playAudio]);
 
   // Send message via SSE streaming
-  const sendMessage = useCallback(async (text: string) => {
+  const sendMessage = useCallback(async (text: string, mode: "text" | "voice" = "text") => {
     if (!text.trim() || isLoading) return;
+
+    inputModeRef.current = mode;
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
@@ -178,7 +181,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
         )
       );
 
-      if (fullText.trim()) {
+      if (fullText.trim() && inputModeRef.current === "voice") {
         generateTTS(fullText, botMsg.id);
       }
     } catch (err: any) {
@@ -222,7 +225,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ isOpen, onClose }) => {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       if (transcript.trim()) {
-        sendMessage(transcript);
+        sendMessage(transcript, "voice");
       }
     };
 
