@@ -5316,12 +5316,12 @@ a {
 }
 
 .roi-panel__cost-summary-row--total {
-  border-top: 1px solid rgba(56, 189, 248, 0.1);
-  margin-top: 4px;
-  padding-top: 6px;
+  border-top: 1px solid rgba(56, 189, 248, 0.2);
+  margin-top: 6px;
+  padding: 8px 0 4px;
   color: #ffffff;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 
 .roi-panel__cost-summary-row--net {
