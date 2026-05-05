@@ -689,33 +689,40 @@ const RoiPanel: React.FC<{
           <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>If paying per token</div>
           <div className="roi-panel__cost--theoretical">{formatUsd(totals.theoreticalCost)}</div>
         </div>
-        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Total expenses</div>
-          {(() => {
-            const totalProjectCost = (projectCosts || [])
-              .filter(c => c.archived_at === null)
-              .reduce((sum, c) => sum + c.amount_usd, 0);
-            return <div style={{ color: "#ffffff" }}>{formatUsd(totalProjectCost)}</div>;
-          })()}
-        </div>
-        <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-          <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>You saved</div>
-          <div className="roi-panel__cost--savings">{formatUsd(totals.savings)}</div>
-        </div>
+        {(() => {
+          const totalProjectCost = (projectCosts || [])
+            .filter(c => c.archived_at === null)
+            .reduce((sum, c) => sum + c.amount_usd, 0);
+          const netSaved = totals.savings - totalProjectCost;
+          return (<>
+            <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+              <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Total expenses</div>
+              <div style={{ color: "#ffffff" }}>{formatUsd(totalProjectCost)}</div>
+            </div>
+            <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
+              <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>You saved</div>
+              <div style={{ color: netSaved >= 0 ? "#3fb950" : "#f85149" }}>
+                {netSaved >= 0 ? "+" : ""}{formatUsd(netSaved)}
+              </div>
+            </div>
+          </>);
+        })()}
         <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
           <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Tasks done</div>
           <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
         {(() => {
-          const totalProjectCost = (projectCosts || [])
-            .filter(c => c.archived_at === null)
-            .reduce((sum, c) => sum + c.amount_usd, 0);
-          const netPosition = totals.savings - totalProjectCost;
+          const subTokens = totals.totalTokens || 0;
+          const subWouldCost = totals.theoreticalCost || 0;
+          const subActual = totals.actualCost || 0;
+          const subSaved = subWouldCost - subActual;
+          const formatTk = (n: number) => n >= 1_000_000_000 ? (n / 1_000_000_000).toFixed(1) + "B" : n >= 1_000_000 ? (n / 1_000_000).toFixed(1) + "M" : n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n);
           return (
             <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
-              <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Net position</div>
-              <div style={{ color: netPosition >= 0 ? "#3fb950" : "#f85149" }}>
-                {netPosition >= 0 ? "+" : ""}{formatUsd(netPosition)}
+              <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription savings</div>
+              <div style={{ color: "#ffffff", fontSize: "0.9rem" }}>{formatTk(subTokens)} tokens</div>
+              <div style={{ fontSize: "0.75rem", color: "#e2e8f0", marginTop: "1px" }}>
+                API would cost {formatUsd(subWouldCost)} | Actual {formatUsd(subActual)}
               </div>
             </div>
           );
