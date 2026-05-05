@@ -570,22 +570,28 @@ const RoiPanel: React.FC<{
     return tokens.toString();
   };
 
-  // Accumulate persisted totals whenever live data increases
+  // Persist peak totals — use MAX not accumulation to avoid doubling on refresh
   const liveModels = roi?.models ?? [];
   const liveSlices = roi?.slices ?? [];
   useEffect(() => {
     const liveTokens = roi?.totals.total_tokens ?? 0;
-    const deltaTokens = liveTokens - prevTokens.current;
-    if (deltaTokens > 0 || liveModels.length > 0 || liveSlices.length > 0) {
+    const liveTheoretical = roi?.totals.total_theoretical_usd ?? 0;
+    const liveActual = roi?.totals.total_actual_usd ?? 0;
+    const liveSavings = roi?.totals.total_savings_usd ?? 0;
+    const liveTasks = roi?.totals.total_tasks ?? 0;
+    const liveCompleted = roi?.totals.total_completed ?? 0;
+    // Only update if live data is non-zero (avoids writing on mount with no data)
+    if (liveTokens > 0 || liveModels.length > 0 || liveSlices.length > 0) {
       setPersistedProject(prev => {
         const next: ProjectData = {
           totals: {
-            totalTokens: prev.totals.totalTokens + (deltaTokens > 0 ? deltaTokens : 0),
-            theoreticalCost: prev.totals.theoreticalCost + (roi?.totals.total_theoretical_usd ?? 0),
-            actualCost: prev.totals.actualCost + (roi?.totals.total_actual_usd ?? 0),
-            savings: prev.totals.savings + (roi?.totals.total_savings_usd ?? 0),
-            totalTasks: prev.totals.totalTasks + (roi?.totals.total_tasks ?? 0),
-            completedTasks: prev.totals.completedTasks + (roi?.totals.total_completed ?? 0),
+            // Use max: persists the peak, never double-counts
+            totalTokens: Math.max(prev.totals.totalTokens, liveTokens),
+            theoreticalCost: Math.max(prev.totals.theoreticalCost, liveTheoretical),
+            actualCost: Math.max(prev.totals.actualCost, liveActual),
+            savings: Math.max(prev.totals.savings, liveSavings),
+            totalTasks: Math.max(prev.totals.totalTasks, liveTasks),
+            completedTasks: Math.max(prev.totals.completedTasks, liveCompleted),
           },
           models: mergeModels(prev.models, liveModels),
           slices: mergeSlices(prev.slices, liveSlices),
@@ -673,7 +679,15 @@ const RoiPanel: React.FC<{
         <h3>ROI Dashboard</h3>
         <div className="roi-panel__totals">
           <div className="roi-panel__total">{formatTokens(totals.totalTokens)} tokens</div>
-          <div className="roi-panel__savings">{formatUsd(totals.savings)} saved</div>
+          {(() => {
+            const totalProjectCost = (projectCosts || [])
+              .filter(c => c.archived_at === null)
+              .reduce((sum, c) => sum + c.amount_usd, 0);
+            const netSaved = totals.savings - totalProjectCost;
+            return <div className="roi-panel__savings" style={{ color: netSaved >= 0 ? "#3fb950" : "#f85149" }}>
+              {netSaved >= 0 ? "+" : ""}{formatUsd(netSaved)} net
+            </div>;
+          })()}
         </div>
       </header>
 

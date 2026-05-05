@@ -574,35 +574,44 @@ export function calculateSliceROI(
  */
 export function calculateSubscriptionROI(
   models: VibePilotModel[],
-  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number; api_equivalent_cost_usd?: number; roi_percentage?: number }[]
+  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number; api_equivalent_cost_usd?: number; roi_percentage?: number; cost_usd?: number; started_at?: string; ended_at?: string; period_type?: string }[]
 ): SubscriptionROI[] {
-  // Build lookup from subscription_history for real token/task counts
-  const historyByModel = new Map<string, { tokens: number; tasks: number; apiEquivCost: number; roiPct: number }>();
+  // Build lookup from subscription_history for real token/task/cost counts
+  const historyByModel = new Map<string, { tokens: number; tasks: number; apiEquivCost: number; roiPct: number; costUsd: number; startedAt: string; endedAt: string; periodType: string }>();
   if (subscriptionHistory) {
     for (const h of subscriptionHistory) {
-      const existing = historyByModel.get(h.model_id) || { tokens: 0, tasks: 0, apiEquivCost: 0, roiPct: 0 };
+      const existing = historyByModel.get(h.model_id) || { tokens: 0, tasks: 0, apiEquivCost: 0, roiPct: 0, costUsd: 0, startedAt: "", endedAt: "", periodType: "" };
       existing.tokens += h.tokens_consumed || 0;
       existing.tasks += h.tasks_completed || 0;
       existing.apiEquivCost += h.api_equivalent_cost_usd || 0;
       existing.roiPct = Math.max(existing.roiPct, h.roi_percentage || 0);
+      // Use the LATEST (highest cost_usd) history entry for cost
+      if ((h.cost_usd || 0) > 0 || !existing.periodType) {
+        existing.costUsd = h.cost_usd || 0;
+        existing.startedAt = h.started_at || "";
+        existing.endedAt = h.ended_at || "";
+        existing.periodType = h.period_type || "";
+      }
       historyByModel.set(h.model_id, existing);
     }
   }
 
   return models
-    .filter(m => m.subscription_status === "active" && m.subscription_cost_usd)
+    .filter(m => m.subscription_status === "active" || historyByModel.has(m.id))
     .map(model => {
+      const historyData = historyByModel.get(model.id);
       const now = new Date();
-      const startDate = model.subscription_started_at ? new Date(model.subscription_started_at) : now;
-      const endDate = model.subscription_ends_at ? new Date(model.subscription_ends_at) : now;
+      // Use history dates if model dates are missing
+      const startDate = model.subscription_started_at ? new Date(model.subscription_started_at) : (historyData?.startedAt ? new Date(historyData.startedAt) : now);
+      const endDate = model.subscription_ends_at ? new Date(model.subscription_ends_at) : (historyData?.endedAt ? new Date(historyData.endedAt) : now);
       
       const daysTotal = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
       const daysUsed = Math.min(daysTotal, Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
       const daysRemaining = Math.max(0, daysTotal - daysUsed);
       
-      const proratedCost = (model.subscription_cost_usd || 0) * (daysUsed / daysTotal);
-      // Use history data if available, otherwise fall back to model fields
-      const historyData = historyByModel.get(model.id);
+      // Use history cost (accurate) over model field (can be stale)
+      const actualCost = historyData?.costUsd ?? (model.subscription_cost_usd || 0);
+      const proratedCost = actualCost * (daysUsed / daysTotal);
       const tasksCompleted = historyData?.tasks || model.tasks_completed || 0;
       const tokensUsed = historyData?.tokens || model.tokens_used || 0;
       const costPerTask = tasksCompleted > 0 ? proratedCost / tasksCompleted : 0;
@@ -619,9 +628,9 @@ export function calculateSubscriptionROI(
       return {
         model_id: model.id,
         model_name: model.name,
-        subscription_cost_usd: model.subscription_cost_usd,
-        subscription_started_at: model.subscription_started_at,
-        subscription_ends_at: model.subscription_ends_at,
+        subscription_cost_usd: actualCost,
+        subscription_started_at: startDate.toISOString(),
+        subscription_ends_at: endDate.toISOString(),
         subscription_status: model.subscription_status,
         days_used: daysUsed,
         days_total: daysTotal,
