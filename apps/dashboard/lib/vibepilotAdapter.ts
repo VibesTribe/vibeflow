@@ -597,7 +597,7 @@ export function calculateSubscriptionROI(
   }
 
   return models
-    .filter(m => m.subscription_status === "active" || historyByModel.has(m.id))
+    .filter(m => m.subscription_status === "active")
     .map(model => {
       const historyData = historyByModel.get(model.id);
       const now = new Date();

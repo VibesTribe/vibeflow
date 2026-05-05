@@ -726,11 +726,13 @@ const RoiPanel: React.FC<{
           <div>{totals.completedTasks} / {totals.totalTasks}</div>
         </div>
         {(() => {
-          const subTokens = totals.totalTokens || 0;
-          const subWouldCost = totals.theoreticalCost || 0;
-          const subActual = totals.actualCost || 0;
+          const subs = roi?.subscriptions || [];
+          const subTokens = subs.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
+          const subWouldCost = subs.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
+          const subActual = subs.reduce((sum, s) => sum + (s.prorated_cost_usd || 0), 0);
           const subSaved = subWouldCost - subActual;
           const formatTk = (n: number) => n >= 1_000_000_000 ? (n / 1_000_000_000).toFixed(1) + "B" : n >= 1_000_000 ? (n / 1_000_000).toFixed(1) + "M" : n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n);
+          if (subs.length === 0) return null;
           return (
             <div style={{ padding: "5px 8px", background: "rgba(9,14,26,0.7)", borderRadius: "4px" }}>
               <div style={{ color: "#ffffff", fontSize: "0.95rem" }}>Subscription savings</div>
