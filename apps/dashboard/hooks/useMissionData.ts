@@ -48,7 +48,8 @@ interface DashboardSnapshot {
     tasks: import("../lib/vibepilotAdapter").TaskRunROI[];
   };
   systemCounters?: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
-  projectCosts?: import("../lib/vibepilotAdapter").ProjectCost[];
+   projectCosts?: import("../lib/vibepilotAdapter").ProjectCost[];
++  agent_sessions?: any[];
 }
 
 interface RunMetricEntry {
@@ -87,6 +88,7 @@ export interface MissionData {
   } | null;
   systemCounters: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
   projectCosts: import("../lib/vibepilotAdapter").ProjectCost[];
+  agent_sessions: any[];
   loading: MissionLoadingState;
   refresh: () => void;
 }
@@ -121,6 +123,7 @@ interface GovernorDashboardResponse {
   system_counters?: any[];
   project_costs?: any[];
   subscription_history?: any[];
+  agent_sessions?: any[];
 }
 
 async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
@@ -186,7 +189,8 @@ export function useMissionData(): MissionData {
         gov.platforms || [],
         gov.system_counters,
         gov.project_costs,
-        gov.subscription_history
+        gov.subscription_history,
+        gov.agent_sessions
       );
       setSnapshot({
         tasks: adapted.tasks,
@@ -198,6 +202,7 @@ export function useMissionData(): MissionData {
         roi: adapted.roi,
         systemCounters: adapted.system_counters,
         projectCosts: adapted.project_costs,
+        agent_sessions: adapted.agent_sessions,
         updatedAt: adapted.updated_at,
       });
 
@@ -545,6 +550,7 @@ export function useMissionData(): MissionData {
     roi: snapshot.roi || null,
     systemCounters: snapshot.systemCounters || null,
     projectCosts: snapshot.projectCosts || [],
+    agent_sessions: snapshot.agent_sessions || [],
     loading,
     refresh,
   };

@@ -817,6 +817,7 @@ export interface DashboardData {
   };
   system_counters: SystemCounters | null;
   project_costs: ProjectCost[];
+  agent_sessions: any[];
   updated_at: string;
 }
 
@@ -827,7 +828,8 @@ export function adaptVibePilotToDashboard(
   platforms: VibePilotPlatform[],
   systemCounters?: SystemCounters[],
   projectCosts?: ProjectCost[],
-  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number }[]
+  subscriptionHistory?: { model_id: string; tokens_consumed: number; tasks_completed: number }[],
+  agentSessions?: any[]
 ): DashboardData {
   const roi = calculateROI(runs);
   const sliceROI = calculateSliceROI(tasks, runs);
@@ -883,6 +885,7 @@ export function adaptVibePilotToDashboard(
     },
     system_counters: systemCounters?.[0] || null,
     project_costs: projectCosts || [],
+    agent_sessions: agentSessions || [],
     updated_at: new Date().toISOString(),
   };
 }

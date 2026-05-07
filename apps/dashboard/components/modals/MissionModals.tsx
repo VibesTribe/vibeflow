@@ -47,6 +47,7 @@ interface MissionModalsProps {
     subscriptions: SubscriptionROI[];
   } | null;
   projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
+  agent_sessions?: any[];
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -104,7 +105,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, projectCosts, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, projectCosts, agent_sessions, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -132,7 +133,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <LogList events={events} slices={slices} />;
       break;
     case "roi":
-      content = <RoiPanel agents={agents} slices={slices} roi={roi} projectCosts={projectCosts || []} />;
+      content = <RoiPanel agents={agents} slices={slices} roi={roi} projectCosts={projectCosts || []} agent_sessions={agent_sessions || []} />;
       break;
     case "models":
       content = <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />;
@@ -530,12 +531,15 @@ const RoiPanel: React.FC<{
     subscriptions: SubscriptionROI[];
   } | null;
   projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
-}> = ({ agents, slices, roi, projectCosts }) => {
+  agent_sessions?: any[];
+}> = ({ agents, slices, roi, projectCosts, agent_sessions }) => {
   const [showCad, setShowCad] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number>(1.36);
   const [showSlices, setShowSlices] = useState(false);
   const [showModels, setShowModels] = useState(false);
   const [showProject, setShowProject] = useState(false);
+  const [showAgent, setShowAgent] = useState(false);
+  const [includeAgent, setIncludeAgent] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [includeOverhead, setIncludeOverhead] = useState(true);
@@ -608,6 +612,32 @@ const RoiPanel: React.FC<{
     setPersistedProject({ ...EMPTY_PROJECT, models: [], slices: [] });
     prevTokens.current = roi?.totals.total_tokens ?? 0;
   };
+
+  // Compute agent session totals
+  const agentTotals = useMemo(() => {
+    const sessions = agent_sessions || [];
+    return {
+      totalTokens: sessions.reduce((sum: number, s: any) => sum + (Number(s.total_tokens) || 0), 0),
+      totalCostUsd: sessions.reduce((sum: number, s: any) => sum + (Number(s.total_cost_usd) || 0), 0),
+      totalSessions: sessions.length,
+      byPlatform: sessions.reduce((acc: Record<string, { tokens: number; cost: number; sessions: number }>, s: any) => {
+        const p = s.platform || 'unknown';
+        if (!acc[p]) acc[p] = { tokens: 0, cost: 0, sessions: 0 };
+        acc[p].tokens += Number(s.total_tokens) || 0;
+        acc[p].cost += Number(s.total_cost_usd) || 0;
+        acc[p].sessions += 1;
+        return acc;
+      }, {} as Record<string, { tokens: number; cost: number; sessions: number }>),
+      byModel: sessions.reduce((acc: Record<string, { tokens: number; cost: number; sessions: number }>, s: any) => {
+        const m = s.model_id || 'unknown';
+        if (!acc[m]) acc[m] = { tokens: 0, cost: 0, sessions: 0 };
+        acc[m].tokens += Number(s.total_tokens) || 0;
+        acc[m].cost += Number(s.total_cost_usd) || 0;
+        acc[m].sessions += 1;
+        return acc;
+      }, {} as Record<string, { tokens: number; cost: number; sessions: number }>),
+    };
+  }, [agent_sessions]);
 
   const totals = useMemo(() => {
     if (roi) {
@@ -815,6 +845,88 @@ const RoiPanel: React.FC<{
             <button type="button" className="roi-panel__toggle" onClick={handleClearProject} style={{ marginTop: "8px" }}>
               Clear Project
             </button>
+          </>
+        )}
+      </div>
+
+      {/* Agent Operating Costs — collapsible, with include toggle */}
+      <div className="roi-panel__section">
+        <h4 
+          className="roi-panel__section-header" 
+          onClick={() => setShowAgent(!showAgent)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <span>Agent Operating Costs {showAgent ? "−" : "+"}</span>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setIncludeAgent(!includeAgent); }}
+            style={{
+              padding: "3px 12px",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              border: "1px solid",
+              borderRadius: "4px",
+              background: includeAgent ? "#38bdf8" : "transparent",
+              color: includeAgent ? "#0a0e1a" : "#e2e8f0",
+              borderColor: includeAgent ? "#38bdf8" : "#e2e8f0",
+              cursor: "pointer"
+            }}
+          >
+            {includeAgent ? "Included" : "Include"}
+          </button>
+        </h4>
+        {showAgent && (
+          <>
+            {agentTotals.totalSessions > 0 ? (
+              <>
+                <dl className="roi-panel__grid">
+                  <div><dt>Sessions</dt><dd>{agentTotals.totalSessions}</dd></div>
+                  <div><dt>Tokens</dt><dd>{formatTokens(agentTotals.totalTokens)}</dd></div>
+                  <div><dt>Cost</dt><dd>{formatUsd(agentTotals.totalCostUsd)}</dd></div>
+                </dl>
+                {Object.keys(agentTotals.byModel).length > 0 && (
+                  <>
+                    <p className="roi-panel__note" style={{ marginTop: "8px", marginBottom: "4px" }}>By Model</p>
+                    <ul className="roi-panel__slice-list">
+                      {Object.entries(agentTotals.byModel).map(([model, data]) => (
+                        <li key={model} className="roi-panel__slice-item">
+                          <div className="roi-panel__slice-header">
+                            <div className="roi-panel__slice-name">{model}</div>
+                            <div className="roi-panel__slice-stats">
+                              <span>{data.sessions} sessions</span>
+                              <span>{formatTokens(data.tokens)} tokens</span>
+                              <span>{formatUsd(data.cost)}</span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {Object.keys(agentTotals.byPlatform).length > 0 && (
+                  <>
+                    <p className="roi-panel__note" style={{ marginTop: "8px", marginBottom: "4px" }}>By Platform</p>
+                    <ul className="roi-panel__slice-list">
+                      {Object.entries(agentTotals.byPlatform).map(([platform, data]) => (
+                        <li key={platform} className="roi-panel__slice-item">
+                          <div className="roi-panel__slice-header">
+                            <div className="roi-panel__slice-name">{platform}</div>
+                            <div className="roi-panel__slice-stats">
+                              <span>{data.sessions} sessions</span>
+                              <span>{formatTokens(data.tokens)} tokens</span>
+                              <span>{formatUsd(data.cost)}</span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </>
+            ) : (
+              <p className="roi-panel__note">No agent session data yet. Conversations will be tracked after the next gateway restart.</p>
+            )}
           </>
         )}
       </div>
