@@ -133,7 +133,13 @@ const VibesMissionControl: React.FC = () => {
           events={events}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
-          roi={roi}
+          roi={roi ? {
+            ...roi,
+            totals: {
+              ...roi.totals,
+              net_savings_usd: roi.totals.total_savings_usd - (projectCosts || []).filter(c => !c.archived_at).reduce((s, c) => s + c.amount_usd, 0)
+            }
+          } : null}
           onOpenTokens={handleOpenRoi}
           onOpenReviewTask={openReviewByTask}
         />

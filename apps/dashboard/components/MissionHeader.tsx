@@ -15,6 +15,7 @@ interface MissionHeaderProps {
   roi: {
     totals: {
       total_savings_usd: number;
+      net_savings_usd?: number;
     };
   } | null;
   onOpenTokens: () => void;
@@ -395,7 +396,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             </span>
             <span className="mission-header__stat-primary">
               <span className="mission-header__stat-label">ROI</span>
-              <strong className="mission-header__stat-value mission-header__stat-value--roi">{roi ? formatUsd(roi.totals.total_savings_usd) : '$0'}</strong>
+              <strong className="mission-header__stat-value mission-header__stat-value--roi">{roi ? formatUsd(roi.totals.net_savings_usd ?? roi.totals.total_savings_usd) : '$0'}</strong>
             </span>
           </div>
         </button>
