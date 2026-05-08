@@ -49,7 +49,7 @@ interface DashboardSnapshot {
   };
   systemCounters?: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
    projectCosts?: import("../lib/vibepilotAdapter").ProjectCost[];
-+  agent_sessions?: any[];
+  agent_sessions?: any[];
 }
 
 interface RunMetricEntry {
