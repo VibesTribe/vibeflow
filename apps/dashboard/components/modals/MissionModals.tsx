@@ -652,20 +652,20 @@ const RoiPanel: React.FC<{
       const subRoi = subs.length > 0 ? Math.max(...subs.map(s => s.roi_percentage || 0)) : 0;
 
       return {
-        totalTokens: Math.max(persistedTokens, liveTokens, subTokens),
+        totalTokens: Math.max(persistedTokens, liveTokens, subTokens) + (includeAgent ? agentTotals.totalTokens : 0),
         activeSlices: slices.filter((slice) => slice.active > 0).length,
         blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
         completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,
-        theoreticalCost: roi.totals.total_theoretical_usd || subTheoreticalCost,
-        actualCost: roi.totals.total_actual_usd || subActualCost,
-        savings: roi.totals.total_savings_usd || (subTheoreticalCost - subActualCost),
+        theoreticalCost: (roi.totals.total_theoretical_usd || subTheoreticalCost) + (includeAgent ? agentTotals.totalCostUsd : 0),
+        actualCost: (roi.totals.total_actual_usd || subActualCost) + (includeAgent ? agentTotals.totalCostUsd : 0),
+        savings: (roi.totals.total_savings_usd || (subTheoreticalCost - subActualCost)) - (includeAgent ? agentTotals.totalCostUsd : 0),
         totalTasks: roi.totals.total_tasks || subTasks,
         completedTasks: roi.totals.total_completed || subTasks,
         subscriptionRoi: subRoi,
       };
     }
 
-    const totalTokens = slices.reduce((sum, slice) => sum + (slice.tokens ?? 0), 0);
+    const totalTokens = slices.reduce((sum, slice) => sum + (slice.tokens ?? 0), 0) + (includeAgent ? agentTotals.totalTokens : 0);
     const agentSpend = agents.reduce((sum, agent) => sum + (agent.costPerRunUsd ?? 0), 0);
 
     return {
@@ -679,7 +679,7 @@ const RoiPanel: React.FC<{
       totalTasks: slices.reduce((sum, s) => sum + s.total, 0),
       completedTasks: slices.reduce((sum, s) => sum + s.completed, 0),
     };
-  }, [agents, slices, roi]);
+  }, [agents, slices, roi, includeAgent, agentTotals]);
 
   const getRecommendationMeta = (rec: string) => {
     switch (rec) {
