@@ -2164,13 +2164,15 @@ a {
   border: 2px solid rgba(120, 230, 255, 0.35);
   background: rgba(6, 11, 22, 0.95);
   box-shadow: 0 12px 26px rgba(3, 8, 18, 0.55);
+  padding-left: 6px;
 }
 .mission-header__stat-pill--tokens .mission-header__stat-label {
   color: rgba(248, 250, 252, 0.85);
 }
 .mission-header__mode-toggle {
   display: inline-block;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: rgba(120, 230, 255, 0.8);
@@ -7711,7 +7713,7 @@ a {
 
 .mission-header__stat-value--tokens,
 .mission-header__stat-value--roi {
-  font-size: 0.85rem !important;
+  font-size: 0.95rem !important;
   line-height: 1.2 !important;
 }
 @media (max-width: 900px) {

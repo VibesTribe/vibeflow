@@ -130,7 +130,7 @@ const HEADER_PILL_CONFIGS: HeaderPillConfig[] = [
     label: "Review",
     description: "Supervisor reviewing output",
     subtitle: "In review",
-    icon: "\u{1F504}",
+    icon: "\u{1F6A9}",
     tone: "pill-flagged",
     filter: (task) => HEADER_REVIEW_STATUSES.has(task.status),
   },
