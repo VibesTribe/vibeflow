@@ -237,9 +237,9 @@ a {
 
 .mission-action-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin-bottom: clamp(0px, 0.5vw, 6px);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: clamp(0px, 0.5vw, 8px);
   margin-top: 2px;
 }
 
