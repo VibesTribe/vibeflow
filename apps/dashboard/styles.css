@@ -2265,19 +2265,19 @@ a {
 
 .mission-header__stat-value--tokens {
   color: #fefad8;
-  font-size: 0.55rem;
-  letter-spacing: 0.04em;
+  font-size: 0.48rem;
+  letter-spacing: 0.03em;
 }
 
 .mission-header__stat-value--roi {
   color: #fefad8;
-  font-size: 0.55rem;
-  letter-spacing: 0.04em;
+  font-size: 0.48rem;
+  letter-spacing: 0.03em;
 }
 
 .mission-header__mode-toggle {
-  font-size: 0.5rem;
-  letter-spacing: 0.05em;
+  font-size: 0.45rem;
+  letter-spacing: 0.04em;
 }
 
 .mission-progress__timestamp {
