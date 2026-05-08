@@ -2117,14 +2117,14 @@ a {
 }
 
 .mission-header__stat-label {
-  font-size: 0.95rem;
-  letter-spacing: 0.1em;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
   line-height: 1.2;
 }
 
 .mission-header__stat-value {
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
+  font-size: 0.55rem;
+  letter-spacing: 0.03em;
   color: #f8fafc;
   align-self: center;
   font-weight: 700;
