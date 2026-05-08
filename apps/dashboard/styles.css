@@ -2276,7 +2276,7 @@ a {
 }
 
 .mission-header__mode-toggle {
-  font-size: 0.45rem;
+  font-size: 0.6rem;
   letter-spacing: 0.04em;
 }
 
@@ -7711,8 +7711,9 @@ a {
   line-height: 1.2 !important;
 }
 
-.mission-header__stat-value {
-  font-size: 1.2rem !important;
+.mission-header__stat-value--tokens,
+.mission-header__stat-value--roi {
+  font-size: 0.85rem !important;
   line-height: 1.2 !important;
 }
 @media (max-width: 900px) {
