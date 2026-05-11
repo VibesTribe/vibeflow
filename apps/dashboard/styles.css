@@ -8656,15 +8656,16 @@ a {
   .slice-orbit,
   .mission-root--wide .slice-orbit,
   .mission-root.mission-root--wide .slice-orbit {
-    width: 80px !important;
-    height: 80px !important;
+    /* Scale the full 440px canvas down instead of shrinking to 80px.
+       This keeps SVG nodes aligned and leaves room for orbiting agents. */
+    transform: scale(0.5) !important;
+    transform-origin: center center !important;
     max-width: 100% !important;
     margin: 0 auto !important;
   }
 
   .slice-orbit__center {
-    width: 40px !important;
-    height: 40px !important;
+    /* Center circle scales with parent transform -- no separate resize needed */
   }
 
   .slice-orbit__node {
