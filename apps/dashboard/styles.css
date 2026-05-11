@@ -8636,13 +8636,18 @@ a {
 
   .slice-orbit,
   .mission-root--wide .slice-orbit {
-    width: clamp(200px, 70vw, 300px) !important;
-    height: clamp(200px, 70vw, 300px) !important;
+    width: clamp(120px, 35vw, 150px) !important;
+    height: clamp(120px, 35vw, 150px) !important;
     max-width: 100% !important;
   }
 
   .mission-root--wide .slice-orbit__node {
     transform: scale(1) !important;
+  }
+
+  .slice-orbit__center {
+    width: 60% !important;
+    height: 60% !important;
   }
 
   .mission-progress {
