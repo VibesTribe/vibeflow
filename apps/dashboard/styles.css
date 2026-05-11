@@ -8479,6 +8479,7 @@ a {
   .mission-header__content {
     max-width: 100% !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .mission-header__identity {
@@ -8539,11 +8540,13 @@ a {
     display: none !important;
   }
 
-  .mission-main {
+  .mission-main,
+  .mission-root--wide .mission-main {
     padding: 0 clamp(8px, 4.2vw, 16px) !important;
     gap: 6px !important;
     width: 100% !important;
     max-width: none !important;
+    box-sizing: border-box !important;
   }
 
   .mission-header__meta {
