@@ -8472,12 +8472,21 @@ a {
   .mission-header {
     gap: 10px !important;
     padding-inline: clamp(4px, 3vw, 10px);
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .mission-header__content {
+    max-width: 100% !important;
+    overflow: hidden !important;
   }
 
   .mission-header__identity {
     gap: 12px !important;
     align-items: center !important;
     width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
   }
 
   .vibes-orb {
@@ -8514,11 +8523,15 @@ a {
     overflow: visible !important;
   }
 
-  .mission-root {
+  .mission-root,
+  .mission-root--wide {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
     padding: 0 clamp(8px, 4vw, 18px) !important;
     justify-items: center;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .rail--left,
@@ -8584,21 +8597,46 @@ a {
     font-size: 0.72rem;
   }
 
-  .slice-hub {
+  .slice-hub,
+  .mission-root--wide .slice-hub {
     max-width: 100% !important;
     overflow: hidden !important;
     min-height: auto !important;
+    width: 100% !important;
   }
 
-  .slice-hub__grid {
+  .slice-hub__grid,
+  .mission-root--wide .slice-hub__grid {
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
-  .slice-orbit-card {
+  .slice-orbit-card,
+  .mission-root--wide .slice-orbit-card {
     max-width: 100% !important;
     width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .slice-orbit-card__body,
+  .mission-root--wide .slice-orbit-card__body {
+    min-height: auto !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .slice-orbit,
+  .mission-root--wide .slice-orbit {
+    width: clamp(200px, 70vw, 300px) !important;
+    height: clamp(200px, 70vw, 300px) !important;
+    max-width: 100% !important;
+  }
+
+  .mission-root--wide .slice-orbit__node {
+    transform: scale(1) !important;
   }
 
   .mission-progress {
