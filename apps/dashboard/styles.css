@@ -7735,14 +7735,14 @@ a {
 .mission-root {
   grid-template-columns: clamp(110px, 12vw, 170px) minmax(0, 1fr) clamp(110px, 12vw, 170px) !important;
   column-gap: clamp(12px, 2vw, 32px) !important;
-  padding: 0 clamp(16px, 2.4vw, 40px) 0 clamp(2px, 0.8vw, 14px) !important;
+  padding: 0 clamp(16px, 2.4vw, 40px) !important;
   min-height: 100vh;
 }
 
 .mission-main {
   width: 100% !important;
   max-width: none !important;
-  padding: 0 clamp(14px, 2.1vw, 28px) 0 clamp(3px, 0.8vw, 12px) !important;
+  padding: 0 clamp(14px, 2.1vw, 28px) !important;
   height: auto !important;
   min-height: calc(100vh - 64px) !important;
   gap: clamp(18px, 2vw, 28px) !important;
@@ -8477,7 +8477,7 @@ a {
   .mission-root {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
-    padding: 0 clamp(8px, 4vw, 18px) 0 clamp(1px, 1.4vw, 8px) !important;
+    padding: 0 clamp(8px, 4vw, 18px) !important;
   }
 
   .rail--left,
@@ -8486,7 +8486,7 @@ a {
   }
 
   .mission-main {
-    padding: 0 clamp(8px, 4.2vw, 16px) 0 clamp(1px, 1.6vw, 6px) !important;
+    padding: 0 clamp(8px, 4.2vw, 16px) !important;
     gap: 6px !important;
   }
 
