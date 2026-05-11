@@ -454,7 +454,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
                         <span style={{ fontSize: "0.7rem", color: "#a78bfa", flex: 1 }}>
                           <span style={{ fontWeight: 600 }}>{item.title}</span>
-                          {item.summary && <span style={{ display: "block", color: "#94a3b8", marginTop: "2px" }}>{item.summary}</span>}
+                          {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
                         </span>
                         <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                            style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
@@ -471,7 +471,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
                         <span style={{ fontSize: "0.7rem", color: "#f87171", flex: 1 }}>
                           <span style={{ fontWeight: 600 }}>{item.title}</span>
-                          {item.summary && <span style={{ display: "block", color: "#94a3b8", marginTop: "2px" }}>{item.summary}</span>}
+                          {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
                         </span>
                         <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                            style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>

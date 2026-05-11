@@ -227,7 +227,7 @@ const OrbitNode: React.FC<OrbitNodeProps> = ({ position, reroutedTasks, onOpenAs
       </span>
       <span
         className="slice-orbit__status"
-        style={{ color: STATUS_ACCENT[assignment.task.status] ?? "#94a3b8" }}
+        style={{ color: STATUS_ACCENT[assignment.task.status] ?? "#b0bec5" }}
         aria-hidden="true"
       >
         {TASK_STATUS_LABELS[assignment.task.status] ?? formatTaskStatus(assignment.task.status)}

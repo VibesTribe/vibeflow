@@ -31,7 +31,7 @@ const AgentView: React.FC<AgentViewProps> = ({ agents }) => {
             <span className="status-chip">{agent.status}</span>
           </div>
           <div style={{ fontSize: "0.8rem", opacity: 0.75 }}>{agent.summary}</div>
-          <div style={{ marginTop: 6, fontSize: "0.7rem", opacity: 0.6 }}>
+          <div style={{ marginTop: 6, fontSize: "0.8rem", opacity: 0.85 }}>
             Last heartbeat: {new Date(agent.updatedAt).toLocaleTimeString()}
           </div>
         </div>

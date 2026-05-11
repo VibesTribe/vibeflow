@@ -32,7 +32,7 @@ const LearningFeed: React.FC<LearningFeedProps> = ({ tasks }) => {
         <div className="feed-item" key={`${task.id}-${index}`}>
           <div style={{ fontWeight: 600 }}>{lesson.title}</div>
           <div style={{ fontSize: "0.8rem", opacity: 0.75 }}>{lesson.summary}</div>
-          <div style={{ marginTop: 6, fontSize: "0.7rem", opacity: 0.6 }}>
+          <div style={{ marginTop: 6, fontSize: "0.8rem", opacity: 0.85 }}>
             Source task: {task.title}
           </div>
         </div>

@@ -2934,11 +2934,11 @@ a {
 .model-panel__list {
   display: grid;
   gap: 16px;
-  padding-top: 72px;
+  padding-top: 20px;
 }
 
 .model-panel__list > li:first-child {
-  margin-top: 96px;
+  margin-top: 0;
 }
 .model-panel__item {
   scroll-margin-top: 140px;

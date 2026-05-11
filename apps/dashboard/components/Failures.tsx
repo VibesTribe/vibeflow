@@ -28,7 +28,7 @@ const Failures: React.FC<FailuresProps> = ({ failures }) => {
         <div className="feed-item" key={failure.id}>
           <div style={{ fontWeight: 600 }}>{failure.title}</div>
           <div style={{ fontSize: "0.8rem", opacity: 0.75 }}>{failure.summary}</div>
-          <div style={{ marginTop: 6, fontSize: "0.7rem", opacity: 0.6 }}>
+          <div style={{ marginTop: 6, fontSize: "0.8rem", opacity: 0.85 }}>
             Reason code: {failure.reasonCode}
           </div>
         </div>

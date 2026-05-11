@@ -31,7 +31,7 @@ const ReadyToMerge: React.FC<ReadyToMergeProps> = ({ candidates }) => {
             <span className="status-chip">{candidate.branch}</span>
           </div>
           <div style={{ fontSize: "0.8rem", opacity: 0.75 }}>{candidate.summary}</div>
-          <div style={{ marginTop: 6, fontSize: "0.7rem", opacity: 0.6 }}>
+          <div style={{ marginTop: 6, fontSize: "0.8rem", opacity: 0.85 }}>
             Checks: {candidate.checklist.filter(Boolean).length}/{candidate.checklist.length}
           </div>
         </div>

@@ -1,0 +1,132 @@
+/* ==========================================================================
+   VibePilot Design Tokens
+   
+   Single source of truth for all visual properties.
+   Change a token here, it changes everywhere.
+   
+   Token naming: --{category}-{property}-{variant}
+   Categories: color, space, font, radius, shadow, breakpoint
+   ========================================================================== */
+
+:root {
+  /* ---- COLORS: Background ---- */
+  --color-bg-primary:       #020a16;   /* Main background */
+  --color-bg-secondary:     #041221;   /* Card/panel background */
+  --color-bg-tertiary:      #0f172a;   /* Elevated surfaces */
+  --color-bg-elevated:      rgba(15, 23, 42, 0.95);  /* Modals, popups */
+  --color-bg-hover:         rgba(56, 189, 248, 0.08); /* Hover state */
+  --color-bg-active:        rgba(56, 189, 248, 0.15); /* Active state */
+  
+  /* ---- COLORS: Text ---- */
+  /* RULE: Minimum text brightness = 180. Nothing below this on dark backgrounds. */
+  --color-text-primary:     #f8fafc;   /* brightness 249 - headings, main text */
+  --color-text-secondary:   #e2e8f0;   /* brightness 226 - body text, descriptions */
+  --color-text-tertiary:    #cbd5e1;   /* brightness 203 - labels, meta info */
+  --color-text-muted:       #94a3b8;   /* brightness 148 - MINIMUM for readable text */
+  --color-text-disabled:    #64748b;   /* brightness 100 - ONLY for truly disabled items */
+  --color-text-on-accent:   #020a16;   /* Text on colored backgrounds */
+  
+  /* ---- COLORS: Accent ---- */
+  --color-accent-primary:   #38bdf8;   /* Primary accent blue */
+  --color-accent-hover:     #7dd3fc;   /* Lighter blue for hover */
+  --color-accent-active:    #0ea5e9;   /* Darker blue for active/pressed */
+  
+  /* ---- COLORS: Status ---- */
+  --status-ready:           #2dd4bf;   /* Teal */
+  --status-active:          #38bdf8;   /* Blue */
+  --status-cooldown:        #60a5fa;   /* Light blue */
+  --status-credit:          #fcd34d;   /* Gold */
+  --status-issue:           #fb7185;   /* Pink/red */
+  --status-success:         #22c55e;   /* Green */
+  --status-warning:         #f59e0b;   /* Amber */
+  --status-error:           #ef4444;   /* Red */
+  
+  /* ---- COLORS: Semantic ---- */
+  --color-link:             #60a5fa;   /* Clickable text */
+  --color-link-hover:       #93c5fd;   /* Clickable text hover */
+  --color-border:           rgba(248, 250, 252, 0.1);   /* Default borders */
+  --color-border-active:    rgba(248, 250, 252, 0.2);   /* Active borders */
+  --color-divider:          rgba(248, 250, 252, 0.06);  /* Subtle dividers */
+  
+  /* ---- TYPOGRAPHY: Sizes ---- */
+  /* RULE: Minimum readable text on mobile = 13px. 12px only for truly decorative/meta. */
+  --font-size-xs:           11px;   /* Tiny labels, badges - DECORATIVE ONLY */
+  --font-size-sm:           12px;   /* Small meta text */
+  --font-size-base:         13px;   /* Base body text */
+  --font-size-md:           14px;   /* Comfortable reading */
+  --font-size-lg:           16px;   /* Emphasized text */
+  --font-size-xl:           18px;   /* Sub-headings */
+  --font-size-2xl:          20px;   /* Section headings */
+  --font-size-3xl:          24px;   /* Page headings */
+  --font-size-4xl:          32px;   /* Hero numbers */
+  
+  /* ---- TYPOGRAPHY: Weights ---- */
+  --font-weight-normal:     400;
+  --font-weight-medium:     500;
+  --font-weight-semibold:   600;
+  --font-weight-bold:       700;
+  
+  /* ---- TYPOGRAPHY: Line heights ---- */
+  --line-height-tight:      1.2;
+  --line-height-normal:     1.5;
+  --line-height-relaxed:    1.7;
+  
+  /* ---- SPACING: Scale ---- */
+  /* RULE: Use these tokens. Never hardcode px values for spacing. */
+  --space-1:                4px;
+  --space-2:                8px;
+  --space-3:                12px;
+  --space-4:                16px;
+  --space-5:                20px;
+  --space-6:                24px;
+  --space-8:                32px;
+  --space-10:               40px;
+  --space-12:               48px;
+  --space-16:               64px;
+  
+  /* ---- SPACING: Semantic ---- */
+  --space-section-gap:      var(--space-6);     /* Between major sections */
+  --space-card-padding:     var(--space-4);     /* Inside cards/panels */
+  --space-list-gap:         var(--space-3);     /* Between list items */
+  --space-inline-gap:       var(--space-2);     /* Between inline elements */
+  --space-filter-to-list:   var(--space-5);     /* Gap between filters and content */
+  
+  /* ---- BORDERS ---- */
+  --radius-sm:              4px;
+  --radius-md:              8px;
+  --radius-lg:              12px;
+  --radius-xl:              16px;
+  --radius-full:            9999px;
+  
+  /* ---- SHADOWS ---- */
+  --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md:   0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg:   0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.15);
+  
+  /* ---- BREAKPOINTS (for reference, used in @media) ---- */
+  /* Mobile: < 500px | Tablet: 500-899px | Desktop: >= 900px */
+  
+  /* ---- TRANSITIONS ---- */
+  --transition-fast:        150ms ease;
+  --transition-normal:      250ms ease;
+  --transition-slow:        400ms ease;
+  
+  /* ---- SIZING ---- */
+  --max-content-width:      100%;      /* RULE: Nothing extends beyond viewport */
+  --min-touch-target:       44px;      /* Minimum clickable area on mobile */
+  --scrollbar-width:        6px;
+}
+
+/* ---- MOBILE OVERRIDES (< 500px) ---- */
+@media (max-width: 499px) {
+  :root {
+    --font-size-xs:       12px;    /* Bumped for readability */
+    --font-size-sm:       13px;
+    --font-size-base:     14px;
+    --font-size-md:       15px;
+    --font-size-lg:       17px;
+    --space-card-padding: var(--space-3);
+    --space-section-gap:  var(--space-4);
+  }
+}
