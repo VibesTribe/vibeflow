@@ -8477,6 +8477,7 @@ a {
   .mission-header__identity {
     gap: 12px !important;
     align-items: center !important;
+    width: 100% !important;
   }
 
   .vibes-orb {
@@ -8581,6 +8582,23 @@ a {
   .mission-header__stat-pill--tokens .mission-header__stat-value--tokens,
   .mission-header__stat-pill--tokens .mission-header__stat-value--roi {
     font-size: 0.72rem;
+  }
+
+  .slice-hub {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    min-height: auto !important;
+  }
+
+  .slice-hub__grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .slice-orbit-card {
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
   .mission-progress {
