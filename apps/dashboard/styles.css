@@ -8615,14 +8615,17 @@ a {
   }
 
   .slice-orbit-card,
-  .mission-root--wide .slice-orbit-card {
+  .mission-root--wide .slice-orbit-card,
+  .mission-root.mission-root--wide .slice-orbit-card {
     max-width: 100% !important;
     width: 100% !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .slice-orbit-card__body,
-  .mission-root--wide .slice-orbit-card__body {
+  .mission-root--wide .slice-orbit-card__body,
+  .mission-root.mission-root--wide .slice-orbit-card__body {
     min-height: auto !important;
     max-width: 100% !important;
     overflow: hidden !important;
@@ -9069,6 +9072,7 @@ a {
     max-width: 100% !important;
     width: 100% !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
   }
   .mission-root.mission-root--wide .slice-orbit-card__body {
     min-height: auto !important;
