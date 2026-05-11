@@ -6,7 +6,7 @@ const http = require('https');
 // Read OpenRouter key from auth.json
 const authData = JSON.parse(fs.readFileSync('/home/vibes/.hermes/auth.json', 'utf8'));
 const OPENROUTER_KEY = authData.credential_pool.openrouter[0].access_token;
-const VISION_MODEL = 'nvidia/nemotron-nano-12b-v2-vl:free';
+const VISION_MODEL = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
 
 const viewports = [
   { name: 'iPhone', width: 390, height: 844 },
