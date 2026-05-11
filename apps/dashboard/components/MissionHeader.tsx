@@ -432,21 +432,32 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         </button>
       </div>
         {alerts.length > 0 && (
-          <div style={{
-            marginTop: "8px",
-            padding: "8px 12px",
-            background: "rgba(245, 158, 11, 0.15)",
-            border: "1px solid rgba(245, 158, 11, 0.4)",
-            borderRadius: "8px",
-            fontSize: "0.75rem",
-            color: "#fbbf24",
-          }}>
-            {alerts.map((a, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span aria-hidden="true">&#9888;</span>
-                <span>{a.message}</span>
-              </div>
-            ))}
+          <div
+            className="mission-header__alerts-badge"
+            role="status"
+            aria-label={`${alerts.length} credit alert${alerts.length > 1 ? 's' : ''}`}
+            title={alerts.map(a => a.message).join('\n')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              marginTop: '6px',
+              padding: '3px 10px',
+              background: 'rgba(245, 158, 11, 0.12)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: '999px',
+              fontSize: '0.6rem',
+              letterSpacing: '0.08em',
+              color: '#fbbf24',
+              cursor: 'default',
+              maxWidth: '100%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span aria-hidden="true">&#9888;</span>
+            <span>{alerts.length} credit alert{alerts.length > 1 ? 's' : ''}</span>
           </div>
         )}
         {activeDetail && (

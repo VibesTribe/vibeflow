@@ -224,6 +224,9 @@ a {
 
 .mission-root--wide .slice-orbit-card__body {
   min-height: clamp(420px, 45vw, 640px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mission-root--wide .slice-orbit {
