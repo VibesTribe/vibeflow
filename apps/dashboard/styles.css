@@ -8566,41 +8566,45 @@ a {
   }
 
   .mission-header__tasks-row {
-    gap: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
     padding: 0;
     margin: 0;
   }
 
   .mission-header__stat-pill {
-    flex-basis: 60px;
     min-height: 32px;
-    padding: 3px 5px 4px;
-    flex: 3 1 60px;
+    padding: 3px 8px 4px;
+    flex: 1 1 calc(25% - 6px);
+    min-width: 0;
   }
 
   .mission-header__stat-primary {
-    font-size: 0.46rem;
+    font-size: 0.5rem;
     gap: 2px;
     letter-spacing: 0.08em;
     justify-content: flex-start;
   }
 
   .mission-header__stat-value {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
 
   .mission-header__stat-pill--tokens {
-    flex: 7 1 160px;
-    padding: 3px 6px 4px;
+    flex: 1 1 100%;
+    padding: 4px 10px;
   }
 
   .mission-header__stat-pill--tokens .mission-header__stat-body {
-    gap: 4px;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
   }
 
   .mission-header__stat-pill--tokens .mission-header__stat-value--tokens,
   .mission-header__stat-pill--tokens .mission-header__stat-value--roi {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 
   .mission-progress {
