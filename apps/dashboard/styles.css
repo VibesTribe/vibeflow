@@ -8572,10 +8572,10 @@ a {
   }
 
   .mission-header__stat-pill {
-    flex-basis: 80px;
+    flex-basis: 60px;
     min-height: 32px;
-    padding: 3px 6px 4px;
-    flex: 1 1 80px;
+    padding: 3px 5px 4px;
+    flex: 3 1 60px;
   }
 
   .mission-header__stat-primary {
@@ -8590,7 +8590,7 @@ a {
   }
 
   .mission-header__stat-pill--tokens {
-    flex: 2 1 120px;
+    flex: 7 1 160px;
     padding: 3px 6px 4px;
   }
 
