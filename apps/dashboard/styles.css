@@ -2040,9 +2040,8 @@ a {
 /* === Mission Header Refresh === */
 .mission-header {
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 32px;
+  flex-direction: column;
+  gap: 16px;
   padding: 4px 0 4px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 }
@@ -2068,12 +2067,12 @@ a {
 }
 
 .mission-header__tasks-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   width: 100%;
   padding: 0;
-  margin: 12px 0 0;
+  margin: 0;
 }
 
 .mission-header__stat-pill {
@@ -2091,7 +2090,11 @@ a {
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   z-index: 0;
-  flex: 1 1 0;
+  flex: 1 1 calc(25% - 6px);
+}
+
+.mission-header__stat-pill--tokens {
+  flex: 1 1 100%;
 }
 
 .mission-header__stat-body {
@@ -7651,80 +7654,7 @@ a {
   box-shadow: 0 28px 44px rgba(3, 10, 24, 0.85) !important;
   background: rgba(8, 14, 28, 0.98) !important;
 }
-.mission-header {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 32px;
-  align-items: flex-start;
-}
-
-.mission-header__identity {
-  grid-column: 1;
-}
-
-.mission-header__content {
-  grid-column: 2;
-  padding-left: 0;
-  max-width: none;
-}
-
-/* Mission header readability adjustments */
-.mission-header__identity {
-  gap: 40px !important;
-}
-
-.mission-header__titles {
-  margin-left: 32px !important;
-  gap: 10px !important;
-}
-
-.mission-header__eyebrow {
-  font-size: 1.28rem !important;
-  letter-spacing: 0.18em !important;
-}
-
-.mission-header__brand {
-  font-size: 1.28rem !important;
-}
-
-.mission-header__subtitle {
-  font-size: 1.32rem !important;
-  line-height: 1.58 !important;
-  max-width: none !important;
-}
-
-.mission-header__tasks-row {
-  margin-top: 14px !important;
-}
-
-.mission-header__stat-body {
-  align-items: center !important;
-  gap: 14px !important;
-}
-
-.mission-header__stat-icon {
-  font-size: 1.1rem !important;
-}
-
-.mission-header__stat-label {
-  font-size: 0.82rem !important;
-  line-height: 1.2 !important;
-}
-
-.mission-header__stat-value--tokens,
-.mission-header__stat-value--roi {
-  font-size: 0.95rem !important;
-  line-height: 1.2 !important;
-}
-@media (max-width: 900px) {
-  .mission-header {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .mission-header__content {
-    grid-column: 1;
-  }
-}
+/* mission-header grid override removed - flex column handled by final overrides */
 
 .mission-modal__close {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -8575,9 +8505,13 @@ a {
 
   .mission-header__stat-pill {
     min-height: 32px;
-    padding: 3px 8px 4px;
+    padding: 3px 6px 4px;
     flex: 1 1 calc(25% - 6px);
     min-width: 0;
+  }
+
+  .mission-header__stat-pill .mission-header__stat-label {
+    font-size: 0.5rem;
   }
 
   .mission-header__stat-primary {
