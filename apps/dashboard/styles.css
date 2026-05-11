@@ -8629,31 +8629,34 @@ a {
   .slice-orbit-card__body,
   .mission-root--wide .slice-orbit-card__body,
   .mission-root.mission-root--wide .slice-orbit-card__body {
-    min-height: 0 !important;
-    max-width: 100% !important;
+    min-height: 280px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     overflow: visible !important;
   }
 
   .slice-orbit,
   .mission-root--wide .slice-orbit,
   .mission-root.mission-root--wide .slice-orbit {
-    width: 140px !important;
-    height: 140px !important;
+    width: 80px !important;
+    height: 80px !important;
     max-width: 100% !important;
     margin: 0 auto !important;
   }
 
   .slice-orbit__center {
-    width: 70px !important;
-    height: 70px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .slice-orbit__node {
-    transform: scale(0.6) !important;
+    transform: scale(0.5) !important;
   }
 
   .mission-root--wide .slice-orbit__node {
-    transform: scale(0.6) !important;
+    transform: scale(0.5) !important;
   }
 
   .mission-progress {
@@ -9089,7 +9092,7 @@ a {
     box-sizing: border-box !important;
   }
   .mission-root.mission-root--wide .slice-orbit-card__body {
-    min-height: 0 !important;
+    min-height: 280px !important;
     overflow: visible !important;
   }
   .mission-root--wide {
