@@ -22,7 +22,10 @@
 }
 
 .mission-root.mission-root--wide .slice-orbit-card__body {
-  min-height: clamp(420px, 42vw, 620px);
+  min-height: clamp(300px, 30vw, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mission-root.mission-root--wide .rail,
@@ -223,7 +226,7 @@ a {
 }
 
 .mission-root--wide .slice-orbit-card__body {
-  min-height: clamp(420px, 45vw, 640px);
+  min-height: clamp(300px, 30vw, 440px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9091,7 +9094,10 @@ a {
 }
 
 .mission-root.mission-root--wide .slice-orbit-card__body {
-  min-height: clamp(420px, 42vw, 620px);
+  min-height: clamp(300px, 30vw, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 900px) {
@@ -9112,8 +9118,10 @@ a {
     box-sizing: border-box !important;
   }
   .mission-root.mission-root--wide .slice-orbit-card__body {
-    /* Keep container tall for orbiting agents; orbit circle scales via transform */
-    min-height: clamp(280px, 65vw, 440px) !important;
+    min-height: clamp(200px, 45vw, 320px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     overflow: visible !important;
   }
   .mission-root.mission-root--wide .slice-orbit {
