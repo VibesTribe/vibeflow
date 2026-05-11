@@ -8572,25 +8572,35 @@ a {
   }
 
   .mission-header__stat-pill {
-  flex-basis: 120px;
-    min-height: 36px;
-    padding: 4px 10px 5px;
-    flex: 1 1 140px;
+    flex-basis: 80px;
+    min-height: 32px;
+    padding: 3px 6px 4px;
+    flex: 1 1 80px;
   }
 
   .mission-header__stat-primary {
     font-size: 0.46rem;
-    gap: 3px;
+    gap: 2px;
     letter-spacing: 0.08em;
     justify-content: flex-start;
   }
 
   .mission-header__stat-value {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
   }
 
   .mission-header__stat-pill--tokens {
-    display: none;
+    flex: 2 1 120px;
+    padding: 3px 6px 4px;
+  }
+
+  .mission-header__stat-pill--tokens .mission-header__stat-body {
+    gap: 4px;
+  }
+
+  .mission-header__stat-pill--tokens .mission-header__stat-value--tokens,
+  .mission-header__stat-pill--tokens .mission-header__stat-value--roi {
+    font-size: 0.68rem;
   }
 
   .mission-progress {

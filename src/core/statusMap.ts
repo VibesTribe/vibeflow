@@ -22,6 +22,7 @@ export const STATUS_ORDER: TaskStatus[] = [
   "merge_pending",
   "merged",
   "human_review",
+  "design_review",
   "failed",
 ];
 

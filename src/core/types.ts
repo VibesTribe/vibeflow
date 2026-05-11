@@ -20,7 +20,8 @@ export type TaskStatus =
   | "merge_pending"
   | "merged"
   | "failed"
-  | "human_review";
+  | "human_review"
+  | "design_review";
 
 export type TaskLocation =
   | { kind: "platform"; label: string; link?: string }
