@@ -10432,3 +10432,15 @@ a {
   }
 }
 
+/* === DESKTOP orbit centering fix === */
+.mission-root--wide .slice-orbit,
+.mission-root.mission-root--wide .slice-orbit {
+  margin: 0 auto !important;
+}
+
+.mission-root--wide .slice-orbit-card__body {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
