@@ -10424,7 +10424,7 @@ a {
     max-height: 330px !important;
     height: auto !important;
     overflow: hidden !important;
-    padding: 41px 0 !important;
+    padding: calc((100% - 220px) / 2) 0 !important;
   }
   .slice-orbit-card {
     padding-top: 4px !important;
