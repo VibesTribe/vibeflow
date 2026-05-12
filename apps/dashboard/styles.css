@@ -9144,10 +9144,11 @@ a {
   }
   .mission-root.mission-root--wide .slice-orbit-card__body {
     min-height: clamp(90px, 20vw, 140px) !important;
+    max-height: clamp(140px, 28vw, 220px) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
   .mission-root.mission-root--wide .slice-orbit {
     transform: scale(0.5);
