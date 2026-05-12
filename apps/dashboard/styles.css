@@ -10421,11 +10421,11 @@ a {
   .mission-root--wide .slice-orbit-card__body,
   .mission-root.mission-root--wide .slice-orbit-card__body {
     min-height: 120px !important;
-    max-height: 264px !important;
+    max-height: 240px !important;
     height: auto !important;
     overflow: hidden !important;
-    padding-top: 22px !important;
-    padding-bottom: 22px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
   .slice-orbit-card {
     padding-top: 4px !important;
