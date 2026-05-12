@@ -211,7 +211,7 @@ a {
   width: 100%;
   max-height: none;
   overflow: visible;
-  padding-right: 0;
+  padding: 0;
 }
 
 .mission-root--wide .slice-hub__grid {
@@ -8496,6 +8496,10 @@ a {
 }
 
 @media (max-width: 900px) {
+  .mission-root--wide {
+    padding-top: 32px;
+  }
+
   .mission-header {
     gap: 10px !important;
     padding-inline: clamp(4px, 3vw, 10px);
@@ -8518,9 +8522,9 @@ a {
   }
 
   .vibes-orb {
-    width: 48px !important;
-    height: 48px !important;
-    min-width: 48px;
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px;
     flex-shrink: 0;
   }
 
@@ -10184,10 +10188,12 @@ a {
 .vibes-chat-panel__input-area {
   display: flex;
   gap: 10px;
-  padding: 16px;
+  padding: 12px;
   border-top: 1px solid rgba(148, 163, 184, 0.15);
   background: rgba(15, 23, 42, 0.5);
   border-radius: 0 0 20px 20px;
+  flex-shrink: 0;
+  min-height: 52px;
 }
 
 .vibes-chat-panel__input {
