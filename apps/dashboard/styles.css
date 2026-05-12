@@ -249,7 +249,7 @@ a {
     transform-origin: center center;
   }
   .mission-root--wide .slice-orbit-card__body {
-    min-height: clamp(140px, 32vw, 220px) !important;
+    min-height: clamp(90px, 20vw, 140px) !important;
   }
 }
 
@@ -8512,7 +8512,7 @@ a {
   .mission-header {
     gap: 10px !important;
     padding-inline: clamp(4px, 3vw, 10px);
-    padding-top: 5px;
+    padding-top: 18px;
     max-width: 100% !important;
     overflow: hidden !important;
   }
