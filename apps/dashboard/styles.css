@@ -409,7 +409,7 @@ a {
 
 .rail__button {
   width: 100%;
-  padding: 8px 10px;
+  padding: 10px 10px;
   border-radius: 999px;
   border: 2px solid rgba(120, 230, 255, 0.35);
   background: rgba(6, 11, 22, 0.95);
@@ -419,6 +419,7 @@ a {
   text-transform: uppercase;
   transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 8px 24px rgba(3, 8, 18, 0.55);
+  min-height: 44px;
 }
 .rail__header::after {
   display: none !important;
@@ -1501,7 +1502,7 @@ a {
   position: sticky;
   isolation: isolate;
   min-height: 44px;
-  overflow: hidden;
+  overflow-x: auto;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -2113,7 +2114,7 @@ a {
   border: 1.5px solid rgba(94, 234, 212, 0.35);
   background: rgba(5, 10, 21, 0.9);
   color: rgba(226, 232, 240, 0.85);
-  min-height: 40px;
+  min-height: 44px;
   min-width: 0;
   text-align: center;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -2976,7 +2977,8 @@ a {
   text-transform: uppercase;
   font-size: 0.6rem;
   border-radius: 999px;
-  padding: 4px 12px;
+  padding: 6px 12px;
+  min-height: 44px;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
@@ -4056,7 +4058,7 @@ a {
   color: rgba(240, 245, 255, 1);
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-  min-height: 32px;
+  min-height: 44px;
 }
 
 .slice-panel__summary-pill span:first-child {
@@ -8601,7 +8603,7 @@ a {
   }
 
   .mission-header__stat-pill {
-    min-height: 32px;
+    min-height: 44px;
     padding: 3px 6px 4px;
     flex: 1 1 calc(25% - 6px);
     min-width: 0;
@@ -10198,24 +10200,37 @@ a {
 
 .vibes-chat-panel__input-area {
   display: flex;
-  gap: 10px;
-  padding: 12px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
   border-top: 1px solid rgba(148, 163, 184, 0.15);
   background: rgba(15, 23, 42, 0.5);
   border-radius: 0 0 20px 20px;
   flex-shrink: 0;
-  min-height: 52px;
+}
+
+.vibes-chat-panel__button-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .vibes-chat-panel__input {
-  flex: 1;
+  width: 100%;
   background: rgba(148, 163, 184, 0.1);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 10px 16px;
   color: #f1f5f9;
   font-size: 14px;
+  font-family: inherit;
   outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  line-height: 1.4;
+  box-sizing: border-box;
   transition: all 0.15s ease;
 }
 
@@ -10231,12 +10246,13 @@ a {
 .vibes-chat-panel__send {
   background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   border: none;
-  border-radius: 24px;
-  padding: 10px 20px;
+  border-radius: 20px;
+  padding: 8px 20px;
   color: #ffffff;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  min-height: 44px;
   transition: all 0.15s ease;
 }
 
@@ -10255,8 +10271,8 @@ a {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;

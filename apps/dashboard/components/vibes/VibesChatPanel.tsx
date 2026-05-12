@@ -27,7 +27,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -385,33 +385,35 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       </div>
 
       <div className="vibes-chat-panel__input-area">
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           className="vibes-chat-panel__input"
           placeholder="Ask Vibes anything..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
+          rows={1}
         />
-        <button
-          className={`vibes-chat-panel__mic-btn${isRecording ? " vibes-chat-panel__mic-btn--recording" : ""}`}
-          onClick={toggleRecording}
-          disabled={isLoading}
-          aria-label={isRecording ? "Stop recording" : "Start recording"}
-          title={isRecording ? "Tap to stop" : "Tap to speak"}
-        >
-          {isRecording ? "⏹" : "🎤"}
-        </button>
-        <button
-          className="vibes-chat-panel__send"
-          onClick={() => sendMessage(inputValue)}
-          disabled={!inputValue.trim() || isLoading}
-          aria-label="Send message"
-        >
-          Send
-        </button>
+        <div className="vibes-chat-panel__button-row">
+          <button
+            className={`vibes-chat-panel__mic-btn${isRecording ? " vibes-chat-panel__mic-btn--recording" : ""}`}
+            onClick={toggleRecording}
+            disabled={isLoading}
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
+            title={isRecording ? "Tap to stop" : "Tap to speak"}
+          >
+            {isRecording ? "⏹" : "🎤"}
+          </button>
+          <button
+            className="vibes-chat-panel__send"
+            onClick={() => sendMessage(inputValue)}
+            disabled={!inputValue.trim() || isLoading}
+            aria-label="Send message"
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>,
     chatRoot

@@ -98,7 +98,7 @@ const SLICE_FILTER_META: Record<
     label: "Review",
     icon: "\u{1F6A9}",
     tone: "review",
-    color: "#ff3b6f",
+    color: "#ff6b8a",
     match: (status) => REVIEW_STATUSES.has(status),
   },
 };
