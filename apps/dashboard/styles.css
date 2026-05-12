@@ -8670,7 +8670,7 @@ a {
   .slice-orbit-card__body,
   .mission-root--wide .slice-orbit-card__body,
   .mission-root.mission-root--wide .slice-orbit-card__body {
-    min-height: 280px !important;
+    min-height: clamp(90px, 20vw, 140px) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -8739,6 +8739,12 @@ a {
 /* Final spacing and modal readability overrides */
 .mission-header {
   padding: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .mission-header {
+    padding-top: 18px !important;
+  }
 }
 
 .mission-header__left {
@@ -9137,7 +9143,7 @@ a {
     box-sizing: border-box !important;
   }
   .mission-root.mission-root--wide .slice-orbit-card__body {
-    min-height: clamp(200px, 45vw, 320px) !important;
+    min-height: clamp(90px, 20vw, 140px) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
