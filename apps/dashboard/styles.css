@@ -10414,3 +10414,22 @@ a {
   background: rgba(8, 23, 48, 0.95);
   box-shadow: 0 0 18px rgba(94, 234, 212, 0.25);
 }
+
+/* === MOBILE ORBIT TIGHTEN - absolute last rule wins === */
+@media (max-width: 900px) {
+  .slice-orbit-card__body,
+  .mission-root--wide .slice-orbit-card__body,
+  .mission-root.mission-root--wide .slice-orbit-card__body {
+    min-height: 120px !important;
+    max-height: 200px !important;
+    height: auto !important;
+    overflow: hidden !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+  .slice-orbit-card {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+}
+
