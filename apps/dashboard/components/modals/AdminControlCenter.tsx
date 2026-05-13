@@ -32,7 +32,7 @@ interface SysInfo {
 // --- API base for admin calls ---
 const API_BASE = window.location.hostname === "localhost"
   ? "http://localhost:8080"
-  : "https://api.vibestribe.rocks";
+  : "https://webhooks.vibestribe.rocks";
 
 // --- Add Model Form ---
 interface AddModelFormData {

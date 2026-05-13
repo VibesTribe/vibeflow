@@ -32,6 +32,10 @@ type VqaRun = {
 
 type FeedbackVerdict = "confirmed" | "false_positive" | "wont_fix";
 
+const VQA_API = window.location.hostname === "localhost"
+  ? "http://localhost:8080"
+  : "https://webhooks.vibestribe.rocks";
+
 export default function VqaPanel({ onClose, inline }: { onClose: () => void; inline?: boolean }) {
   const [runs, setRuns] = useState<VqaRun[]>([]);
   const [expandedRun, setExpandedRun] = useState<string | null>(null);
@@ -44,7 +48,7 @@ export default function VqaPanel({ onClose, inline }: { onClose: () => void; inl
   const loadRuns = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/visualqa/status");
+      const res = await fetch(VQA_API + "/api/visualqa/status");
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       setRuns(Array.isArray(data) ? data : data.results || []);
@@ -65,7 +69,7 @@ export default function VqaPanel({ onClose, inline }: { onClose: () => void; inl
   const triggerRun = async () => {
     try {
       setTriggering(true);
-      await fetch("/api/visualqa/run", {
+      await fetch(VQA_API + "/api/visualqa/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ trigger: "manual", detail: "dashboard" }),
@@ -85,7 +89,7 @@ export default function VqaPanel({ onClose, inline }: { onClose: () => void; inl
   ) => {
     const key = `${runId}:${issue.type}:${issue.element}:${issue.viewport}`;
     try {
-      const res = await fetch("/api/visualqa/feedback", {
+      const res = await fetch(VQA_API + "/api/visualqa/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -107,7 +111,7 @@ export default function VqaPanel({ onClose, inline }: { onClose: () => void; inl
   };
 
   const approveBaseline = async (pageName: string, viewport: number) => {
-    await fetch("/api/visualqa/approve", {
+    await fetch(VQA_API + "/api/visualqa/approve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ page_name: pageName, viewport }),
