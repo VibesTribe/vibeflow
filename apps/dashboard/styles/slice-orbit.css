@@ -8,10 +8,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   background: none;
   border: none;
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
   padding: 0;
   cursor: pointer;
 }
@@ -47,7 +47,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--space-1);
   box-shadow: 0 8px 18px rgba(2, 12, 26, 0.45);
 }
 
@@ -61,7 +61,7 @@
 
 .slice-dial__tasks {
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   color: #f0f7ff;
   text-shadow: none;
@@ -123,7 +123,7 @@
   background: radial-gradient(circle at top, color-mix(in srgb, var(--slice-accent) 40%, transparent), rgba(15, 23, 42, 0.94));
   border: 1px solid color-mix(in srgb, var(--slice-accent) 70%, rgba(56, 189, 248, 0.3));
   box-shadow: 0 0 20px color-mix(in srgb, var(--slice-accent) 40%, transparent);
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,7 +140,7 @@
 
 .slice-orbit__value {
   font-size: 1.45rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .slice-orbit__progress {
@@ -157,7 +157,7 @@
   margin: -26px;
   border-radius: 50%;
   border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(15, 23, 42, 0.95);
+  background: var(--color-bg-elevated);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -200,12 +200,12 @@
   font-size: 0.65rem;
   display: grid;
   place-items: center;
-  color: #041221;
-  font-weight: 700;
+  color: var(--color-bg-secondary);
+  font-weight: var(--font-weight-bold);
   box-shadow: 0 0 6px rgba(15, 23, 42, 0.4);
 }
 
-.slice-orbit__badge--w { background: #38bdf8; }
+.slice-orbit__badge--w { background: var(--color-accent-primary); }
 
 .slice-orbit__badge--m { background: #a855f7; }
 
@@ -213,15 +213,15 @@
 
 .slice-placeholder {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .slice-placeholder__chip {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 16px;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
   border: 1px dashed rgba(148, 163, 184, 0.25);
   background: rgba(15, 23, 42, 0.55);
   box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.3);
@@ -324,7 +324,7 @@
   letter-spacing: 0.08em;
   text-transform: none;
   color: rgba(240, 245, 255, 0.95);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-shadow: none;
 }
 
@@ -335,7 +335,7 @@
   letter-spacing: 0.14em;
   text-transform: none;
   color: rgba(224, 231, 255, 0.92);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-shadow: none;
 }
 
@@ -365,11 +365,11 @@
 .slice-orbit-card__header h3 {
   margin: 0;
   font-size: 1.05rem;
-  color: #f8fafc;
+  color: var(--color-text-primary);
 }
 
 .slice-orbit-card__header p {
-  margin: 4px 0 0;
+  margin: var(--space-1) 0 0;
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -391,7 +391,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .slice-orbit {
@@ -430,8 +430,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: #e2e8f0;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
 }
 
 .slice-orbit__progress {
@@ -441,7 +441,7 @@
 .slice-orbit__name {
   margin-top: 12px;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .slice-orbit__value {
@@ -460,10 +460,10 @@
 .slice-orbit__merge-pending {
   background: rgba(251, 191, 36, 0.15);
   border: 1px solid rgba(251, 191, 36, 0.5);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   padding: 2px 8px;
   font-size: 0.6rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #fbbf24;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -480,10 +480,10 @@
   padding: 10px 12px;
   display: grid;
   grid-template-columns: auto;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 120px;
   text-align: left;
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
   box-shadow: 0 12px 24px rgba(6, 10, 21, 0.45);
 }
 
@@ -515,7 +515,7 @@
 
 .slice-orbit__task {
   font-size: 0.65rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .slice-orbit__location {
@@ -552,7 +552,7 @@
   z-index: 12;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   align-items: flex-start;
   flex-wrap: wrap;
   padding-bottom: 12px;
@@ -566,7 +566,7 @@
   margin-top: 6px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -628,7 +628,7 @@
 .slice-panel__content--stacked {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   padding-top: 24px;
 }
 
@@ -638,20 +638,20 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .slice-panel__tasks button {
   width: 100%;
   text-align: left;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid rgba(56, 189, 248, 0.12);
   background: rgba(9, 14, 26, 0.85);
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .slice-panel__tasks button.is-selected {
@@ -662,14 +662,14 @@
 .slice-task-list {
   list-style: none;
   margin: 0;
-  padding: 16px 0 0;
+  padding: var(--space-4) 0 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .slice-task-list li {
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   border: 1px solid rgba(56, 189, 248, 0.12);
   background: rgba(6, 10, 20, 0.85);
   padding: 10px 12px;
@@ -688,7 +688,7 @@
 .slice-task-list li button {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 8px;
+  gap: var(--space-2);
   align-items: center;
   width: 100%;
   background: transparent;
@@ -710,12 +710,12 @@
 
 .slice-task-list__status--complete {
   border-color: rgba(52, 211, 153, 0.5);
-  color: #22c55e;
+  color: var(--status-success);
 }
 
 .slice-task-list__status--active {
   border-color: rgba(59, 130, 246, 0.5);
-  color: #38bdf8;
+  color: var(--color-accent-primary);
 }
 
 .slice-task-list__status--flagged {
@@ -764,7 +764,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #f8fafc;
+  color: var(--color-text-primary);
 }
 
 .slice-task-list__meta {
@@ -797,23 +797,23 @@
 
 .slice-task-list__accordion {
   margin-top: 10px;
-  border-top: 1px solid rgba(56, 189, 248, 0.15);
+  border-top: 1px solid var(--color-bg-active);
   padding-top: 12px;
 }
 
 .slice-task-list__accordion .task-detail {
   background: rgba(8, 13, 26, 0.9);
   border-radius: 14px;
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .slice-panel__details {
   background: rgba(8, 13, 26, 0.85);
   border-radius: 18px;
   border: 1px solid rgba(56, 189, 248, 0.12);
-  padding: 16px;
+  padding: var(--space-4);
   display: grid;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .slice-orbit__node {
@@ -844,7 +844,7 @@
 .slice-dial__tasks {
   font-size: 0.65rem;
   letter-spacing: 0.08em;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .slice-dial__label {
@@ -916,11 +916,11 @@
   background: radial-gradient(circle at top, rgba(56, 189, 248, 0.35), rgba(6, 12, 27, 0.9));
   border: 1px solid rgba(56, 189, 248, 0.32);
   box-shadow: inset 0 0 0 1px rgba(12, 38, 68, 0.55), 0 18px 32px rgba(6, 13, 27, 0.6);
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
   display: grid;
   place-items: center;
   gap: 6px;
-  padding: 20px;
+  padding: var(--space-5);
   text-align: center;
 }
 
@@ -1035,18 +1035,18 @@
   display: grid;
   place-items: center;
   font-size: 0.62rem;
-  font-weight: 700;
-  color: #020a16;
-  background: #f8fafc;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-bg-primary);
+  background: var(--color-text-primary);
   box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
   z-index: 2;
 }
 
-.slice-orbit__badge--w { background: #7dd3fc; color: #020a16; }
+.slice-orbit__badge--w { background: var(--color-accent-hover); color: var(--color-bg-primary); }
 
-.slice-orbit__badge--m { background: #c084fc; color: #020a16; }
+.slice-orbit__badge--m { background: #c084fc; color: var(--color-bg-primary); }
 
-.slice-orbit__badge--q { background: #fde047; color: #020a16; }
+.slice-orbit__badge--q { background: #fde047; color: var(--color-bg-primary); }
 
 .slice-orbit__status {
   position: absolute;
@@ -1055,7 +1055,7 @@
   transform: translateX(-50%);
   margin: 0;
   font-size: 0.46rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1071,10 +1071,10 @@
   transform: translateX(-50%);
   margin: 0;
   font-size: 0.46rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #f8fafc;
+  color: var(--color-text-primary);
   white-space: nowrap;
   line-height: 1;
   text-shadow: 0 0 6px rgba(2, 6, 23, 0.85);
@@ -1132,7 +1132,7 @@
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: center;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 @media (max-width: 1280px) {
@@ -1181,7 +1181,7 @@
 
 .slice-orbit__node {
   min-width: 100px;
-  padding: 8px 10px;
+  padding: var(--space-2) 10px;
 }
 
 .slice-orbit__avatar {
@@ -1230,7 +1230,7 @@
   height: 140px;
   display: grid;
   place-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   text-transform: uppercase;
   letter-spacing: 0.16em;
 }
@@ -1288,7 +1288,7 @@
   background: rgba(6, 11, 20, 0.95);
   display: grid;
   place-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .slice-orbit__node {
@@ -1355,7 +1355,7 @@
   background: rgba(6, 11, 20, 0.95);
   display: grid;
   place-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .slice-orbit__node {
@@ -1379,7 +1379,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: var(--space-8);
   padding-bottom: 28px;
 }
 
@@ -1431,7 +1431,7 @@
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: var(--space-3) !important;
   padding: 10px 0 12px !important;
 }
 
@@ -1515,7 +1515,7 @@
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 4px !important;
+  gap: var(--space-1) !important;
   padding: 10px !important;
   text-align: center !important;
   position: relative !important;
@@ -1612,18 +1612,18 @@
   display: grid;
   place-items: center;
   font-size: 0.62rem !important;
-  font-weight: 700;
-  color: #020a16;
-  background: #f8fafc;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-bg-primary);
+  background: var(--color-text-primary);
   box-shadow: 0 0 10px rgba(7, 14, 26, 0.5);
   z-index: 2;
 }
 
-.slice-orbit__badge--w { background: #7dd3fc; color: #020a16; }
+.slice-orbit__badge--w { background: var(--color-accent-hover); color: var(--color-bg-primary); }
 
-.slice-orbit__badge--m { background: #c084fc; color: #020a16; }
+.slice-orbit__badge--m { background: #c084fc; color: var(--color-bg-primary); }
 
-.slice-orbit__badge--q { background: #fde047; color: #020a16; }
+.slice-orbit__badge--q { background: #fde047; color: var(--color-bg-primary); }
 
 .slice-orbit__location {
   position: absolute;
@@ -1640,7 +1640,7 @@
   transform: translateX(-50%) !important;
   margin: 0 !important;
   font-size: 0.58rem !important;
-  font-weight: 600 !important;
+  font-weight: var(--font-weight-semibold) !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
@@ -1657,7 +1657,7 @@
   margin: 0 !important;
   font-size: 0.68rem !important;
   letter-spacing: 0.12em !important;
-  color: #f8fafc !important;
+  color: var(--color-text-primary) !important;
   white-space: nowrap !important;
   line-height: 1 !important;
   text-shadow: 0 0 6px rgba(2, 6, 23, 0.85) !important;

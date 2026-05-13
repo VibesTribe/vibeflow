@@ -30,7 +30,7 @@
   padding: clamp(18px, 3vw, 32px);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-6);
   overflow: hidden;
 }
 
@@ -53,13 +53,13 @@
   margin: 0;
   font-size: 1.2rem;
   letter-spacing: 0.12em;
-  color: #f8fafc;
+  color: var(--color-text-primary);
 }
 
 .review-panel__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .review-panel__status {
@@ -95,7 +95,7 @@
 .review-panel__close {
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: transparent;
-  color: #f8fafc;
+  color: var(--color-text-primary);
   border-radius: 50%;
   width: 38px;
   height: 38px;
@@ -106,7 +106,7 @@
 .review-panel__body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
+  gap: var(--space-6);
   overflow-y: auto;
   padding-right: 8px;
 }
@@ -115,10 +115,10 @@
   background: rgba(8, 12, 24, 0.85);
   border: 1px solid rgba(15, 23, 42, 0.8);
   border-radius: 24px;
-  padding: 20px;
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .review-panel__summary {
@@ -142,7 +142,7 @@
 }
 
 .review-panel__meta dt {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .review-panel__prompt,
@@ -158,7 +158,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
 }
@@ -175,20 +175,20 @@
   padding-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .review-panel__preview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .review-panel__preview-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -237,8 +237,8 @@
   border-radius: 18px;
   border: 1px solid rgba(56, 189, 248, 0.35);
   background: rgba(2, 6, 18, 0.85);
-  color: #f8fafc;
-  padding: 12px;
+  color: var(--color-text-primary);
+  padding: var(--space-3);
   font-family: inherit;
   font-size: 0.85rem;
   resize: vertical;
@@ -264,11 +264,11 @@
 }
 
 .review-panel__button {
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   border: 1px solid rgba(56, 189, 248, 0.4);
-  padding: 12px;
+  padding: var(--space-3);
   background: rgba(2, 6, 18, 0.95);
-  color: #f8fafc;
+  color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.7rem;
@@ -306,7 +306,7 @@
 
 .review-queue__list {
   width: 100%;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .review-queue__item {
@@ -314,11 +314,11 @@
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 24px;
   background: rgba(6, 13, 27, 0.95);
-  padding: 16px 18px;
+  padding: var(--space-4) 18px;
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -337,12 +337,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .review-queue__pill {
   border-radius: 999px;
-  padding: 4px 12px;
+  padding: var(--space-1) 12px;
   font-size: 0.6rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -378,7 +378,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #f8fafc;
+  color: var(--color-text-primary);
 }
 
 .review-queue__summary {

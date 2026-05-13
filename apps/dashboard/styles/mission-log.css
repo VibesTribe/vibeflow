@@ -22,11 +22,11 @@
 }
 
 .mission-log__bullet--note {
-  background: #e2e8f0;
+  background: var(--color-text-secondary);
 }
 
 .mission-log__bullet--route {
-  background: #60a5fa;
+  background: var(--status-cooldown);
 }
 
 .mission-log__bullet--validation {
@@ -40,7 +40,7 @@
 .mission-log__entry {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .mission-log__headline {
@@ -65,11 +65,11 @@
 }
 
 .mission-log__title--note {
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
 }
 
 .mission-log__title--route {
-  color: #60a5fa;
+  color: var(--status-cooldown);
 }
 
 .mission-log__title--validation {
@@ -92,7 +92,7 @@
 .mission-log__participants {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .mission-log__participant {

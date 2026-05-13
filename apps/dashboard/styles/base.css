@@ -6,7 +6,7 @@
 :root {
   font-family: "Inter", "Segoe UI", sans-serif;
   background-color: #04070f;
-  color: #e2e8f0;
+  color: var(--color-text-secondary);
 }
 
 #root {
@@ -36,11 +36,11 @@ body#dummybodyid::-webkit-scrollbar {
 }
 
 :root {
-  --status-ready: #2dd4bf;
-  --status-active: #38bdf8;
-  --status-cooldown: #60a5fa;
-  --status-credit: #fcd34d;
-  --status-issue: #fb7185;
+  --status-ready: var(--status-ready);
+  --status-active: var(--color-accent-primary);
+  --status-cooldown: var(--status-cooldown);
+  --status-credit: var(--status-credit);
+  --status-issue: var(--status-issue);
   --slice-orbit-core-value: rgba(248, 250, 252, 0.92);
   --slice-orbit-core-tokens: rgba(248, 250, 252, 0.86);
   --scrollbar-track-color: rgba(6, 12, 24, 0.6);
