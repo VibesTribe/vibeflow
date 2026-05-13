@@ -1,0 +1,217 @@
+/* ==========================================================================
+   base.css
+   Root resets, scrollbar styles, global element defaults
+   One @media (max-width: 900px) block at the end for all mobile overrides.
+   ========================================================================== */
+
+:root {
+  --status-ready: #2dd4bf;
+  --status-active: #38bdf8;
+  --status-cooldown: #60a5fa;
+  --status-credit: #fcd34d;
+  --status-issue: #fb7185;
+  --slice-orbit-core-value: rgba(248, 250, 252, 0.92);
+  --slice-orbit-core-tokens: rgba(248, 250, 252, 0.86);
+  --scrollbar-track-color: rgba(6, 12, 24, 0.6);
+  --scrollbar-thumb-color: rgba(248, 250, 252, 0.85);
+}
+
+#root {
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+html,
+body,
+body#dummybodyid {
+  margin: 0;
+  height: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none;
+  overscroll-behavior: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+body#dummybodyid::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+:is(
+    .mission-modal,
+    .mission-modal__section,
+    .model-panel__list,
+    .assignment-detail,
+    .task-detail,
+    .agent-panel__timeline,
+    .mission-panel__scroll,
+    .rail__scroll,
+    .slice-panel__content,
+    .slice-panel__tasks,
+    .slice-panel__scroll,
+    .slice-task-list__accordion,
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
+  ) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+:is(
+    .mission-modal,
+    .mission-modal__section,
+    .model-panel__list,
+    .assignment-detail,
+    .task-detail,
+    .agent-panel__timeline,
+    .mission-panel__scroll,
+    .rail__scroll,
+    .slice-panel__content,
+    .slice-panel__tasks,
+    .slice-panel__scroll,
+    .slice-task-list__accordion,
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
+  )::-webkit-scrollbar {
+  width: 6px;
+}
+
+:is(
+    .mission-modal,
+    .mission-modal__section,
+    .model-panel__list,
+    .assignment-detail,
+    .task-detail,
+    .agent-panel__timeline,
+    .mission-panel__scroll,
+    .rail__scroll,
+    .slice-panel__content,
+    .slice-panel__tasks,
+    .slice-panel__scroll,
+    .slice-task-list__accordion,
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
+  )::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: 999px;
+}
+
+:is(
+    .mission-modal,
+    .mission-modal__section,
+    .model-panel__list,
+    .assignment-detail,
+    .task-detail,
+    .agent-panel__timeline,
+    .mission-panel__scroll,
+    .rail__scroll,
+    .slice-panel__content,
+    .slice-panel__tasks,
+    .slice-panel__scroll,
+    .slice-task-list__accordion,
+    .mission-main,
+    .mobile-panel-overlay__body,
+    .mobile-panel-overlay .rail__scroll
+  )::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+  border-radius: 999px;
+}
+
+body,
+body#dummybodyid {
+  background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), rgba(2, 6, 16, 0.95));
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+@keyframes goldPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 24px 0 rgba(250, 204, 21, 0.35);
+  }
+}
+
+@keyframes orbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.slice-task-list li.is-highlight:not(.is-open) {
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.2);
+}
+
+@keyframes orbit-flow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -80;
+  }
+}
+
+@keyframes orbitFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -36; }
+}
+
+@keyframes orbitFlowHighlight {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -42; }
+}
+
+@keyframes vibes-tab-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes vibes-panel-in {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes vibes-message-in {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes vibes-typing {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}

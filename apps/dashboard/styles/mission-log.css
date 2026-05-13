@@ -1,0 +1,134 @@
+/* ==========================================================================
+   mission-log.css
+   Log entries: bullets, timestamps, participants, event details
+   One @media (max-width: 900px) block at the end for all mobile overrides.
+   ========================================================================== */
+
+.mission-log__bullet {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.mission-log__bullet--success {
+  background: #34d399;
+}
+
+.mission-log__bullet--warn {
+  background: #facc15;
+}
+
+.mission-log__bullet--error {
+  background: #f87171;
+}
+
+.mission-log__bullet--note {
+  background: #e2e8f0;
+}
+
+.mission-log__bullet--route {
+  background: #60a5fa;
+}
+
+.mission-log__bullet--validation {
+  background: #a5b4fc;
+}
+
+.mission-log__bullet--retry {
+  background: #fb923c;
+}
+
+.mission-log__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mission-log__headline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.mission-log__title {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mission-log__title--success {
+  color: #34d399;
+}
+
+.mission-log__title--warning {
+  color: #facc15;
+}
+
+.mission-log__title--note {
+  color: #e2e8f0;
+}
+
+.mission-log__title--route {
+  color: #60a5fa;
+}
+
+.mission-log__title--validation {
+  color: #a5b4fc;
+}
+
+.mission-log__title--retry {
+  color: #fb923c;
+}
+
+.mission-log__title--error {
+  color: #f87171;
+}
+
+.mission-log__summary {
+  font-size: 0.82rem;
+  color: rgba(226, 232, 240, 0.92);
+}
+
+.mission-log__participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mission-log__participant {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: rgba(248, 250, 252, 0.85);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.mission-log__timestamp {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.mission-log__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mission-log__header span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.mission-log__category {
+  margin-left: auto;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.8);
+}

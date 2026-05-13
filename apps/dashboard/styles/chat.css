@@ -1,0 +1,368 @@
+/* ==========================================================================
+   chat.css
+   Vibes chat panel, chat tab, mic button, message display
+   One @media (max-width: 900px) block at the end for all mobile overrides.
+   ========================================================================== */
+
+.vibes-chat-tab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #0f172a 0%, #04070f 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 28px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(2, 4, 12, 0.5), 0 0 20px rgba(56, 189, 248, 0.08);
+  transition: all 0.2s ease;
+  animation: vibes-tab-in 0.3s ease-out;
+}
+
+.vibes-chat-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(2, 4, 12, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+}
+
+.vibes-chat-tab__icon {
+  font-size: 20px;
+}
+
+.vibes-chat-tab__label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #f1f5f9;
+}
+
+.vibes-chat-tab__badge {
+  background: #0ea5e9;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.vibes-chat-tab__close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-left: 4px;
+  transition: all 0.15s ease;
+}
+
+.vibes-chat-tab__close:hover {
+  color: #f1f5f9;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.vibes-chat-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 420px;
+  height: 520px;
+  background: linear-gradient(180deg, #0f172a 0%, #04070f 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 25px 60px rgba(2, 4, 12, 0.5), 0 0 40px rgba(56, 189, 248, 0.1);
+  animation: vibes-panel-in 0.3s ease-out;
+}
+
+.vibes-chat-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 20px 20px 0 0;
+}
+
+.vibes-chat-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #f1f5f9;
+}
+
+.vibes-chat-panel__icon {
+  font-size: 20px;
+}
+
+.vibes-chat-panel__header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.vibes-chat-panel__minimize {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.vibes-chat-panel__minimize:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #f1f5f9;
+}
+
+.vibes-chat-panel__close {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.vibes-chat-panel__close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.vibes-chat-panel__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.vibes-chat-panel__messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.vibes-chat-panel__messages::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 3px;
+}
+
+.vibes-chat-panel__message {
+  max-width: 85%;
+  animation: vibes-message-in 0.2s ease-out;
+}
+
+.vibes-chat-panel__message--human {
+  align-self: flex-end;
+}
+
+.vibes-chat-panel__message--vibes {
+  align-self: flex-start;
+}
+
+.vibes-chat-panel__message--human .vibes-chat-panel__message-content {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: #ffffff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.vibes-chat-panel__message--vibes .vibes-chat-panel__message-content {
+  background: rgba(148, 163, 184, 0.15);
+  color: #ffffff;
+  border-radius: 16px 16px 16px 4px;
+}
+
+.vibes-chat-panel__message-content {
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.vibes-chat-panel__message-time {
+  font-size: 10px;
+  color: #e2e8f0;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.vibes-chat-panel__message--human .vibes-chat-panel__message-time {
+  text-align: right;
+}
+
+.vibes-chat-panel__typing {
+  display: flex;
+  gap: 4px;
+  padding: 10px 14px;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 16px;
+}
+
+.vibes-chat-panel__typing span {
+  width: 8px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 50%;
+  animation: vibes-typing 1.4s infinite both;
+}
+
+.vibes-chat-panel__typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.vibes-chat-panel__typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.vibes-chat-panel__input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0 0 20px 20px;
+  flex-shrink: 0;
+}
+
+.vibes-chat-panel__button-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.vibes-chat-panel__input {
+  width: 100%;
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 10px 16px;
+  color: #f1f5f9;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.vibes-chat-panel__input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.vibes-chat-panel__input::placeholder {
+  color: #94a3b8;
+}
+
+.vibes-chat-panel__send {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  min-height: 44px;
+  transition: all 0.15s ease;
+}
+
+.vibes-chat-panel__send:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.vibes-chat-panel__send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vibes-chat-panel__mic-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.vibes-chat-panel__mic-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.vibes-chat-panel__mic-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vibes-chat-panel__mic-btn--recording {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: mic-pulse 1s infinite;
+}
+
+.vibes-chat-panel__play-btn {
+  background: none;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #e2e8f0;
+  font-size: 12px;
+  margin-left: 8px;
+  transition: all 0.15s ease;
+  vertical-align: middle;
+}
+
+.vibes-chat-panel__play-btn:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+@media (max-width: 900px) {
+  .vibes-chat-panel {
+      width: calc(100vw - 16px);
+      height: 60vh;
+      bottom: 8px;
+      right: 8px;
+      border-radius: 16px;
+    }
+
+  .vibes-chat-tab {
+      bottom: 8px;
+      right: 8px;
+    }
+}

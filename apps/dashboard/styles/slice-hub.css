@@ -1,0 +1,213 @@
+/* ==========================================================================
+   slice-hub.css
+   Slice grid layout, slice chips (rail view), mini slices
+   One @media (max-width: 900px) block at the end for all mobile overrides.
+   ========================================================================== */
+
+.slice-chip {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--slice-accent, #e2e8f0) 25%, rgba(148, 163, 184, 0.18));
+  background: rgba(15, 23, 42, 0.82);
+  text-align: left;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+}
+
+.slice-chip:hover {
+  border-color: var(--slice-accent, rgba(148, 163, 184, 0.35));
+  transform: translateX(2px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.28);
+}
+
+.slice-chip__ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  color: #e0f2fe;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--slice-accent, #38bdf8) 20%, transparent);
+}
+
+.slice-chip__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slice-chip__body strong {
+  font-size: 0.95rem;
+}
+
+.slice-hub {
+  padding-bottom: 0 !important;
+}
+
+.slice-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
+  gap: 32px;
+}
+
+.slice-hub__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.slice-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.7);
+  padding: 12px;
+  text-align: left;
+}
+
+.slice-mini__meter {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.slice-mini__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+}
+
+.slice-mini__value {
+  font-size: 0.72rem;
+  color: #bae6fd;
+}
+
+.slice-hub--empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+.slice-hub__grid--placeholder {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
+  gap: 32px;
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 22px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid--placeholder {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid--placeholder {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
+    justify-content: center !important;
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
+    justify-content: center !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(360px, 1fr));
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 1fr)) !important;
+  }
+  .slice-hub__grid > :only-child {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    max-width: 600px !important;
+  }
+  .slice-orbit-card__body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .slice-orbit {
+    margin: 0 auto !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .slice-hub {
+      gap: 22px;
+    }
+}

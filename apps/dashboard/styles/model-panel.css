@@ -1,0 +1,380 @@
+/* ==========================================================================
+   model-panel.css
+   Models tab: model list, legends, stats, vendor display
+   One @media (max-width: 900px) block at the end for all mobile overrides.
+   ========================================================================== */
+
+.model-panel__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(198, 218, 255, 0.85);
+  margin: 0 0 12px;
+}
+
+.model-panel__legend-row {
+  flex-wrap: nowrap;
+  gap: 14px;
+}
+
+.model-panel__legend-row--badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.model-panel__legend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: rgba(240, 246, 255, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.model-panel__legend-badge.is-active {
+  border-color: rgba(226, 232, 240, 0.4);
+  background: rgba(12, 18, 32, 0.6);
+}
+
+.model-panel__legend-badge-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.model-panel__legend-badge--web {
+  border-color: rgba(94, 234, 212, 0.5);
+  color: #5eead4;
+}
+
+.model-panel__legend-badge--web .model-panel__legend-badge-icon {
+  background: rgba(94, 234, 212, 0.2);
+  color: #5eead4;
+}
+
+.model-panel__legend-badge--mcp {
+  border-color: rgba(165, 180, 252, 0.45);
+  color: #a5b4fc;
+}
+
+.model-panel__legend-badge--mcp .model-panel__legend-badge-icon {
+  background: rgba(165, 180, 252, 0.2);
+  color: #a5b4fc;
+}
+
+.model-panel__legend-badge--internal {
+  border-color: rgba(250, 204, 21, 0.45);
+  color: #fcd34d;
+}
+
+.model-panel__legend-badge--internal .model-panel__legend-badge-icon {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+}
+
+.model-panel {
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.model-panel__list {
+  display: grid;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.model-panel__list > li:first-child {
+  margin-top: 0;
+}
+
+.model-panel__item {
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 20px;
+  padding: 16px;
+  background: rgba(10, 16, 32, 0.85);
+  display: grid;
+  gap: 8px;
+}
+
+.model-panel__legend-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.model-panel__action {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(8, 12, 24, 0.6);
+  color: rgba(248, 250, 252, 0.8);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  border-radius: 999px;
+  padding: 6px 12px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.model-panel__action:disabled,
+.model-panel__action[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.model-panel__action--primary {
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #e0f2fe;
+}
+
+.model-panel__action:not(:disabled):hover {
+  border-color: rgba(248, 250, 252, 0.75);
+  color: #fff;
+}
+
+.model-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.model-panel__identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.model-panel__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.model-panel__vendor {
+  font-size: 0.7rem;
+  color: rgba(220, 230, 245, 0.88);
+}
+
+.model-panel__status-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 4px 0 2px;
+}
+
+.model-panel__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.model-panel__detail {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: transparent;
+  color: rgba(248, 250, 252, 0.85);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.model-panel__item--cooldown {
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.model-panel__item--credit {
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.model-panel__item--issue {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.model-panel__tier-toggle {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.model-panel__tier-toggle:focus-visible {
+  outline: 2px solid rgba(148, 163, 184, 0.45);
+  border-radius: 999px;
+  outline-offset: 2px;
+}
+
+.model-panel__tier-toggle .agent-pill__tier {
+  position: static;
+}
+
+.model-panel__tier-toggle.is-active .agent-pill__tier {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.45);
+}
+
+.model-panel__metrics p {
+  font-size: 0.82rem !important;
+  color: rgba(245, 250, 255, 0.96) !important;
+}
+
+.model-panel__working {
+  font-size: 0.8rem !important;
+  color: rgba(225, 235, 255, 0.92) !important;
+}
+
+.model-panel__context,
+.model-panel__cooldown {
+  font-size: 0.78rem !important;
+  color: rgba(230, 238, 250, 0.88) !important;
+}
+
+.model-panel__stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.model-panel__stat {
+  font-size: 0.82rem !important;
+}
+
+.model-panel__stat--assigned {
+  color: rgba(220, 234, 255, 0.92);
+  font-size: 0.86rem !important;
+}
+
+.model-panel__stat--success {
+  color: var(--status-ready);
+}
+
+.model-panel__stat--failed {
+  color: var(--status-issue);
+}
+
+.model-panel__recent-activity {
+  margin-top: 10px;
+  background: rgba(8, 12, 24, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 14px;
+  padding: 8px 12px;
+}
+
+.model-panel__recent-activity p {
+  font-size: 0.74rem !important;
+  color: rgba(220, 230, 245, 0.88) !important;
+}
+
+.model-panel__recent-activity ul {
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(191, 219, 254, 0.96) !important;
+}
+
+.model-panel__recent-activity ul a {
+  font-size: 0.95rem;
+  color: rgba(191, 219, 254, 0.96);
+  font-weight: 600;
+}
+
+.model-panel__meta {
+  font-size: 0.74rem !important;
+  color: rgba(220, 230, 245, 0.88) !important;
+}
+
+.model-panel__recent-item {
+  font-size: 0.95rem !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(191, 219, 254, 0.92) !important;
+}
+
+.model-panel__recent-item--success {
+  color: #34d399;
+}
+
+.model-panel__recent-item--fail {
+  color: #f87171;
+}
+
+.model-panel__recent-item--active {
+  color: #60a5fa;
+}
+
+.model-panel__recent-item--empty {
+  color: rgba(148, 163, 184, 0.6);
+}
+
+.model-panel__success {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.model-panel__success--issue {
+  color: #f87171;
+}
+
+.model-panel__success--credit {
+  color: #facc15;
+}
+
+.model-panel__roi {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.75rem;
+}
+
+.model-panel__legend,
+.model-panel__legend-badge {
+  color: rgba(240, 246, 255, 0.92) !important;
+}
+
+@media (max-width: 1100px) {
+  .model-panel__legend-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 900px) {
+  .model-panel__legend {
+      gap: 6px;
+    }
+
+  .model-panel__legend-row {
+      gap: 12px;
+    }
+
+  .model-panel {
+      padding-top: 12px;
+      margin-top: 16px;
+    }
+}
