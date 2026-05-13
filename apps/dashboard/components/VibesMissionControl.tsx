@@ -3,7 +3,6 @@ import { TaskSnapshot } from "@core/types";
 import MissionHeader from "./MissionHeader";
 import SliceHub from "./SliceHub";
 import ReviewPanel from "./ReviewPanel";
-import VqaPanel from "./VqaPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
@@ -51,7 +50,6 @@ const VibesMissionControl: React.FC = () => {
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
-  const [showVqa, setShowVqa] = useState(false);
 
   const snapshotTime = useMemo(() => {
     if (!snapshot.updatedAt) {
@@ -158,9 +156,6 @@ const VibesMissionControl: React.FC = () => {
           <button type="button" onClick={handleOpenAdmin}>
             Admin
           </button>
-          <button type="button" onClick={() => setShowVqa(true)}>
-            VQA
-          </button>
         </div>
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
@@ -180,7 +175,6 @@ const VibesMissionControl: React.FC = () => {
       {selectedReview && (
         <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />
       )}
-      {showVqa && <VqaPanel onClose={() => setShowVqa(false)} />}
     </div>
   );
 };
