@@ -10451,8 +10451,12 @@ a {
 /* === DESKTOP GRID CENTERING - absolute last rule === */
 @media (min-width: 900px) {
   .slice-hub__grid {
-    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
-    justify-content: center !important;
+    grid-template-columns: repeat(3, minmax(320px, 1fr)) !important;
+  }
+  .slice-hub__grid > :only-child {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    max-width: 600px !important;
   }
   .slice-orbit-card__body {
     display: flex !important;
