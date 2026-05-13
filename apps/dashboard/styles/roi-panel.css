@@ -1,13 +1,12 @@
 /* ==========================================================================
    roi-panel.css
    ROI dashboard: summary grid, costs, subscriptions, session tracker
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .roi-panel__header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 8px;
 }
 
@@ -47,6 +46,13 @@
 .roi-panel__note {
   font-size: 0.7rem;
   color: #e2e8f0;
+}
+
+.roi-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
 }
 
 .roi-panel__totals {

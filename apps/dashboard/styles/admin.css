@@ -1,7 +1,6 @@
 /* ==========================================================================
    admin.css
    Admin tab: console, hero, panels, grids, controls
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .admin-console {
@@ -340,13 +339,13 @@
 
 @media (max-width: 900px) {
   .admin-console__bar {
-      grid-template-columns: 1fr;
-      align-items: flex-start;
-      gap: 8px;
-    }
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    gap: 8px;
+  }
 
   .admin-console__actions {
-      justify-content: flex-start;
-      flex-wrap: wrap;
-    }
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }

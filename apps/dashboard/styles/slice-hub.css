@@ -1,7 +1,6 @@
 /* ==========================================================================
    slice-hub.css
    Slice grid layout, slice chips (rail view), mini slices
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .slice-chip {
@@ -47,13 +46,50 @@
 }
 
 .slice-hub {
-  padding-bottom: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  overflow: visible;
+  padding-right: 0;
+  padding-bottom: 12px;
+  min-height: 360px;
+}
+
+@media (max-width: 900px) {
+  .slice-hub {
+    gap: 22px;
+  }
 }
 
 .slice-hub__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(360px, 1fr));
   gap: 32px;
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .slice-hub__grid {
+    gap: 22px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+@media (min-width: 2100px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(4, minmax(360px, 1fr));
+  }
 }
 
 .slice-hub__list {
@@ -107,30 +143,6 @@
   gap: 32px;
 }
 
-@media (min-width: 1024px) and (max-width: 2099px) {
-  .slice-hub__grid {
-    gap: 18px;
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 2099px) {
-  .slice-hub__grid {
-    gap: 22px;
-  }
-}
-
-@media (max-width: 1150px) {
-  .slice-hub__grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-}
-
-@media (min-width: 2100px) {
-  .slice-hub__grid {
-    grid-template-columns: repeat(4, minmax(360px, 1fr));
-  }
-}
-
 @media (max-width: 1150px) {
   .slice-hub__grid--placeholder {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -155,6 +167,21 @@
     grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
     justify-content: center !important;
   }
+}
+
+.slice-hub {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 12px;
+  overflow-y: auto;
+}
+
+.slice-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(360px, 1fr));
+  gap: 32px;
 }
 
 @media (min-width: 1024px) and (max-width: 2099px) {
@@ -187,6 +214,10 @@
   }
 }
 
+.slice-hub {
+  padding-bottom: 0 !important;
+}
+
 @media (min-width: 900px) {
   .slice-hub__grid {
     grid-template-columns: repeat(3, minmax(320px, 1fr)) !important;
@@ -204,10 +235,4 @@
   .slice-orbit {
     margin: 0 auto !important;
   }
-}
-
-@media (max-width: 900px) {
-  .slice-hub {
-      gap: 22px;
-    }
 }

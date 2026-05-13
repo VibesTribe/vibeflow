@@ -1,7 +1,6 @@
 /* ==========================================================================
    mission-log.css
    Log entries: bullets, timestamps, participants, event details
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .mission-log__bullet {

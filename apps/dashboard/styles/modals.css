@@ -1,12 +1,14 @@
 /* ==========================================================================
    modals.css
    Modal overlays, mobile panel overlay, action bar
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .mission-action-bar {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: clamp(0px, 0.5vw, 8px);
+  margin-top: 2px;
 }
 
 .mission-action-bar button {
@@ -35,8 +37,19 @@
 }
 
 .mission-modal {
-  width: min(560px, 92vw);
-  max-height: 90vh;
+  --modal-sticky-offset: 56px;
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100vh - 80px);
+  background: rgba(8, 11, 22, 1);
+  border: 1px solid rgba(79, 129, 255, 0.25);
+  border-radius: 24px;
+  padding: 48px 24px 24px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scroll-padding-top: var(--modal-sticky-offset);
 }
 
 .mission-modal::before {
@@ -66,7 +79,20 @@
 }
 
 .mission-modal--models {
-  padding-top: 0;
+  --modal-sticky-offset: 64px;
+  padding-top: 4px;
+}
+
+.mission-modal__controls {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  z-index: 20;
+  background: rgba(8, 11, 22, 1);
+  padding: 4px 0;
+  position: sticky;
 }
 
 .mission-modal__controls {
@@ -95,7 +121,14 @@
 }
 
 .mission-modal__close {
-  z-index: 20 !important;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(79, 129, 255, 0.25);
+  color: #e2e8f0;
+  font-size: 1.2rem;
+  z-index: 10;
 }
 
 .mission-modal__back {
@@ -187,9 +220,71 @@
   margin-top: 0;
 }
 
+.mission-modal {
+  width: min(560px, 92vw);
+  max-height: 90vh;
+}
+
+.mission-modal__close {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mission-modal__close {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(8, 15, 29, 0.85);
+  color: rgba(226, 232, 240, 0.85);
+  font-size: 1rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.mission-modal__close:hover {
+  border-color: rgba(94, 234, 212, 0.55);
+  background: rgba(12, 24, 42, 0.95);
+  color: rgba(94, 234, 212, 0.9);
+}
+
+.mission-modal__close {
+  font-family: inherit;
+  background: rgba(5, 9, 21, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #f8fafc;
+}
+
+.mission-modal__close:hover {
+  background: rgba(9, 18, 36, 0.9);
+  border-color: rgba(94, 234, 212, 0.5);
+}
+
+.mission-modal__close {
+  font-family: inherit;
+  background: rgba(5, 9, 21, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #f8fafc;
+}
+
+.mission-modal__close:hover {
+  background: rgba(9, 18, 36, 0.92);
+  border-color: rgba(94, 234, 212, 0.5);
+}
+
+.mission-modal__close {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
 .mission-modal__close:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(4, 8, 18, 0.4);
+}
+
+.mission-modal--models {
+  padding-top: 0;
 }
 
 .mission-modal--models .mission-modal__close {
@@ -200,12 +295,13 @@
 .mobile-panel-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(1, 3, 9, 0.85);
+  background: rgba(2, 4, 10, 0.82);
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
-  padding: 18px;
-  z-index: 30;
+  padding: clamp(18px, 6vw, 28px);
+  z-index: 20;
+  overflow-x: hidden;
 }
 
 .mobile-panel-overlay__close {
@@ -213,10 +309,9 @@
   background: rgba(8, 12, 22, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.5);
   color: #f8fafc;
-  font-size: 1.1rem;
-  line-height: 1;
-  width: 42px;
-  height: 42px;
+  font-size: 1.3rem;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -254,16 +349,14 @@
 .mobile-panel-overlay .rail {
   display: flex !important;
   flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  position: static;
   width: 100%;
+  max-width: none;
   height: auto;
+  min-height: 0;
+  position: static;
+  top: auto;
   padding: clamp(18px, 3.6vw, 26px) clamp(14px, 3vw, 24px);
-  border-radius: 24px;
-  background: rgba(6, 11, 22, 0.92);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: none;
+  margin: 0 auto;
   overflow: visible;
   box-sizing: border-box;
 }
@@ -273,11 +366,11 @@
   max-height: none;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-right: 0;
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 2vw, 22px);
   align-items: center;
-  padding-right: 0;
   box-sizing: border-box;
 }
 
@@ -313,9 +406,100 @@
   transform: translate(-50%, -65%);
 }
 
+.mission-action-bar {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.mobile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 3, 9, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  z-index: 30;
+}
+
+.mobile-panel-overlay__close {
+  align-self: flex-end;
+  background: rgba(8, 12, 22, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  color: #f8fafc;
+  font-size: 1.1rem;
+  line-height: 1;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-panel-overlay__body {
+  flex: 1;
+  margin-top: 12px;
+  padding-inline: clamp(6px, 2vw, 12px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.mobile-panel-overlay .rail {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  position: static;
+  width: 100%;
+  height: auto;
+  padding: clamp(18px, 3.6vw, 26px) clamp(14px, 3vw, 24px);
+  border-radius: 24px;
+  background: rgba(6, 11, 22, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: none;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
 .mobile-panel-overlay .rail--left,
 .mobile-panel-overlay .rail--right {
   display: flex !important;
+}
+
+.mobile-panel-overlay .rail__scroll {
+  width: 100%;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vw, 22px);
+  align-items: center;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+.mobile-panel-overlay .rail__header {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-panel-overlay .rail__button {
+  width: min(320px, 100%);
+}
+
+.mobile-panel-overlay .slice-dial {
+  width: min(320px, 100%);
+  margin: 0 auto;
+}
+
+.mission-modal__close {
+  z-index: 20 !important;
 }
 
 .mission-modal--admin {

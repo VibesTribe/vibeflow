@@ -1,7 +1,6 @@
 /* ==========================================================================
    chat.css
    Vibes chat panel, chat tab, mic button, message display
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .vibes-chat-tab {
@@ -352,17 +351,16 @@
   color: #38bdf8;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 480px) {
   .vibes-chat-panel {
-      width: calc(100vw - 16px);
-      height: 60vh;
-      bottom: 8px;
-      right: 8px;
-      border-radius: 16px;
-    }
-
+    width: calc(100vw - 16px);
+    height: 60vh;
+    bottom: 8px;
+    right: 8px;
+    border-radius: 16px;
+  }
   .vibes-chat-tab {
-      bottom: 8px;
-      right: 8px;
-    }
+    bottom: 8px;
+    right: 8px;
+  }
 }

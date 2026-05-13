@@ -1,7 +1,6 @@
 /* ==========================================================================
    mission-root.css
    Top-level layout grid (3-column and wide mode), mission-main center column
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .mission-root.mission-root--wide .slice-hub {
@@ -35,10 +34,15 @@
 }
 
 .mission-root {
-  grid-template-columns: clamp(110px, 12vw, 170px) minmax(0, 1fr) clamp(110px, 12vw, 170px) !important;
-  column-gap: clamp(12px, 2vw, 32px) !important;
-  padding: 0 clamp(16px, 2.4vw, 40px) !important;
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr) clamp(110px, 12vw, 180px);
+  column-gap: clamp(12px, 2vw, 32px);
+  padding: 0 clamp(16px, 2vw, 48px);
+  align-items: stretch;
   min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 20%, rgba(12, 20, 36, 0.95), rgba(3, 7, 18, 0.98));
 }
 
 .mission-root--wide {
@@ -85,9 +89,10 @@
 }
 
 .mission-root--wide .slice-orbit-card__body {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  min-height: clamp(300px, 30vw, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mission-root--wide .slice-orbit {
@@ -99,17 +104,49 @@
   position: relative;
 }
 
+@media (max-width: 900px) {
+  .mission-root--wide .slice-orbit {
+    transform: scale(0.5);
+    transform-origin: center center;
+  }
+  .mission-root--wide .slice-orbit-card__body {
+    min-height: clamp(90px, 20vw, 140px) !important;
+  }
+}
+
 .mission-root--wide .slice-orbit__node {
   transform: scale(1.08);
 }
 
 .mission-main {
-  width: 100% !important;
-  max-width: none !important;
-  padding: 0 clamp(14px, 2.1vw, 28px) !important;
-  height: auto !important;
-  min-height: calc(100vh - 64px) !important;
-  gap: clamp(18px, 2vw, 28px) !important;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 clamp(8px, 1.6vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  backdrop-filter: blur(12px);
+  height: calc(100vh - 64px);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: none;
+  width: 100%;
+  max-width: none;
+}
+
+@media (min-width: 1024px) and (max-width: 2099px) {
+  .mission-main .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
+    justify-content: center !important;
+  }
+}
+
+.mission-main {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(248, 250, 252, 0.85) rgba(6, 10, 22, 0.85);
 }
 
 .mission-main::-webkit-scrollbar {
@@ -125,6 +162,144 @@
   background: rgba(248, 250, 252, 0.95) !important;
   border-radius: 999px !important;
   border: 1px solid rgba(4, 7, 18, 0.4) !important;
+}
+
+.mission-root {
+  grid-template-columns: 210px minmax(0, 1fr) 210px;
+  gap: 24px;
+  padding: 24px 32px;
+}
+
+.mission-root {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr) 128px;
+  gap: 0;
+  padding: 0;
+  align-items: stretch;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 20%, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.95));
+}
+
+.mission-main {
+  position: relative;
+  padding: 20px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: transparent;
+  border-inline: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: none;
+}
+
+.mission-main::-webkit-scrollbar {
+  width: 1px !important;
+}
+
+.mission-main::-webkit-scrollbar-track {
+  background: rgba(6, 10, 22, 0.85) !important;
+  border-radius: 999px !important;
+}
+
+.mission-main::-webkit-scrollbar-thumb {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(4, 7, 18, 0.4) !important;
+}
+
+.mission-main {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(248, 250, 252, 0.85) rgba(6, 10, 22, 0.85);
+}
+
+.mission-root {
+  grid-template-columns: 110px minmax(0, 1fr) 110px;
+}
+
+.mission-main {
+  padding: 18px 22px 26px;
+  gap: 18px;
+  border-radius: 28px;
+}
+
+.mission-root {
+  grid-template-columns: 130px minmax(0, 1fr) 130px;
+  column-gap: 24px;
+  padding: 0 18px;
+}
+
+.mission-main {
+  padding: 16px 20px 24px;
+  gap: 16px;
+  margin: 0;
+  border-radius: 30px;
+}
+
+.mission-root {
+  grid-template-columns: 128px minmax(0, 1fr) 128px;
+  column-gap: 0;
+  padding: 0 12px;
+}
+
+.mission-main {
+  padding: 14px 18px 22px;
+  gap: 14px;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+
+.mission-root {
+  grid-template-columns: 132px minmax(0, 1fr) 132px;
+  column-gap: 24px;
+  padding: 0 18px;
+}
+
+.mission-main {
+  padding: 14px 18px 22px;
+  gap: 14px;
+  width: 100%;
+  max-width: min(1400px, calc(100vw - 220px));
+  margin: 0 auto;
+}
+
+.mission-root {
+  grid-template-columns: 120px minmax(0, 1fr) 140px;
+  column-gap: 12px;
+  padding: 0 12px;
+}
+
+.mission-main {
+  border-radius: 0;
+  margin: 0;
+  width: 100%;
+  padding: 0 18px;
+  height: auto !important;
+}
+
+.mission-root {
+  grid-template-columns: 132px minmax(0, 1fr) 132px !important;
+  column-gap: 12px !important;
+  padding: 0 14px !important;
+  align-items: stretch !important;
+}
+
+.mission-main {
+  margin: 0 auto !important;
+  width: 100% !important;
+  max-width: min(1040px, calc(100vw - 380px)) !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  position: relative;
+  z-index: 0;
+  padding: 0 6px;
+  border: none !important;
+  border-inline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
 .mission-root .rail__button,
@@ -146,17 +321,25 @@
   background: rgba(8, 14, 28, 0.98) !important;
 }
 
-.mission-root.mission-root--wide .mission-main {
-  width: min(1500px, 100%);
-  margin: 0 auto;
-  height: auto !important;
+.mission-root {
+  grid-template-columns: clamp(110px, 12vw, 170px) minmax(0, 1fr) clamp(110px, 12vw, 170px) !important;
+  column-gap: clamp(12px, 2vw, 32px) !important;
+  padding: 0 clamp(16px, 2.4vw, 40px) !important;
+  min-height: 100vh;
+}
+
+.mission-main {
+  width: 100% !important;
   max-width: none !important;
-  padding: clamp(8px, 2.2vw, 22px) clamp(10px, 3.2vw, 38px) clamp(10px, 2.8vw, 26px);
-  border-radius: clamp(18px, 2vw, 42px);
-  gap: clamp(12px, 1.8vw, 22px);
-  background: rgba(3, 7, 18, 0.85);
-  box-shadow: 0 35px 140px rgba(2, 4, 15, 0.65);
-  overflow: visible !important;
+  padding: 0 clamp(14px, 2.1vw, 28px) !important;
+  height: auto !important;
+  min-height: calc(100vh - 64px) !important;
+  gap: clamp(18px, 2vw, 28px) !important;
+}
+
+.mission-root.mission-root--wide .mission-main {
+  padding: clamp(2px, 1.6vw, 12px) clamp(6px, 2.6vw, 26px) clamp(4px, 1.8vw, 12px) !important;
+  gap: clamp(6px, 1vw, 12px) !important;
 }
 
 .mission-root.mission-root--wide {
@@ -168,6 +351,19 @@
   min-height: 100vh;
   height: auto !important;
   background: radial-gradient(circle at 20% 20%, rgba(12, 20, 36, 0.95), rgba(3, 7, 18, 0.98));
+}
+
+.mission-root.mission-root--wide .mission-main {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  height: auto !important;
+  max-width: none !important;
+  padding: clamp(8px, 2.2vw, 22px) clamp(10px, 3.2vw, 38px) clamp(10px, 2.8vw, 26px);
+  border-radius: clamp(18px, 2vw, 42px);
+  gap: clamp(12px, 1.8vw, 22px);
+  background: rgba(3, 7, 18, 0.85);
+  box-shadow: 0 35px 140px rgba(2, 4, 15, 0.65);
+  overflow: visible !important;
 }
 
 .mission-root.mission-root--wide .mission-action-bar {
@@ -186,64 +382,90 @@
   line-height: 1.2;
 }
 
+.mission-root.mission-root--wide .slice-hub__grid {
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  align-items: flex-start;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card__body {
+  align-items: center;
+  justify-content: center;
+  padding-top: 14px;
+}
+
+.mission-root.mission-root--wide .slice-hub {
+  width: 100%;
+  padding-right: 0;
+  max-height: none;
+}
+
+.mission-root.mission-root--wide .slice-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(20px, 2vw, 40px);
+  width: 100%;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card {
+  max-width: none;
+}
+
+.mission-root.mission-root--wide .slice-orbit-card__body {
+  min-height: clamp(300px, 30vw, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .mission-root.mission-root--wide .slice-hub {
+    overflow: hidden !important;
+    width: 100% !important;
+  }
+  .mission-root.mission-root--wide .slice-hub__grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .mission-root.mission-root--wide .slice-orbit-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .mission-root.mission-root--wide .slice-orbit-card__body {
+    min-height: clamp(90px, 20vw, 140px) !important;
+    max-height: clamp(140px, 28vw, 220px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+  .mission-root.mission-root--wide .slice-orbit {
+    transform: scale(0.5);
+    transform-origin: center center;
+  }
+  .mission-root--wide {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
+
+.mission-root.mission-root--wide .rail,
+.mission-root.mission-root--wide .mission-mobile-nav,
+.mission-root.mission-root--wide .mobile-panel-overlay {
+  display: none !important;
+}
+
 .mission-root--wide .slice-orbit,
 .mission-root.mission-root--wide .slice-orbit {
   margin: 0 auto !important;
 }
 
-@media (min-width: 1024px) and (max-width: 2099px) {
-  .mission-main .slice-hub__grid {
-    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
-    justify-content: center !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .mission-root--wide .slice-orbit {
-      transform: scale(0.5);
-      transform-origin: center center;
-    }
-
-  .mission-root--wide .slice-orbit-card__body {
-      min-height: clamp(90px, 20vw, 140px) !important;
-    }
-
-  .mission-root.mission-root--wide .slice-hub {
-      overflow: hidden !important;
-      width: 100% !important;
-    }
-
-  .mission-root.mission-root--wide .slice-hub__grid {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-  .mission-root.mission-root--wide .slice-orbit-card {
-      max-width: 100% !important;
-      width: 100% !important;
-      overflow: hidden !important;
-      box-sizing: border-box !important;
-    }
-
-  .mission-root.mission-root--wide .slice-orbit-card__body {
-      min-height: clamp(90px, 20vw, 140px) !important;
-      max-height: clamp(140px, 28vw, 220px) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      overflow: hidden !important;
-    }
-
-  .mission-root.mission-root--wide .slice-orbit {
-      transform: scale(0.5);
-      transform-origin: center center;
-    }
-
-  .mission-root--wide {
-      max-width: 100vw !important;
-      overflow-x: hidden !important;
-      box-sizing: border-box !important;
-    }
+.mission-root--wide .slice-orbit-card__body {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }

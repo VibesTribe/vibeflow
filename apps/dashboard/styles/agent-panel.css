@@ -1,7 +1,6 @@
 /* ==========================================================================
    agent-panel.css
    Agent detail panel, assignment details, task activity timeline
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .agent-panel__timeline {

@@ -1,28 +1,26 @@
 /* ==========================================================================
    agent-hangar.css
    Agent display components: pills, cards, chips, details, badges, status indicators
-   One @media (max-width: 900px) block at the end for all mobile overrides.
    ========================================================================== */
 
 .agent-pill {
+  width: 92px;
   position: relative;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 12px 10px 10px;
-  border-radius: 18px;
-  border: none;
-  background: rgba(8, 15, 29, 0.92);
-  box-shadow: inset 0 0 0 1px rgba(32, 64, 110, 0.38);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  padding: 18px 10px 16px;
+  background: rgba(9, 16, 32, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 24px;
+  color: #e2e8f0;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
 }
 
 .agent-pill:hover {
   transform: translateY(-2px);
-  box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.55), 0 12px 24px rgba(6, 12, 25, 0.5);
-  background: rgba(12, 22, 40, 0.95);
+  box-shadow: 0 14px 28px rgba(6, 14, 32, 0.4);
 }
 
 .agent-pill__tier {
@@ -57,30 +55,26 @@
 }
 
 .agent-pill__avatar {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: none;
-  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(12, 20, 38, 0.85);
   object-fit: contain;
-  padding: 0;
-  filter: none;
-  mix-blend-mode: normal;
-  box-shadow: none;
+  padding: 6px;
 }
 
 .agent-pill__name {
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
-  color: rgba(226, 232, 240, 0.88);
   max-width: 7rem;
 }
 
 .agent-pill__status {
-  font-size: 0.5rem;
-  letter-spacing: 0.2em;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.95);
 }
@@ -223,26 +217,29 @@
   width: 55%;
 }
 
-.agent-pill__summary {
-  font-size: 0.48rem;
-  letter-spacing: 0.14em;
+.agent-pill__status {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.6);
-  line-height: 1.3;
-  text-align: center;
-  max-width: 6.5rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.agent-pill__summary {
+  font-size: 0.6rem;
+  color: rgba(226, 232, 240, 0.75);
 }
 
 .agent-pill--credit {
-  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.45);
+  border-color: rgba(251, 191, 36, 0.4);
 }
 
 .agent-pill--cooldown {
-  box-shadow: inset 0 0 0 1px rgba(252, 211, 77, 0.45);
+  border-color: rgba(96, 165, 250, 0.35);
 }
 
 .agent-pill--issue {
-  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
+  border-color: rgba(248, 113, 113, 0.35);
 }
 
 .status-dot {
@@ -281,7 +278,8 @@
 }
 
 .status-dot--credit .status-dot__icon {
-  color: #f59e0b;
+  font-size: 0;
+  color: transparent;
 }
 
 .status-dot--credit .status-dot__icon::before {
@@ -325,6 +323,10 @@
 
 .status-dot--cooldown .status-dot__icon {
   color: #fde047;
+}
+
+.status-dot--credit .status-dot__icon {
+  color: #f59e0b;
 }
 
 .status-dot--issue .status-dot__icon {
@@ -548,6 +550,89 @@
   cursor: pointer;
 }
 
+.agent-pill {
+  border: 1px solid transparent;
+  background: rgba(9, 14, 26, 0.88);
+  box-shadow: none;
+}
+
+.agent-pill:hover {
+  border-color: rgba(56, 189, 248, 0.28);
+  box-shadow: 0 12px 24px rgba(7, 11, 25, 0.35);
+}
+
+.agent-pill__avatar {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.agent-pill {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(8, 15, 29, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(32, 64, 110, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.agent-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.5), 0 12px 24px rgba(6, 12, 25, 0.5);
+  background: rgba(12, 22, 40, 0.95);
+  border-color: rgba(94, 234, 212, 0.5);
+  background: rgba(13, 27, 46, 0.9);
+}
+
+.agent-pill__avatar {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(6, 13, 26, 0.9);
+  object-fit: contain;
+  padding: 5px;
+}
+
+.agent-pill__name {
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+}
+
+.agent-pill__status {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+}
+
+.agent-pill {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 10px 10px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(8, 15, 29, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(32, 64, 110, 0.38);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.agent-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.55), 0 12px 24px rgba(6, 12, 25, 0.5);
+  background: rgba(12, 22, 40, 0.95);
+}
+
 .agent-pill__avatar-wrap {
   position: relative;
   width: 48px;
@@ -557,13 +642,67 @@
   justify-content: center;
 }
 
+.agent-pill__avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(10, 20, 38, 0.9);
+  object-fit: contain;
+  padding: 6px;
+}
+
 .agent-pill__avatar-wrap .agent-pill__tier {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  left: auto;
-  bottom: auto;
-  transform: none;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  font-size: 0.5rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  background: rgba(6, 12, 26, 0.92);
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.agent-pill__name {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(226, 232, 240, 0.88);
+  max-width: 7rem;
+}
+
+.agent-pill__status {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.agent-pill__summary {
+  font-size: 0.48rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.6);
+  line-height: 1.3;
+  text-align: center;
+  max-width: 6.5rem;
+}
+
+.agent-pill--credit {
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.45);
+}
+
+.agent-pill--cooldown {
+  box-shadow: inset 0 0 0 1px rgba(252, 211, 77, 0.45);
+}
+
+.agent-pill--issue {
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.55);
 }
 
 .agent-pill__avatar-wrap .agent-pill__tier--w {
@@ -584,6 +723,30 @@
   color: rgba(253, 230, 138, 0.85);
 }
 
+.agent-pill__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(8, 15, 29, 0.9);
+  object-fit: contain;
+  padding: 4px;
+}
+
+.agent-pill__avatar-wrap .agent-pill__tier {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 0;
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+}
+
 .agent-pill__avatar-wrap .agent-pill__tier,
 .slice-orbit__badge {
   width: 20px;
@@ -591,6 +754,48 @@
   border-radius: 50%;
   padding: 0;
   border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.agent-pill__avatar-wrap .agent-pill__tier {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  left: auto;
+  bottom: auto;
+  transform: none;
+}
+
+.agent-pill__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  object-fit: contain;
+  padding: 0;
+  filter: none;
+  mix-blend-mode: normal;
+  box-shadow: none;
+}
+
+.rail--right .agent-pill__circle .agent-pill__tier {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 6px;
+  font-size: 0.42rem;
+  letter-spacing: 0.2em;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(7, 12, 22, 0.9);
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.rail--right .agent-pill__circle .agent-pill__tier {
+  bottom: -12px;
+  font-size: 0.45rem;
+  letter-spacing: 0.24em;
 }
 
 .rail--right .agent-pill__circle .agent-pill__tier {
