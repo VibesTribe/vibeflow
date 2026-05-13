@@ -10447,3 +10447,20 @@ a {
   justify-content: center !important;
 }
 
+
+/* === DESKTOP GRID CENTERING - absolute last rule === */
+@media (min-width: 900px) {
+  .slice-hub__grid {
+    grid-template-columns: repeat(3, minmax(320px, 600px)) !important;
+    justify-content: center !important;
+  }
+  .slice-orbit-card__body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .slice-orbit {
+    margin: 0 auto !important;
+  }
+}
+
