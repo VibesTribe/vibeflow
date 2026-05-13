@@ -313,9 +313,12 @@ const AdminControlCenter: React.FC = () => {
         <div className="admin-panel__card admin-panel__card--stacked">
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "16px" }}>
             <button onClick={() => setShowAddModel(true)} style={primaryBtnStyle}>Add Model</button>
+            <button style={{ ...primaryBtnStyle, background: "#1f6feb" }}>Add Platform</button>
+            <button style={{ ...primaryBtnStyle, background: "#d29922" }}>Add Skill</button>
+            <button style={{ ...primaryBtnStyle, background: "#8b5cf6" }}>Add Tool</button>
           </div>
-          <p style={{ color: "#9da5af", fontSize: 13, marginTop: 8 }}>
-            Adding models requires an admin token. Ask an agent to set one.
+          <p style={{ color: "#9da5af", fontSize: 13 }}>
+            Adding items requires the server-side agent or API admin token. These buttons open the process. Click Add Model to register a new AI model with the system.
           </p>
         </div>
       );

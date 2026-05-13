@@ -294,6 +294,20 @@ export default function VqaPanel({ onClose, inline }: { onClose: () => void; inl
   if (inline) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ margin: 0, color: "var(--color-text-primary)", fontSize: "16px" }}>
+            Visual QA Runs
+          </h3>
+          <button onClick={triggerRun} disabled={triggering}
+            style={{
+              padding: "6px 16px", borderRadius: "8px", border: "1px solid var(--color-border)",
+              background: "var(--color-accent-primary)", color: "var(--color-text-on-accent)",
+              cursor: "pointer", fontSize: "13px", fontWeight: 600, opacity: triggering ? 0.6 : 1,
+            }}>
+            {triggering ? "Running..." : "Run Now"}
+          </button>
+        </div>
+        {error && <div style={{ padding: "8px", background: "rgba(239,68,68,0.1)", borderRadius: "6px", color: "var(--status-error)", fontSize: "12px" }}>{error}</div>}
         {content}
       </div>
     );
