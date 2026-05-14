@@ -541,7 +541,7 @@ const RoiPanel: React.FC<{
   const [showModels, setShowModels] = useState(false);
   const [showProject, setShowProject] = useState(false);
   const [showAgent, setShowAgent] = useState(false);
-  const [includeAgent, setIncludeAgent] = useState(false);
+  const [includeAgent, setIncludeAgent] = useState(true);
   const [showApiCredits, setShowApiCredits] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
