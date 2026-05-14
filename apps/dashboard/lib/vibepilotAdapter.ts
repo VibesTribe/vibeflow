@@ -815,6 +815,7 @@ export interface DashboardData {
     subscriptions: SubscriptionROI[];
     tasks: TaskRunROI[];
   };
+  models: any[];
   system_counters: SystemCounters | null;
   project_costs: ProjectCost[];
   agent_sessions: any[];
@@ -885,6 +886,7 @@ export function adaptVibePilotToDashboard(
       subscriptions: subscriptionROI,
       tasks: taskROI,
     },
+    models: models || [],
     system_counters: systemCounters?.[0] || null,
     project_costs: projectCosts || [],
     agent_sessions: agentSessions || [],

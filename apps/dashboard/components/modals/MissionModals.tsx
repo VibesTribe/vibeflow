@@ -46,6 +46,7 @@ interface MissionModalsProps {
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
   } | null;
+  models?: any[];
   projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions?: any[];
   onOpenReview?: (taskId: string) => void;
@@ -105,7 +106,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, projectCosts, agent_sessions, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -133,7 +134,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <LogList events={events} slices={slices} />;
       break;
     case "roi":
-      content = <RoiPanel agents={agents} slices={slices} roi={roi} projectCosts={projectCosts || []} agent_sessions={agent_sessions || []} />;
+      content = <RoiPanel agents={agents} slices={slices} roi={roi} models={models || []} projectCosts={projectCosts || []} agent_sessions={agent_sessions || []} />;
       break;
     case "models":
       content = <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />;
@@ -530,9 +531,10 @@ const RoiPanel: React.FC<{
     models: ModelROI[];
     subscriptions: SubscriptionROI[];
   } | null;
+  models?: any[];
   projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions?: any[];
-}> = ({ agents, slices, roi, projectCosts, agent_sessions }) => {
+}> = ({ agents, slices, roi, models: modelsProp, projectCosts, agent_sessions }) => {
   const [showCad, setShowCad] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number>(1.36);
   const [showSlices, setShowSlices] = useState(false);
@@ -540,6 +542,7 @@ const RoiPanel: React.FC<{
   const [showProject, setShowProject] = useState(false);
   const [showAgent, setShowAgent] = useState(false);
   const [includeAgent, setIncludeAgent] = useState(false);
+  const [showApiCredits, setShowApiCredits] = useState(false);
   const [expandedSlice, setExpandedSlice] = useState<string | null>(null);
   const [expandedModel, setExpandedModel] = useState<string | null>(null);
   const [includeOverhead, setIncludeOverhead] = useState(true);
@@ -613,13 +616,43 @@ const RoiPanel: React.FC<{
     prevTokens.current = roi?.totals.total_tokens ?? 0;
   };
 
-  // Compute agent session totals
+  // Compute agent session totals from models.tokens_used + agent_sessions
   const agentTotals = useMemo(() => {
     const sessions = agent_sessions || [];
+    
+    // Primary source: models.tokens_used for non-subscription models (subscription tracked separately)
+    const agentModels = (modelsProp || []).filter((m: any) => 
+      m.tokens_used > 0 && m.subscription_status !== 'active'
+    );
+    const totalTokens = agentModels.reduce((sum: number, m: any) => sum + (Number(m.tokens_used) || 0), 0);
+    const totalCostUsd = agentModels.reduce((sum: number, m: any) => sum + (Number(m.credit_total_usd) || 0), 0);
+    
+    // Session counts from agent_sessions (for session-level detail)
+    const totalSessions = sessions.length;
+    
+    // Compute by-model breakdown from models.tokens_used
+    const byModel: Record<string, { tokens: number; cost: number; sessions: number }> = {};
+    for (const m of agentModels) {
+      byModel[m.id] = { 
+        tokens: Number(m.tokens_used) || 0, 
+        cost: Number(m.credit_total_usd) || 0,
+        sessions: sessions.filter((s: any) => s.model_id === m.id).length 
+      };
+    }
+    
+    // Add models from agent_sessions that aren't in models data
+    for (const s of sessions) {
+      const m = s.model_id || 'unknown';
+      if (!byModel[m]) {
+        byModel[m] = { tokens: 0, cost: 0, sessions: 0 };
+      }
+      byModel[m].sessions += 1;
+    }
+    
     return {
-      totalTokens: sessions.reduce((sum: number, s: any) => sum + (Number(s.total_tokens) || 0), 0),
-      totalCostUsd: sessions.reduce((sum: number, s: any) => sum + (Number(s.total_cost_usd) || 0), 0),
-      totalSessions: sessions.length,
+      totalTokens,
+      totalCostUsd,
+      totalSessions,
       byPlatform: sessions.reduce((acc: Record<string, { tokens: number; cost: number; sessions: number }>, s: any) => {
         const p = s.platform || 'unknown';
         if (!acc[p]) acc[p] = { tokens: 0, cost: 0, sessions: 0 };
@@ -628,16 +661,39 @@ const RoiPanel: React.FC<{
         acc[p].sessions += 1;
         return acc;
       }, {} as Record<string, { tokens: number; cost: number; sessions: number }>),
-      byModel: sessions.reduce((acc: Record<string, { tokens: number; cost: number; sessions: number }>, s: any) => {
-        const m = s.model_id || 'unknown';
-        if (!acc[m]) acc[m] = { tokens: 0, cost: 0, sessions: 0 };
-        acc[m].tokens += Number(s.total_tokens) || 0;
-        acc[m].cost += Number(s.total_cost_usd) || 0;
-        acc[m].sessions += 1;
-        return acc;
-      }, {} as Record<string, { tokens: number; cost: number; sessions: number }>),
+      byModel,
     };
-  }, [agent_sessions]);
+  }, [agent_sessions, modelsProp]);
+
+  // Compute API credit model data (models with credit_total_usd, no subscription)
+  const creditModels = useMemo(() => {
+    return (modelsProp || []).filter((m: any) => 
+      m.credit_total_usd > 0 && m.subscription_status !== 'active'
+    ).map((m: any) => {
+      const tokensUsed = Number(m.tokens_used) || 0;
+      const creditTotal = Number(m.credit_total_usd) || 0;
+      const creditRemaining = Number(m.credit_remaining_usd) || 0;
+      const creditUsed = creditTotal - creditRemaining;
+      // Compute API-equivalent cost from pricing
+      const costIn = Number(m.cost_input_per_1k_usd) || 0;
+      const costOut = Number(m.cost_output_per_1k_usd) || 0;
+      // Estimate 60/40 in/out split if we don't have real data
+      const apiEquivCost = costIn > 0 || costOut > 0 
+        ? (tokensUsed / 1000) * (costIn * 0.6 + costOut * 0.4)
+        : 0;
+      return {
+        id: m.id,
+        name: m.name || m.id,
+        tokensUsed,
+        creditTotal,
+        creditRemaining,
+        creditUsed: Math.max(0, creditUsed),
+        apiEquivCost: Math.round(apiEquivCost * 100) / 100,
+        costIn,
+        costOut,
+      };
+    });
+  }, [modelsProp]);
 
   const totals = useMemo(() => {
     if (roi) {
@@ -914,7 +970,7 @@ const RoiPanel: React.FC<{
                             <div className="roi-panel__slice-name">{platform}</div>
                             <div className="roi-panel__slice-stats">
                               <span>{data.sessions} sessions</span>
-                              <span>{formatTokens(data.tokens)} tokens</span>
+                      <span>{formatTokens(data.tokens)} tokens</span>
                               <span>{formatUsd(data.cost)}</span>
                             </div>
                           </div>
@@ -931,12 +987,62 @@ const RoiPanel: React.FC<{
         )}
       </div>
 
+      {/* API Credits — pay-as-you-go credit balance section */}
+      {creditModels.length > 0 && (
+        <div className="roi-panel__section">
+          <h4 
+            className="roi-panel__section-header" 
+            onClick={() => setShowApiCredits(!showApiCredits)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span>API Credits {showApiCredits ? "-" : "+"}</span>
+          </h4>
+          {showApiCredits && (
+            <>
+              {(() => {
+                const totalCredits = creditModels.reduce((s: number, c: any) => s + c.creditTotal, 0);
+                const totalRemaining = creditModels.reduce((s: number, c: any) => s + c.creditRemaining, 0);
+                const totalTokens = creditModels.reduce((s: number, c: any) => s + c.tokensUsed, 0);
+                const totalApiEquiv = creditModels.reduce((s: number, c: any) => s + c.apiEquivCost, 0);
+                const pctUsed = totalCredits > 0 ? ((totalCredits - totalRemaining) / totalCredits * 100).toFixed(0) : "0";
+                return (
+                  <>
+                    <dl className="roi-panel__grid">
+                      <div><dt>Credits Loaded</dt><dd>{formatUsd(totalCredits)}</dd></div>
+                      <div><dt>Remaining</dt><dd>{formatUsd(totalRemaining)}</dd></div>
+                      <div><dt>Used</dt><dd>{pctUsed}%</dd></div>
+                      <div><dt>Tokens</dt><dd>{formatTokens(totalTokens)}</dd></div>
+                      <div><dt>API Value</dt><dd>{formatUsd(totalApiEquiv)}</dd></div>
+                    </dl>
+                    <p className="roi-panel__note" style={{ marginTop: "8px", marginBottom: "4px" }}>By Model</p>
+                    <ul className="roi-panel__slice-list">
+                      {creditModels.map((c: any) => (
+                        <li key={c.id} className="roi-panel__slice-item">
+                          <div className="roi-panel__slice-header">
+                            <div className="roi-panel__slice-name">{c.name}</div>
+                            <div className="roi-panel__slice-stats">
+                              <span>{formatTokens(c.tokensUsed)} tokens</span>
+                              <span>{formatUsd(c.creditRemaining)} left</span>
+                              <span>{formatUsd(c.apiEquivCost)} API value</span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                );
+              })()}
+            </>
+          )}
+        </div>
+      )}
+
       <div className="roi-panel__section">
           <h4 
             className="roi-panel__section-header" 
             onClick={() => setShowSlices(!showSlices)}
           >
-            By Slice {showSlices ? "−" : "+"}
+            By Slice {showSlices ? "-" : "+"}
           </h4>
           {showSlices && (
             roi?.slices && roi.slices.length > 0 ? (

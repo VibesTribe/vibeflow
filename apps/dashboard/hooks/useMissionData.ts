@@ -47,6 +47,7 @@ interface DashboardSnapshot {
     subscriptions: SubscriptionROI[];
     tasks: import("../lib/vibepilotAdapter").TaskRunROI[];
   };
+  models?: any[];
   systemCounters?: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
    projectCosts?: import("../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions?: any[];
@@ -86,6 +87,7 @@ export interface MissionData {
     subscriptions: SubscriptionROI[];
     tasks: import("../lib/vibepilotAdapter").TaskRunROI[];
   } | null;
+  models: any[];
   systemCounters: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
   projectCosts: import("../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions: any[];
@@ -200,6 +202,7 @@ export function useMissionData(): MissionData {
         metrics: adapted.metrics,
         sliceCatalog: adapted.slices,
         roi: adapted.roi,
+        models: adapted.models,
         systemCounters: adapted.system_counters,
         projectCosts: adapted.project_costs,
         agent_sessions: adapted.agent_sessions,
@@ -548,6 +551,7 @@ export function useMissionData(): MissionData {
     qualityByTask,
     tokenUsage,
     roi: snapshot.roi || null,
+    models: snapshot.models || [],
     systemCounters: snapshot.systemCounters || null,
     projectCosts: snapshot.projectCosts || [],
     agent_sessions: snapshot.agent_sessions || [],
