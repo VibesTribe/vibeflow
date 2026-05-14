@@ -862,7 +862,9 @@ export function adaptVibePilotToDashboard(
   const subApiEquiv = subscriptionROI.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
   const subActual = subscriptionROI.reduce((sum, s) => sum + (s.prorated_cost_usd || 0), 0);
   const subSavings = subApiEquiv - subActual;
-  const subTokens = subscriptionROI.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
+  // Sum ALL subscription_history tokens (including expired/pay-as-you-go like DeepSeek API credits)
+  // instead of only active subscriptions — captures recent usage not logged via agent_sessions
+  const subTokens = (subscriptionHistory || []).reduce((sum, h) => sum + (h.tokens_consumed || 0), 0);
 
   return {
     tasks: transformTasks(tasks, runs),
