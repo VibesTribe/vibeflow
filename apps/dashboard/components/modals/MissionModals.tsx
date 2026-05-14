@@ -620,22 +620,34 @@ const RoiPanel: React.FC<{
   const agentTotals = useMemo(() => {
     const sessions = agent_sessions || [];
     
-    // Primary source: models.tokens_used for non-subscription models (subscription tracked separately)
-    const agentModels = (modelsProp || []).filter((m: any) => 
-      m.tokens_used > 0 && m.subscription_status !== 'active'
-    );
-    const totalTokens = agentModels.reduce((sum: number, m: any) => sum + (Number(m.tokens_used) || 0), 0);
-    const totalCostUsd = agentModels.reduce((sum: number, m: any) => sum + (Number(m.credit_total_usd) || 0), 0);
+    // ALL models with token usage (including subscription models like GLM)
+    const allModels = (modelsProp || []).filter((m: any) => m.tokens_used > 0);
     
-    // Session counts from agent_sessions (for session-level detail)
+    // Total tokens across all models
+    const totalTokens = allModels.reduce((sum: number, m: any) => sum + (Number(m.tokens_used) || 0), 0);
+    
+    // Cost: for credit models, use consumed credits (total - remaining). Subscriptions = 0 here.
+    const totalCostUsd = allModels.reduce((sum: number, m: any) => {
+      const creditTotal = Number(m.credit_total_usd) || 0;
+      const creditRemaining = Number(m.credit_remaining_usd) || 0;
+      if (creditTotal > 0) {
+        return sum + Math.max(0, creditTotal - creditRemaining);
+      }
+      return sum;
+    }, 0);
+    
+    // Session counts from agent_sessions
     const totalSessions = sessions.length;
     
     // Compute by-model breakdown from models.tokens_used
     const byModel: Record<string, { tokens: number; cost: number; sessions: number }> = {};
-    for (const m of agentModels) {
+    for (const m of allModels) {
+      const creditTotal = Number(m.credit_total_usd) || 0;
+      const creditRemaining = Number(m.credit_remaining_usd) || 0;
+      const cost = creditTotal > 0 ? Math.max(0, creditTotal - creditRemaining) : 0;
       byModel[m.id] = { 
         tokens: Number(m.tokens_used) || 0, 
-        cost: Number(m.credit_total_usd) || 0,
+        cost,
         sessions: sessions.filter((s: any) => s.model_id === m.id).length 
       };
     }
@@ -648,6 +660,9 @@ const RoiPanel: React.FC<{
       }
       byModel[m].sessions += 1;
     }
+    
+    // No need to track sub models separately — Include adds all agent tokens
+    // since subscription tokens are no longer auto-included in the base total
     
     return {
       totalTokens,
@@ -698,17 +713,16 @@ const RoiPanel: React.FC<{
   const totals = useMemo(() => {
     if (roi) {
       const persistedTokens = persistedProject.totals.totalTokens;
-      const liveTokens = roi.totals.total_tokens;
-      // Sum real data from active subscriptions (from subscription_history)
+      const liveTokens = roi.totals.total_tokens;  // pipeline task tokens only (no sub tokens)
+      // Subscriptions are for ROI analysis only — not auto-included in project total
       const subs = roi.subscriptions || [];
-      const subTokens = subs.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
       const subTheoreticalCost = subs.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
       const subActualCost = subs.reduce((sum, s) => sum + (s.subscription_cost_usd || 0), 0);
       const subTasks = subs.reduce((sum, s) => sum + (s.tasks_completed || 0), 0);
       const subRoi = subs.length > 0 ? Math.max(...subs.map(s => s.roi_percentage || 0)) : 0;
 
       return {
-        totalTokens: Math.max(persistedTokens, liveTokens, subTokens) + (includeAgent ? agentTotals.totalTokens : 0),
+        totalTokens: Math.max(persistedTokens, liveTokens) + (includeAgent ? agentTotals.totalTokens : 0),
         activeSlices: slices.filter((slice) => slice.active > 0).length,
         blockedSlices: slices.filter((slice) => slice.blocked > 0).length,
         completedSlices: slices.filter((slice) => slice.total > 0 && slice.completed >= slice.total).length,

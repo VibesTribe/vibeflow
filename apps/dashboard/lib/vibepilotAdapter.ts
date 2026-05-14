@@ -859,13 +859,10 @@ export function adaptVibePilotToDashboard(
   
   const completedTasks = tasks.filter(t => t.status === "merged").length;
   
-  // Include subscription savings in totals (actual cost vs API equivalent)
+  // Include subscription savings in roi totals
   const subApiEquiv = subscriptionROI.reduce((sum, s) => sum + (s.api_equivalent_cost_usd || 0), 0);
   const subActual = subscriptionROI.reduce((sum, s) => sum + (s.prorated_cost_usd || 0), 0);
   const subSavings = subApiEquiv - subActual;
-  // Sum ALL subscription_history tokens (including expired/pay-as-you-go like DeepSeek API credits)
-  // instead of only active subscriptions — captures recent usage not logged via agent_sessions
-  const subTokens = (subscriptionHistory || []).reduce((sum, h) => sum + (h.tokens_consumed || 0), 0);
 
   return {
     tasks: transformTasks(tasks, runs),
@@ -874,7 +871,7 @@ export function adaptVibePilotToDashboard(
     metrics: calculateMetrics(tasks, runs),
     roi: {
       totals: {
-        total_tokens: roi.total_tokens_in + roi.total_tokens_out + subTokens,
+        total_tokens: roi.total_tokens_in + roi.total_tokens_out,
         total_theoretical_usd: roi.total_theoretical_usd + subApiEquiv,
         total_actual_usd: roi.total_actual_usd + subActual,
         total_savings_usd: roi.total_savings_usd + subSavings,
