@@ -865,9 +865,9 @@ export function adaptVibePilotToDashboard(
   // Active subscription tokens (GLM)
   const subTokens = subscriptionROI.reduce((sum, s) => sum + (s.tokens_used || 0), 0);
   // API credit tokens (DeepSeek) — tracked in models.tokens_used, not subscription_history
-  // Only count models that have actual paid credit (credit_total_usd > 0), not free/session-tracked models
+  // Filters to models with significant token usage not covered by subscription or task runs
   const creditFundedTokens = models
-    .filter((m: any) => !m.subscription_status && (m.credit_total_usd || 0) > 0)
+    .filter((m: any) => !m.subscription_status && (m.tokens_used || 0) > 1000)
     .reduce((sum: number, m: any) => sum + (m.tokens_used || 0), 0);
   // Both pools contribute to the total separately
   const totalSubTokens = subTokens + creditFundedTokens;
