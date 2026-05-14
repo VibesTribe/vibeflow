@@ -626,12 +626,16 @@ const RoiPanel: React.FC<{
     // Total tokens across all models
     const totalTokens = allModels.reduce((sum: number, m: any) => sum + (Number(m.tokens_used) || 0), 0);
     
-    // Cost: for credit models, use consumed credits (total - remaining). Subscriptions = 0 here.
+    // Cost: total money spent. For API credit models, credit_total_usd (all loaded).
+    // For subscription models, the subscription cost. Everything already paid.
     const totalCostUsd = allModels.reduce((sum: number, m: any) => {
-      const creditTotal = Number(m.credit_total_usd) || 0;
-      const creditRemaining = Number(m.credit_remaining_usd) || 0;
-      if (creditTotal > 0) {
-        return sum + Math.max(0, creditTotal - creditRemaining);
+      // DeepSeek/API credits: total loaded
+      if (Number(m.credit_total_usd) > 0 && (!m.subscription_status || m.subscription_status !== 'active')) {
+        return sum + (Number(m.credit_total_usd) || 0);
+      }
+      // Subscription models: show cost from subscription_history
+      if (m.subscription_status === 'active' && Number(m.credit_total_usd) > 0) {
+        return sum + (Number(m.credit_total_usd) || 0);
       }
       return sum;
     }, 0);
@@ -642,9 +646,8 @@ const RoiPanel: React.FC<{
     // Compute by-model breakdown from models.tokens_used
     const byModel: Record<string, { tokens: number; cost: number; sessions: number }> = {};
     for (const m of allModels) {
-      const creditTotal = Number(m.credit_total_usd) || 0;
-      const creditRemaining = Number(m.credit_remaining_usd) || 0;
-      const cost = creditTotal > 0 ? Math.max(0, creditTotal - creditRemaining) : 0;
+      // Cost = total money spent on this model
+      const cost = Number(m.credit_total_usd) > 0 ? (Number(m.credit_total_usd) || 0) : 0;
       byModel[m.id] = { 
         tokens: Number(m.tokens_used) || 0, 
         cost,
