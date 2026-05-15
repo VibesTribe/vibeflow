@@ -1604,7 +1604,7 @@ const SubscriptionHistorySection: React.FC<{
   }, [showHistory]);
 
   const activeCount = subscriptions.length;
-  const historyCount = history?.length ?? 0;
+  const historyCount = history?.filter((e) => !['claude-3-sonnet', 'openrouter'].includes(e.model_id)).length ?? 0;
   const totalCount = activeCount + historyCount;
 
   return (
@@ -1662,15 +1662,19 @@ const SubscriptionHistorySection: React.FC<{
             activeCount === 0 && <p className="roi-panel__note">Loading...</p>
           ) : historyCount > 0 ? (
             <ul className="roi-panel__subscription-list" style={activeCount > 0 ? { marginTop: "8px" } : undefined}>
-              {history.map((entry) => (
+              {history.filter((entry) => {
+                // Filter out API credit top-ups that aren't subscriptions
+                const apiCreditModels = ['claude-3-sonnet', 'openrouter'];
+                return !apiCreditModels.includes(entry.model_id);
+              }).map((entry) => (
                 <li key={entry.id} className="roi-panel__subscription-item">
                   <div className="roi-panel__subscription-header">
                     <strong>{entry.model_id}</strong>
                     <span 
                       className="roi-panel__recommendation"
-                      style={{ backgroundColor: entry.archived_at ? "#6b7280" : "#f59e0b" }}
+                      style={{ backgroundColor: entry.archived_at ? "#6b7280" : (entry.ended_at && new Date(entry.ended_at) < new Date() ? "#f59e0b" : "#22c55e") }}
                     >
-                      {entry.archived_at ? "Archived" : entry.ended_at ? "Expired" : "Inactive"}
+                      {entry.archived_at ? "Archived" : (entry.ended_at && new Date(entry.ended_at) < new Date() ? "Expired" : "Active")}
                     </span>
                   </div>
                   <div className="roi-panel__subscription-stats">
