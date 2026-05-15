@@ -655,13 +655,16 @@ const RoiPanel: React.FC<{
       };
     }
     
-    // Add models from agent_sessions that aren't in models data
+    // Add models from agent_sessions that aren't in models data (init with count only)
     for (const s of sessions) {
       const m = s.model_id || 'unknown';
       if (!byModel[m]) {
-        byModel[m] = { tokens: 0, cost: 0, sessions: 0 };
+        byModel[m] = { 
+          tokens: 0, 
+          cost: 0, 
+          sessions: sessions.filter((x: any) => x.model_id === m).length 
+        };
       }
-      byModel[m].sessions += 1;
     }
     
     // No need to track sub models separately — Include adds all agent tokens
