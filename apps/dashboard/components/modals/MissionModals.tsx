@@ -1607,7 +1607,12 @@ const SubscriptionHistorySection: React.FC<{
   }, [showHistory]);
 
   const activeCount = subscriptions.length;
-  const historyCount = history?.filter((e) => !['claude-3-sonnet', 'openrouter'].includes(e.model_id)).length ?? 0;
+  const activeIDs = new Set(subscriptions.map(s => s.model_id));
+  const historyCount = history?.filter((e) => {
+    if (['claude-3-sonnet', 'openrouter'].includes(e.model_id)) return false;
+    if (activeIDs.has(e.model_id)) return false;
+    return true;
+  }).length ?? 0;
   const totalCount = activeCount + historyCount;
 
   return (
@@ -1668,7 +1673,10 @@ const SubscriptionHistorySection: React.FC<{
               {history.filter((entry) => {
                 // Filter out API credit top-ups that aren't subscriptions
                 const apiCreditModels = ['claude-3-sonnet', 'openrouter'];
-                return !apiCreditModels.includes(entry.model_id);
+                if (apiCreditModels.includes(entry.model_id)) return false;
+                // Filter out history entries that are duplicates of active subscriptions
+                if (subscriptions.some(s => s.model_id === entry.model_id)) return false;
+                return true;
               }).map((entry) => (
                 <li key={entry.id} className="roi-panel__subscription-item">
                   <div className="roi-panel__subscription-header">
