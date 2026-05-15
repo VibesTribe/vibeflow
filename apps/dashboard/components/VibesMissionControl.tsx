@@ -45,7 +45,7 @@ const VibesMissionControl: React.FC = () => {
     };
   }, []);
 
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, roi, models, projectCosts, agent_sessions, loading } = useMissionData();
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, loading } = useMissionData();
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
@@ -132,7 +132,7 @@ const VibesMissionControl: React.FC = () => {
           slices={slices}
           events={events}
           snapshotTime={snapshotTime}
-          tokenUsage={tokenUsage}
+          tokenUsage={tokenUsage + agentTokens}
           roi={roi ? {
             ...roi,
             totals: {

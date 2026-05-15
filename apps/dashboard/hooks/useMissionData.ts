@@ -80,6 +80,7 @@ export interface MissionData {
   statusSummary: ReturnType<typeof buildStatusSummary>;
   qualityByTask: Record<string, string>;
   tokenUsage: number;
+  agentTokens: number;
   roi: {
     totals: ROITotals;
     slices: SliceROI[];
@@ -537,6 +538,12 @@ export function useMissionData(): MissionData {
     return totalRuns * 1_000;
   }, [snapshot.metrics, runMetrics.runs]);
 
+  // Agent token total from models.tokens_used (for header display)
+  const agentTokens = useMemo(() => {
+    const models = snapshot.models || [];
+    return models.reduce((sum: number, m: any) => sum + (Number(m.tokens_used) || 0), 0);
+  }, [snapshot.models]);
+
   const refresh = useCallback(() => {
     fetchData();
   }, [fetchData]);
@@ -550,6 +557,7 @@ export function useMissionData(): MissionData {
     statusSummary,
     qualityByTask,
     tokenUsage,
+    agentTokens,
     roi: snapshot.roi || null,
     models: snapshot.models || [],
     systemCounters: snapshot.systemCounters || null,
