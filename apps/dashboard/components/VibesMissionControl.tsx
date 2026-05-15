@@ -138,7 +138,13 @@ const VibesMissionControl: React.FC = () => {
             ...roi,
             totals: {
               ...roi.totals,
-              net_savings_usd: roi.totals.total_savings_usd - (projectCosts || []).filter(c => !c.archived_at).reduce((s, c) => s + c.amount_usd, 0)
+              net_savings_usd: roi.totals.total_savings_usd
+                - (projectCosts || []).filter(c => !c.archived_at).reduce((s, c) => s + c.amount_usd, 0)
+                - (models || []).reduce((sum: number, m: any) => {
+                    const t = Number(m.credit_total_usd) || 0;
+                    const r = Number(m.credit_remaining_usd) || 0;
+                    return t > 0 ? sum + Math.max(0, t - r) : sum;
+                  }, 0)
             }
           } : null}
           onOpenTokens={handleOpenRoi}
