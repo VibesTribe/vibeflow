@@ -609,8 +609,11 @@ export function calculateSubscriptionROI(
       const daysUsed = Math.min(daysTotal, Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
       const daysRemaining = Math.max(0, daysTotal - daysUsed);
       
-      // Use history cost (accurate) over model field (can be stale)
-      const actualCost = historyData?.costUsd ?? (model.subscription_cost_usd || 0);
+      // Use model's current subscription cost (authoritative for current period)
+      // Only fall back to history cost if model has none set
+      const actualCost = (model.subscription_cost_usd !== null && model.subscription_cost_usd !== undefined) 
+        ? model.subscription_cost_usd 
+        : (historyData?.costUsd ?? 0);
       const proratedCost = actualCost * (daysUsed / daysTotal);
       const tasksCompleted = historyData?.tasks || model.tasks_completed || 0;
       const tokensUsed = historyData?.tokens || model.tokens_used || 0;

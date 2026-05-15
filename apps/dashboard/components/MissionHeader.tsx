@@ -324,7 +324,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     return 0;
   }, [tokenUsage]); // re-read when live tokens change
 
-  const displayTokens = headerMode === "project" ? projectTokens : tokenUsage;
+  const displayTokens = headerMode === "project" 
+    ? Math.max(projectTokens, tokenUsage)  // project = accumulated (includes everything when Include is on via local protracker)
+    : tokenUsage;  // now = live pipeline tasks
   const formattedDisplayTokens = useMemo(() => formatTokenCount(displayTokens), [displayTokens]);
 
   // Fetch subscription/credit threshold alerts
