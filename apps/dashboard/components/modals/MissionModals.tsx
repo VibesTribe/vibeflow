@@ -1674,8 +1674,9 @@ const SubscriptionHistorySection: React.FC<{
                 // Filter out API credit top-ups that aren't subscriptions
                 const apiCreditModels = ['claude-3-sonnet', 'openrouter'];
                 if (apiCreditModels.includes(entry.model_id)) return false;
-                // Filter out history entries that are duplicates of active subscriptions
-                if (subscriptions.some(s => s.model_id === entry.model_id)) return false;
+                // Filter out future/active history entries that duplicate current subscriptions
+                const isActive = entry.ended_at && new Date(entry.ended_at) >= new Date();
+                if (isActive && subscriptions.some(s => s.model_id === entry.model_id)) return false;
                 return true;
               }).map((entry) => (
                 <li key={entry.id} className="roi-panel__subscription-item">

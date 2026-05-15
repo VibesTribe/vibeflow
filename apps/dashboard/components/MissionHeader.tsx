@@ -12,6 +12,7 @@ interface MissionHeaderProps {
   events: MissionEvent[];
   snapshotTime: string;
   tokenUsage: number;
+  agentTokens: number;
   roi: {
     totals: {
       total_savings_usd: number;
@@ -143,6 +144,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   events,
   snapshotTime,
   tokenUsage,
+  agentTokens,
   roi,
   onOpenTokens,
   onOpenReviewTask,
@@ -325,7 +327,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   }, [tokenUsage]); // re-read when live tokens change
 
   const displayTokens = headerMode === "project" 
-    ? Math.max(projectTokens, tokenUsage)  // project = accumulated (includes everything when Include is on via local protracker)
+    ? Math.max(projectTokens, tokenUsage) + agentTokens
     : tokenUsage;  // now = live pipeline tasks
   const formattedDisplayTokens = useMemo(() => formatTokenCount(displayTokens), [displayTokens]);
 

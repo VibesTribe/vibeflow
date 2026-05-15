@@ -133,6 +133,7 @@ const VibesMissionControl: React.FC = () => {
           events={events}
           snapshotTime={snapshotTime}
           tokenUsage={tokenUsage}
+          agentTokens={agentTokens}
           roi={roi ? {
             ...roi,
             totals: {
