@@ -158,16 +158,20 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
 
-  // Review queue: research reports, visual QA tasks, credit alerts
+  // Review queue: unified review_items from the governor
   type ReviewQueueItem = {
     id: string;
-    category: "research" | "task" | "credit_alert";
+    type: string;              // visual_qa, design_preview, research, council, credit_alert, task_review, contradiction
+    category: string;          // back-compat alias for type
+    source_id: string;
     title: string;
     summary: string;
     status: string;
-    review_url: string;
+    priority: string;          // critical, high, medium, low
+    payload: Record<string, unknown>;
+    review_url?: string;
     created_at?: string;
-    council_notes?: string;
+    human_notes?: string;
   };
   const [reviewQueueItems, setReviewQueueItems] = useState<ReviewQueueItem[]>([]);
 
@@ -197,7 +201,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       value: pill.key === "complete"
         ? `${taskBuckets.complete}/${totalTasks}`
         : pill.key === "review"
-          ? taskBuckets.review + reviewQueueItems.filter(i => i.category !== "task").length
+          ? taskBuckets.review + reviewQueueItems.length
           : taskBuckets[pill.key],
     }));
   }, [statusSummary.total, taskBuckets, reviewQueueItems]);
@@ -447,47 +451,66 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {"\u00D7"}
                 </button>
               </div>
-              {/* Research & Credit Review Items */}
-              {activeDetail.pill.key === "review" && reviewQueueItems.filter(i => i.category !== "task").length > 0 && (
+              {/* Unified Review Items */}
+              {activeDetail.pill.key === "review" && reviewQueueItems.length > 0 && (
                 <ul className="mission-header__pill-detail-list slice-task-list" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "8px", marginBottom: "4px" }}>
-                  {reviewQueueItems.filter(i => i.category === "research").length > 0 && (
-                    <li style={{ padding: "4px 8px", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#a78bfa", fontWeight: 600 }}>Research Reports</li>
-                  )}
-                  {reviewQueueItems.filter(i => i.category === "research").map((item) => (
-                    <li key={item.id} className="mission-header__pill-detail-item is-review" style={{ padding: "6px 8px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#a78bfa", flex: 1 }}>
-                          <span style={{ fontWeight: 600 }}>{item.title}</span>
-                          {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
-                        </span>
-                        <a href={item.review_url} target="_blank" rel="noopener noreferrer"
-                           style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
-                          Review Now
-                        </a>
-                      </div>
-                    </li>
-                  ))}
-                  {reviewQueueItems.filter(i => i.category === "credit_alert").length > 0 && (
-                    <li style={{ padding: "4px 8px", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#f87171", fontWeight: 600, marginTop: "4px" }}>Credit Alerts</li>
-                  )}
-                  {reviewQueueItems.filter(i => i.category === "credit_alert").map((item) => (
-                    <li key={item.id} className="mission-header__pill-detail-item is-review" style={{ padding: "6px 8px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
-                        <span style={{ fontSize: "0.7rem", color: "#f87171", flex: 1 }}>
-                          <span style={{ fontWeight: 600 }}>{item.title}</span>
-                          {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
-                        </span>
-                        <a href={item.review_url} target="_blank" rel="noopener noreferrer"
-                           style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
-                          Review Now
-                        </a>
-                      </div>
-                    </li>
-                  ))}
+                  {(() => {
+                    const TYPE_META: Record<string, { label: string; color: string; icon: string }> = {
+                      research:       { label: "Research Reports", color: "#a78bfa", icon: "🔬" },
+                      visual_qa:      { label: "Visual QA", color: "#60a5fa", icon: "👁" },
+                      design_preview: { label: "Design Previews", color: "#f472b6", icon: "🎨" },
+                      council:        { label: "Council Splits", color: "#fbbf24", icon: "⚖" },
+                      credit_alert:   { label: "Credit Alerts", color: "#f87171", icon: "💳" },
+                      task_review:    { label: "Task Reviews", color: "#34d399", icon: "✅" },
+                      contradiction:  { label: "Contradictions", color: "#fb923c", icon: "⚡" },
+                    };
+                    const PRIORITY_BADGE: Record<string, { label: string; color: string }> = {
+                      critical: { label: "CRITICAL", color: "#ef4444" },
+                      high:     { label: "HIGH", color: "#f59e0b" },
+                      medium:   { label: "MED", color: "#6b7280" },
+                      low:      { label: "LOW", color: "#4b5563" },
+                    };
+                    const grouped = reviewQueueItems.reduce((acc, item) => {
+                      const t = item.type || item.category;
+                      if (!acc[t]) acc[t] = [];
+                      acc[t].push(item);
+                      return acc;
+                    }, {} as Record<string, ReviewQueueItem[]>);
+                    return Object.entries(grouped).map(([type, items]) => {
+                      const meta = TYPE_META[type] ?? { label: type, color: "#94a3b8", icon: "📋" };
+                      return (
+                        <React.Fragment key={type}>
+                          <li style={{ padding: "4px 8px", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.05em", color: meta.color, fontWeight: 600, marginTop: type === Object.keys(grouped)[0] ? 0 : "4px" }}>
+                            {meta.icon} {meta.label} ({items.length})
+                          </li>
+                          {items.map((item) => {
+                            const pri = PRIORITY_BADGE[item.priority] ?? PRIORITY_BADGE.medium;
+                            return (
+                              <li key={item.id} className="mission-header__pill-detail-item is-review" style={{ padding: "6px 8px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
+                                  <span style={{ fontSize: "0.7rem", color: meta.color, flex: 1 }}>
+                                    <span style={{ fontWeight: 600 }}>{item.title}</span>
+                                    {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
+                                    <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.6rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
+                                  </span>
+                                  {item.review_url && (
+                                    <a href={item.review_url} target="_blank" rel="noopener noreferrer"
+                                       style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
+                                      Review
+                                    </a>
+                                  )}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
                 </ul>
               )}
               <ul className="mission-header__pill-detail-list slice-task-list" ref={pillListRef}>
-                {activeDetail.tasks.length === 0 && reviewQueueItems.filter(i => i.category !== "task").length === 0 && <li className="mission-header__pill-detail-empty">No items currently in this state.</li>}
+                {activeDetail.tasks.length === 0 && reviewQueueItems.length === 0 && <li className="mission-header__pill-detail-empty">No items currently in this state.</li>}
                 {activeDetail.tasks.map((task) => {
                   const statusMeta = resolveStatusMeta(task.status);
                   const isReviewTask = HEADER_REVIEW_STATUSES.has(task.status);
