@@ -4,6 +4,7 @@ import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
 import { MissionEvent } from "../../../src/utils/events";
 import { TaskDetail } from "./modals/MissionModals";
 import VibesChatPanel from "./vibes/VibesChatPanel";
+import ResearchReportPanel from "./ResearchReportPanel";
 
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
@@ -151,9 +152,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const [isVibesChatOpen, setIsVibesChatOpen] = useState(false);
   const [chatTrigger, setChatTrigger] = useState(false);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
+  const [activeReportId, setActiveReportId] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -353,9 +354,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const fetchReviewQueue = () => {
     const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
       ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
-    fetch(`${govAPI}/api/review-queue`)
-        .then(r => r.ok ? r.json() : { items: [], count: 0 })
-        .then(data => setReviewQueueItems(data.items || []))
+    fetch(`${govAPI}/api/review-items?status=pending`)
+        .then(r => r.ok ? r.json() : [])
+        .then(data => setReviewQueueItems(Array.isArray(data) ? data : []))
         .catch(() => {});
     };
     fetchReviewQueue();
@@ -493,12 +494,19 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
                                     <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.6rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
-                                  {item.review_url && (
+                                  {item.type === "research" || item.category === "research" ? (
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); setActiveReportId(item.source_id); }}
+                                      style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0, font: "inherit" }}
+                                    >
+                                      Review Items
+                                    </button>
+                                  ) : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
                                       Review
                                     </a>
-                                  )}
+                                  ) : null}
                                 </div>
                               </li>
                             );
@@ -622,6 +630,29 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         </div>
       </div>
       <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => setChatTrigger(false)} />
+      {activeReportId && (
+        <div
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.7)", zIndex: 9999,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}
+          onClick={() => setActiveReportId(null)}
+        >
+          <div
+            style={{
+              background: "#1e293b", borderRadius: "12px", width: "90%", maxWidth: "600px",
+              maxHeight: "85vh", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #334155",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ResearchReportPanel
+              reportId={activeReportId}
+              onClose={() => setActiveReportId(null)}
+            />
+          </div>
+        </div>
+      )}
     </header>
   );
 };
