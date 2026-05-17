@@ -22,6 +22,10 @@ interface Report {
   decision_doc_path: string;
   council_notes: Record<string, unknown>;
   items: ReportItem[];
+  is_raw_suggestion?: boolean;
+  summary?: string;
+  details?: Record<string, unknown>;
+  complexity?: string;
 }
 
 interface ResearchReportPanelProps {
@@ -46,6 +50,12 @@ const DECISION_ICONS: Record<string, string> = {
   approve: "✓ Approve",
   watch:   "👁 Watch",
   reject:  "✗ Reject",
+};
+
+const COMPLEXITY_COLORS: Record<string, { bg: string; text: string }> = {
+  simple: { bg: "#34d39922", text: "#34d399" },
+  complex: { bg: "#fbbf2422", text: "#fbbf24" },
+  human: { bg: "#f8717122", text: "#f87171" },
 };
 
 const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onClose }) => {
@@ -76,7 +86,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
         body: JSON.stringify({ decision }),
       });
       if (res.ok) {
-        // Refresh the report to get updated state
         fetchReport();
       }
     } finally {
@@ -103,9 +112,62 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
     );
   }
 
-  const decidedCount = report.items.filter((i) => i.human_decision).length;
-  const allDecided = decidedCount === report.items.length;
-  const approvedCount = report.items.filter((i) => i.human_decision === "approve").length;
+  // Raw suggestion view (not yet compiled into a council report)
+  if (report.is_raw_suggestion) {
+    const cStyle = report.complexity ? COMPLEXITY_COLORS[report.complexity] : null;
+    return (
+      <div style={{ padding: "16px", maxHeight: "80vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2e8f0" }}>{report.title}</h3>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "4px" }}>
+              <span style={{ fontSize: "0.7rem", color: "#64748b" }}>Pending council review</span>
+              {cStyle && (
+                <span style={{ fontSize: "0.6rem", padding: "1px 8px", borderRadius: "10px", background: cStyle.bg, color: cStyle.text, fontWeight: 600 }}>
+                  {report.complexity}
+                </span>
+              )}
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "#94a3b8", fontSize: "1.2rem", cursor: "pointer" }} aria-label="Close">
+            ×
+          </button>
+        </div>
+
+        {report.summary && (
+          <p style={{ margin: "0 0 12px", fontSize: "0.8rem", color: "#94a3b8", lineHeight: "1.5" }}>
+            {report.summary}
+          </p>
+        )}
+
+        {report.details && (
+          <div style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: "8px", padding: "12px", marginBottom: "12px" }}>
+            <h4 style={{ margin: "0 0 8px", fontSize: "0.75rem", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Details</h4>
+            <pre style={{ margin: 0, fontSize: "0.7rem", color: "#cbd5e1", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              {JSON.stringify(report.details, null, 2)}
+            </pre>
+          </div>
+        )}
+
+        {report.findings_path && (
+          <a
+            href={`https://knowledge.vibestribe.rocks/${report.findings_path}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-block", fontSize: "0.75rem", color: "#60a5fa", textDecoration: "underline" }}
+          >
+            View findings document →
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  // Compiled report view (council-reviewed)
+  const items = report.items || [];
+  const decidedCount = items.filter((i) => i.human_decision).length;
+  const allDecided = decidedCount === items.length;
+  const approvedCount = items.filter((i) => i.human_decision === "approve").length;
 
   return (
     <div style={{ padding: "16px", maxHeight: "80vh", overflowY: "auto" }}>
@@ -114,7 +176,7 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
         <div>
           <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2e8f0" }}>{report.title}</h3>
           <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
-            {report.items.length} items · {decidedCount}/{report.items.length} decided
+            {items.length} items · {decidedCount}/{items.length} decided
             {allDecided && approvedCount > 0 && ` · ${approvedCount} approved → PRD`}
           </span>
         </div>
@@ -132,7 +194,7 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
         <div
           style={{
             height: "100%",
-            width: `${report.items.length > 0 ? (decidedCount / report.items.length) * 100 : 0}%`,
+            width: `${items.length > 0 ? (decidedCount / items.length) * 100 : 0}%`,
             background: allDecided ? "#34d399" : "#67e8f9",
             borderRadius: "2px",
             transition: "width 0.3s ease",
@@ -154,7 +216,7 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
 
       {/* Items list */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {report.items.map((item, idx) => {
+        {items.map((item, idx) => {
           const rec = item.council_recommendation;
           const recStyle = rec ? REC_COLORS[rec] || REC_COLORS.watch : null;
           const isUpdating = updating === item.id;
@@ -177,7 +239,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
                   <span style={{ fontSize: "0.7rem", color: "#64748b", marginRight: "8px" }}>#{idx + 1}</span>
                   <span style={{ fontSize: "0.85rem", color: "#e2e8f0", fontWeight: 600 }}>{item.title}</span>
                 </div>
-                {/* Council recommendation badge */}
                 {recStyle && (
                   <span
                     style={{
@@ -196,21 +257,18 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
                 )}
               </div>
 
-              {/* Summary */}
               {item.summary && (
                 <p style={{ margin: "0 0 6px", fontSize: "0.75rem", color: "#94a3b8", lineHeight: "1.4" }}>
                   {item.summary}
                 </p>
               )}
 
-              {/* Council reasoning */}
               {item.council_reasoning && (
                 <p style={{ margin: "0 0 6px", fontSize: "0.7rem", color: "#7c8ca1", fontStyle: "italic" }}>
                   {item.council_reasoning}
                 </p>
               )}
 
-              {/* Concerns */}
               {item.council_concerns && item.council_concerns.length > 0 && (
                 <div style={{ marginBottom: "8px" }}>
                   {item.council_concerns.map((c, ci) => (
@@ -233,7 +291,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
                 </div>
               )}
 
-              {/* Decision buttons */}
               <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
                 {(["approve", "watch", "reject"] as const).map((decision) => {
                   const isActive = item.human_decision === decision;
@@ -262,7 +319,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
                 })}
               </div>
 
-              {/* Human notes */}
               {item.human_notes && (
                 <p style={{ margin: "6px 0 0", fontSize: "0.65rem", color: "#64748b" }}>
                   Notes: {item.human_notes}
@@ -273,7 +329,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
         })}
       </div>
 
-      {/* Footer */}
       {allDecided && (
         <div style={{ marginTop: "12px", padding: "10px", background: "#34d39912", border: "1px solid #34d39944", borderRadius: "6px", textAlign: "center" }}>
           <span style={{ fontSize: "0.8rem", color: "#34d399", fontWeight: 600 }}>
