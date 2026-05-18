@@ -496,19 +496,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.6rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
                                   {item.type === "research" || item.category === "research" ? (
-                                    item.review_url ? (
-                                      <a href={item.review_url} target="_blank" rel="noopener noreferrer"
-                                         style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
-                                        View Findings
-                                      </a>
-                                    ) : (
-                                      <button
-                                        onClick={(e) => { e.stopPropagation(); setActiveReportId(item.source_id); setActiveReviewItemId(item.id); }}
-                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0, font: "inherit" }}
+                                      <a
+                                        href={"https://graphs.vibestribe.rocks/#research-" + item.source_id}
+                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
                                       >
                                         Review Items
-                                      </button>
-                                    )
+                                      </a>
                                   ) : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
