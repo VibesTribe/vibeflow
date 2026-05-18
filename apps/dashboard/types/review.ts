@@ -18,5 +18,13 @@ export interface ReviewQueueItem {
   entry: ReviewEntry;
   task?: TaskSnapshot;
   restore?: RestoreRecord;
+  // Fields from /api/review-items (research reports, council items)
+  id?: string;
+  source_id?: string;
+  type?: string;
+  category?: string;
+  priority?: string;
+  payload?: Record<string, unknown>;
+  review_url?: string;
 }
 

@@ -496,12 +496,12 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.6rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
                                   {item.type === "research" || item.category === "research" ? (
-                                      <a
-                                        href={"https://graphs.vibestribe.rocks/#research-" + item.source_id}
-                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); setActiveReviewItemId(item.id); setActiveReportId(item.source_id || null); }}
+                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0 }}
                                       >
-                                        Review Items
-                                      </a>
+                                        Review
+                                      </button>
                                   ) : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
@@ -652,11 +652,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
               reviewItemId={activeReviewItemId || ""}
               onClose={() => { setActiveReportId(null); setActiveReviewItemId(null); }}
               onStatusChange={(itemId, newStatus) => {
-                // Remove from list if approved/rejected
-                if (newStatus === "approved" || newStatus === "rejected") {
-                  setActiveReportId(null);
-                  setActiveReviewItemId(null);
-                }
+                // Remove from local list immediately so it disappears
+                setReviewQueueItems((prev) => prev.filter((i) => i.id !== itemId));
+                setActiveReportId(null);
+                setActiveReviewItemId(null);
               }}
             />
           </div>
