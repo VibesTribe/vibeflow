@@ -63,7 +63,7 @@ const COMPLEXITY_COLORS: Record<string, { bg: string; text: string }> = {
 const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, reviewItemId, onClose, onStatusChange }) => {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
+  const [updating, setUpdating] = useState<string | boolean | null>(false);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
 
   const fetchReport = useCallback(() => {
@@ -211,7 +211,7 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
                 <button
                   key={status}
                   onClick={() => handleItemStatus(status)}
-                  disabled={updating}
+                  disabled={!!updating}
                   style={{
                     flex: 1,
                     padding: "8px 0",
