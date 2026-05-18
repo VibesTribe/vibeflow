@@ -187,12 +187,11 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
 
         {report.findings_path && (
           <a
-            href={`https://graphs.vibestribe.rocks/${report.findings_path}`}
-            target="_blank"
+            href={`https://graphs.vibestribe.rocks/#research-${report.id}`}
             rel="noopener noreferrer"
             style={{ display: "inline-block", fontSize: "0.75rem", color: "#60a5fa", textDecoration: "underline" }}
           >
-            View findings document →
+            View in Knowledge Hub →
           </a>
         )}
 
@@ -278,12 +277,11 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
       {/* Decision doc link */}
       {report.decision_doc_path && (
         <a
-          href={`https://graphs.vibestribe.rocks/${report.decision_doc_path}`}
-          target="_blank"
+          href={`https://graphs.vibestribe.rocks/#research-${report.id}`}
           rel="noopener noreferrer"
           style={{ display: "block", fontSize: "0.75rem", color: "#60a5fa", marginBottom: "12px", textDecoration: "underline" }}
         >
-          View council decision document →
+          View in Knowledge Hub with council feedback →
         </a>
       )}
 
