@@ -155,6 +155,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [chatTrigger, setChatTrigger] = useState(false);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
+  const [activeReviewItemId, setActiveReviewItemId] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -502,7 +503,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                       </a>
                                     ) : (
                                       <button
-                                        onClick={(e) => { e.stopPropagation(); setActiveReportId(item.source_id); }}
+                                        onClick={(e) => { e.stopPropagation(); setActiveReportId(item.source_id); setActiveReviewItemId(item.id); }}
                                         style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0, font: "inherit" }}
                                       >
                                         Review Items
@@ -644,7 +645,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             background: "rgba(0,0,0,0.7)", zIndex: 9999,
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
-          onClick={() => setActiveReportId(null)}
+          onClick={() => { setActiveReportId(null); setActiveReviewItemId(null); }}
         >
           <div
             style={{
@@ -655,7 +656,15 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           >
             <ResearchReportPanel
               reportId={activeReportId}
-              onClose={() => setActiveReportId(null)}
+              reviewItemId={activeReviewItemId || ""}
+              onClose={() => { setActiveReportId(null); setActiveReviewItemId(null); }}
+              onStatusChange={(itemId, newStatus) => {
+                // Remove from list if approved/rejected
+                if (newStatus === "approved" || newStatus === "rejected") {
+                  setActiveReportId(null);
+                  setActiveReviewItemId(null);
+                }
+              }}
             />
           </div>
         </div>

@@ -30,7 +30,9 @@ interface Report {
 
 interface ResearchReportPanelProps {
   reportId: string;
+  reviewItemId: string;
   onClose: () => void;
+  onStatusChange?: (itemId: string, newStatus: string) => void;
 }
 
 const govAPI =
@@ -58,10 +60,11 @@ const COMPLEXITY_COLORS: Record<string, { bg: string; text: string }> = {
   human: { bg: "#f8717122", text: "#f87171" },
 };
 
-const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onClose }) => {
+const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, reviewItemId, onClose, onStatusChange }) => {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState<string | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
 
   const fetchReport = useCallback(() => {
     fetch(`${govAPI}/api/research-reports/${reportId}`)
@@ -72,6 +75,39 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
       })
       .catch(() => setLoading(false));
   }, [reportId]);
+
+  // Also fetch the review item's current status
+  useEffect(() => {
+    if (!reviewItemId) return;
+    fetch(`${govAPI}/api/review-items/${reviewItemId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCurrentStatus(data[0].status || null);
+        } else if (data && data.status) {
+          setCurrentStatus(data.status);
+        }
+      })
+      .catch(() => {});
+  }, [reviewItemId]);
+
+  const handleItemStatus = async (status: string) => {
+    if (!reviewItemId) return;
+    setUpdating(true);
+    try {
+      const res = await fetch(`${govAPI}/api/review-items/${reviewItemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        setCurrentStatus(status);
+        if (onStatusChange) onStatusChange(reviewItemId, status);
+      }
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   useEffect(() => {
     fetchReport();
@@ -158,6 +194,43 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, onC
           >
             View findings document →
           </a>
+        )}
+
+        {/* Decision buttons for raw suggestions */}
+        {reviewItemId && (
+          <div style={{ marginTop: "16px", display: "flex", gap: "6px" }}>
+            {(["approved", "deferred", "rejected"] as const).map((status) => {
+              const isActive = currentStatus === status;
+              const colorMap: Record<string, { bg: string; border: string; text: string }> = {
+                approved: { bg: "#34d39922", border: "#34d39955", text: "#34d399" },
+                deferred: { bg: "#fbbf2422", border: "#fbbf2455", text: "#fbbf24" },
+                rejected: { bg: "#f8717122", border: "#f8717155", text: "#f87171" },
+              };
+              const labelMap: Record<string, string> = { approved: "✓ Approve", deferred: "⏳ Defer", rejected: "✗ Reject" };
+              const style = colorMap[status];
+              return (
+                <button
+                  key={status}
+                  onClick={() => handleItemStatus(status)}
+                  disabled={updating}
+                  style={{
+                    flex: 1,
+                    padding: "8px 0",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    border: `1px solid ${isActive ? style.border : "#334155"}`,
+                    borderRadius: "4px",
+                    background: isActive ? style.bg : "transparent",
+                    color: isActive ? style.text : "#64748b",
+                    cursor: updating ? "wait" : "pointer",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {labelMap[status]}
+                </button>
+              );
+            })}
+          </div>
         )}
       </div>
     );
