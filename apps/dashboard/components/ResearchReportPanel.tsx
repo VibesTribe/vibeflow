@@ -11,6 +11,9 @@ interface ReportItem {
   human_decision: string | null;
   human_notes: string | null;
   sort_order: number;
+  current_state?: string;
+  new_thing?: string;
+  improvement?: string;
 }
 
 interface Report {
@@ -122,7 +125,21 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
         body: JSON.stringify({ decision }),
       });
       if (res.ok) {
-        fetchReport();
+        // Fetch updated report and check if all decided
+        const reportRes = await fetch(`${govAPI}/api/research-reports/${reportId}`);
+        if (reportRes.ok) {
+          const updatedReport = await reportRes.json();
+          setReport(updatedReport);
+          const updatedItems = updatedReport?.items || [];
+          const allDecidedNow = updatedItems.length > 0 && updatedItems.every((i: ReportItem) => i.human_decision);
+          if (allDecidedNow) {
+            // Notify parent so it removes from queue, then close after a short delay
+            if (onStatusChange) onStatusChange(reviewItemId, "resolved");
+            setTimeout(() => onClose(), 1500);
+          }
+        } else {
+          fetchReport();
+        }
       }
     } finally {
       setUpdating(null);
@@ -359,6 +376,30 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
                       {c}
                     </span>
                   ))}
+                </div>
+              )}
+
+              {/* Comparison: what we have vs what this offers vs why it's better */}
+              {(item.current_state || item.new_thing || item.improvement) && (
+                <div style={{ background: "#1a2332", border: "1px solid #2d3f55", borderRadius: "6px", padding: "8px 10px", marginBottom: "8px" }}>
+                  {item.current_state && (
+                    <div style={{ marginBottom: item.new_thing || item.improvement ? "6px" : "0" }}>
+                      <span style={{ fontSize: "0.6rem", color: "#60a5fa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>What we have</span>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.7rem", color: "#94a3b8", lineHeight: "1.4" }}>{item.current_state}</p>
+                    </div>
+                  )}
+                  {item.new_thing && (
+                    <div style={{ marginBottom: item.improvement ? "6px" : "0" }}>
+                      <span style={{ fontSize: "0.6rem", color: "#a78bfa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>What this offers</span>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.7rem", color: "#cbd5e1", lineHeight: "1.4" }}>{item.new_thing}</p>
+                    </div>
+                  )}
+                  {item.improvement && (
+                    <div>
+                      <span style={{ fontSize: "0.6rem", color: "#34d399", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>How it improves things</span>
+                      <p style={{ margin: "2px 0 0", fontSize: "0.7rem", color: "#94a3b8", lineHeight: "1.4" }}>{item.improvement}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
