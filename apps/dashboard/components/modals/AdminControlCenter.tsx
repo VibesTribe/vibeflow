@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import VqaPanel from "../VqaPanel";
+import DesignHub from "../DesignHub";
 
 type AdminTab = "System" | "Design" | "Add";
 
@@ -202,12 +203,7 @@ const AdminControlCenter: React.FC = () => {
 
   const renderDesign = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-      <div className="admin-panel__card" style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-        <button onClick={() => window.open('/design-sketch.html', '_blank')} className="admin-primary">New Sketch</button>
-        <button onClick={() => window.open('http://localhost:6006', '_blank')} className="admin-primary" style={{ background: 'var(--status-cooldown)' }}>Open Storybook</button>
-        <button onClick={() => alert('Launching OpenCoDesign Workbench...')} className="admin-primary" style={{ background: 'var(--status-ready)' }}>Launch OpenCoDesign</button>
-        <button className="admin-ghost-button">Verify Current Design</button>
-      </div>
+      <DesignHub />
       <VqaPanel onClose={() => {}} inline />
     </div>
   );

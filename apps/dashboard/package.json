@@ -26,6 +26,7 @@
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-mcp": "^0.6.0",
     "eslint-plugin-storybook": "^10.4.0",
+    "@storybook/react": "^10.4.0",
     "vitest": "^4.1.6",
     "playwright": "^1.60.0",
     "@vitest/browser-playwright": "^4.1.6",
