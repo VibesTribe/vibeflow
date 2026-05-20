@@ -1,0 +1,16 @@
+[01:39:28.865] [INFO] Initializing Storybook
+[01:39:29.954] [DEBUG] Getting package.json info for /home/vibes/vibeflow/package.json...
+[01:39:29.955] [INFO] Package manager: npm
+[01:39:29.959] [DEBUG] Getting CLI versions from NPM for storybook...
+[01:39:29.960] [DEBUG] Executing command: npm info storybook version
+[01:39:31.804] [INFO] Adding Storybook version 10.4.0 to your project
+[01:39:31.805] [DEBUG] Executing command: npm config get min-release-age --workspaces=false --include-workspace-root
+[01:39:32.262] [DEBUG] Using cached package.json for /home/vibes/vibeflow/package.json...
+[01:39:32.268] [ERROR] Unable to initialize Storybook in this directory.
+
+Storybook couldn't detect a supported framework or configuration for your project. Make sure you're inside a framework project (e.g., React, Vue, Svelte, Angular, Next.js) and that its dependencies are installed.
+
+Tips:
+- Run init in an empty directory or create a new framework app first.
+- If this directory contains unrelated files, try a new directory for Storybook.
+[01:39:32.284] [INFO] Storybook collects completely anonymous usage telemetry. We use it to shape Storybook's roadmap and prioritize features. You can learn more, including how to opt out, at https://storybook.js.org/telemetry

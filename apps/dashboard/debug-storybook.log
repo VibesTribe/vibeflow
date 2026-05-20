@@ -1,0 +1,35 @@
+[01:41:16.202] [INFO] Running addon-a11y-addon-test automigration
+[01:41:16.202] [DEBUG] Extracting storybook data...
+[01:41:16.202] [DEBUG] Getting Storybook info...
+[01:41:16.222] [ERROR] [38;2;241;97;97mSB_CORE-SERVER_0007 (MainFileEvaluationError): Storybook couldn't evaluate your .storybook/main.ts file.
+
+Original error:
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@chromatic-com/storybook' imported from /.storybook/main.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:991:11)
+    at nextResolve (node:internal/modules/esm/hooks:785:28)
+    at AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:30)
+    at MessagePort.handleMessage (node:internal/modules/esm/worker:251:24)
+    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:843:20)
+    at MessagePort.<anonymous> (node:internal/per_context/messageport:23:28)[39m
+    at loadMainConfig (file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/storybook/dist/_node-chunks/chunk-WKCYHYMS.js:10157:11)
+    at async getStorybookInfo (file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/storybook/dist/_node-chunks/chunk-WKCYHYMS.js:10247:59)
+    at async getStorybookData (file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/@storybook/cli/dist/_node-chunks/chunk-UI4WZ34X.js:175:7)
+    at async doAutomigrate (file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/@storybook/cli/dist/_node-chunks/run-CMSUW4EI.js:8203:7)
+    at async file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/@storybook/cli/dist/_node-chunks/run-CMSUW4EI.js:10602:90
+    at async withTelemetry (file:///home/vibes/.npm/_npx/a2344a67d40e0ded/node_modules/storybook/dist/_node-chunks/chunk-OQIYQ5CW.js:655:12)
+[01:41:16.803] [ERROR] SB_CORE-SERVER_0007 (MainFileEvaluationError): Storybook couldn't evaluate your .storybook/main.ts file.
+
+Original error:
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@chromatic-com/storybook' imported from /.storybook/main.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:991:11)
+    at nextResolve (node:internal/modules/esm/hooks:785:28)
+    at AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:30)
+    at MessagePort.handleMessage (node:internal/modules/esm/worker:251:24)
+    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:843:20)
+    at MessagePort.<anonymous> (node:internal/per_context/messageport:23:28)
