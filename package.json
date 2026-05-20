@@ -7,7 +7,7 @@
     "apps/dashboard"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/build_dashboard.mjs",
+    "build": "node scripts/build_dashboard.mjs",
     "lint": "eslint \"src/**/*.ts\" \"apps/**/*.tsx\"",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
