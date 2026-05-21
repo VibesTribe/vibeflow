@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd apps/dashboard && npm install && npx vite build",
-  "outputDirectory": "dist",
-  "framework": null,
-  "installCommand": "npm install"
-}
