@@ -1,3 +1,5 @@
+node_modules/
 apps/dashboard/node_modules/.vite/
 graphify-out/
 .code-review-graph/
+dist/
