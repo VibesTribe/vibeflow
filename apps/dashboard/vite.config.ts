@@ -12,9 +12,7 @@ import { fileURLToPath } from "url";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const onVercel = process.env.VERCEL === "1";
 const base = onVercel ? "/" : "/vibeflow/";
-const outDir = onVercel
-  ? path.resolve(dirname, "dist")
-  : path.resolve(dirname, "../../dist");
+const outDir = path.resolve(dirname, "../../dist");
 
 export default defineConfig({
   root: dirname,
