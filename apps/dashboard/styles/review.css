@@ -44,14 +44,14 @@
 .review-panel__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.3em;
-  font-size: 0.58rem;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.95);
   margin: 0 0 6px;
 }
 
 .review-panel__title {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   letter-spacing: 0.12em;
   color: var(--color-text-primary);
 }
@@ -65,7 +65,7 @@
 .review-panel__status {
   padding: 6px 14px;
   border-radius: 999px;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   border: 1px solid rgba(148, 163, 184, 0.45);
@@ -104,9 +104,9 @@
 }
 
 .review-panel__body {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
   overflow-y: auto;
   padding-right: 8px;
 }
@@ -124,7 +124,8 @@
 .review-panel__summary {
   margin: 0;
   color: rgba(226, 232, 240, 0.85);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 .review-panel__meta {
@@ -135,7 +136,7 @@
 .review-panel__meta div {
   display: flex;
   justify-content: space-between;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(226, 232, 240, 0.85);
@@ -159,12 +160,12 @@
   padding: 0;
   display: grid;
   gap: var(--space-2);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   letter-spacing: 0.08em;
 }
 
 .review-panel__link {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(94, 234, 212, 0.9);
@@ -200,7 +201,7 @@
   color: rgba(248, 250, 252, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -226,7 +227,7 @@
 }
 
 .review-panel__label {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(226, 232, 240, 0.85);
@@ -240,19 +241,19 @@
   color: var(--color-text-primary);
   padding: var(--space-3);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   resize: vertical;
   min-height: 120px;
 }
 
 .review-panel__hint {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: rgba(248, 250, 252, 0.75);
   margin: 0;
 }
 
 .review-panel__error {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   color: #fecaca;
   margin: 0;
 }
@@ -271,7 +272,7 @@
   color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -343,7 +344,7 @@
 .review-queue__pill {
   border-radius: 999px;
   padding: var(--space-1) 12px;
-  font-size: 0.6rem;
+  font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -369,21 +370,21 @@
 }
 
 .review-queue__timestamp {
-  font-size: 0.6rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.95);
 }
 
 .review-queue__title {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-primary);
 }
 
 .review-queue__summary {
-  font-size: 0.7rem;
-  line-height: 1.4;
+  font-size: 0.82rem;
+  line-height: 1.5;
   color: rgba(226, 232, 240, 0.85);
   margin: 0;
 }
@@ -392,7 +393,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  font-size: 0.58rem;
+  font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.95);
@@ -400,7 +401,7 @@
 
 .review-queue__notes {
   margin: 0;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-style: italic;
   color: rgba(248, 250, 252, 0.7);
 }
