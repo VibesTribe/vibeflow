@@ -53,22 +53,38 @@ export default function DesignHub() {
     if (!sketchPrompt.trim()) return;
     setSketchGenerating(true);
     setSketchHtml(null);
+    setError(null);
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 90000);
       const res = await fetch(`${API_BASE}/api/design-preview/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           task_id: `sketch-${Date.now()}`,
-          prompt: sketchPrompt,
+          title: sketchPrompt.slice(0, 100),
+          description: sketchPrompt,
+          design_hints: "dark theme, modern dashboard",
         }),
+        signal: controller.signal,
       });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
+      clearTimeout(timeout);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Server returned ${res.status}`);
+      }
       const data = await res.json();
       if (data.html_content) {
         setSketchHtml(data.html_content);
+      } else {
+        throw new Error("No HTML content in response");
       }
     } catch (e: any) {
-      setError(e.message || "Sketch generation failed");
+      if (e.name === "AbortError") {
+        setError("Sketch generation timed out after 90 seconds. The Gemini API may be rate limited.");
+      } else {
+        setError(e.message || "Sketch generation failed");
+      }
     } finally {
       setSketchGenerating(false);
     }
@@ -79,7 +95,7 @@ export default function DesignHub() {
       await fetch(`${API_BASE}/api/design-preview/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ preview_id: id, reviewer: "dashboard" }),
       });
       loadPreviews();
       setSelectedPreview(null);
@@ -93,7 +109,7 @@ export default function DesignHub() {
       await fetch(`${API_BASE}/api/design-preview/reject`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ preview_id: id, reviewer: "dashboard" }),
       });
       loadPreviews();
       setSelectedPreview(null);
@@ -223,6 +239,11 @@ export default function DesignHub() {
 
   const renderSketch = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {error && (
+        <div style={{ padding: "10px 14px", background: "#3d1f1f", borderRadius: 6, color: "#f85149", fontSize: 13 }}>
+          {error}
+        </div>
+      )}
       <div style={cardStyle}>
         <label style={{ color: "#c9d1d9", fontSize: 13, display: "block", marginBottom: 8 }}>
           Describe the UI you want to build
