@@ -136,6 +136,16 @@ const ReviewPanel: React.FC<ReviewPanelProps> = ({ review, task, dispatch, onClo
                 Compare preview
               </a>
             )}
+            {review.review_url && (
+              <a className="review-panel__link" href={review.review_url} target="_blank" rel="noreferrer">
+                View in Knowledge Hub
+              </a>
+            )}
+            {review.type === "research" && review.id && !review.review_url && (
+              <a className="review-panel__link" href={`https://graphs.vibestribe.rocks/#research-${review.id}`} target="_blank" rel="noreferrer">
+                View in Knowledge Hub
+              </a>
+            )}
             {previewUrl && (
               <section className="review-panel__preview">
                 <div className="review-panel__preview-header">
