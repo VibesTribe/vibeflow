@@ -4,7 +4,7 @@ import { MissionSlice, SliceAssignment, StatusSummary } from "../utils/mission";
 import { MissionEvent } from "../../../src/utils/events";
 import { TaskDetail } from "./modals/MissionModals";
 import VibesChatPanel from "./vibes/VibesChatPanel";
-import ResearchReportPanel from "./ResearchReportPanel";
+
 
 interface MissionHeaderProps {
   statusSummary: StatusSummary;
@@ -154,8 +154,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
-  const [activeReportId, setActiveReportId] = useState<string | null>(null);
-  const [activeReviewItemId, setActiveReviewItemId] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -495,14 +493,17 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
                                     <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.6rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
-                                  {item.type === "research" || item.category === "research" ? (
-                                      <button
-                                        onClick={(e) => { e.stopPropagation(); setActiveReviewItemId(item.id); setActiveReportId(item.source_id || null); }}
-                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0 }}
-                                      >
-                                        Review
-                                      </button>
-                                  ) : item.review_url ? (
+                                  {item.type === "research" || item.category === "research" ? (() => {
+                                      const kbUrl = (item.source_id) ? `https://graphs.vibestribe.rocks/#research-${item.source_id}` : "";
+                                      return kbUrl ? (
+                                        <a href={kbUrl} target="_blank" rel="noopener noreferrer"
+                                           style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
+                                           onClick={(e) => e.stopPropagation()}
+                                        >
+                                          Review
+                                        </a>
+                                      ) : null;
+                                    })() : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
                                        style={{ fontSize: "0.7rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
                                       Review
@@ -631,37 +632,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         </div>
       </div>
       <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => setChatTrigger(false)} />
-      {activeReportId && (
-        <div
-          style={{
-            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-            background: "rgba(0,0,0,0.7)", zIndex: 9999,
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}
-          onClick={() => { setActiveReportId(null); setActiveReviewItemId(null); }}
-        >
-          <div
-            style={{
-              background: "#1e293b", borderRadius: "12px", width: "95vw", maxWidth: "960px",
-              maxHeight: "90vh", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #334155",
-              display: "flex", flexDirection: "column",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ResearchReportPanel
-              reportId={activeReportId}
-              reviewItemId={activeReviewItemId || ""}
-              onClose={() => { setActiveReportId(null); setActiveReviewItemId(null); }}
-              onStatusChange={(itemId, newStatus) => {
-                // Remove from local list immediately so it disappears
-                setReviewQueueItems((prev) => prev.filter((i) => i.id !== itemId));
-                setActiveReportId(null);
-                setActiveReviewItemId(null);
-              }}
-            />
-          </div>
-        </div>
-      )}
     </header>
   );
 };
