@@ -169,7 +169,7 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
   if (report.is_raw_suggestion) {
     const cStyle = report.complexity ? COMPLEXITY_COLORS[report.complexity] : null;
     return (
-      <div style={{ padding: "16px", maxHeight: "80vh", overflowY: "auto" }}>
+      <div style={{ padding: "20px 24px", flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <div>
             <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2e8f0" }}>{report.title}</h3>
@@ -259,9 +259,9 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
   const approvedCount = items.filter((i) => i.human_decision === "approve").length;
 
   return (
-    <div style={{ padding: "16px", maxHeight: "80vh", overflowY: "auto" }}>
+    <div style={{ padding: "20px 24px", flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <h3 style={{ margin: 0, fontSize: "1rem", color: "#e2e8f0" }}>{report.title}</h3>
           <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>

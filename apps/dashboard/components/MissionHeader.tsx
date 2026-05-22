@@ -642,8 +642,9 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
         >
           <div
             style={{
-              background: "#1e293b", borderRadius: "12px", width: "90%", maxWidth: "600px",
-              maxHeight: "85vh", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #334155",
+              background: "#1e293b", borderRadius: "12px", width: "95vw", maxWidth: "960px",
+              maxHeight: "90vh", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #334155",
+              display: "flex", flexDirection: "column",
             }}
             onClick={(e) => e.stopPropagation()}
           >
