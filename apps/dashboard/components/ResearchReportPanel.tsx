@@ -133,6 +133,16 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
           const updatedItems = updatedReport?.items || [];
           const allDecidedNow = updatedItems.length > 0 && updatedItems.every((i: ReportItem) => i.human_decision);
           if (allDecidedNow) {
+            // Persist the review_items status change to the database so it stays removed
+            try {
+              await fetch(`${govAPI}/api/review-items/${reviewItemId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "resolved" }),
+              });
+            } catch (e) {
+              // Best effort — don't block the UI if this fails
+            }
             // Notify parent so it removes from queue, then close after a short delay
             if (onStatusChange) onStatusChange(reviewItemId, "resolved");
             setTimeout(() => onClose(), 1500);
