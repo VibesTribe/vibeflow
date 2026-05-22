@@ -174,6 +174,28 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     human_notes?: string;
   };
   const [reviewQueueItems, setReviewQueueItems] = useState<ReviewQueueItem[]>([]);
+  const [dismissing, setDismissing] = useState<Set<string>>(new Set());
+
+  const govAPIBase = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+    ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+
+  const dismissReviewItem = useCallback(async (itemId: string) => {
+    setDismissing(prev => new Set(prev).add(itemId));
+    try {
+      const res = await fetch(`${govAPIBase}/api/review-items/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "resolved" }),
+      });
+      if (res.ok) {
+        setReviewQueueItems(prev => prev.filter(i => i.id !== itemId));
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setDismissing(prev => { const next = new Set(prev); next.delete(itemId); return next; });
+    }
+  }, [govAPIBase]);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -509,6 +531,15 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                       Review
                                     </a>
                                   ) : null}
+                                  <button
+                                    type="button"
+                                    disabled={dismissing.has(item.id)}
+                                    onClick={(e) => { e.stopPropagation(); dismissReviewItem(item.id); }}
+                                    title="Mark as reviewed and remove from queue"
+                                    style={{ fontSize: "0.75rem", color: "#94a3b8", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "2px 8px", cursor: dismissing.has(item.id) ? "wait" : "pointer", whiteSpace: "nowrap", opacity: dismissing.has(item.id) ? 0.5 : 1 }}
+                                  >
+                                    {dismissing.has(item.id) ? "..." : "Done"}
+                                  </button>
                                 </div>
                               </li>
                             );
