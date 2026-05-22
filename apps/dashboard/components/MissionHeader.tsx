@@ -480,7 +480,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                       const meta = TYPE_META[type] ?? { label: type, color: "#94a3b8", icon: "📋" };
                       return (
                         <React.Fragment key={type}>
-                          <li style={{ padding: "4px 8px", fontSize: "1.3rem", textTransform: "uppercase", letterSpacing: "0.05em", color: meta.color, fontWeight: 600, marginTop: type === Object.keys(grouped)[0] ? 0 : "4px" }}>
+                          <li style={{ padding: "4px 8px", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em", color: meta.color, fontWeight: 600, marginTop: type === Object.keys(grouped)[0] ? 0 : "4px" }}>
                             {meta.icon} {meta.label} ({items.length})
                           </li>
                           {items.map((item) => {
@@ -488,16 +488,16 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                             return (
                               <li key={item.id} className="mission-header__pill-detail-item is-review" style={{ padding: "6px 8px" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
-                                  <span style={{ fontSize: "1.4rem", color: meta.color, flex: 1 }}>
+                                  <span style={{ fontSize: "0.9rem", color: meta.color, flex: 1 }}>
                                     <span style={{ fontWeight: 600 }}>{item.title}</span>
                                     {item.summary && <span style={{ display: "block", color: "#c8d6e5", marginTop: "2px" }}>{item.summary}</span>}
-                                    <span style={{ display: "inline-block", marginTop: "2px", fontSize: "1.2rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
+                                    <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.75rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
                                   {item.type === "research" || item.category === "research" ? (() => {
                                       const kbUrl = (item.source_id) ? `https://graphs.vibestribe.rocks/#research-${item.source_id}` : "";
                                       return kbUrl ? (
                                         <a href={kbUrl} target="_blank" rel="noopener noreferrer"
-                                           style={{ fontSize: "1.4rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
+                                           style={{ fontSize: "0.9rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
                                            onClick={(e) => e.stopPropagation()}
                                         >
                                           Review
@@ -505,7 +505,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                       ) : null;
                                     })() : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
-                                       style={{ fontSize: "1.4rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
+                                       style={{ fontSize: "0.9rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}>
                                       Review
                                     </a>
                                   ) : null}
