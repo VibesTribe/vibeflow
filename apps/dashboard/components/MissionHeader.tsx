@@ -38,7 +38,7 @@ interface HeaderPillConfig {
 }
 
 const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
-const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
+const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing", "paused"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 // REVIEW_STATUS is used for tasks needing human action.
 // Triggered by: (1) research reports after council feedback, (2) visual UI/UX after testing agent, (3) API credit exhaustion.
@@ -63,6 +63,8 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
   failed: { label: "Failed", tone: "locked", icon: "\u2717", accent: "#f87171" },
   human_review: { label: "Human Review", tone: "flagged", icon: "\u26A0", accent: "#f59e0b" },
+  paused: { label: "Paused", tone: "locked", icon: "\u23F8", accent: "#fbbf24" },
+  cancelled: { label: "Cancelled", tone: "locked", icon: "\u2717", accent: "#6b7280" },
 };
 
 const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
@@ -154,6 +156,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
+  const [lifecycleLoading, setLifecycleLoading] = useState(false);
+  const [lifecycleMsg, setLifecycleMsg] = useState<string | null>(null);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
@@ -196,6 +200,78 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       setDismissing(prev => { const next = new Set(prev); next.delete(itemId); return next; });
     }
   }, [govAPIBase]);
+
+  // --- Task lifecycle controls (pause-all / clear-all) ---
+  const handlePauseAll = useCallback(async () => {
+    setLifecycleLoading(true);
+    setLifecycleMsg(null);
+    try {
+      const token = localStorage.getItem("governor_admin_token") || "";
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = "Bearer " + token;
+      const res = await fetch(`${govAPIBase}/api/tasks/pause-all`, { method: "POST", headers });
+      const data = await res.json();
+      if (res.ok) {
+        setLifecycleMsg(`Paused ${data.paused || 0} tasks`);
+      } else {
+        setLifecycleMsg(data.error || "Failed");
+      }
+    } catch {
+      setLifecycleMsg("Network error");
+    } finally {
+      setLifecycleLoading(false);
+      setTimeout(() => setLifecycleMsg(null), 4000);
+    }
+  }, [govAPIBase]);
+
+  const handleClearAll = useCallback(async () => {
+    const count = activeDetail?.tasks.length ?? 0;
+    if (count === 0) { setLifecycleMsg("No tasks to clear"); setTimeout(() => setLifecycleMsg(null), 2000); return; }
+    if (!window.confirm(`Cancel ALL ${count} active/pending tasks? This cannot be undone.`)) return;
+    setLifecycleLoading(true);
+    setLifecycleMsg(null);
+    try {
+      const token = localStorage.getItem("governor_admin_token") || "";
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = "Bearer " + token;
+      const res = await fetch(`${govAPIBase}/api/tasks/clear-all`, {
+        method: "POST", headers,
+        body: JSON.stringify({ confirm: true }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLifecycleMsg(`Cleared ${data.cleared || 0} tasks`);
+      } else {
+        setLifecycleMsg(data.error || "Failed");
+      }
+    } catch {
+      setLifecycleMsg("Network error");
+    } finally {
+      setLifecycleLoading(false);
+      setTimeout(() => setLifecycleMsg(null), 4000);
+    }
+  }, [govAPIBase, activeDetail]);
+
+  // Individual task lifecycle handlers
+  const govFetch = useCallback(async (endpoint: string, body?: Record<string, unknown>) => {
+    const token = localStorage.getItem("governor_admin_token") || "";
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    return fetch(`${govAPIBase}${endpoint}`, { method: "POST", headers, body: body ? JSON.stringify(body) : undefined });
+  }, [govAPIBase]);
+
+  const handleIndividualPause = useCallback(async (taskId: string) => {
+    try { await govFetch("/api/task/pause", { task_id: taskId }); } catch {}
+  }, [govFetch]);
+
+  const handleIndividualResume = useCallback(async (taskId: string) => {
+    try { await govFetch("/api/task/resume", { task_id: taskId }); } catch {}
+  }, [govFetch]);
+
+  const handleIndividualKill = useCallback(async (taskId: string) => {
+    if (!window.confirm("Kill this task? This cannot be undone.")) return;
+    try { await govFetch("/api/task/kill", { task_id: taskId, reason: "Killed by operator" }); } catch {}
+  }, [govFetch]);
 
   const progress = useMemo(() => {
     if (statusSummary.total === 0) {
@@ -473,6 +549,50 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {"\u00D7"}
                 </button>
               </div>
+              {/* Task Lifecycle Controls: Pause All / Clear All for Active & Pending pills */}
+              {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && (
+                <div style={{ display: "flex", gap: "6px", padding: "8px 12px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                  <button
+                    type="button"
+                    disabled={lifecycleLoading}
+                    onClick={handlePauseAll}
+                    style={{
+                      fontSize: "0.75rem",
+                      padding: "3px 10px",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(251,191,36,0.4)",
+                      background: "rgba(251,191,36,0.12)",
+                      color: "#fbbf24",
+                      cursor: lifecycleLoading ? "wait" : "pointer",
+                      opacity: lifecycleLoading ? 0.6 : 1,
+                    }}
+                  >
+                    {lifecycleLoading ? "..." : "\u23F8 Pause All"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={lifecycleLoading}
+                    onClick={handleClearAll}
+                    style={{
+                      fontSize: "0.75rem",
+                      padding: "3px 10px",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(248,113,113,0.4)",
+                      background: "rgba(248,113,113,0.12)",
+                      color: "#f87171",
+                      cursor: lifecycleLoading ? "wait" : "pointer",
+                      opacity: lifecycleLoading ? 0.6 : 1,
+                    }}
+                  >
+                    {lifecycleLoading ? "..." : "\u2717 Clear All"}
+                  </button>
+                  {lifecycleMsg && (
+                    <span style={{ fontSize: "0.75rem", color: "#94a3b8", alignSelf: "center", marginLeft: "4px" }}>
+                      {lifecycleMsg}
+                    </span>
+                  )}
+                </div>
+              )}
               {/* Unified Review Items */}
               {activeDetail.pill.key === "review" && reviewQueueItems.length > 0 && (
                 <ul className="mission-header__pill-detail-list slice-task-list" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "8px", marginBottom: "4px" }}>
@@ -623,6 +743,26 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                           </div>
                         </div>
                       </button>
+                      {/* Per-task lifecycle controls */}
+                      {task.id && task.status !== "merged" && task.status !== "complete" && task.status !== "cancelled" && (
+                        <div style={{ display: "flex", gap: "4px", padding: "2px 8px 4px 32px" }}>
+                          {task.status === "paused" ? (
+                            <button type="button" onClick={(e) => { e.stopPropagation(); handleIndividualResume(task.id!); }}
+                              style={{ fontSize: "0.7rem", padding: "1px 8px", borderRadius: "3px", border: "1px solid rgba(52,211,153,0.4)", background: "rgba(52,211,153,0.12)", color: "#34d399", cursor: "pointer" }}>
+                              Resume
+                            </button>
+                          ) : (
+                            <button type="button" onClick={(e) => { e.stopPropagation(); handleIndividualPause(task.id!); }}
+                              style={{ fontSize: "0.7rem", padding: "1px 8px", borderRadius: "3px", border: "1px solid rgba(251,191,36,0.4)", background: "rgba(251,191,36,0.12)", color: "#fbbf24", cursor: "pointer" }}>
+                              Pause
+                            </button>
+                          )}
+                          <button type="button" onClick={(e) => { e.stopPropagation(); handleIndividualKill(task.id!); }}
+                            style={{ fontSize: "0.7rem", padding: "1px 8px", borderRadius: "3px", border: "1px solid rgba(248,113,113,0.4)", background: "rgba(248,113,113,0.12)", color: "#f87171", cursor: "pointer" }}>
+                            Kill
+                          </button>
+                        </div>
+                      )}
                       {isOpen && (
                         <div className="slice-task-list__accordion mission-header__task-detail">
                           {task.id && (
