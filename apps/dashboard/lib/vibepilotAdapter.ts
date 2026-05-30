@@ -141,6 +141,7 @@ function mapTaskStatus(status: string): TaskSnapshot["status"] {
     merge_pending: "merge_pending",
     failed: "failed",
     escalated: "failed",
+    paused: "paused",
   };
   return statusMap[status] || "pending";
 }

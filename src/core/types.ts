@@ -21,7 +21,8 @@ export type TaskStatus =
   | "merged"
   | "failed"
   | "human_review"
-  | "design_review";
+  | "design_review"
+  | "paused";
 
 export type TaskLocation =
   | { kind: "platform"; label: string; link?: string }
