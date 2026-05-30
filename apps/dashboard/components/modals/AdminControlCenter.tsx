@@ -65,20 +65,9 @@ const AdminControlCenter: React.FC = () => {
   const [sysInfo, setSysInfo] = useState<SysInfo[]>([]);
   const [sysLoading, setSysLoading] = useState(true);
 
-  const [tokenInput, setTokenInput] = useState(() => localStorage.getItem("governor_admin_token") || "");
-  const [tokenSaved, setTokenSaved] = useState(false);
-
   const getAdminToken = useCallback(() => {
     return localStorage.getItem("governor_admin_token") || "";
   }, []);
-
-  const saveAdminToken = useCallback(() => {
-    if (tokenInput.trim()) {
-      localStorage.setItem("governor_admin_token", tokenInput.trim());
-      setTokenSaved(true);
-      setTimeout(() => setTokenSaved(false), 2000);
-    }
-  }, [tokenInput]);
 
   // --- Load system info on mount and when System tab is active ---
   const loadSystemInfo = useCallback(async () => {
@@ -174,22 +163,6 @@ const AdminControlCenter: React.FC = () => {
 
   const renderSystem = () => (
     <div className="admin-panel__card admin-panel__card--stacked">
-      {/* Admin Token Setup */}
-      <div style={{ padding: "12px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d", marginBottom: "8px" }}>
-        <div style={{ color: "#ffffff", fontSize: 12, fontWeight: 600, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Admin Token</div>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <input
-            type="password"
-            value={tokenInput}
-            onChange={e => setTokenInput(e.target.value)}
-            placeholder="Required for pause/kill controls"
-            style={{ ...inputStyle, marginTop: 0, flex: 1, fontSize: 12 }}
-          />
-          <button onClick={saveAdminToken} style={{ ...primaryBtnStyle, fontSize: 12, padding: "6px 14px", whiteSpace: "nowrap" }}>
-            {tokenSaved ? "Saved!" : "Save"}
-          </button>
-        </div>
-      </div>
       {sysLoading ? (
         <div style={{ padding: "20px", textAlign: "center", color: "#9da5af" }}>Loading system data...</div>
       ) : sysInfo.length > 0 ? (
