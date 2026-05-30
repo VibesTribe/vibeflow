@@ -20,6 +20,8 @@ interface VibesChatPanelProps {
 const API_BASE = "https://api.vibestribe.rocks";
 const SESSION_ID = "dashboard-chat";
 
+const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
+
 const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose }) => {
   const [chatState, setChatState] = useState<ChatState>("closed");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -104,7 +106,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     try {
       const res = await fetch(`${API_BASE}/api/tts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
         body: JSON.stringify({ text, voice: "en-US-AvaNeural", engine: "edge" }),
       });
       if (!res.ok) return;
@@ -155,7 +157,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         `${API_BASE}/api/sessions/${SESSION_ID}/chat/stream`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
           body: JSON.stringify({ message: text.trim() }),
           signal: controller.signal,
         }
