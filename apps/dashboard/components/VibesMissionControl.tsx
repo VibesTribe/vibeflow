@@ -59,7 +59,6 @@ const VibesMissionControl: React.FC = () => {
   }, [snapshot.updatedAt]);
 
   const handleOpenDocs = () => setModal({ type: "docs" });
-  const handleOpenGraph = () => setModal({ type: "graph" });
   const handleOpenLogs = () => setModal({ type: "logs" });
   const handleOpenModels = () => setModal({ type: "models" });
   const handleOpenRoi = () => setModal({ type: "roi" });
@@ -154,9 +153,6 @@ const VibesMissionControl: React.FC = () => {
           </button>
           <button type="button" onClick={handleOpenDocs}>
             Docs
-          </button>
-          <button type="button" onClick={handleOpenGraph}>
-            Graph
           </button>
           <button type="button" onClick={handleOpenAdmin}>
             Admin
