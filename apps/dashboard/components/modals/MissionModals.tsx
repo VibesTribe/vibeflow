@@ -25,6 +25,7 @@ import { ROITotals, SliceROI, SubscriptionROI, ModelROI, TaskRunROI } from "../.
 export type MissionModalState =
   | { type: null }
   | { type: "docs" }
+  | { type: "graph" }
   | { type: "logs" }
   | { type: "models" }
   | { type: "roi" }
@@ -124,6 +125,18 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
           <iframe
             src="https://graphs.vibestribe.rocks/"
             title="Knowledge Hub"
+            style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
+            loading="lazy"
+          />
+        </div>
+      );
+      break;
+    case "graph":
+      content = (
+        <div className="mission-modal__section" style={{ padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column" }}>
+          <iframe
+            src="https://graphs.vibestribe.rocks/graph/?token=vibepilot"
+            title="Code Graph"
             style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
             loading="lazy"
           />
