@@ -20,7 +20,13 @@ interface VibesChatPanelProps {
 const API_BASE = "https://api.vibestribe.rocks";
 const SESSION_ID = "dashboard-chat";
 
-const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
+const FALLBACK_API_KEY = "e0eda4b7c8490bedea7549ffc209591f0c27aad26913b005ff51bbc54025c3af";
+const getApiKey = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("hermes_api_key") || FALLBACK_API_KEY;
+  }
+  return FALLBACK_API_KEY;
+};
 
 const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose }) => {
   const [chatState, setChatState] = useState<ChatState>("closed");
