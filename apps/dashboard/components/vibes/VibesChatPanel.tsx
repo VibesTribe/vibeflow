@@ -25,6 +25,7 @@ interface VibesChatPanelProps {
   externalOpen?: boolean;
   onExternalClose?: () => void;
   initialMessage?: string;  // Auto-send this message when opened
+  onMessagesChange?: (messages: {type: string, content: string}[]) => void;
 }
 
 const API_BASE = "https://api.vibestribe.rocks";
@@ -33,7 +34,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
 
-const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose, initialMessage }) => {
+const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose, initialMessage, onMessagesChange }) => {
   const [chatState, setChatState] = useState<ChatState>("closed");
   const [panelSize, setPanelSize] = useState<PanelSize>("normal");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -90,6 +91,13 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       if (container) container.scrollTop = container.scrollHeight;
     }
   }, [messages, chatState]);
+
+  // Notify parent of message changes (for Ask Q&A context capture)
+  useEffect(() => {
+    if (onMessagesChange) {
+      onMessagesChange(messages.map(m => ({ type: m.type, content: m.content })));
+    }
+  }, [messages, onMessagesChange]);
 
   // Prevent page scroll when opening chat
   useEffect(() => {

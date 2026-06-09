@@ -155,6 +155,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
   const [askVibesMessage, setAskVibesMessage] = useState<string | undefined>(undefined);
+  const [askSuggestionId, setAskSuggestionId] = useState<string | null>(null);
+  const [askMessages, setAskMessages] = useState<{type: string, content: string}[]>([]);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
@@ -163,9 +165,15 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   // Listen for "ask-vibes" custom events from ResearchReportPanel or other components
   useEffect(() => {
     const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail as string;
+      const detail = (e as CustomEvent).detail;
       if (detail) {
-        setAskVibesMessage(detail);
+        // Support both string detail (legacy) and object detail {context, itemId}
+        if (typeof detail === "string") {
+          setAskVibesMessage(detail);
+        } else if (detail.context) {
+          setAskVibesMessage(detail.context);
+          if (detail.itemId) setAskSuggestionId(detail.itemId);
+        }
         setChatTrigger(true);
       }
     };
@@ -442,6 +450,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 
     return () => { clearInterval(interval); clearInterval(reviewInterval); };
   }, []);
+
+  // Save Ask Q&A conversation notes to the report-item when chat closes
+  const saveAskNotes = useCallback(async (messages: {type: string, content: string}[], suggestionId: string | null) => {
+    if (!suggestionId || messages.length === 0) return;
+    const qaText = messages
+      .map(m => `${m.type === "human" ? "Human" : "Vibes"}: ${m.content}`)
+      .join("\n\n");
+    const notes = `Ask Q&A:\n${qaText}`;
+    try {
+      await fetch(`${govAPIBase}/api/report-items/${suggestionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes }),
+      });
+    } catch (e) {
+      console.warn("[MissionHeader] Failed to save Ask Q&A notes:", e);
+    }
+  }, [govAPIBase]);
 
   return (
     <header className="mission-header">
@@ -775,7 +801,19 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
-      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => { setChatTrigger(false); setAskVibesMessage(undefined); }} initialMessage={askVibesMessage} />
+      <VibesChatPanel
+        externalOpen={chatTrigger}
+        onExternalClose={() => {
+          setChatTrigger(false);
+          // Save Ask Q&A notes when closing
+          saveAskNotes(askMessages, askSuggestionId);
+          setAskVibesMessage(undefined);
+          setAskSuggestionId(null);
+          setAskMessages([]);
+        }}
+        initialMessage={askVibesMessage}
+        onMessagesChange={setAskMessages}
+      />
     </header>
   );
 };

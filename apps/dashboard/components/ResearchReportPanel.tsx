@@ -429,10 +429,11 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
                     if (item.council_concerns && item.council_concerns.length > 0) parts.push(`**Council concerns**: ${item.council_concerns.join(", ")}`);
                     parts.push(`\nI'd like to understand more about this. Can you help me evaluate the pros and cons?`);
                     const contextStr = parts.join("\n");
+                    const askDetail = { context: contextStr, itemId: item.id };
                     if (onAskVibes) {
                       onAskVibes(contextStr);
                     } else {
-                      window.dispatchEvent(new CustomEvent('ask-vibes', { detail: contextStr }));
+                      window.dispatchEvent(new CustomEvent('ask-vibes', { detail: askDetail }));
                     }
                   }}
                   disabled={isUpdating}
