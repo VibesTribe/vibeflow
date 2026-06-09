@@ -11,6 +11,7 @@ interface ChatMessage {
 }
 
 type ChatState = "closed" | "open" | "minimized";
+type PanelSize = "normal" | "expanded";
 
 interface VibesChatPanelProps {
   externalOpen?: boolean;
@@ -20,20 +21,16 @@ interface VibesChatPanelProps {
 const API_BASE = "https://api.vibestribe.rocks";
 const SESSION_ID = "dashboard-chat";
 
-const FALLBACK_API_KEY = "e0eda4b7c8490bedea7549ffc209591f0c27aad26913b005ff51bbc54025c3af";
-const getApiKey = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("hermes_api_key") || FALLBACK_API_KEY;
-  }
-  return FALLBACK_API_KEY;
-};
+const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
 
 const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose }) => {
   const [chatState, setChatState] = useState<ChatState>("closed");
+  const [panelSize, setPanelSize] = useState<PanelSize>("normal");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -41,6 +38,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const abortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<any>(null);
   const inputModeRef = useRef<"text" | "voice">("text");
+  const currentRunIdRef = useRef<string | null>(null);
 
   // External open trigger (from header button)
   const prevExternalOpen = useRef(false);
@@ -90,15 +88,27 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
   }, [chatState === "closed"]);
 
+  // Send queued message when loading finishes
+  useEffect(() => {
+    if (!isLoading && pendingMessage) {
+      const msg = pendingMessage;
+      setPendingMessage(null);
+      sendMessage(msg);
+    }
+  }, [isLoading, pendingMessage]);
+
   const openChat = useCallback(() => {
     setChatState("open");
-    onExternalClose?.(); // reset parent trigger so it can fire again
+    onExternalClose?.();
   }, [onExternalClose]);
   const minimizeChat = useCallback(() => setChatState("minimized"), []);
   const closeChat = useCallback(() => {
     setChatState("closed");
     onExternalClose?.();
   }, [onExternalClose]);
+  const toggleSize = useCallback(() => {
+    setPanelSize((prev) => (prev === "normal" ? "expanded" : "normal"));
+  }, []);
 
   const playAudio = useCallback((url: string) => {
     if (currentAudioRef.current) currentAudioRef.current.pause();
@@ -131,9 +141,33 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
   }, [playAudio]);
 
+  // Stop the current agent response
+  const stopAgent = useCallback(() => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    // Mark streaming messages as stopped
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.isStreaming ? { ...m, isStreaming: false, content: m.content + (m.content ? "\n\n[Stopped]" : "[Stopped]") } : m
+      )
+    );
+    setIsLoading(false);
+    currentRunIdRef.current = null;
+  }, []);
+
   // Send message via SSE streaming
   const sendMessage = useCallback(async (text: string, mode: "text" | "voice" = "text") => {
-    if (!text.trim() || isLoading) return;
+    if (!text.trim()) return;
+
+    // If already loading, queue the message for after current response
+    if (isLoading) {
+      stopAgent();
+      setPendingMessage(text.trim());
+      setInputValue("");
+      return;
+    }
 
     inputModeRef.current = mode;
 
@@ -186,6 +220,12 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         buffer = lines.pop() || "";
 
         for (const line of lines) {
+          // Handle SSE named events: "event: name\ndata: json"
+          // And plain data lines: "data: json"
+          if (line.startsWith("event: ")) {
+            // Named event -- the next data line carries the payload
+            continue;
+          }
           if (!line.startsWith("data: ")) continue;
           const jsonStr = line.slice(6).trim();
           if (!jsonStr || jsonStr === "[DONE]") continue;
@@ -193,6 +233,12 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           try {
             const event = JSON.parse(jsonStr);
 
+            // Capture run_id from any event
+            if (event.run_id && !currentRunIdRef.current) {
+              currentRunIdRef.current = event.run_id;
+            }
+
+            // Handle named SSE events from session chat stream
             if (event.delta) {
               fullText += event.delta;
               setMessages((prev) =>
@@ -202,7 +248,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
               );
             }
 
-            if (event.content !== undefined && event.state === "final") {
+            if (event.content !== undefined && event.completed) {
               fullText = event.content || fullText;
               setMessages((prev) =>
                 prev.map((m) =>
@@ -240,8 +286,9 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     } finally {
       setIsLoading(false);
       abortRef.current = null;
+      currentRunIdRef.current = null;
     }
-  }, [isLoading, generateTTS]);
+  }, [isLoading, generateTTS, stopAgent]);
 
   // Voice input
   const toggleRecording = useCallback(() => {
@@ -283,12 +330,21 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      sendMessage(inputValue);
+      if (isLoading) {
+        // Queue message while agent is working
+        if (inputValue.trim()) {
+          stopAgent();
+          setPendingMessage(inputValue.trim());
+          setInputValue("");
+        }
+      } else {
+        sendMessage(inputValue);
+      }
     }
   };
 
-  const unreadCount = chatState === "minimized" 
-    ? messages.filter(m => m.type === "vibes" && m.isStreaming).length 
+  const unreadCount = chatState === "minimized"
+    ? messages.filter(m => m.type === "vibes" && m.isStreaming).length
     : 0;
 
   // CLOSED: show nothing (parent shows the trigger button)
@@ -315,15 +371,25 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     );
   }
 
-  // OPEN: full chat panel at bottom-right, no overlay blocking the dashboard
+  const sizeClass = panelSize === "expanded" ? " vibes-chat-panel--expanded" : "";
+
+  // OPEN: full chat panel at bottom-right
   return createPortal(
-    <div className="vibes-chat-panel" ref={panelRef}>
+    <div className={`vibes-chat-panel${sizeClass}`} ref={panelRef}>
       <header className="vibes-chat-panel__header">
         <div className="vibes-chat-panel__title">
           <span className="vibes-chat-panel__icon">🤖</span>
           <span>Vibes</span>
         </div>
         <div className="vibes-chat-panel__header-actions">
+          <button
+            className="vibes-chat-panel__expand"
+            onClick={toggleSize}
+            aria-label={panelSize === "normal" ? "Expand chat" : "Shrink chat"}
+            title={panelSize === "normal" ? "Expand" : "Shrink"}
+          >
+            {panelSize === "normal" ? "⤢" : "⤡"}
+          </button>
           <button
             className="vibes-chat-panel__minimize"
             onClick={minimizeChat}
@@ -396,11 +462,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         <textarea
           ref={inputRef}
           className="vibes-chat-panel__input"
-          placeholder="Ask Vibes anything..."
+          placeholder={isLoading ? "Type to interrupt and redirect..." : "Ask Vibes anything..."}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={isLoading}
           rows={1}
         />
         <div className="vibes-chat-panel__button-row">
@@ -413,14 +478,25 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           >
             {isRecording ? "⏹" : "🎤"}
           </button>
-          <button
-            className="vibes-chat-panel__send"
-            onClick={() => sendMessage(inputValue)}
-            disabled={!inputValue.trim() || isLoading}
-            aria-label="Send message"
-          >
-            Send
-          </button>
+          {isLoading ? (
+            <button
+              className="vibes-chat-panel__stop"
+              onClick={stopAgent}
+              aria-label="Stop agent"
+              title="Stop"
+            >
+              ■ Stop
+            </button>
+          ) : (
+            <button
+              className="vibes-chat-panel__send"
+              onClick={() => sendMessage(inputValue)}
+              disabled={!inputValue.trim()}
+              aria-label="Send message"
+            >
+              Send
+            </button>
+          )}
         </div>
       </div>
     </div>,
