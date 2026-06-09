@@ -472,7 +472,6 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           <button
             className={`vibes-chat-panel__mic-btn${isRecording ? " vibes-chat-panel__mic-btn--recording" : ""}`}
             onClick={toggleRecording}
-            disabled={isLoading}
             aria-label={isRecording ? "Stop recording" : "Start recording"}
             title={isRecording ? "Tap to stop" : "Tap to speak"}
           >
