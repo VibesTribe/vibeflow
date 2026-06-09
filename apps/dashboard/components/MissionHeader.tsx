@@ -154,10 +154,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
+  const [askVibesMessage, setAskVibesMessage] = useState<string | undefined>(undefined);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
+
+  // Listen for "ask-vibes" custom events from ResearchReportPanel or other components
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as string;
+      if (detail) {
+        setAskVibesMessage(detail);
+        setChatTrigger(true);
+      }
+    };
+    window.addEventListener('ask-vibes', handler);
+    return () => window.removeEventListener('ask-vibes', handler);
+  }, []);
 
   // Review queue: unified review_items from the governor
   type ReviewQueueItem = {
@@ -761,7 +775,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
-      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => setChatTrigger(false)} />
+      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => { setChatTrigger(false); setAskVibesMessage(undefined); }} initialMessage={askVibesMessage} />
     </header>
   );
 };

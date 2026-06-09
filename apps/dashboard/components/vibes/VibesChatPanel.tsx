@@ -24,6 +24,7 @@ type PanelSize = "normal" | "expanded";
 interface VibesChatPanelProps {
   externalOpen?: boolean;
   onExternalClose?: () => void;
+  initialMessage?: string;  // Auto-send this message when opened
 }
 
 const API_BASE = "https://api.vibestribe.rocks";
@@ -32,7 +33,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
 
-const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose }) => {
+const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExternalClose, initialMessage }) => {
   const [chatState, setChatState] = useState<ChatState>("closed");
   const [panelSize, setPanelSize] = useState<PanelSize>("normal");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -50,6 +51,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const recognitionRef = useRef<any>(null);
   const inputModeRef = useRef<"text" | "voice">("text");
   const currentRunIdRef = useRef<string | null>(null);
+  const initialMessageSentRef = useRef<string | null>(null);
 
   // External open trigger (from header button)
   const prevExternalOpen = useRef(false);
@@ -60,6 +62,19 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
     prevExternalOpen.current = !!externalOpen;
   }, [externalOpen]);
+
+  // Auto-send initialMessage when panel opens with one provided
+  useEffect(() => {
+    if (
+      chatState === "open" &&
+      initialMessage &&
+      initialMessage !== initialMessageSentRef.current &&
+      !isLoading
+    ) {
+      initialMessageSentRef.current = initialMessage;
+      sendMessage(initialMessage, "text");
+    }
+  }, [chatState, initialMessage, isLoading, sendMessage]);
 
   // Focus input when opened
   useEffect(() => {
