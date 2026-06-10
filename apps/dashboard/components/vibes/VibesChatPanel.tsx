@@ -106,12 +106,56 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
   }, [isLoading, pendingMessage]);
 
+  // Ensure session exists before chatting (auto-creates if deleted)
+  const sessionReadyRef = useRef(false);
+  const ensureSession = useCallback(async () => {
+    if (sessionReadyRef.current) return true;
+    try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const key = getApiKey();
+      if (key) headers["Authorization"] = `Bearer ${key}`;
+      const res = await fetch(`${API_BASE}/api/sessions/${SESSION_ID}`, { headers });
+      if (res.ok) {
+        sessionReadyRef.current = true;
+        return true;
+      }
+      if (res.status === 404) {
+        const createRes = await fetch(`${API_BASE}/api/sessions`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ session_id: SESSION_ID }),
+        });
+        if (createRes.ok) {
+          sessionReadyRef.current = true;
+          return true;
+        }
+      }
+      console.warn("Session check failed:", res.status);
+      return false;
+    } catch (err) {
+      console.warn("Session check error:", err);
+      return false;
+    }
+  }, []);
+
   const openChat = useCallback(() => {
     setChatState("open");
     onExternalClose?.();
   }, [onExternalClose]);
   const minimizeChat = useCallback(() => setChatState("minimized"), []);
   const closeChat = useCallback(() => {
+    // Abort any in-flight request
+    if (abortRef.current) abortRef.current.abort();
+    // Delete session so next open gets a fresh one (prevents context bloat)
+    const key = getApiKey();
+    if (key) {
+      fetch(`${API_BASE}/api/sessions/${SESSION_ID}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${key}` },
+      }).catch(() => {}); // silent - best effort
+    }
+    sessionReadyRef.current = false;
+    setMessages([]);
     setChatState("closed");
     onExternalClose?.();
   }, [onExternalClose]);
@@ -201,6 +245,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     const hasText = text.trim().length > 0;
     const hasAttachment = !!attachment;
     if (!hasText && !hasAttachment) return;
+
+    // Ensure session exists before sending
+    const ready = await ensureSession();
+    if (!ready) return;
 
     // If already loading, stop agent and queue
     if (isLoading) {
