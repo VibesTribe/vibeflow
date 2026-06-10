@@ -38,7 +38,7 @@ interface HeaderPillConfig {
 }
 
 const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
-const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
+const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing", "paused"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 // REVIEW_STATUS is used for tasks needing human action.
 // Triggered by: (1) research reports after council feedback, (2) visual UI/UX after testing agent, (3) API credit exhaustion.
@@ -63,6 +63,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   merged: { label: "Merged", tone: "complete", icon: "\u2713", accent: "#34d399" },
   failed: { label: "Failed", tone: "locked", icon: "\u2717", accent: "#f87171" },
   human_review: { label: "Human Review", tone: "flagged", icon: "\u26A0", accent: "#f59e0b" },
+  paused: { label: "Paused", tone: "locked", icon: "\u23F8", accent: "#d29922" },
 };
 
 const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
@@ -153,10 +154,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
+  const [askVibesMessage, setAskVibesMessage] = useState<string | undefined>(undefined);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
+
+  // Listen for "ask-vibes" custom events from ResearchReportPanel or other components
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as string;
+      if (detail) {
+        setAskVibesMessage(detail);
+        setChatTrigger(true);
+      }
+    };
+    window.addEventListener('ask-vibes', handler);
+    return () => window.removeEventListener('ask-vibes', handler);
+  }, []);
 
   // Review queue: unified review_items from the governor
   type ReviewQueueItem = {
@@ -178,6 +193,48 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
 
   const govAPIBase = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
     ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+
+  // Task control state
+  const [taskActionLoading, setTaskActionLoading] = useState<Set<string>>(new Set());
+  const [taskActionResult, setTaskActionResult] = useState<string | null>(null);
+
+  const callTaskControl = useCallback(async (endpoint: string, body: Record<string, unknown>) => {
+    const token = localStorage.getItem("governor_admin_token") || "";
+    if (!token) { setTaskActionResult("Error: No admin token. Set in Control Center > System."); return false; }
+    setTaskActionResult(null);
+    try {
+      const res = await fetch(`${govAPIBase}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setTaskActionResult(data.message || "OK");
+        return true;
+      }
+      setTaskActionResult("Error: " + (data.error || res.statusText));
+      return false;
+    } catch (e: any) {
+      setTaskActionResult("Error: " + (e.message || "Network error"));
+      return false;
+    }
+  }, [govAPIBase]);
+
+  const handleTaskAction = useCallback(async (action: string, taskId: string) => {
+    setTaskActionLoading(prev => new Set(prev).add(taskId));
+    const ok = await callTaskControl(`/api/task/${action}`, { task_id: taskId });
+    setTaskActionLoading(prev => { const n = new Set(prev); n.delete(taskId); return n; });
+    if (ok) { window.dispatchEvent(new Event("mission-data-refresh")); }
+  }, [callTaskControl]);
+
+  const handleBulkAction = useCallback(async (action: string) => {
+    setTaskActionLoading(prev => new Set(prev).add("__bulk__"));
+    const body = action === "clear-all" ? { confirm: true } : {};
+    const ok = await callTaskControl(`/api/tasks/${action}`, body);
+    setTaskActionLoading(prev => { const n = new Set(prev); n.delete("__bulk__"); return n; });
+    if (ok) { window.dispatchEvent(new Event("mission-data-refresh")); }
+  }, [callTaskControl]);
 
   const dismissReviewItem = useCallback(async (itemId: string) => {
     setDismissing(prev => new Set(prev).add(itemId));
@@ -469,10 +526,43 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   <p>{activeDetail.pill.label}</p>
                   <strong>{activeDetail.pill.subtitle}</strong>
                 </div>
-                <button type="button" className="mission-header__pill-detail-close" onClick={() => setActivePill(null)} aria-label="Hide task details">
-                  {"\u00D7"}
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  {/* Task control bulk actions for Active/Pending */}
+                  {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && activeDetail.tasks.length > 0 && (
+                    <>
+                      {activeDetail.pill.key === "active" && (
+                        <button
+                          type="button"
+                          disabled={taskActionLoading.has("__bulk__")}
+                          onClick={() => handleBulkAction("pause-all")}
+                          title="Pause all active tasks"
+                          style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(210,153,34,0.15)", border: "1px solid rgba(210,153,34,0.4)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
+                        >
+                          {taskActionLoading.has("__bulk__") ? "..." : "Pause All"}
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        disabled={taskActionLoading.has("__bulk__")}
+                        onClick={() => { if (confirm("Cancel ALL active tasks? This cannot be undone.")) handleBulkAction("clear-all"); }}
+                        title="Cancel all non-completed tasks"
+                        style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(248,81,73,0.12)", border: "1px solid rgba(248,81,73,0.35)", borderRadius: 4, color: "#f87171", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
+                      >
+                        {taskActionLoading.has("__bulk__") ? "..." : "Kill All"}
+                      </button>
+                    </>
+                  )}
+                  <button type="button" className="mission-header__pill-detail-close" onClick={() => setActivePill(null)} aria-label="Hide task details">
+                    {"\u00D7"}
+                  </button>
+                </div>
               </div>
+              {/* Task action result toast */}
+              {taskActionResult && (
+                <div style={{ padding: "4px 10px", fontSize: "0.75rem", background: taskActionResult.startsWith("Error") ? "rgba(248,81,73,0.12)" : "rgba(63,185,80,0.12)", color: taskActionResult.startsWith("Error") ? "#f87171" : "#3fb950", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  {taskActionResult}
+                </div>
+              )}
               {/* Unified Review Items */}
               {activeDetail.pill.key === "review" && reviewQueueItems.length > 0 && (
                 <ul className="mission-header__pill-detail-list slice-task-list" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "8px", marginBottom: "4px" }}>
@@ -622,6 +712,29 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                             <span className="mission-header__pill-detail-summary">{formatTaskInfo(task)}</span>
                           </div>
                         </div>
+                        {/* Per-task control buttons for Active/Pending pills */}
+                        {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && task.id && (
+                          <div style={{ display: "flex", gap: 4, marginTop: 6, paddingLeft: 2 }} onClick={(e) => e.stopPropagation()}>
+                            {task.status === "paused" ? (
+                              <button type="button" disabled={taskActionLoading.has(task.id)}
+                                onClick={() => handleTaskAction("resume", task.id!)}
+                                style={{ fontSize: "0.7rem", padding: "2px 8px", background: "rgba(63,185,80,0.12)", border: "1px solid rgba(63,185,80,0.35)", borderRadius: 4, color: "#3fb950", cursor: taskActionLoading.has(task.id) ? "wait" : "pointer" }}>
+                                {taskActionLoading.has(task.id) ? "..." : "Resume"}
+                              </button>
+                            ) : (
+                              <button type="button" disabled={taskActionLoading.has(task.id)}
+                                onClick={() => handleTaskAction("pause", task.id!)}
+                                style={{ fontSize: "0.7rem", padding: "2px 8px", background: "rgba(210,153,34,0.12)", border: "1px solid rgba(210,153,34,0.35)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has(task.id) ? "wait" : "pointer" }}>
+                                {taskActionLoading.has(task.id) ? "..." : "Pause"}
+                              </button>
+                            )}
+                            <button type="button" disabled={taskActionLoading.has(task.id)}
+                              onClick={() => { if (confirm("Kill this task?")) handleTaskAction("kill", task.id!); }}
+                              style={{ fontSize: "0.7rem", padding: "2px 8px", background: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)", borderRadius: 4, color: "#f87171", cursor: taskActionLoading.has(task.id) ? "wait" : "pointer" }}>
+                              {taskActionLoading.has(task.id) ? "..." : "Kill"}
+                            </button>
+                          </div>
+                        )}
                       </button>
                       {isOpen && (
                         <div className="slice-task-list__accordion mission-header__task-detail">
@@ -662,7 +775,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
-      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => setChatTrigger(false)} />
+      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => { setChatTrigger(false); setAskVibesMessage(undefined); }} initialMessage={askVibesMessage} />
     </header>
   );
 };

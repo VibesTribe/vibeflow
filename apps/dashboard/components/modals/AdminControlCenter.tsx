@@ -64,6 +64,10 @@ const AdminControlCenter: React.FC = () => {
   const [submitResult, setSubmitResult] = useState<string | null>(null);
   const [sysInfo, setSysInfo] = useState<SysInfo[]>([]);
   const [sysLoading, setSysLoading] = useState(true);
+  const [tokenInput, setTokenInput] = useState(() => localStorage.getItem("governor_admin_token") || "");
+  const [tokenSaved, setTokenSaved] = useState(false);
+  const [hermesKeyInput, setHermesKeyInput] = useState(() => localStorage.getItem("hermes_api_key") || "");
+  const [hermesKeySaved, setHermesKeySaved] = useState(false);
 
   const getAdminToken = useCallback(() => {
     return localStorage.getItem("governor_admin_token") || "";
@@ -163,6 +167,57 @@ const AdminControlCenter: React.FC = () => {
 
   const renderSystem = () => (
     <div className="admin-panel__card admin-panel__card--stacked">
+      {/* Admin Token Input */}
+      <div style={{ padding: "12px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d", marginBottom: "8px" }}>
+        <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Admin Token</div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <input
+            type="password"
+            value={tokenInput}
+            onChange={(e) => { setTokenInput(e.target.value); setTokenSaved(false); }}
+            placeholder="Enter governor admin token"
+            style={{ ...inputStyle, marginTop: 0, flex: 1 }}
+          />
+          <button
+            onClick={() => {
+              localStorage.setItem("governor_admin_token", tokenInput);
+              setTokenSaved(true);
+              loadSystemInfo();
+            }}
+            style={{ ...primaryBtnStyle, whiteSpace: "nowrap" }}
+          >
+            {tokenSaved ? "Saved" : "Save"}
+          </button>
+        </div>
+        <div style={{ color: "#9da5af", fontSize: 11, marginTop: 4 }}>
+          Required for admin actions (models, system, task control). Stored in browser localStorage.
+        </div>
+      </div>
+      {/* Hermes API Key */}
+      <div style={{ padding: "12px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d", marginBottom: "8px" }}>
+        <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Hermes Chat API Key</div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <input
+            type="password"
+            value={hermesKeyInput}
+            onChange={(e) => { setHermesKeyInput(e.target.value); setHermesKeySaved(false); }}
+            placeholder="Enter Hermes API server key"
+            style={{ ...inputStyle, marginTop: 0, flex: 1 }}
+          />
+          <button
+            onClick={() => {
+              localStorage.setItem("hermes_api_key", hermesKeyInput);
+              setHermesKeySaved(true);
+            }}
+            style={{ ...primaryBtnStyle, whiteSpace: "nowrap" }}
+          >
+            {hermesKeySaved ? "Saved" : "Save"}
+          </button>
+        </div>
+        <div style={{ color: "#9da5af", fontSize: 11, marginTop: 4 }}>
+          Required for Vibes dashboard chat. Stored in browser localStorage.
+        </div>
+      </div>
       {sysLoading ? (
         <div style={{ padding: "20px", textAlign: "center", color: "#9da5af" }}>Loading system data...</div>
       ) : sysInfo.length > 0 ? (
