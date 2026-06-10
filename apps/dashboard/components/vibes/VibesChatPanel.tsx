@@ -111,7 +111,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const ensureSession = useCallback(async () => {
     if (sessionReadyRef.current) return true;
     try {
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const headers: Record<string, string> = {};
       const key = getApiKey();
       if (key) headers["Authorization"] = `Bearer ${key}`;
       const res = await fetch(`${API_BASE}/api/sessions/${SESSION_ID}`, { headers });
@@ -120,9 +120,11 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         return true;
       }
       if (res.status === 404) {
+        const createHeaders: Record<string, string> = { "Content-Type": "application/json" };
+        if (key) createHeaders["Authorization"] = `Bearer ${key}`;
         const createRes = await fetch(`${API_BASE}/api/sessions`, {
           method: "POST",
-          headers,
+          headers: createHeaders,
           body: JSON.stringify({ session_id: SESSION_ID }),
         });
         if (createRes.ok) {
