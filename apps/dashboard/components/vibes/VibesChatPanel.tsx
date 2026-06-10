@@ -63,19 +63,6 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     prevExternalOpen.current = !!externalOpen;
   }, [externalOpen]);
 
-  // Auto-send initialMessage when panel opens with one provided
-  useEffect(() => {
-    if (
-      chatState === "open" &&
-      initialMessage &&
-      initialMessage !== initialMessageSentRef.current &&
-      !isLoading
-    ) {
-      initialMessageSentRef.current = initialMessage;
-      sendMessage(initialMessage, "text");
-    }
-  }, [chatState, initialMessage, isLoading, sendMessage]);
-
   // Focus input when opened
   useEffect(() => {
     if (chatState === "open" && inputRef.current) {
@@ -362,6 +349,19 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       currentRunIdRef.current = null;
     }
   }, [isLoading, generateTTS, stopAgent]);
+
+  // Auto-send initialMessage when panel opens with one provided
+  useEffect(() => {
+    if (
+      chatState === "open" &&
+      initialMessage &&
+      initialMessage !== initialMessageSentRef.current &&
+      !isLoading
+    ) {
+      initialMessageSentRef.current = initialMessage;
+      sendMessage(initialMessage, "text");
+    }
+  }, [chatState, initialMessage, isLoading, sendMessage]);
 
   // Voice input
   const toggleRecording = useCallback(() => {
