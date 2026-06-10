@@ -36,7 +36,6 @@ interface ResearchReportPanelProps {
   reviewItemId: string;
   onClose: () => void;
   onStatusChange?: (itemId: string, newStatus: string) => void;
-  onAskVibes?: (context: string) => void;
 }
 
 const govAPI =
@@ -64,7 +63,7 @@ const COMPLEXITY_COLORS: Record<string, { bg: string; text: string }> = {
   human: { bg: "#f8717122", text: "#f87171" },
 };
 
-const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, reviewItemId, onClose, onStatusChange, onAskVibes }) => {
+const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, reviewItemId, onClose, onStatusChange }) => {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | boolean | null>(false);
@@ -415,42 +414,6 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
               )}
 
               <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
-                {/* Ask Vibes button */}
-                <button
-                  onClick={() => {
-                    const parts = [`I'm reviewing a research suggestion for VibePilot. Here's the context:\n`];
-                    parts.push(`**Title**: ${item.title}`);
-                    if (item.summary) parts.push(`**Summary**: ${item.summary}`);
-                    if (item.current_state) parts.push(`**What we have now**: ${item.current_state}`);
-                    if (item.new_thing) parts.push(`**What this offers**: ${item.new_thing}`);
-                    if (item.improvement) parts.push(`**How it improves things**: ${item.improvement}`);
-                    if (item.council_recommendation) parts.push(`**Council recommendation**: ${item.council_recommendation}`);
-                    if (item.council_reasoning) parts.push(`**Council reasoning**: ${item.council_reasoning}`);
-                    if (item.council_concerns && item.council_concerns.length > 0) parts.push(`**Council concerns**: ${item.council_concerns.join(", ")}`);
-                    parts.push(`\nI'd like to understand more about this. Can you help me evaluate the pros and cons?`);
-                    const contextStr = parts.join("\n");
-                    if (onAskVibes) {
-                      onAskVibes(contextStr);
-                    } else {
-                      window.dispatchEvent(new CustomEvent('ask-vibes', { detail: contextStr }));
-                    }
-                  }}
-                  disabled={isUpdating}
-                  style={{
-                    flex: 1,
-                    padding: "6px 0",
-                    fontSize: "0.7rem",
-                    fontWeight: 600,
-                    border: "1px solid #60a5fa55",
-                    borderRadius: "4px",
-                    background: "#60a5fa22",
-                    color: "#60a5fa",
-                    cursor: isUpdating ? "wait" : "pointer",
-                    transition: "all 0.15s ease",
-                  }}
-                >
-                  💬 Ask
-                </button>
                 {(["approve", "watch", "reject"] as const).map((decision) => {
                   const isActive = item.human_decision === decision;
                   const style = REC_COLORS[decision];

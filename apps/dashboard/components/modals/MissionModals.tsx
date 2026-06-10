@@ -108,7 +108,6 @@ const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "rero
 
 const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [docsTab, setDocsTab] = React.useState<"kb" | "graph">("kb");
 
   useEffect(() => {
     modalRef.current?.scrollTo({ top: 0, behavior: "auto" });
@@ -119,54 +118,18 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
 
   let content: React.ReactNode = null;
   switch (modal.type) {
-    case "docs": {
+    case "docs":
       content = (
-        <div className="mission-modal__section" style={{ padding: 0, height: "calc(100vh - 32px)", display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", gap: 0, borderBottom: "1px solid rgba(0,214,255,0.2)", background: "#0d1117" }}>
-            <button
-              type="button"
-              onClick={() => setDocsTab("kb")}
-              style={{
-                padding: "8px 18px",
-                background: docsTab === "kb" ? "rgba(0,214,255,0.12)" : "transparent",
-                border: "none",
-                borderBottom: docsTab === "kb" ? "2px solid #00d6ff" : "2px solid transparent",
-                color: docsTab === "kb" ? "#00d6ff" : "#8b949e",
-                cursor: "pointer",
-                fontSize: "0.85rem",
-                fontWeight: 500,
-              }}
-            >
-              Knowledge Hub
-            </button>
-            <button
-              type="button"
-              onClick={() => setDocsTab("graph")}
-              style={{
-                padding: "8px 18px",
-                background: docsTab === "graph" ? "rgba(0,214,255,0.12)" : "transparent",
-                border: "none",
-                borderBottom: docsTab === "graph" ? "2px solid #00d6ff" : "2px solid transparent",
-                color: docsTab === "graph" ? "#00d6ff" : "#8b949e",
-                cursor: "pointer",
-                fontSize: "0.85rem",
-                fontWeight: 500,
-              }}
-            >
-              Code Graph
-            </button>
-          </div>
+        <div className="mission-modal__section" style={{ padding: 0, height: "calc(100vh - 120px)", display: "flex", flexDirection: "column" }}>
           <iframe
-            key={docsTab}
-            src={docsTab === "kb" ? "https://graphs.vibestribe.rocks/" : "https://graphs.vibestribe.rocks/graph/?token=vibepilot"}
-            title={docsTab === "kb" ? "Knowledge Hub" : "Code Graph"}
+            src="https://graphs.vibestribe.rocks/"
+            title="Knowledge Hub"
             style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
             loading="lazy"
           />
         </div>
       );
       break;
-    }
     case "logs":
       content = <LogList events={events} slices={slices} />;
       break;
