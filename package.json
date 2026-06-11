@@ -30,7 +30,7 @@
     "eslint": "^8.56.0",
     "prettier": "^3.2.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "description": "Vibeflow is a mission-control system that coordinates research, planning, execution, testing, and supervision across LLM agents. The v5 rebuild aligns the repository to the canonical architecture in `docs/system_plan_v5.md` with deterministic manifests, scoped editable regions, and CI enforcement.",
   "main": "index.js",

@@ -237,7 +237,7 @@ export function transformTasks(
         : undefined,
       mergePending: task.status === "merge_pending",
       metrics: {
-        tokensUsed: tokensByTask.get(task.id) ?? (run?.tokens_used ?? ((run?.tokens_in ?? 0) + (run?.tokens_out ?? 0))) ?? 0,
+        tokensUsed: tokensByTask.get(task.id) ?? run?.tokens_used ?? ((run?.tokens_in ?? 0) + (run?.tokens_out ?? 0)),
         runtimeSeconds,
         costUsd: 0,
       },
