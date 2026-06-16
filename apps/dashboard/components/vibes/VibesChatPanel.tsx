@@ -28,7 +28,6 @@ interface VibesChatPanelProps {
 }
 
 const API_BASE = "https://api.vibestribe.rocks";
-const SESSION_ID = "dashboard-chat";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const getApiKey = () => typeof window !== "undefined" ? localStorage.getItem("hermes_api_key") || "" : "";
@@ -52,6 +51,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const inputModeRef = useRef<"text" | "voice">("text");
   const currentRunIdRef = useRef<string | null>(null);
   const initialMessageSentRef = useRef<string | null>(null);
+  const sessionIdRef = useRef<string>("");  // Dynamic per-open session ID
 
   // External open trigger (from header button)
   const prevExternalOpen = useRef(false);
@@ -110,11 +110,16 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
   const sessionReadyRef = useRef(false);
   const ensureSession = useCallback(async () => {
     if (sessionReadyRef.current) return true;
+    // Generate a fresh session ID each time the chat is opened
+    if (!sessionIdRef.current) {
+      sessionIdRef.current = `dashboard-chat-${Date.now()}`;
+    }
+    const sid = sessionIdRef.current;
     try {
       const headers: Record<string, string> = {};
       const key = getApiKey();
       if (key) headers["Authorization"] = `Bearer ${key}`;
-      const res = await fetch(`${API_BASE}/api/sessions/${SESSION_ID}`, { headers });
+      const res = await fetch(`${API_BASE}/api/sessions/${sid}`, { headers });
       if (res.ok) {
         sessionReadyRef.current = true;
         return true;
@@ -125,7 +130,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         const createRes = await fetch(`${API_BASE}/api/sessions`, {
           method: "POST",
           headers: createHeaders,
-          body: JSON.stringify({ session_id: SESSION_ID }),
+          body: JSON.stringify({ session_id: sid }),
         });
         if (createRes.ok) {
           sessionReadyRef.current = true;
@@ -151,12 +156,13 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     // Delete session so next open gets a fresh one (prevents context bloat)
     const key = getApiKey();
     if (key) {
-      fetch(`${API_BASE}/api/sessions/${SESSION_ID}`, {
+      fetch(`${API_BASE}/api/sessions/${sessionIdRef.current}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${key}` },
       }).catch(() => {}); // silent - best effort
     }
     sessionReadyRef.current = false;
+    sessionIdRef.current = "";  // Force new session ID on next open
     setMessages([]);
     setChatState("closed");
     onExternalClose?.();
@@ -311,7 +317,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/sessions/${SESSION_ID}/chat/stream`,
+        `${API_BASE}/api/sessions/${sessionIdRef.current}/chat/stream`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
