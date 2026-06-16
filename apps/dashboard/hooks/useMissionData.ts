@@ -526,6 +526,13 @@ export function useMissionData(): MissionData {
     };
   }, [fetchData]);
 
+  // Listen for manual refresh events from task control (pause/kill/resume)
+  useEffect(() => {
+    const handler = () => { if (mountedRef.current) fetchData(); };
+    window.addEventListener("mission-data-refresh", handler);
+    return () => window.removeEventListener("mission-data-refresh", handler);
+  }, [fetchData]);
+
   const mappedAgents = useMemo(() => snapshot.agents.map(mapAgent), [snapshot.agents]);
   const slices = useMemo(() => deriveSlices(snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog), [snapshot.tasks, events, snapshot.agents, snapshot.sliceCatalog]);
   const statusSummary = useMemo(() => buildStatusSummary(snapshot.tasks), [snapshot.tasks]);
