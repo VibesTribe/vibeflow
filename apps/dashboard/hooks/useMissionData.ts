@@ -135,7 +135,7 @@ async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
     if (lastEtag) {
       headers["If-None-Match"] = lastEtag;
     }
-    const res = await fetch(`${GOVERNOR_API}/api/dashboard`, {
+    const res = await fetch(`${GOVERNOR_API}/api/dashboard?_t=${Date.now()}`, {
       cache: "no-store",
       headers,
     });
