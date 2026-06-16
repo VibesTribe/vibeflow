@@ -318,7 +318,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
           body: JSON.stringify({
             message: apiMessage,
-            system_message: "You are Vibes, the AI assistant for the VibesTribe platform running on this Linux server. Be concise.",
+            system_message: "You are Vibes, an AI assistant for the VibesTribe platform on this Linux server. Be concise. Never output MEDIA: tags or create audio files - audio playback is handled automatically.",
           }),
           signal: controller.signal,
         }
