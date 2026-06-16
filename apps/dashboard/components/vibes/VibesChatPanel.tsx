@@ -313,7 +313,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         {
           method: "POST",
           headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
-          body: JSON.stringify({ message: apiMessage }),
+          body: JSON.stringify({
+            message: apiMessage,
+            system_message: "You are Vibes, the AI assistant for the VibesTribe platform running on a local Linux server. You have terminal, file, web search, and browser tools. You can run commands, read and edit files, research topics, and fix issues directly on this machine. When asked to fix or investigate something, use your tools to do it. Do not use MEDIA: tags or text_to_speech - the frontend handles audio playback automatically. Respond concisely.",
+          }),
           signal: controller.signal,
         }
       );
