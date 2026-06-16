@@ -116,31 +116,23 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     }
     const sid = sessionIdRef.current;
     try {
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
       const key = getApiKey();
       if (key) headers["Authorization"] = `Bearer ${key}`;
-      const res = await fetch(`${API_BASE}/api/sessions/${sid}`, { headers });
-      if (res.ok) {
+      // Create the session directly (POST). If it already exists we get 409 which is fine.
+      const createRes = await fetch(`${API_BASE}/api/sessions`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ session_id: sid }),
+      });
+      if (createRes.ok || createRes.status === 409) {
         sessionReadyRef.current = true;
         return true;
       }
-      if (res.status === 404) {
-        const createHeaders: Record<string, string> = { "Content-Type": "application/json" };
-        if (key) createHeaders["Authorization"] = `Bearer ${key}`;
-        const createRes = await fetch(`${API_BASE}/api/sessions`, {
-          method: "POST",
-          headers: createHeaders,
-          body: JSON.stringify({ session_id: sid }),
-        });
-        if (createRes.ok) {
-          sessionReadyRef.current = true;
-          return true;
-        }
-      }
-      console.warn("Session check failed:", res.status);
+      console.warn("Session create failed:", createRes.status);
       return false;
     } catch (err) {
-      console.warn("Session check error:", err);
+      console.warn("Session create error:", err);
       return false;
     }
   }, []);
