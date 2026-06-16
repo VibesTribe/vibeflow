@@ -199,13 +199,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   const [taskActionResult, setTaskActionResult] = useState<string | null>(null);
 
   const callTaskControl = useCallback(async (endpoint: string, body: Record<string, unknown>) => {
-    const token = localStorage.getItem("governor_admin_token") || "";
-    if (!token) { setTaskActionResult("Error: No admin token. Set in Control Center > System."); return false; }
     setTaskActionResult(null);
     try {
+      const token = localStorage.getItem("governor_admin_token") || "";
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = "Bearer " + token;
       const res = await fetch(`${govAPIBase}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        headers,
         body: JSON.stringify(body),
       });
       const data = await res.json();
