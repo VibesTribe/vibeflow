@@ -180,7 +180,10 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       if (!res.ok) return;
       const data = await res.json();
       if (data.audio_url) {
-        const audioUrl = data.audio_url.replace("http://127.0.0.1:8642", API_BASE);
+        // audio_url may be relative (/api/audio/...) or absolute (http://127.0.0.1:8642/api/audio/...)
+        // Always prefix with API_BASE to ensure browser loads from the gateway, not the dashboard domain
+        const rawUrl = data.audio_url;
+        const audioUrl = rawUrl.startsWith("http") ? rawUrl.replace("http://127.0.0.1:8642", API_BASE) : `${API_BASE}${rawUrl}`;
         setMessages((prev) =>
           prev.map((m) => m.id === messageId ? { ...m, audioUrl } : m)
         );
@@ -315,7 +318,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
           body: JSON.stringify({
             message: apiMessage,
-            system_message: "You are Vibes, the AI assistant for the VibesTribe platform running on a local Linux server. You have terminal, file, web search, and browser tools. You can run commands, read and edit files, research topics, and fix issues directly on this machine. When asked to fix or investigate something, use your tools to do it. Do not use MEDIA: tags or text_to_speech - the frontend handles audio playback automatically. Respond concisely.",
+            system_message: "You are Vibes, the AI assistant for the VibesTribe platform running on this Linux server. Be concise.",
           }),
           signal: controller.signal,
         }
