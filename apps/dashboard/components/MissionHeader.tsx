@@ -22,6 +22,7 @@ interface MissionHeaderProps {
   } | null;
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
+  updateTaskStatus?: (taskId: string, newStatus: string) => void;
 }
 
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
@@ -150,6 +151,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   roi,
   onOpenTokens,
   onOpenReviewTask,
+  updateTaskStatus,
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -226,8 +228,21 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     setTaskActionLoading(prev => new Set(prev).add(taskId));
     const ok = await callTaskControl(`/api/task/${action}`, { task_id: taskId });
     setTaskActionLoading(prev => { const n = new Set(prev); n.delete(taskId); return n; });
-    if (ok) { window.dispatchEvent(new Event("mission-data-refresh")); }
-  }, [callTaskControl]);
+    if (ok) {
+      // Optimistic local update — reflect the change in UI immediately
+      // without waiting for a server refresh round-trip
+      const statusMap: Record<string, string> = {
+        kill: "cancelled",
+        pause: "paused",
+        resume: "pending",
+      };
+      const newStatus = statusMap[action];
+      if (newStatus && updateTaskStatus) {
+        updateTaskStatus(taskId, newStatus);
+      }
+      window.dispatchEvent(new Event("mission-data-refresh"));
+    }
+  }, [callTaskControl, updateTaskStatus]);
 
   const handleBulkAction = useCallback(async (action: string) => {
     setTaskActionLoading(prev => new Set(prev).add("__bulk__"));

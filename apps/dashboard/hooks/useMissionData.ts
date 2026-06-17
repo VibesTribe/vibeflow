@@ -94,6 +94,7 @@ export interface MissionData {
   agent_sessions: any[];
   loading: MissionLoadingState;
   refresh: () => void;
+  updateTaskStatus: (taskId: string, newStatus: string) => void;
 }
 
 const initialSnapshot: DashboardSnapshot = {
@@ -555,6 +556,18 @@ export function useMissionData(): MissionData {
     fetchData();
   }, [fetchData]);
 
+  // Optimistic local update after task control actions (pause/kill/resume).
+  // Called after the governor API confirms success, so the UI updates instantly
+  // without waiting for a server refresh round-trip through Cloudflare.
+  const updateTaskStatus = useCallback((taskId: string, newStatus: string) => {
+    setSnapshot(prev => ({
+      ...prev,
+      tasks: prev.tasks.map(t =>
+        t.id === taskId ? { ...t, status: newStatus as any } : t
+      ),
+    }));
+  }, []);
+
   return {
     snapshot,
     events,
@@ -572,5 +585,6 @@ export function useMissionData(): MissionData {
     agent_sessions: snapshot.agent_sessions || [],
     loading,
     refresh,
+    updateTaskStatus,
   };
 }
