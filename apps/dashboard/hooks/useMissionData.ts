@@ -95,6 +95,7 @@ export interface MissionData {
   loading: MissionLoadingState;
   refresh: () => void;
   updateTaskStatus: (taskId: string, newStatus: string) => void;
+  bulkUpdateTaskStatus: (newStatus: string, fromStatuses: string[]) => void;
 }
 
 const initialSnapshot: DashboardSnapshot = {
@@ -572,6 +573,20 @@ export function useMissionData(): MissionData {
     }));
   }, []);
 
+  // Bulk optimistic update: change ALL tasks matching one of the fromStatuses
+  // to newStatus. Used by Pause All / Kill All / Resume All.
+  const bulkUpdateTaskStatus = useCallback((newStatus: string, fromStatuses: string[]) => {
+    lastEtag = null;
+    cachedGovData = null;
+    const statusSet = new Set(fromStatuses);
+    setSnapshot(prev => ({
+      ...prev,
+      tasks: prev.tasks.map(t =>
+        statusSet.has(t.status) ? { ...t, status: newStatus as any } : t
+      ),
+    }));
+  }, []);
+
   return {
     snapshot,
     events,
@@ -590,5 +605,6 @@ export function useMissionData(): MissionData {
     loading,
     refresh,
     updateTaskStatus,
+    bulkUpdateTaskStatus,
   };
 }

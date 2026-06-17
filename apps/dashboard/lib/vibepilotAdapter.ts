@@ -142,6 +142,7 @@ function mapTaskStatus(status: string): TaskSnapshot["status"] {
     failed: "failed",
     escalated: "failed",
     paused: "paused",
+    cancelled: "cancelled",
   };
   return statusMap[status] || "pending";
 }

@@ -23,6 +23,7 @@ interface MissionHeaderProps {
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
   updateTaskStatus?: (taskId: string, newStatus: string) => void;
+  bulkUpdateTaskStatus?: (newStatus: string, fromStatuses: string[]) => void;
 }
 
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
@@ -38,7 +39,7 @@ interface HeaderPillConfig {
   filter: (task: TaskSnapshot) => boolean;
 }
 
-const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
+const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending", "cancelled"]);
 const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing", "paused"]);
 const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
 // REVIEW_STATUS is used for tasks needing human action.
@@ -152,6 +153,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   onOpenTokens,
   onOpenReviewTask,
   updateTaskStatus,
+  bulkUpdateTaskStatus,
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -248,8 +250,17 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const body = action === "clear-all" ? { confirm: true } : {};
     const ok = await callTaskControl(`/api/tasks/${action}`, body);
     setTaskActionLoading(prev => { const n = new Set(prev); n.delete("__bulk__"); return n; });
-    if (ok) { window.dispatchEvent(new Event("mission-data-refresh")); }
-  }, [callTaskControl]);
+    if (ok && bulkUpdateTaskStatus) {
+      // Optimistic bulk update so UI reflects changes immediately
+      if (action === "pause-all") {
+        bulkUpdateTaskStatus("paused", ["pending", "in_progress", "received", "review", "testing"]);
+      } else if (action === "clear-all") {
+        bulkUpdateTaskStatus("cancelled", ["pending", "in_progress", "received", "review", "testing", "paused", "failed"]);
+      } else if (action === "resume-all") {
+        bulkUpdateTaskStatus("pending", ["paused"]);
+      }
+    }
+  }, [callTaskControl, bulkUpdateTaskStatus]);
 
   const dismissReviewItem = useCallback(async (itemId: string) => {
     setDismissing(prev => new Set(prev).add(itemId));
@@ -545,17 +556,26 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {/* Task control bulk actions for Active/Pending */}
                   {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && activeDetail.tasks.length > 0 && (
                     <>
-                      {activeDetail.pill.key === "active" && (
+                      {(activeDetail.pill.key === "active") && (
                         <button
                           type="button"
                           disabled={taskActionLoading.has("__bulk__")}
-                          onClick={() => handleBulkAction("pause-all")}
-                          title="Pause all active tasks"
-                          style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(210,153,34,0.15)", border: "1px solid rgba(210,153,34,0.4)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
+                          onClick={() => handleBulkAction("resume-all")}
+                          title="Resume all paused tasks"
+                          style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(63,185,80,0.12)", border: "1px solid rgba(63,185,80,0.35)", borderRadius: 4, color: "#3fb950", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
                         >
-                          {taskActionLoading.has("__bulk__") ? "..." : "Pause All"}
+                          {taskActionLoading.has("__bulk__") ? "..." : "Resume All"}
                         </button>
                       )}
+                      <button
+                        type="button"
+                        disabled={taskActionLoading.has("__bulk__")}
+                        onClick={() => handleBulkAction("pause-all")}
+                        title={activeDetail.pill.key === "active" ? "Pause all active tasks" : "Pause all pending tasks"}
+                        style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(210,153,34,0.15)", border: "1px solid rgba(210,153,34,0.4)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
+                      >
+                        {taskActionLoading.has("__bulk__") ? "..." : "Pause All"}
+                      </button>
                       <button
                         type="button"
                         disabled={taskActionLoading.has("__bulk__")}

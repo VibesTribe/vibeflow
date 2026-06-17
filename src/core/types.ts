@@ -22,7 +22,8 @@ export type TaskStatus =
   | "failed"
   | "human_review"
   | "design_review"
-  | "paused";
+  | "paused"
+  | "cancelled";
 
 export type TaskLocation =
   | { kind: "platform"; label: string; link?: string }
