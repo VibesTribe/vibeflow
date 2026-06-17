@@ -39,9 +39,9 @@ interface HeaderPillConfig {
   filter: (task: TaskSnapshot) => boolean;
 }
 
-const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending", "cancelled"]);
-const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing", "paused"]);
-const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed"]);
+const HEADER_COMPLETE_STATUSES = new Set<TaskStatus>(["complete", "merged", "merge_pending"]);
+const HEADER_ACTIVE_STATUSES = new Set<TaskStatus>(["in_progress", "received", "review", "testing"]);
+const HEADER_PENDING_STATUSES = new Set<TaskStatus>(["pending", "failed", "paused"]);
 // REVIEW_STATUS is used for tasks needing human action.
 // Triggered by: (1) research reports after council feedback, (2) visual UI/UX after testing agent, (3) API credit exhaustion.
 // Also enriched by /api/review-queue items (research pending_human, credit alerts).
@@ -66,6 +66,7 @@ const HEADER_STATUS_META: Partial<Record<TaskStatus, HeaderStatusMeta>> = {
   failed: { label: "Failed", tone: "locked", icon: "\u2717", accent: "#f87171" },
   human_review: { label: "Human Review", tone: "flagged", icon: "\u26A0", accent: "#f59e0b" },
   paused: { label: "Paused", tone: "locked", icon: "\u23F8", accent: "#d29922" },
+  cancelled: { label: "Abandoned", tone: "locked", icon: "\u2717", accent: "#6b7280" },
 };
 
 const DEFAULT_HEADER_STATUS_META: HeaderStatusMeta = {
@@ -556,7 +557,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {/* Task control bulk actions for Active/Pending */}
                   {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && activeDetail.tasks.length > 0 && (
                     <>
-                      {(activeDetail.pill.key === "active") && (
+                      {(activeDetail.pill.key === "pending") && (
                         <button
                           type="button"
                           disabled={taskActionLoading.has("__bulk__")}
