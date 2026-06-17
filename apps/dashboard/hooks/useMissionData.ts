@@ -95,7 +95,6 @@ export interface MissionData {
   loading: MissionLoadingState;
   refresh: () => void;
   updateTaskStatus: (taskId: string, newStatus: string) => void;
-  bulkUpdateTaskStatus: (taskIds: string[], newStatus: string) => void;
 }
 
 const initialSnapshot: DashboardSnapshot = {
@@ -558,27 +557,13 @@ export function useMissionData(): MissionData {
   }, [fetchData]);
 
   // Optimistic local update after task control actions (pause/kill/resume).
-  // Clears the ETag cache so SSE/poll fetches get fresh data instead of 304.
+  // Called after the governor API confirms success, so the UI updates instantly
+  // without waiting for a server refresh round-trip through Cloudflare.
   const updateTaskStatus = useCallback((taskId: string, newStatus: string) => {
-    lastEtag = null;
-    cachedGovData = null;
     setSnapshot(prev => ({
       ...prev,
       tasks: prev.tasks.map(t =>
         t.id === taskId ? { ...t, status: newStatus as any } : t
-      ),
-    }));
-  }, []);
-
-  // Bulk optimistic update for Pause All / Kill All / Resume All.
-  const bulkUpdateTaskStatus = useCallback((taskIds: string[], newStatus: string) => {
-    lastEtag = null;
-    cachedGovData = null;
-    const idSet = new Set(taskIds);
-    setSnapshot(prev => ({
-      ...prev,
-      tasks: prev.tasks.map(t =>
-        idSet.has(t.id) ? { ...t, status: newStatus as any } : t
       ),
     }));
   }, []);
@@ -601,6 +586,5 @@ export function useMissionData(): MissionData {
     loading,
     refresh,
     updateTaskStatus,
-    bulkUpdateTaskStatus,
   };
 }

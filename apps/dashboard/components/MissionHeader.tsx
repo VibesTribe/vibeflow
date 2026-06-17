@@ -23,7 +23,6 @@ interface MissionHeaderProps {
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
   updateTaskStatus?: (taskId: string, newStatus: string) => void;
-  bulkUpdateTaskStatus?: (taskIds: string[], newStatus: string) => void;
 }
 
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
@@ -153,7 +152,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   onOpenTokens,
   onOpenReviewTask,
   updateTaskStatus,
-  bulkUpdateTaskStatus,
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -231,9 +229,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const ok = await callTaskControl(`/api/task/${action}`, { task_id: taskId });
     setTaskActionLoading(prev => { const n = new Set(prev); n.delete(taskId); return n; });
     if (ok) {
-      // Optimistic local update — reflect the change in UI immediately.
-      // Do NOT dispatch mission-data-refresh here: that triggers fetchFromGovernor()
-      // which can return stale 304 cached data and overwrite this update.
+      // Optimistic local update — reflect the change in UI immediately
+      // without waiting for a server refresh round-trip
       const statusMap: Record<string, string> = {
         kill: "cancelled",
         pause: "paused",
@@ -243,6 +240,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       if (newStatus && updateTaskStatus) {
         updateTaskStatus(taskId, newStatus);
       }
+      window.dispatchEvent(new Event("mission-data-refresh"));
     }
   }, [callTaskControl, updateTaskStatus]);
 
@@ -251,24 +249,8 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const body = action === "clear-all" ? { confirm: true } : {};
     const ok = await callTaskControl(`/api/tasks/${action}`, body);
     setTaskActionLoading(prev => { const n = new Set(prev); n.delete("__bulk__"); return n; });
-    if (ok && bulkUpdateTaskStatus) {
-      // Optimistic bulk update — same pattern as per-task actions
-      if (action === "pause-all") {
-        const taskIds = activeDetail?.tasks
-          .filter(t => t.id && t.status !== "paused")
-          .map(t => t.id!) || [];
-        if (taskIds.length) bulkUpdateTaskStatus(taskIds, "paused");
-      } else if (action === "clear-all") {
-        const taskIds = activeDetail?.tasks.map(t => t.id!).filter(Boolean) || [];
-        if (taskIds.length) bulkUpdateTaskStatus(taskIds, "cancelled");
-      } else if (action === "resume-all") {
-        const taskIds = activeDetail?.tasks
-          .filter(t => t.id && t.status === "paused")
-          .map(t => t.id!) || [];
-        if (taskIds.length) bulkUpdateTaskStatus(taskIds, "pending");
-      }
-    }
-  }, [callTaskControl, bulkUpdateTaskStatus, activeDetail]);
+    if (ok) { window.dispatchEvent(new Event("mission-data-refresh")); }
+  }, [callTaskControl]);
 
   const dismissReviewItem = useCallback(async (itemId: string) => {
     setDismissing(prev => new Set(prev).add(itemId));
@@ -564,33 +546,22 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                   {/* Task control bulk actions for Active/Pending */}
                   {(activeDetail.pill.key === "active" || activeDetail.pill.key === "pending") && activeDetail.tasks.length > 0 && (
                     <>
-                      {/* Pause All — available for both active and pending pills */}
-                      <button
-                        type="button"
-                        disabled={taskActionLoading.has("__bulk__")}
-                        onClick={() => handleBulkAction("pause-all")}
-                        title="Pause all tasks"
-                        style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(210,153,34,0.15)", border: "1px solid rgba(210,153,34,0.4)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
-                      >
-                        {taskActionLoading.has("__bulk__") ? "..." : "Pause All"}
-                      </button>
-                      {/* Resume All — only when paused tasks exist in active pill */}
-                      {activeDetail.pill.key === "active" && activeDetail.tasks.some(t => t.status === "paused") && (
+                      {activeDetail.pill.key === "active" && (
                         <button
                           type="button"
                           disabled={taskActionLoading.has("__bulk__")}
-                          onClick={() => handleBulkAction("resume-all")}
-                          title="Resume all paused tasks"
-                          style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(63,185,80,0.12)", border: "1px solid rgba(63,185,80,0.35)", borderRadius: 4, color: "#3fb950", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
+                          onClick={() => handleBulkAction("pause-all")}
+                          title="Pause all active tasks"
+                          style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(210,153,34,0.15)", border: "1px solid rgba(210,153,34,0.4)", borderRadius: 4, color: "#d29922", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
                         >
-                          {taskActionLoading.has("__bulk__") ? "..." : "Resume All"}
+                          {taskActionLoading.has("__bulk__") ? "..." : "Pause All"}
                         </button>
                       )}
                       <button
                         type="button"
                         disabled={taskActionLoading.has("__bulk__")}
-                        onClick={() => { if (confirm("Cancel ALL tasks in this list? This cannot be undone.")) handleBulkAction("clear-all"); }}
-                        title="Cancel all tasks in this list"
+                        onClick={() => { if (confirm("Cancel ALL active tasks? This cannot be undone.")) handleBulkAction("clear-all"); }}
+                        title="Cancel all non-completed tasks"
                         style={{ fontSize: "0.7rem", padding: "3px 8px", background: "rgba(248,81,73,0.12)", border: "1px solid rgba(248,81,73,0.35)", borderRadius: 4, color: "#f87171", cursor: taskActionLoading.has("__bulk__") ? "wait" : "pointer", whiteSpace: "nowrap" }}
                       >
                         {taskActionLoading.has("__bulk__") ? "..." : "Kill All"}
