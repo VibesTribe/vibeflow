@@ -559,7 +559,11 @@ export function useMissionData(): MissionData {
   // Optimistic local update after task control actions (pause/kill/resume).
   // Called after the governor API confirms success, so the UI updates instantly
   // without waiting for a server refresh round-trip through Cloudflare.
+  // Also clears the ETag cache so the next background poll gets fresh data
+  // instead of returning a 304 with stale data that would overwrite this update.
   const updateTaskStatus = useCallback((taskId: string, newStatus: string) => {
+    lastEtag = null;
+    cachedGovData = null;
     setSnapshot(prev => ({
       ...prev,
       tasks: prev.tasks.map(t =>

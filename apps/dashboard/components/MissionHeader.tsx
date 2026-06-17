@@ -240,7 +240,6 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
       if (newStatus && updateTaskStatus) {
         updateTaskStatus(taskId, newStatus);
       }
-      window.dispatchEvent(new Event("mission-data-refresh"));
     }
   }, [callTaskControl, updateTaskStatus]);
 

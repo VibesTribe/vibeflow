@@ -146,11 +146,13 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
     // Abort any in-flight request
     if (abortRef.current) abortRef.current.abort();
     // Delete session so next open gets a fresh one (prevents context bloat)
-    const key = getApiKey();
-    if (key) {
+    // Auth bypass works via Origin header for dashboard-chat* sessions,
+    // so we don't need an API key to delete.
+    if (sessionIdRef.current) {
+      const key = getApiKey();
       fetch(`${API_BASE}/api/sessions/${sessionIdRef.current}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${key}` },
+        headers: { ...(key ? { Authorization: `Bearer ${key}` } : {}) },
       }).catch(() => {}); // silent - best effort
     }
     sessionReadyRef.current = false;
@@ -318,7 +320,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
           headers: { "Content-Type": "application/json", ...(getApiKey() ? { Authorization: `Bearer ${getApiKey()}` } : {}) },
           body: JSON.stringify({
             message: apiMessage,
-            system_message: "You are Vibes, an AI assistant for the VibesTribe platform on this Linux server. Be concise. Never output MEDIA: tags or create audio files - audio playback is handled automatically.",
+            system_message: "You are Vibes, an AI assistant for the VibesTribe platform running on this Linux server. You can run terminal commands, search the web, read and write files, and help with research and tasks. Be concise. Never output MEDIA: tags or create audio files - audio playback is handled automatically.",
           }),
           signal: controller.signal,
         }
