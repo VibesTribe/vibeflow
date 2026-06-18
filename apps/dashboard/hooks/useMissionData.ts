@@ -129,6 +129,7 @@ interface GovernorDashboardResponse {
   project_costs?: any[];
   subscription_history?: any[];
   agent_sessions?: any[];
+  model_health_snapshots?: any[];
 }
 
 async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
