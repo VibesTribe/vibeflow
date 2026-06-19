@@ -45,7 +45,16 @@ const VibesMissionControl: React.FC = () => {
     };
   }, []);
 
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData();
+  const [selectedProjectSlug, setSelectedProjectSlug] = useState<string>(() => {
+    // Restore from URL path or localStorage
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("vp_selected_project");
+      return stored || "vibepilot";
+    }
+    return "vibepilot";
+  });
+
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData(selectedProjectSlug);
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
@@ -145,6 +154,8 @@ const VibesMissionControl: React.FC = () => {
           onOpenReviewTask={openReviewByTask}
           updateTaskStatus={updateTaskStatus}
           bulkUpdateTaskStatus={bulkUpdateTaskStatus}
+          selectedProjectSlug={selectedProjectSlug}
+          onProjectChange={setSelectedProjectSlug}
         />
         <div className="mission-action-bar" role="navigation" aria-label="Mission controls">
           <button type="button" onClick={handleOpenLogs}>

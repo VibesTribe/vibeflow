@@ -19,8 +19,10 @@ const GOVERNOR_API = resolveGovernorAPI();
 const SSE_STREAM_PATH = "/api/dashboard/stream";
 const FALLBACK_POLL_MS = 15000; // fallback if SSE fails
 
-// ETag cache — avoids re-fetching 181KB when nothing changed
+// ETag cache — avoids re-fetching when nothing changed.
+// Keyed by project slug so different projects don't share cache entries.
 let lastEtag: string | null = null;
+let lastEtagProject: string | undefined = undefined;
 let cachedGovData: GovernorDashboardResponse | null = null;
 
 function resolveDashboardPath(path: string): string {
@@ -132,13 +134,23 @@ interface GovernorDashboardResponse {
   model_health_snapshots?: any[];
 }
 
-async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
+async function fetchFromGovernor(projectSlug?: string): Promise<GovernorDashboardResponse | null> {
+  // Invalidate ETag cache when switching projects
+  if (projectSlug !== lastEtagProject) {
+    lastEtag = null;
+    cachedGovData = null;
+    lastEtagProject = projectSlug;
+  }
   try {
     const headers: Record<string, string> = {};
     if (lastEtag) {
       headers["If-None-Match"] = lastEtag;
     }
-    const res = await fetch(`${GOVERNOR_API}/api/dashboard?_t=${Date.now()}`, {
+    let url = `${GOVERNOR_API}/api/dashboard?_t=${Date.now()}`;
+    if (projectSlug) {
+      url += `&project=${encodeURIComponent(projectSlug)}`;
+    }
+    const res = await fetch(url, {
       cache: "no-store",
       headers,
     });
@@ -161,7 +173,7 @@ async function fetchFromGovernor(): Promise<GovernorDashboardResponse | null> {
   }
 }
 
-export function useMissionData(): MissionData {
+export function useMissionData(projectSlug?: string): MissionData {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>(initialSnapshot);
   const [runMetrics, setRunMetrics] = useState<RunMetrics>(initialRunMetrics);
   const [events, setEvents] = useState<MissionEvent[]>([]);
@@ -183,7 +195,7 @@ export function useMissionData(): MissionData {
     setLoading((prev) => ({ ...prev, snapshot: true, events: true }));
 
     // Primary: Governor API (local PG)
-    const gov = await fetchFromGovernor();
+    const gov = await fetchFromGovernor(projectSlug);
     if (!mountedRef.current) return;
 
     if (gov) {
@@ -477,7 +489,7 @@ export function useMissionData(): MissionData {
     if (mountedRef.current) {
       setLoading((prev) => ({ ...prev, snapshot: false, events: false }));
     }
-  }, []);
+  }, [projectSlug]);
 
   useEffect(() => {
     fetchData();

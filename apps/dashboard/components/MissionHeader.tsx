@@ -24,6 +24,25 @@ interface MissionHeaderProps {
   onOpenReviewTask?: (taskId: string) => void;
   updateTaskStatus?: (taskId: string, newStatus: string) => void;
   bulkUpdateTaskStatus?: (newStatus: string, fromStatuses: string[]) => void;
+  selectedProjectSlug?: string;
+  onProjectChange?: (slug: string) => void;
+}
+
+interface ProjectInfo {
+  id: string;
+  slug: string;
+  display_name: string;
+  description: string | null;
+  status: string;
+  theme?: {
+    accent_color?: string;
+    brand_name?: string;
+  } | null;
+  deploy_url?: string | null;
+  github_owner?: string | null;
+  github_repo?: string | null;
+  total_tasks?: number;
+  completed_tasks?: number;
 }
 
 type MissionPillTone = "pill-complete" | "pill-active" | "pill-flagged" | "pill-locked";
@@ -155,15 +174,60 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   onOpenReviewTask,
   updateTaskStatus,
   bulkUpdateTaskStatus,
+  selectedProjectSlug,
+  onProjectChange,
 }) => {
   const [activePill, setActivePill] = useState<HeaderPillKey | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [chatTrigger, setChatTrigger] = useState(false);
   const [askVibesMessage, setAskVibesMessage] = useState<string | undefined>(undefined);
   const [headerMode, setHeaderMode] = useState<"live" | "project">("live");
+  const [projectList, setProjectList] = useState<ProjectInfo[]>([]);
+  const [projectMenuOpen, setProjectMenuOpen] = useState(false);
   const pillListRef = useRef<HTMLUListElement | null>(null);
   const lastCollapsedTaskRef = useRef<string | null>(null);
   const pendingScrollTaskRef = useRef<string | null>(null);
+  const projectMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Fetch projects list on mount
+  useEffect(() => {
+    const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+      ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
+    fetch(`${govAPI}/api/projects`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProjectList(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Close project menu on outside click
+  useEffect(() => {
+    if (!projectMenuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (projectMenuRef.current && !projectMenuRef.current.contains(e.target as Node)) {
+        setProjectMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [projectMenuOpen]);
+
+  const handleProjectSelect = useCallback((slug: string) => {
+    setProjectMenuOpen(false);
+    if (slug !== selectedProjectSlug && onProjectChange) {
+      onProjectChange(slug);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("vp_selected_project", slug);
+      }
+    }
+  }, [selectedProjectSlug, onProjectChange]);
+
+  const currentProject = useMemo(() => {
+    return projectList.find(p => p.slug === selectedProjectSlug) || null;
+  }, [projectList, selectedProjectSlug]);
 
   // Listen for "ask-vibes" custom events from ResearchReportPanel or other components
   useEffect(() => {
@@ -488,9 +552,41 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
             <span className="mission-header__separator" aria-hidden="true">
               {"\u00B7"}
             </span>
-            <span className="mission-header__brand">Vibeflow</span>
+            {projectList.length > 1 ? (
+              <div className="mission-header__project-selector" ref={projectMenuRef}>
+                <button
+                  type="button"
+                  className="mission-header__brand mission-header__brand--selectable"
+                  onClick={() => setProjectMenuOpen(prev => !prev)}
+                  aria-label="Switch project"
+                >
+                  {currentProject?.display_name || selectedProjectSlug || "VibePilot"}
+                  <span className="mission-header__project-caret" aria-hidden="true">{"\u25BE"}</span>
+                </button>
+                {projectMenuOpen && (
+                  <div className="mission-header__project-menu" role="menu">
+                    {projectList.map(p => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        className={`mission-header__project-option${p.slug === selectedProjectSlug ? " mission-header__project-option--active" : ""}`}
+                        onClick={() => handleProjectSelect(p.slug)}
+                        role="menuitem"
+                      >
+                        <span className="mission-header__project-name">{p.display_name || p.slug}</span>
+                        {p.total_tasks != null && (
+                          <span className="mission-header__project-stats">{p.completed_tasks ?? 0}/{p.total_tasks}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span className="mission-header__brand">{currentProject?.display_name || "VibePilot"}</span>
+            )}
           </p>
-          <p className="mission-header__subtitle">Live orchestrations, telemetry, and ROI tracking at a glance.</p>
+          <p className="mission-header__subtitle">{currentProject?.description || "Live orchestrations, telemetry, and ROI tracking at a glance."}</p>
         </div>
       </div>
       <div className="mission-header__content">
