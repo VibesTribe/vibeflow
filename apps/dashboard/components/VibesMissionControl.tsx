@@ -3,7 +3,6 @@ import { TaskSnapshot } from "@core/types";
 import MissionHeader from "./MissionHeader";
 import SliceHub from "./SliceHub";
 import ReviewPanel from "./ReviewPanel";
-import ResearchReportPanel from "./ResearchReportPanel";
 import MissionModals, { MissionModalState } from "./modals/MissionModals";
 import { useMissionData } from "../hooks/useMissionData";
 import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
@@ -60,7 +59,6 @@ const VibesMissionControl: React.FC = () => {
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
-  const [researchReview, setResearchReview] = useState<{ reportId: string; reviewItemId: string } | null>(null);
 
   const snapshotTime = useMemo(() => {
     if (!snapshot.updatedAt) {
@@ -154,7 +152,6 @@ const VibesMissionControl: React.FC = () => {
           } : null}
           onOpenTokens={handleOpenRoi}
           onOpenReviewTask={openReviewByTask}
-          onOpenResearchReview={(sourceId, reviewItemId) => setResearchReview({ reportId: sourceId, reviewItemId })}
           updateTaskStatus={updateTaskStatus}
           bulkUpdateTaskStatus={bulkUpdateTaskStatus}
           selectedProjectSlug={selectedProjectSlug}
@@ -191,24 +188,7 @@ const VibesMissionControl: React.FC = () => {
         onShowModels={handleOpenModels}
       />
       {selectedReview && (
-        selectedReview.entry.type === "research" ? (
-          <ResearchReportPanel
-            reportId={selectedReview.entry.source_id as string}
-            reviewItemId={selectedReview.entry.id as string}
-            onClose={() => setActiveReviewId(null)}
-            onStatusChange={handleReviewActionComplete}
-          />
-        ) : (
-          <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />
-        )
-      )}
-      {researchReview && (
-        <ResearchReportPanel
-          reportId={researchReview.reportId}
-          reviewItemId={researchReview.reviewItemId}
-          onClose={() => setResearchReview(null)}
-          onStatusChange={handleReviewActionComplete}
-        />
+        <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />
       )}
     </div>
   );
