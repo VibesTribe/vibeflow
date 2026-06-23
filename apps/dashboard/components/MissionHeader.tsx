@@ -22,6 +22,7 @@ interface MissionHeaderProps {
   } | null;
   onOpenTokens: () => void;
   onOpenReviewTask?: (taskId: string) => void;
+  onOpenResearchReview?: (sourceId: string, reviewItemId: string) => void;
   updateTaskStatus?: (taskId: string, newStatus: string) => void;
   bulkUpdateTaskStatus?: (newStatus: string, fromStatuses: string[]) => void;
   selectedProjectSlug?: string;
@@ -172,6 +173,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   roi,
   onOpenTokens,
   onOpenReviewTask,
+  onOpenResearchReview,
   updateTaskStatus,
   bulkUpdateTaskStatus,
   selectedProjectSlug,
@@ -738,14 +740,14 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     <span style={{ display: "inline-block", marginTop: "2px", fontSize: "0.75rem", padding: "1px 4px", borderRadius: "3px", background: `${pri.color}22`, color: pri.color, border: `1px solid ${pri.color}44` }}>{pri.label}</span>
                                   </span>
                                   {item.type === "research" || item.category === "research" ? (() => {
-                                      const kbUrl = (item.source_id) ? `https://graphs.vibestribe.rocks/#research-${item.source_id}` : "";
-                                      return kbUrl ? (
-                                        <a href={kbUrl} target="_blank" rel="noopener noreferrer"
-                                           style={{ fontSize: "0.9rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer" }}
-                                           onClick={(e) => e.stopPropagation()}
+                                      const canOpen = !!onOpenResearchReview && !!item.source_id;
+                                      return canOpen ? (
+                                        <button
+                                           style={{ fontSize: "0.9rem", color: "#f59e0b", whiteSpace: "nowrap", textDecoration: "underline", cursor: "pointer", background: "none", border: "none", padding: 0 }}
+                                           onClick={(e) => { e.stopPropagation(); onOpenResearchReview!(item.source_id, item.id); }}
                                         >
                                           Review
-                                        </a>
+                                        </button>
                                       ) : null;
                                     })() : item.review_url ? (
                                     <a href={item.review_url} target="_blank" rel="noopener noreferrer"
