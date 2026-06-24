@@ -223,9 +223,39 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
           </a>
         )}
 
-        {/* Decision buttons for raw suggestions */}
+        {/* Ask + Decision buttons for raw suggestions */}
         {reviewItemId && (
           <div style={{ marginTop: "16px", display: "flex", gap: "6px" }}>
+            <button
+              onClick={() => {
+                const parts = [`I'm reviewing a research suggestion for VibePilot. Here's the context:\n`];
+                parts.push(`**Title**: ${report.title}`);
+                if (report.summary) parts.push(`**Summary**: ${report.summary}`);
+                if (report.details) parts.push(`**Details**: ${JSON.stringify(report.details, null, 2)}`);
+                parts.push(`\nI'd like to understand more about this. Can you help me evaluate the pros and cons?`);
+                const contextStr = parts.join("\n");
+                if (onAskVibes) {
+                  onAskVibes(contextStr);
+                } else {
+                  window.dispatchEvent(new CustomEvent('ask-vibes', { detail: contextStr }));
+                }
+              }}
+              disabled={!!updating}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                border: "1px solid #60a5fa55",
+                borderRadius: "4px",
+                background: "#60a5fa22",
+                color: "#60a5fa",
+                cursor: updating ? "wait" : "pointer",
+                transition: "all 0.15s ease",
+              }}
+            >
+              💬 Ask
+            </button>
             {(["approved", "deferred", "rejected"] as const).map((status) => {
               const isActive = currentStatus === status;
               const colorMap: Record<string, { bg: string; border: string; text: string }> = {

@@ -760,9 +760,24 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
                                     disabled={dismissing.has(item.id)}
                                     onClick={(e) => { e.stopPropagation(); dismissReviewItem(item.id); }}
                                     title="Mark as reviewed and remove from queue"
-                                    style={{ fontSize: "0.75rem", color: "#94a3b8", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "2px 8px", cursor: dismissing.has(item.id) ? "wait" : "pointer", whiteSpace: "nowrap", opacity: dismissing.has(item.id) ? 0.5 : 1 }}
+                                    style={{
+                                      fontSize: "0.75rem",
+                                      fontWeight: 600,
+                                      color: "#94a3b8",
+                                      background: "rgba(255,255,255,0.06)",
+                                      border: "1px solid rgba(255,255,255,0.12)",
+                                      borderRadius: "6px",
+                                      padding: "4px 12px",
+                                      cursor: dismissing.has(item.id) ? "wait" : "pointer",
+                                      whiteSpace: "nowrap",
+                                      opacity: dismissing.has(item.id) ? 0.5 : 1,
+                                      transition: "all 0.15s ease",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "4px",
+                                    }}
                                   >
-                                    {dismissing.has(item.id) ? "..." : "Done"}
+                                    {dismissing.has(item.id) ? "⋯" : "✓ Done"}
                                   </button>
                                 </div>
                               </li>
