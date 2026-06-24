@@ -35,6 +35,11 @@ const API_BASE = window.location.hostname === "localhost"
   ? "http://localhost:8080"
   : "https://webhooks.vibestribe.rocks";
 
+// --- KB API base for system-status (model health + crons) ---
+const KB_BASE = window.location.hostname === "localhost"
+  ? "http://localhost:8888"
+  : "https://vibes.vibestribe.rocks";
+
 // --- Add Model Form ---
 interface AddModelFormData {
   model_id: string;
@@ -69,6 +74,10 @@ const AdminControlCenter: React.FC = () => {
   const [hermesKeyInput, setHermesKeyInput] = useState(() => localStorage.getItem("hermes_api_key") || "");
   const [hermesKeySaved, setHermesKeySaved] = useState(false);
 
+  // Model + cron status from KB server
+  const [modelStatus, setModelStatus] = useState<any>(null);
+  const [modelStatusLoading, setModelStatusLoading] = useState(false);
+
   const getAdminToken = useCallback(() => {
     return localStorage.getItem("governor_admin_token") || "";
   }, []);
@@ -98,11 +107,25 @@ const AdminControlCenter: React.FC = () => {
     setSysLoading(false);
   }, [getAdminToken]);
 
+  // --- Load model + cron status from KB server ---
+  const loadModelStatus = useCallback(async () => {
+    setModelStatusLoading(true);
+    try {
+      const res = await fetch(KB_BASE + "/api/system-status");
+      if (res.ok) {
+        const data = await res.json();
+        setModelStatus(data);
+      }
+    } catch {}
+    setModelStatusLoading(false);
+  }, []);
+
   useEffect(() => {
     if (activeTab === "System") {
       loadSystemInfo();
+      loadModelStatus();
     }
-  }, [activeTab, loadSystemInfo]);
+  }, [activeTab, loadSystemInfo, loadModelStatus]);
 
   // --- Add Model ---
   const handleAddModel = async () => {
@@ -252,6 +275,107 @@ const AdminControlCenter: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Model Health + Cron Status */}
+      {modelStatus && (
+        <>
+          {/* Error summary */}
+          {modelStatus.errors_today && (
+            <div style={{ marginTop: 8, padding: "10px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d" }}>
+              <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Errors Today</div>
+              <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
+                <span style={{ color: modelStatus.errors_today.rate_limit_429 > 20 ? "#f85149" : "#d29922" }}>
+                  429 Rate Limits: {modelStatus.errors_today.rate_limit_429 || 0}
+                </span>
+                <span style={{ color: modelStatus.errors_today.bad_request_400 > 10 ? "#f85149" : "#9da5af" }}>
+                  400 Bad Requests: {modelStatus.errors_today.bad_request_400 || 0}
+                </span>
+                <span style={{ color: "#9da5af" }}>
+                  Total: {modelStatus.errors_today.total_warnings || 0}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Model Health */}
+          <div style={{ marginTop: 8 }}>
+            <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6, padding: "0 2px" }}>
+              Model Health
+            </div>
+            {modelStatus.primary_model && (
+              <div style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "10px 14px", background: "#0d1117", borderRadius: 6,
+                border: `1px solid ${modelStatus.primary_model.healthy ? "#238636" : "#da3633"}`,
+                marginBottom: 4,
+              }}>
+                <div>
+                  <span style={{ fontSize: 10, color: "#9da5af", marginRight: 6 }}>PRIMARY</span>
+                  <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 600 }}>{modelStatus.primary_model.model}</span>
+                  <span style={{ color: "#9da5af", fontSize: 11, marginLeft: 6 }}>({modelStatus.primary_model.provider})</span>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
+                  {modelStatus.primary_model.healthy ? "HEALTHY" : modelStatus.primary_model.detail || "FAIL"}
+                </div>
+              </div>
+            )}
+            {modelStatus.models?.map((m: any, i: number) => (
+              <div key={i} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "8px 14px", background: "#0d1117", borderRadius: 6,
+                border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
+                marginBottom: 3,
+              }}>
+                <div>
+                  <span style={{ fontSize: 10, color: "#9da5af", marginRight: 6 }}>FALLBACK</span>
+                  <span style={{ color: "#c9d1d9", fontSize: 12 }}>{m.model}</span>
+                  <span style={{ color: "#9da5af", fontSize: 11, marginLeft: 4 }}>({m.provider})</span>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
+                  {m.healthy ? "OK" : m.detail}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Cron Jobs */}
+          {modelStatus.crons && modelStatus.crons.length > 0 && (
+            <div style={{ marginTop: 8 }}>
+              <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6, padding: "0 2px" }}>
+                Cron Jobs ({modelStatus.crons.length})
+              </div>
+              {modelStatus.crons.map((c: any, i: number) => {
+                const isOk = c.last_status === "ok";
+                const scheduleStr = typeof c.schedule === "object" ? c.schedule?.display || "?" : c.schedule;
+                return (
+                  <div key={i} style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "6px 14px", background: "#0d1117", borderRadius: 6,
+                    border: "1px solid #30363d", marginBottom: 3,
+                  }}>
+                    <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                      <span style={{ color: isOk ? "#3fb950" : "#f85149", fontSize: 11, fontWeight: 700, marginRight: 6 }}>
+                        {isOk ? "OK" : c.last_status?.toUpperCase() || "?"}
+                      </span>
+                      <span style={{ color: "#c9d1d9", fontSize: 12 }}>{c.name}</span>
+                    </div>
+                    <div style={{ color: "#9da5af", fontSize: 11, whiteSpace: "nowrap", marginLeft: 8 }}>
+                      {scheduleStr}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div style={{ textAlign: "center", marginTop: 8 }}>
+            <button onClick={loadModelStatus} disabled={modelStatusLoading}
+              style={{ ...primaryBtnStyle, fontSize: 13, opacity: modelStatusLoading ? 0.5 : 1 }}>
+              {modelStatusLoading ? "Checking..." : "Refresh Models & Crons"}
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
