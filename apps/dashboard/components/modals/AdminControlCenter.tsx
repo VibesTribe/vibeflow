@@ -284,7 +284,7 @@ const AdminControlCenter: React.FC = () => {
           {modelStatus.errors_today && (
             <div style={{ marginTop: 8, padding: "10px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d" }}>
               <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Errors Today</div>
-              <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
+              <div style={{ display: "flex", gap: 16, fontSize: 12, flexWrap: "wrap" }}>
                 <span style={{ color: modelStatus.errors_today.rate_limit_429 > 20 ? "#f85149" : "#d29922" }}>
                   429 Rate Limits: {modelStatus.errors_today.rate_limit_429 || 0}
                 </span>
@@ -316,27 +316,29 @@ const AdminControlCenter: React.FC = () => {
                   <span style={{ color: "#9da5af", fontSize: 11, marginLeft: 6 }}>({modelStatus.primary_model.provider})</span>
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
-                  {modelStatus.primary_model.healthy ? "HEALTHY" : modelStatus.primary_model.detail || "FAIL"}
+                  {modelStatus.primary_model.healthy ? "OK" : modelStatus.primary_model.detail || "FAIL"}
                 </div>
               </div>
             )}
-            {modelStatus.models?.map((m: any, i: number) => (
-              <div key={i} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "8px 14px", background: "#0d1117", borderRadius: 6,
-                border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
-                marginBottom: 3,
-              }}>
-                <div>
-                  <span style={{ fontSize: 10, color: "#9da5af", marginRight: 6 }}>FALLBACK</span>
-                  <span style={{ color: "#c9d1d9", fontSize: 12 }}>{m.model}</span>
-                  <span style={{ color: "#9da5af", fontSize: 11, marginLeft: 4 }}>({m.provider})</span>
+            {modelStatus.models && modelStatus.models.length > 0 && (
+              modelStatus.models.map((m: any, i: number) => (
+                <div key={i} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "8px 14px", background: "#0d1117", borderRadius: 6,
+                  border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
+                  marginBottom: 3,
+                }}>
+                  <div>
+                    <span style={{ fontSize: 10, color: "#9da5af", marginRight: 6 }}>FALLBACK</span>
+                    <span style={{ color: "#c9d1d9", fontSize: 12 }}>{m.model}</span>
+                    <span style={{ color: "#9da5af", fontSize: 11, marginLeft: 4 }}>({m.provider})</span>
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
+                    {m.healthy ? "OK" : m.detail}
+                  </div>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
-                  {m.healthy ? "OK" : m.detail}
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Cron Jobs */}
