@@ -38,7 +38,7 @@ const API_BASE = window.location.hostname === "localhost"
 // --- KB API base for system-status (model health + crons) ---
 const KB_BASE = window.location.hostname === "localhost"
   ? "http://localhost:8888"
-  : "https://vibes.vibestribe.rocks";
+  : "https://graphs.vibestribe.rocks";
 
 // --- Add Model Form ---
 interface AddModelFormData {
