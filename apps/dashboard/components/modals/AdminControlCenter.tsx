@@ -350,21 +350,62 @@ const AdminControlCenter: React.FC = () => {
               {modelStatus.crons.map((c: any, i: number) => {
                 const isOk = c.last_status === "ok";
                 const scheduleStr = typeof c.schedule === "object" ? c.schedule?.display || "?" : c.schedule;
+
+                // Format last run time
+                let lastRunStr = "";
+                if (c.last_run) {
+                  try {
+                    const d = new Date(c.last_run);
+                    const now = new Date();
+                    const diffMs = now.getTime() - d.getTime();
+                    const diffMin = Math.floor(diffMs / 60000);
+                    const diffHr = Math.floor(diffMin / 60);
+                    const diffDay = Math.floor(diffHr / 24);
+                    if (diffMin < 1) lastRunStr = "just now";
+                    else if (diffMin < 60) lastRunStr = `${diffMin}m ago`;
+                    else if (diffHr < 24) lastRunStr = `${diffHr}h ago`;
+                    else lastRunStr = `${diffDay}d ago`;
+                  } catch { lastRunStr = "?"; }
+                }
+
+                // Format next run time
+                let nextRunStr = "";
+                if (c.next_run) {
+                  try {
+                    const d = new Date(c.next_run);
+                    const now = new Date();
+                    const diffMs = d.getTime() - now.getTime();
+                    const diffMin = Math.floor(diffMs / 60000);
+                    const diffHr = Math.floor(diffMin / 60);
+                    if (diffMin < 1) nextRunStr = "now";
+                    else if (diffMin < 60) nextRunStr = `in ${diffMin}m`;
+                    else if (diffHr < 24) nextRunStr = `in ${diffHr}h`;
+                    else nextRunStr = `in ${Math.floor(diffHr/24)}d`;
+                  } catch { nextRunStr = "?"; }
+                }
+
                 return (
                   <div key={i} style={{
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
                     padding: "6px 14px", background: "#0d1117", borderRadius: 6,
                     border: "1px solid #30363d", marginBottom: 3,
                   }}>
-                    <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-                      <span style={{ color: isOk ? "#3fb950" : "#f85149", fontSize: 11, fontWeight: 700, marginRight: 6 }}>
-                        {isOk ? "OK" : c.last_status?.toUpperCase() || "?"}
-                      </span>
-                      <span style={{ color: "#c9d1d9", fontSize: 12 }}>{c.name}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                        <span style={{ color: isOk ? "#3fb950" : "#f85149", fontSize: 11, fontWeight: 700, marginRight: 6 }}>
+                          {isOk ? "OK" : c.last_status?.toUpperCase() || "?"}
+                        </span>
+                        <span style={{ color: "#c9d1d9", fontSize: 12 }}>{c.name}</span>
+                      </div>
+                      <div style={{ color: "#9da5af", fontSize: 11, whiteSpace: "nowrap", marginLeft: 8 }}>
+                        {scheduleStr}
+                      </div>
                     </div>
-                    <div style={{ color: "#9da5af", fontSize: 11, whiteSpace: "nowrap", marginLeft: 8 }}>
-                      {scheduleStr}
-                    </div>
+                    {(lastRunStr || nextRunStr) && (
+                      <div style={{ display: "flex", gap: 12, fontSize: 10, color: "#8b949e", marginTop: 2, marginLeft: 28 }}>
+                        {lastRunStr && <span>last: {lastRunStr}</span>}
+                        {nextRunStr && <span>next: {nextRunStr}</span>}
+                      </div>
+                    )}
                   </div>
                 );
               })}
