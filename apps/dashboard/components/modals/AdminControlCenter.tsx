@@ -325,7 +325,7 @@ const AdminControlCenter: React.FC = () => {
                     <div style={{ color: "#ffffff", fontSize: 12, fontWeight: 500 }}>{cron.last_status?.toUpperCase() || "?"}</div>
                   </div>
                   {(cron.last_run || cron.next_run) && (
-                    <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#ffffff", marginTop: 6, marginLeft: 16 }}>
+                    <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#ffffff", marginTop: 6, marginLeft: 16 }}>
                       {cron.last_run && (
                         <span>
                           last: {cron.last_run_human || cron.last_run}
