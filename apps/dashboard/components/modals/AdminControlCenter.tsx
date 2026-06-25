@@ -308,164 +308,221 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
         )}
       </AccordionSection>
 
-      {/* Model & Cron Accordion Group */}
-      {(modelStatus || modelStatusLoading) && (
-        <>
-          {/* Errors Accordion */}
-          <AccordionSection
-            title="Today's Errors"
-            icon="⚠️"
-            isExpanded={expandedSections.errors}
-            onClick={() => toggleSection("errors")}
-            color={modelStatus?.errors_today ? "#f85149" : "#9da5af"}
-          >
-            {modelStatusLoading ? (
-              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading error stats...</div>
-            ) : modelStatus?.errors_today ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px", background: "#0d1117", borderRadius: 6 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#f85149" }}>
-                  <span>429 Rate Limits:</span>
-                  <span>{modelStatus.errors_today.rate_limit_429 || 0}</span>
+      {/* Errors Accordion */}
+      <AccordionSection
+        title="Today's Errors"
+        icon="⚠️"
+        isExpanded={expandedSections.errors}
+        onClick={() => toggleSection("errors")}
+        color={modelStatus?.errors_today ? "#f85149" : "#9da5af"}
+      >
+        {modelStatusLoading ? (
+          <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading error stats...</div>
+        ) : modelStatus?.errors_today ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px", background: "#0d1117", borderRadius: 6 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", color: "#f85149" }}>
+              <span>429 Rate Limits:</span>
+              <span>{modelStatus.errors_today.rate_limit_429 || 0}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", color: "#f85149" }}>
+              <span>400 Bad Requests:</span>
+              <span>{modelStatus.errors_today.bad_request_400 || 0}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", color: "#9da5af" }}>
+              <span>Total Warnings:</span>
+              <span>{modelStatus.errors_today.total_warnings || 0}</span>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No errors reported today.</div>
+        )}
+      </AccordionSection>
+
+      {/* Model Health Accordion */}
+      <AccordionSection
+        title="Model Status"
+        icon="🤖"
+        isExpanded={expandedSections.models}
+        onClick={() => toggleSection("models")}
+      >
+        {modelStatusLoading ? (
+          <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading model status...</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {modelStatus?.primary_model && (
+              <div style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "10px 14px", background: "#0d1117", borderRadius: 6,
+                border: `1px solid ${modelStatus.primary_model.healthy ? "#238636" : "#da3633"}`,
+                marginBottom: 8,
+              }}>
+                <div>
+                  <div style={{ color: "#9da5af", fontSize: 10 }}>PRIMARY</div>
+                  <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{modelStatus.primary_model.model}</div>
+                  <div style={{ color: "#9da5af", fontSize: 11 }}>({modelStatus.primary_model.provider})</div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#f85149" }}>
-                  <span>400 Bad Requests:</span>
-                  <span>{modelStatus.errors_today.bad_request_400 || 0}</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#9da5af" }}>
-                  <span>Total Warnings:</span>
-                  <span>{modelStatus.errors_today.total_warnings || 0}</span>
+                <div style={{ fontSize: 14, fontWeight: 700, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
+                  {modelStatus.primary_model.healthy ? "OK" : modelStatus.primary_model.detail || "FAIL"}
                 </div>
               </div>
-            ) : (
-              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No errors reported today.</div>
             )}
-          </AccordionSection>
-
-          {/* Model Health Accordion */}
-          <AccordionSection
-            title="Model Status"
-            icon="🤖"
-            isExpanded={expandedSections.models}
-            onClick={() => toggleSection("models")}
-          >
-            {modelStatusLoading ? (
-              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading model status...</div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {modelStatus?.primary_model && (
-                  <div style={{
+            {modelStatus?.models && modelStatus.models.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {modelStatus.models.map((m: any, i: number) => (
+                  <div key={i} style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "10px 14px", background: "#0d1117", borderRadius: 6,
-                    border: `1px solid ${modelStatus.primary_model.healthy ? "#238636" : "#da3633"}`,
-                    marginBottom: 8,
+                    padding: "8px 12px", background: "#0d1117", borderRadius: 6,
+                    border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
+                    marginBottom: 4,
                   }}>
                     <div>
-                      <div style={{ color: "#9da5af", fontSize: 10 }}>PRIMARY</div>
-                      <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{modelStatus.primary_model.model}</div>
-                      <div style={{ color: "#9da5af", fontSize: 11 }}>({modelStatus.primary_model.provider})</div>
+                      <div style={{ color: "#9da5af", fontSize: 10 }}>FALLBACK</div>
+                      <div style={{ color: "#ffffff", fontSize: 13 }}>{m.model}</div>
+                      <div style={{ color: "#9da5af", fontSize: 11 }}>({m.provider})</div>
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
-                      {modelStatus.primary_model.healthy ? "OK" : modelStatus.primary_model.detail || "FAIL"}
+                    <div style={{ fontSize: 13, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
+                      {m.healthy ? "OK" : m.detail}
                     </div>
                   </div>
-                )}
-                {modelStatus?.models && modelStatus.models.length > 0 && (
-                  modelStatus.models.map((m: any, i: number) => (
-                    <div key={i} style={{
-                      display: "flex", justifyContent: "space-between", alignItems: "center",
-                      padding: "8px 12px", background: "#0d1117", borderRadius: 6,
-                      border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
-                      marginBottom: 4,
-                    }}>
-                      <div>
-                        <div style={{ color: "#9da5af", fontSize: 10 }}>FALLBACK</div>
-                        <div style={{ color: "#ffffff", fontSize: 13 }}>{m.model}</div>
-                        <div style={{ color: "#9da5af", fontSize: 11 }}>({m.provider})</div>
-                      </div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
-                        {m.healthy ? "OK" : m.detail}
-                      </div>
-                    </div>
-                  ))
-                )}
-                {!modelStatusLoading && !modelStatus?.primary_model && !modelStatus?.models && (
-                  <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No model data available.</div>
-                )}
+                ))}
               </div>
             )}
-          </AccordionSection>
+            {!modelStatusLoading && !modelStatus?.primary_model && !modelStatus?.models && (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No model data available.</div>
+            )}
+          </div>
+        )}
+      </AccordionSection>
 
-          {/* Cron Jobs Accordion */}
-          <AccordionSection
-            title="Cron Jobs"
-            icon="⏰"
-            isExpanded={expandedSections.crons}
-            onClick={() => toggleSection("crons")}
-          >
-            {modelStatusLoading ? (
-              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading cron jobs...</div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {modelStatus?.crons && modelStatus.crons.length > 0 ? (
-                  modelStatus.crons.map((cron: any) => (
-                    <div key={cron.id} style={{
-                      padding: "10px 12px", background: "#0d1117", borderRadius: 6,
-                      border: "1px solid #30363d", marginBottom: 4,
-                    }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <span
-                            style={{
-                              width: 10, height: 10, borderRadius: "50%",
-                              background: cron.last_status === "ok" ? "#3fb950" : "#f85149",
-                            }}
-                          />
-                          <div style={{ display: "flex", flexDirection: "column" }}>
-                            <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{cron.name}</div>
-                            <div style={{ color: "#9da5af", fontSize: 12 }}>{cron.schedule.display || cron.schedule}</div>
-                          </div>
-                        </div>
-                        <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 700 }}>
-                          {cron.last_status?.toUpperCase() || "?"}
-                        </div>
+      {/* Cron Jobs Accordion */}
+      <AccordionSection
+        title="Cron Jobs"
+        icon="⏰"
+        isExpanded={expandedSections.crons}
+        onClick={() => toggleSection("crons")}
+      >
+        {modelStatusLoading ? (
+          <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading cron jobs...</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {modelStatus?.crons && modelStatus.crons.length > 0 ? (
+              modelStatus.crons.map((cron: any) => (
+                <div key={cron.id} style={{
+                  padding: "10px 12px", background: "#0d1117", borderRadius: 6,
+                  border: "1px solid #30363d", marginBottom: 4,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span
+                        style={{
+                          width: 10, height: 10, borderRadius: "50%",
+                          background: cron.last_status === "ok" ? "#3fb950" : "#f85149",
+                        }}
+                      />
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{cron.name}</div>
+                        <div style={{ color: "#9da5af", fontSize: 12 }}>{cron.schedule?.display || cron.schedule || ""}</div>
                       </div>
-                      {(cron.last_run || cron.next_run) && (
-                        <div style={{ display: "flex", gap: 20, fontSize: 14, color: "#ffffff", marginTop: 8, marginLeft: 18, fontWeight: 500 }}>
-                          {cron.last_run && (
-                            <span>
-                              last: {cron.last_run_human || cron.last_run}
-                            </span>
-                          )}
-                          {cron.next_run && (
-                            <span>
-                              next: {cron.next_run_human || cron.next_run}
-                            </span>
-                          )}
-                        </div>
+                    </div>
+                    <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 700 }}>
+                      {cron.last_status?.toUpperCase() || "?"}
+                    </div>
+                  </div>
+                  {(cron.last_run || cron.next_run) && (
+                    <div style={{ display: "flex", gap: 20, fontSize: 14, color: "#ffffff", marginTop: 8, marginLeft: 18, fontWeight: 500 }}>
+                      {cron.last_run && (
+                        <span>
+                          last: {cron.last_run_human || cron.last_run}
+                        </span>
+                      )}
+                      {cron.next_run && (
+                        <span>
+                          next: {cron.next_run_human || cron.next_run}
+                        </span>
                       )}
                     </div>
-                  ))
-                ) : (
-                  <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No cron jobs found.</div>
-                )}
-                <div style={{ textAlign: "center", marginTop: 12 }}>
-                  <button
-                    onClick={loadModelStatus}
-                    disabled={modelStatusLoading}
-                    style={{
-                      ...primaryBtnStyle,
-                      fontSize: 13,
-                      opacity: modelStatusLoading ? 0.5 : 1,
-                    }}
-                  >
-                    {modelStatusLoading ? "Checking..." : "Refresh Models & Crons"}
-                  </button>
+                  )}
                 </div>
-              </div>
+              ))
+            ) : (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No cron jobs found.</div>
             )}
-          </AccordionSection>
-        </>
-      )}
+            <div style={{ textAlign: "center", marginTop: 12 }}>
+              <button
+                onClick={loadModelStatus}
+                disabled={modelStatusLoading}
+                style={{
+                  ...primaryBtnStyle,
+                  fontSize: 13,
+                  opacity: modelStatusLoading ? 0.5 : 1,
+                }}
+              >
+                {modelStatusLoading ? "Checking..." : "Refresh Models & Crons"}
+              </button>
+            </div>
+          </div>
+        )}
+      </AccordionSection>
+
+      {/* Advanced Settings Accordion */}
+      <AccordionSection
+        title="Advanced Settings"
+        icon="⚙️"
+        isExpanded={false}
+        onClick={() => toggleSection("advanced")}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ padding: "12px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d" }}>
+            <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Governor Admin Token</div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="password"
+                value={tokenInput}
+                onChange={(e) => { setTokenInput(e.target.value); setTokenSaved(false); }}
+                placeholder="Enter governor admin token"
+                style={{ ...inputStyle, marginTop: 0, flex: 1 }}
+              />
+              <button
+                onClick={() => {
+                  localStorage.setItem("governor_admin_token", tokenInput);
+                  setTokenSaved(true);
+                  loadSystemInfo();
+                }}
+                style={{ ...primaryBtnStyle, whiteSpace: "nowrap" }}
+              >
+                {tokenSaved ? "Saved" : "Save"}
+              </button>
+            </div>
+            <div style={{ color: "#9da5af", fontSize: 11, marginTop: 4 }}>
+              For admin actions (model management, task control). Stored in browser localStorage only.
+            </div>
+          </div>
+          <div style={{ padding: "12px 14px", background: "#0d1117", borderRadius: 6, border: "1px solid #30363d" }}>
+            <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Hermes Chat API Key</div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="password"
+                value={hermesKeyInput}
+                onChange={(e) => { setHermesKeyInput(e.target.value); setHermesKeySaved(false); }}
+                placeholder="Enter Hermes API server key"
+                style={{ ...inputStyle, marginTop: 0, flex: 1 }}
+              />
+              <button
+                onClick={() => {
+                  localStorage.setItem("hermes_api_key", hermesKeyInput);
+                  setHermesKeySaved(true);
+                }}
+                style={{ ...primaryBtnStyle, whiteSpace: "nowrap" }}
+              >
+                {hermesKeySaved ? "Saved" : "Save"}
+              </button>
+            </div>
+            <div style={{ color: "#9da5af", fontSize: 11, marginTop: 4 }}>
+              For Vibes dashboard chat. Stored in browser localStorage only.
+            </div>
+          </div>
+        </div>
+      </AccordionSection>
     </div>
   );
 
