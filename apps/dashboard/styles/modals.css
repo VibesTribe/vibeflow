@@ -518,12 +518,14 @@
 }
 
 .mission-modal--admin .mission-modal__controls {
-  position: absolute;
+  position: sticky;
   top: 12px;
   right: 14px;
-  background: transparent;
-  padding: 0;
+  background: rgba(8, 11, 22, 0.8);
+  backdrop-filter: blur(8px);
+  padding: 4px 8px;
   justify-content: flex-end;
+  z-index: 10;
 }
 
 .mission-modal--admin .mission-modal__controls::before {

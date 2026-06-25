@@ -293,7 +293,56 @@ const AdminControlCenter: React.FC = () => {
           {/* Cron Jobs */}
           {modelStatus.crons && modelStatus.crons.length > 0 && (
             <div style={{ marginTop: 8 }}>
-              <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600, marginBottom: 6, padding: "0 2px" }}>
+              <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600, marginBottom: 8 }}>
+                Cron Jobs ({modelStatus.crons.length})
+              </div>
+              {modelStatus.crons.map((cron) => (
+                <div
+                  key={cron.id}
+                  style={{
+                    padding: "8px 12px",
+                    background: "#0d1117",
+                    borderRadius: 6,
+                    border: "1px solid #30363d",
+                    marginBottom: 6,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: "50%",
+                          background: cron.last_status === "ok" ? "#3fb950" : "#f85149",
+                        }}
+                      />
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 500 }}>{cron.name}</div>
+                        <div style={{ color: "#9da5af", fontSize: 11 }}>{cron.schedule}</div>
+                      </div>
+                    </div>
+                    <div style={{ color: "#ffffff", fontSize: 12, fontWeight: 500 }}>{cron.last_status?.toUpperCase() || "?"}</div>
+                  </div>
+                  {(cron.last_run || cron.next_run) && (
+                    <div style={{ display: "flex", gap: 16, fontSize: 12, color: "#ffffff", marginTop: 6, marginLeft: 16 }}>
+                      {cron.last_run && (
+                        <span>
+                          last: {cron.last_run_human || cron.last_run}
+                        </span>
+                      )}
+                      {cron.next_run && (
+                        <span>
+                          next: {cron.next_run_human || cron.next_run}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
                 Cron Jobs ({modelStatus.crons.length})
               </div>
               {modelStatus.crons.map((c: any, i: number) => {
