@@ -271,7 +271,7 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
 
   const renderSystem = () => (
     <div className="admin-panel__card admin-panel__card--stacked">
-      {/* System Info Accordion */}
+      {/* Hardware & OS Accordion */}
       <AccordionSection
         title="Hardware & OS"
         icon="💻"
@@ -279,43 +279,37 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
         onClick={() => toggleSection("system")}
       >
         {sysLoading ? (
-          <div style={{ padding: "10px", color: "#9da5af" }}>Loading...</div>
+          <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading system data...</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {sysInfo.map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "10px 14px",
-                  background: "#0d1117",
-                  borderRadius: 6,
+            {sysInfo.length > 0 ? (
+              sysInfo.map((item, i) => (
+                <div key={i} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "10px 14px", background: "#0d1117", borderRadius: 6,
                   border: "1px solid #30363d",
-                }}
-              >
-                <div>
-                  <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600 }}>{item.label}</div>
-                  {item.detail && <div style={{ color: "#9da5af", fontSize: 11, marginTop: 2 }}>{item.detail}</div>}
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
+                }}>
+                  <div>
+                    <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 600 }}>{item.label}</div>
+                    {item.detail && <div style={{ color: "#9da5af", fontSize: 11, marginTop: 2 }}>{item.detail}</div>}
+                  </div>
+                  <div style={{
+                    fontSize: 13, fontWeight: 600,
                     color: item.status === "ok" ? "#3fb950" : item.status === "warn" ? "#d29922" : item.status === "error" ? "#f85149" : "#9da5af",
-                  }}
-                >
-                  {item.value}
+                  }}>
+                    {item.value}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No system info available.</div>
+            )}
           </div>
         )}
       </AccordionSection>
 
-      {/* Model Health Accordion */}
-      {modelStatus && (
+      {/* Model & Cron Accordion Group */}
+      {(modelStatus || modelStatusLoading) && (
         <>
           {/* Errors Accordion */}
           <AccordionSection
@@ -323,19 +317,12 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
             icon="⚠️"
             isExpanded={expandedSections.errors}
             onClick={() => toggleSection("errors")}
-            color={modelStatus.errors_today ? "#f85149" : "#9da5af"}
+            color={modelStatus?.errors_today ? "#f85149" : "#9da5af"}
           >
-            {modelStatus.errors_today ? (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  padding: "8px",
-                  background: "#0d1117",
-                  borderRadius: 6,
-                }}
-              >
+            {modelStatusLoading ? (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading error stats...</div>
+            ) : modelStatus?.errors_today ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "8px", background: "#0d1117", borderRadius: 6 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#f85149" }}>
                   <span>429 Rate Limits:</span>
                   <span>{modelStatus.errors_today.rate_limit_429 || 0}</span>
@@ -361,54 +348,49 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
             isExpanded={expandedSections.models}
             onClick={() => toggleSection("models")}
           >
-            {modelStatus.primary_model && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "10px 14px",
-                  background: "#0d1117",
-                  borderRadius: 6,
-                  border: `1px solid ${modelStatus.primary_model.healthy ? "#238636" : "#da3633"}`,
-                  marginBottom: 8,
-                }}
-              >
-                <div>
-                  <div style={{ color: "#9da5af", fontSize: 10 }}>PRIMARY</div>
-                  <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{modelStatus.primary_model.model}</div>
-                  <div style={{ color: "#9da5af", fontSize: 11 }}>({modelStatus.primary_model.provider})</div>
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
-                  {modelStatus.primary_model.healthy ? "OK" : modelStatus.primary_model.detail || "FAIL"}
-                </div>
-              </div>
-            )}
-            {modelStatus.models && modelStatus.models.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {modelStatus.models.map((m: any, i: number) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "8px 12px",
-                      background: "#0d1117",
-                      borderRadius: 6,
-                      border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
-                    }}
-                  >
+            {modelStatusLoading ? (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading model status...</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {modelStatus?.primary_model && (
+                  <div style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "10px 14px", background: "#0d1117", borderRadius: 6,
+                    border: `1px solid ${modelStatus.primary_model.healthy ? "#238636" : "#da3633"}`,
+                    marginBottom: 8,
+                  }}>
                     <div>
-                      <div style={{ color: "#9da5af", fontSize: 10 }}>FALLBACK</div>
-                      <div style={{ color: "#ffffff", fontSize: 13 }}>{m.model}</div>
-                      <div style={{ color: "#9da5af", fontSize: 11 }}>({m.provider})</div>
+                      <div style={{ color: "#9da5af", fontSize: 10 }}>PRIMARY</div>
+                      <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{modelStatus.primary_model.model}</div>
+                      <div style={{ color: "#9da5af", fontSize: 11 }}>({modelStatus.primary_model.provider})</div>
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
-                      {m.healthy ? "OK" : m.detail}
+                    <div style={{ fontSize: 14, fontWeight: 700, color: modelStatus.primary_model.healthy ? "#3fb950" : "#f85149" }}>
+                      {modelStatus.primary_model.healthy ? "OK" : modelStatus.primary_model.detail || "FAIL"}
                     </div>
                   </div>
-                ))}
+                )}
+                {modelStatus?.models && modelStatus.models.length > 0 && (
+                  modelStatus.models.map((m: any, i: number) => (
+                    <div key={i} style={{
+                      display: "flex", justifyContent: "space-between", alignItems: "center",
+                      padding: "8px 12px", background: "#0d1117", borderRadius: 6,
+                      border: `1px solid ${m.healthy ? "#23863655" : "#da363355"}`,
+                      marginBottom: 4,
+                    }}>
+                      <div>
+                        <div style={{ color: "#9da5af", fontSize: 10 }}>FALLBACK</div>
+                        <div style={{ color: "#ffffff", fontSize: 13 }}>{m.model}</div>
+                        <div style={{ color: "#9da5af", fontSize: 11 }}>({m.provider})</div>
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: m.healthy ? "#3fb950" : "#f85149" }}>
+                        {m.healthy ? "OK" : m.detail}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {!modelStatusLoading && !modelStatus?.primary_model && !modelStatus?.models && (
+                  <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No model data available.</div>
+                )}
               </div>
             )}
           </AccordionSection>
@@ -420,80 +402,67 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
             isExpanded={expandedSections.crons}
             onClick={() => toggleSection("crons")}
           >
-            {modelStatus.crons && modelStatus.crons.length > 0 ? (
+            {modelStatusLoading ? (
+              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>Loading cron jobs...</div>
+            ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {modelStatus.crons.map((cron: any) => (
-                  <div
-                    key={cron.id}
-                    style={{
-                      padding: "10px 12px",
-                      background: "#0d1117",
-                      borderRadius: 6,
-                      border: "1px solid #30363d",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span
-                          style={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: "50%",
-                            background: cron.last_status === "ok" ? "#3fb950" : "#f85149",
-                          }}
-                        />
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{cron.name}</div>
-                          <div style={{ color: "#9da5af", fontSize: 12 }}>{cron.schedule}</div>
+                {modelStatus?.crons && modelStatus.crons.length > 0 ? (
+                  modelStatus.crons.map((cron: any) => (
+                    <div key={cron.id} style={{
+                      padding: "10px 12px", background: "#0d1117", borderRadius: 6,
+                      border: "1px solid #30363d", marginBottom: 4,
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span
+                            style={{
+                              width: 10, height: 10, borderRadius: "50%",
+                              background: cron.last_status === "ok" ? "#3fb950" : "#f85149",
+                            }}
+                          />
+                          <div style={{ display: "flex", flexDirection: "column" }}>
+                            <div style={{ color: "#ffffff", fontSize: 14, fontWeight: 600 }}>{cron.name}</div>
+                            <div style={{ color: "#9da5af", fontSize: 12 }}>{cron.schedule.display || cron.schedule}</div>
+                          </div>
+                        </div>
+                        <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 700 }}>
+                          {cron.last_status?.toUpperCase() || "?"}
                         </div>
                       </div>
-                      <div style={{ color: "#ffffff", fontSize: 13, fontWeight: 700 }}>
-                        {cron.last_status?.toUpperCase() || "?"}
-                      </div>
+                      {(cron.last_run || cron.next_run) && (
+                        <div style={{ display: "flex", gap: 20, fontSize: 14, color: "#ffffff", marginTop: 8, marginLeft: 18, fontWeight: 500 }}>
+                          {cron.last_run && (
+                            <span>
+                              last: {cron.last_run_human || cron.last_run}
+                            </span>
+                          )}
+                          {cron.next_run && (
+                            <span>
+                              next: {cron.next_run_human || cron.next_run}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    {(cron.last_run || cron.next_run) && (
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: 20,
-                          fontSize: 14,
-                          color: "#ffffff",
-                          marginTop: 8,
-                          marginLeft: 18,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {cron.last_run && (
-                          <span>
-                            last: {cron.last_run_human || cron.last_run}
-                          </span>
-                        )}
-                        {cron.next_run && (
-                          <span>
-                            next: {cron.next_run_human || cron.next_run}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No cron jobs found.</div>
+                )}
+                <div style={{ textAlign: "center", marginTop: 12 }}>
+                  <button
+                    onClick={loadModelStatus}
+                    disabled={modelStatusLoading}
+                    style={{
+                      ...primaryBtnStyle,
+                      fontSize: 13,
+                      opacity: modelStatusLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {modelStatusLoading ? "Checking..." : "Refresh Models & Crons"}
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div style={{ padding: "10px", color: "#9da5af", textAlign: "center" }}>No cron jobs found.</div>
             )}
-            <div style={{ textAlign: "center", marginTop: 12 }}>
-              <button
-                onClick={loadModelStatus}
-                disabled={modelStatusLoading}
-                style={{
-                  ...primaryBtnStyle,
-                  fontSize: 13,
-                  opacity: modelStatusLoading ? 0.5 : 1,
-                }}
-              >
-                {modelStatusLoading ? "Checking..." : "Refresh Models & Crons"}
-              </button>
-            </div>
           </AccordionSection>
         </>
       )}
@@ -510,45 +479,21 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
   const renderAddModelForm = () => (
     <div
       style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0,0,0,0.7)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
+        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+        background: "rgba(0,0,0,0.7)", display: "flex",
+        alignItems: "center", justifyContent: "center", zIndex: 9999,
       }}
     >
       <div
         style={{
-          background: "#161b22",
-          border: "1px solid #30363d",
-          borderRadius: 12,
-          padding: 24,
-          width: 480,
-          maxWidth: "90vw",
-          maxHeight: "90vh",
-          overflow: "auto",
+          background: "#161b22", border: "1px solid #30363d", borderRadius: 12,
+          padding: 24, width: 480, maxWidth: "90vw", maxHeight: "90vh", overflow: "auto",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
           <h2 style={{ color: "#ffffff", margin: 0 }}>Add Model</h2>
-          <button
-            onClick={() => {
-              setShowAddModel(false);
-              setSubmitResult(null);
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#8b949e",
-              fontSize: 20,
-              cursor: "pointer",
-            }}
-          >
+          <button onClick={() => { setShowAddModel(false); setSubmitResult(null); }}
+            style={{ background: "none", border: "none", color: "#8b949e", fontSize: 20, cursor: "pointer" }}>
             &times;
           </button>
         </div>
@@ -556,30 +501,19 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <label style={{ color: "#c9d1d9", fontSize: 13 }}>
             Model ID *
-            <input
-              value={formData.model_id}
-              onChange={(e) => setFormData({ ...formData, model_id: e.target.value })}
-              placeholder="deepseek/deepseek-chat"
-              style={inputStyle}
-            />
+            <input value={formData.model_id} onChange={(e) => setFormData({ ...formData, model_id: e.target.value })}
+              placeholder="deepseek/deepseek-chat" style={inputStyle} />
           </label>
           <label style={{ color: "#c9d1d9", fontSize: 13 }}>
             Display Name
-            <input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="DeepSeek V4"
-              style={inputStyle}
-            />
+            <input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="DeepSeek V4" style={inputStyle} />
           </label>
           <div style={{ display: "flex", gap: 12 }}>
             <label style={{ color: "#c9d1d9", fontSize: 13, flex: 1 }}>
               Provider
-              <select
-                value={formData.provider}
-                onChange={(e) => setFormData({ ...formData, provider: e.target.value })}
-                style={{ ...inputStyle, height: 36 }}
-              >
+              <select value={formData.provider} onChange={(e) => setFormData({ ...formData, provider: e.target.value })}
+                style={{ ...inputStyle, height: 36 }}>
                 <option value="openrouter">OpenRouter</option>
                 <option value="google">Google</option>
                 <option value="groq">Groq</option>
@@ -590,22 +524,16 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
             </label>
             <label style={{ color: "#c9d1d9", fontSize: 13, flex: 1 }}>
               Tier
-              <select
-                value={formData.tier}
-                onChange={(e) => setFormData({ ...formData, tier: e.target.value as any })}
-                style={{ ...inputStyle, height: 36 }}
-              >
+              <select value={formData.tier} onChange={(e) => setFormData({ ...formData, tier: e.target.value as any })}
+                style={{ ...inputStyle, height: 36 }}>
                 <option value="free">Free</option>
                 <option value="paid">Paid</option>
               </select>
             </label>
             <label style={{ color: "#c9d1d9", fontSize: 13, flex: 1 }}>
               Role
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                style={{ ...inputStyle, height: 36 }}
-              >
+              <select value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+                style={{ ...inputStyle, height: 36 }}>
                 <option value="primary">Primary</option>
                 <option value="backup">Backup</option>
                 <option value="fallback">Fallback</option>
@@ -614,58 +542,35 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
           </div>
           <label style={{ color: "#c9d1d9", fontSize: 13 }}>
             Context Limit
-            <input
-              type="number"
-              value={formData.context_limit}
+            <input type="number" value={formData.context_limit}
               onChange={(e) => setFormData({ ...formData, context_limit: parseInt(e.target.value) || 128000 })}
-              style={inputStyle}
-            />
+              style={inputStyle} />
           </label>
           <label style={{ color: "#c9d1d9", fontSize: 13 }}>
             API Key (leave empty for free models)
-            <input
-              value={formData.api_key_value}
-              type="password"
+            <input value={formData.api_key_value} type="password"
               onChange={(e) => setFormData({ ...formData, api_key_value: e.target.value })}
-              placeholder="sk-..."
-              style={inputStyle}
-            />
+              placeholder="sk-..." style={inputStyle} />
           </label>
           <label style={{ color: "#c9d1d9", fontSize: 13 }}>
             Credit Info
-            <input
-              value={formData.credit_info}
-              onChange={(e) => setFormData({ ...formData, credit_info: e.target.value })}
-              placeholder="$10 credit"
-              style={inputStyle}
-            />
+            <input value={formData.credit_info} onChange={(e) => setFormData({ ...formData, credit_info: e.target.value })}
+              placeholder="$10 credit" style={inputStyle} />
           </label>
         </div>
 
         {submitResult && (
-          <div
-            style={{
-              marginTop: 12,
-              padding: 10,
-              borderRadius: 6,
-              background: submitResult.startsWith("Error") ? "#3d1f1f" : "#1f3d1f",
-              color: "#ffffff",
-              fontSize: 14,
-            }}
-          >
+          <div style={{ marginTop: 12, padding: 10, borderRadius: 6,
+            background: submitResult.startsWith("Error") ? "#3d1f1f" : "#1f3d1f",
+            color: "#ffffff", fontSize: 14 }}>
             {submitResult}
           </div>
         )}
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-          <button onClick={() => { setShowAddModel(false); setSubmitResult(null); }} style={cancelBtnStyle}>
-            Cancel
-          </button>
-          <button
-            onClick={handleAddModel}
-            disabled={submitting || !formData.model_id}
-            style={{ ...primaryBtnStyle, opacity: submitting || !formData.model_id ? 0.5 : 1 }}
-          >
+          <button onClick={() => { setShowAddModel(false); setSubmitResult(null); }} style={cancelBtnStyle}>Cancel</button>
+          <button onClick={handleAddModel} disabled={submitting || !formData.model_id}
+            style={{ ...primaryBtnStyle, opacity: submitting || !formData.model_id ? 0.5 : 1 }}>
             {submitting ? "Adding..." : "Add Model"}
           </button>
         </div>
@@ -701,12 +606,9 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <nav className="admin-console__nav" aria-label="Admin navigation">
             {NAV_ITEMS.map((item) => (
-              <button
-                key={item}
+              <button key={item}
                 className={"admin-nav__item " + (activeTab === item ? "admin-nav__item--active" : "")}
-                onClick={() => setActiveTab(item)}
-                type="button"
-              >
+                onClick={() => setActiveTab(item)} type="button">
                 {item}
               </button>
             ))}
@@ -714,12 +616,7 @@ const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onClose }) => {
           <button
             onClick={onClose}
             style={{
-              background: "none",
-              border: "none",
-              color: "#8b949e",
-              fontSize: 24,
-              cursor: "pointer",
-              padding: "4px 8px",
+              background: "none", border: "none", color: "#8b949e", fontSize: 24, cursor: "pointer", padding: "4px 8px",
             }}
           >
             &times;
