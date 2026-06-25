@@ -506,7 +506,7 @@
   width: min(1280px, calc(100% - 32px));
   max-height: calc(100vh - 32px);
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto;
   background: transparent;
   border: none;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);

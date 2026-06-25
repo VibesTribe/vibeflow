@@ -3,18 +3,8 @@
    Admin tab: console, hero, panels, grids, controls
    ========================================================================== */
 
-/* Larger, scrollable modal for admin to show all system data */
-.mission-modal--admin {
-  width: min(680px, calc(100% - 32px));
-  max-height: calc(100vh - 48px);
-  padding: 48px 16px 16px;
-  overflow-y: auto;
-}
-
-.mission-modal--admin .admin-console {
-  max-height: none;
-  overflow-y: visible;
-}
+/* Admin modal scrolling is handled in modals.css (.mission-modal--admin) */
+/* This file just styles the inner content */
 
 .admin-console {
   background: radial-gradient(circle at 18% 12%, rgba(30, 203, 255, 0.09), transparent 35%), radial-gradient(circle at 82% 0%, rgba(72, 122, 255, 0.08), transparent 38%), linear-gradient(160deg, #060b16 0%, #050b14 45%, #030910 100%);
@@ -22,7 +12,6 @@
   border-radius: 22px;
   padding: var(--space-6);
   color: #d8e4ff;
-  overflow-y: auto;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 0.03);
 }
 
