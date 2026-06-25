@@ -92,24 +92,22 @@
   z-index: 20;
   background: rgba(8, 11, 22, 1);
   padding: var(--space-1) 0;
-  position: sticky;
-}
-
-.mission-modal__controls {
-  position: sticky;
-  top: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-3);
-  z-index: 20;
-  background: rgba(8, 11, 22, 1);
-  position: sticky;
-  isolation: isolate;
   min-height: 44px;
   overflow-x: auto;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.admin-console__bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #161b22;
+  padding: 16px 24px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .mission-modal__controls::before {

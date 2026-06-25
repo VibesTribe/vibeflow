@@ -189,7 +189,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
       content = <AddAgentForm onClose={onClose} />;
       break;
     case "admin":
-      content = <AdminControlCenter />;
+      content = <AdminControlCenter onClose={onClose} />;
       break;
     default:
       content = null;
