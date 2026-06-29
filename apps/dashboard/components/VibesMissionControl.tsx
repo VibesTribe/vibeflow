@@ -87,28 +87,23 @@ const VibesMissionControl: React.FC = () => {
     }
     const sliceNameById = new Map(slices.map((slice) => [slice.id, slice.name]));
     return reviews.map((review) => {
-      const task = snapshot.tasks.find((entry) => entry.id === review.task_id);
+      const tid = review.task_id || review.id;
+      const task = snapshot.tasks.find((entry) => entry.id === tid);
       const sliceName = task?.sliceId ? sliceNameById.get(task.sliceId) : undefined;
-      const restoreEntry = restores[review.task_id];
+      const restoreEntry = restores[tid];
       const previewUrl = review.preview_url ?? restoreEntry?.preview_url ?? review.comparison_url ?? review.diff_url;
       return {
-        taskId: review.task_id,
-        title: task?.title ?? `Task ${review.task_id}`,
+        ...review,
+        taskId: tid,
         taskNumber: task?.taskNumber,
         sliceName,
         owner: task?.owner ?? null,
-        summary: task?.summary,
-        updatedAt: review.updated_at,
-        status: review.review,
-        notes: review.notes,
-        reviewer: review.reviewer,
-        diffUrl: review.diff_url,
-        comparisonUrl: review.comparison_url,
-        previewUrl,
+        updatedAt: review.updated_at || review.created_at,
         entry: review,
         task,
         restore: restoreEntry,
-      };
+        previewUrl,
+      } as ReviewQueueItem;
     });
   }, [reviews, snapshot.tasks, slices, restores]);
 

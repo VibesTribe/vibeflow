@@ -4,12 +4,12 @@ import { RestoreRecord, ReviewEntry } from "../hooks/useReviewData";
 export interface ReviewQueueItem {
   taskId: string;
   title: string;
-  taskNumber?: string;
+  taskNumber?: number | string;
   sliceName?: string;
   owner?: string | null;
   summary?: string;
   updatedAt?: string;
-  status: ReviewEntry["review"];
+  status: string;
   notes?: string;
   reviewer?: string;
   diffUrl?: string;
