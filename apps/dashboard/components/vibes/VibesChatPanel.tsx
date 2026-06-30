@@ -93,6 +93,7 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
         currentAudioRef.current = null;
       }
       if (abortRef.current) abortRef.current.abort();
+      initialMessageSentRef.current = null;  // Reset so Ask button works on reopen
       onExternalClose?.();
     }
   }, [chatState === "closed"]);
@@ -415,8 +416,8 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       !isLoading
     ) {
       initialMessageSentRef.current = initialMessage;
-      // Small delay to ensure session is ready before sending
-      const timer = setTimeout(() => sendMessage(initialMessage, "text"), 300);
+      // Delay to ensure session creation completes before sending
+      const timer = setTimeout(() => sendMessage(initialMessage, "text"), 1000);
       return () => clearTimeout(timer);
     }
   }, [chatState, initialMessage, isLoading, sendMessage]);
