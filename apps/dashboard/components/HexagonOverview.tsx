@@ -65,6 +65,11 @@ const SERVICE_ICONS: Record<string, React.ReactNode> = {
       <path d="M13 2L4.5 12.5h6.5l-1.5 9L18.5 11H12l1-9z" />
     </svg>
   ),
+  zai: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+      <path d="M4 4h16L8 20h12" />
+    </svg>
+  ),
   dashboard: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="22" height="22">
       <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -143,9 +148,10 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
                 { url: "https://github.com/VibesTribe/vibeflow", type: "github", label: "VibeFlow Dashboard" },
                 { url: "https://vercel.com/vibestribe", type: "vercel", label: "Vercel" },
                 { url: "https://dash.cloudflare.com", type: "cloudflare", label: "Cloudflare" },
-                { url: "https://openrouter.ai/credits", type: "openrouter", label: "OpenRouter" },
+                { url: "https://openrouter.ai/", type: "openrouter", label: "OpenRouter" },
                 { url: "https://aistudio.google.com", type: "google", label: "Google AI Studio" },
-                { url: "https://console.groq.com", type: "groq", label: "Groq Console" },
+                { url: "https://console.groq.com/home", type: "groq", label: "Groq Console" },
+                { url: "https://z.ai/manage-apikey/coding-plan/personal/usage", type: "zai", label: "Z.AI (GLM)" },
               ] as ConnectedService[],
             };
           }
@@ -204,30 +210,33 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
     }));
   }, []);
 
-  const removeService = useCallback((slug: string, index: number) => {
+  // ─── Remove a service (works for both DB and custom services) ─────────────
+
+  const removeService = useCallback((slug: string, serviceIndex: number) => {
+    // serviceIndex is the index in the full merged list (excluding dashboard center)
+    // Rebuild the full list without this item, then save
     const project = projects.find(p => p.slug === slug);
     const dbServices = project?.connected_services || [];
-    const isDbService = index < dbServices.length;
+    const localServices = customServices[slug] || [];
 
-    if (isDbService) {
-      // Remove from DB via API
-      const updated = [...dbServices];
-      updated.splice(index, 1);
+    // The index is relative to the combined list (db first, then local)
+    if (serviceIndex < dbServices.length) {
+      // Remove from DB services via API
+      const updated = dbServices.filter((_, i) => i !== serviceIndex);
       fetch(`${GOV_API}/api/projects/${slug}/services`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ connected_services: updated }),
       }).then(() => fetchProjects()).catch(() => {});
     } else {
-      // Remove from local custom
-      const localIndex = index - dbServices.length;
+      // Remove from local custom services
+      const localIndex = serviceIndex - dbServices.length;
       setCustomServices(prev => {
-        const arr = [...(prev[slug] || [])];
-        arr.splice(localIndex, 1);
+        const arr = (prev[slug] || []).filter((_, i) => i !== localIndex);
         return { ...prev, [slug]: arr };
       });
     }
-  }, [projects, fetchProjects]);
+  }, [projects, fetchProjects, customServices]);
 
   const handleServiceDragStart = useCallback((projectSlug: string, index: number) => {
     setDraggedService({ projectSlug, index });
@@ -280,18 +289,20 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
 
   // ─── Layout positions for satellites around a center hexagon ─────────────
 
-  const satellitePositions = useMemo(() => {
-    // Positions for up to 8 satellites around a center hex
-    const angles = [0, 45, 90, 135, 180, 225, 270, 315];
-    const radius = 180; // px from center
-    return angles.map(angle => {
-      const rad = (angle - 90) * Math.PI / 180; // -90 to start at top
-      return {
-        x: Math.cos(rad) * radius,
-        y: Math.sin(rad) * radius,
-      };
-    });
-  }, []);
+  function getSatellitePositions(count: number) {
+    // Spread satellites evenly around a circle.
+    // Radius scales with count so tiles don't overlap.
+    const radius = Math.max(200, 160 + count * 12);
+    const positions = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * 2 * Math.PI - Math.PI / 2; // start at top
+      positions.push({
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+      });
+    }
+    return positions;
+  }
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
@@ -396,45 +407,49 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
           </div>
 
           {/* Satellite service hexagons */}
-          {servicesWithDashboard.slice(1).map((service, i) => {
-            const pos = satellitePositions[i % satellitePositions.length];
-            return (
-              <div
-                key={`${service.url}-${i}`}
-                className="hex-satellite"
-                style={{
-                  transform: `translate(${pos.x}px, ${pos.y}px)`,
-                }}
-              >
-                {editMode && (
-                  <button
-                    className="hex-remove-btn"
-                    onClick={(e) => { e.stopPropagation(); removeService(expandedSlug, i); }}
-                    title="Remove"
-                  >×</button>
-                )}
-                <button
-                  className="hex-tile hex-tile--satellite"
-                  draggable={editMode}
-                  onDragStart={() => handleServiceDragStart(expandedSlug, i + 1)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => { e.preventDefault(); handleServiceDrop(expandedSlug, i + 1); }}
-                  onClick={() => handleServiceClick(service)}
-                  title={service.label}
+          {(() => {
+            const sats = servicesWithDashboard.slice(1);
+            const positions = getSatellitePositions(sats.length);
+            return sats.map((service, i) => {
+              const pos = positions[i];
+              return (
+                <div
+                  key={`${service.url}-${i}`}
+                  className="hex-satellite"
+                  style={{
+                    transform: `translate(${pos.x}px, ${pos.y}px)`,
+                    animationDelay: `${0.05 + i * 0.05}s`,
+                  }}
                 >
-                  {iconFor(service.type)}
-                  <span className="hex-tile__label hex-tile__label--small">{service.label}</span>
-                </button>
-              </div>
-            );
-          })}
+                  {editMode && (
+                    <button
+                      className="hex-remove-btn"
+                      onClick={(e) => { e.stopPropagation(); removeService(expandedSlug, i); }}
+                      title="Remove"
+                    >×</button>
+                  )}
+                  <button
+                    className="hex-tile hex-tile--satellite"
+                    onClick={() => handleServiceClick(service)}
+                    title={service.label}
+                  >
+                    {iconFor(service.type)}
+                    <span className="hex-tile__label hex-tile__label--small">{service.label}</span>
+                  </button>
+                </div>
+              );
+            });
+          })()}
 
           {/* Add button in edit mode */}
           {editMode && (
             <div
               className="hex-satellite hex-satellite--add"
               style={{
-                transform: `translate(${satellitePositions[servicesWithDashboard.length - 1]?.x || 0}px, ${satellitePositions[servicesWithDashboard.length - 1]?.y || 0}px)`,
+                transform: `translate(${(() => {
+                  const addPos = getSatellitePositions(servicesWithDashboard.length)[servicesWithDashboard.length - 1];
+                  return addPos ? `${addPos.x}px, ${addPos.y}px` : "0, 0";
+                })()})`,
               }}
             >
               <button
