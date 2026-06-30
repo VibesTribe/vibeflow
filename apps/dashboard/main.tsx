@@ -16,17 +16,74 @@ import "./styles/admin.css";
 import "./styles/roi-panel.css";
 import "./styles/mission-log.css";
 import "./styles/chat.css";
+import "./styles/hexagon-overview.css";
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import VibesMissionControl from "./components/VibesMissionControl";
+import HexagonOverview from "./components/HexagonOverview";
+
+/**
+ * Simple hash-based routing:
+ *   #/                     → Hexagon overview (all projects)
+ *   #/p/:slug              → Project dashboard
+ *   No hash / legacy       → Project dashboard (backward compat)
+ */
+
+function getRoute(): { view: "overview" | "dashboard"; slug?: string } {
+  const hash = window.location.hash.replace(/^#/, "");
+  const match = hash.match(/^\/p\/([\w-]+)/);
+  if (match) {
+    return { view: "dashboard", slug: match[1] };
+  }
+  if (hash === "/" || hash === "") {
+    return { view: "overview" };
+  }
+  // Default to overview for safety
+  return { view: "overview" };
+}
+
+function App() {
+  const [route, setRoute] = React.useState(getRoute());
+
+  React.useEffect(() => {
+    const onHashChange = () => setRoute(getRoute());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const navigateToDashboard = React.useCallback((slug: string) => {
+    window.location.hash = `/p/${slug}`;
+  }, []);
+
+  const navigateToOverview = React.useCallback(() => {
+    window.location.hash = "/";
+  }, []);
+
+  if (route.view === "overview") {
+    return (
+      <HexagonOverview
+        onSelectProject={navigateToDashboard}
+        selectedSlug={route.slug}
+      />
+    );
+  }
+
+  return (
+    <VibesMissionControl
+      key={route.slug}
+      initialProjectSlug={route.slug}
+      onBackToOverview={navigateToOverview}
+    />
+  );
+}
 
 const root = document.getElementById("root");
 if (!root) {
   throw new Error("Root element missing");
 }
 
-ReactDOM.createRoot(root).render(
+createRoot(root).render(
   <React.StrictMode>
-    <VibesMissionControl />
+    <App />
   </React.StrictMode>
 );

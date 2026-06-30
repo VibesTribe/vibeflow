@@ -11,7 +11,12 @@ import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
 
-const VibesMissionControl: React.FC = () => {
+interface VibesMissionControlProps {
+  initialProjectSlug?: string;
+  onBackToOverview?: () => void;
+}
+
+const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjectSlug, onBackToOverview }) => {
   useEffect(() => {
     if (typeof document === "undefined") return;
     if (document.querySelector(".mission-root--wide")) {
@@ -47,7 +52,8 @@ const VibesMissionControl: React.FC = () => {
   }, []);
 
   const [selectedProjectSlug, setSelectedProjectSlug] = useState<string>(() => {
-    // Restore from URL path or localStorage
+    // Use prop from router if provided, then localStorage, then default
+    if (initialProjectSlug) return initialProjectSlug;
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("vp_selected_project");
       return stored || "vibepilot";
@@ -132,6 +138,11 @@ const VibesMissionControl: React.FC = () => {
   return (
     <div className="mission-root--wide">
       <main className="mission-main">
+        {onBackToOverview && (
+          <button className="mission-back-to-hex" onClick={onBackToOverview} title="Back to project overview">
+            ◆ Hex
+          </button>
+        )}
         <MissionHeader
           statusSummary={statusSummary}
           tasks={(snapshot.tasks as TaskSnapshot[] | undefined) ?? []}
