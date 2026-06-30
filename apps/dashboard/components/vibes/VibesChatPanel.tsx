@@ -415,7 +415,9 @@ const VibesChatPanel: React.FC<VibesChatPanelProps> = ({ externalOpen, onExterna
       !isLoading
     ) {
       initialMessageSentRef.current = initialMessage;
-      sendMessage(initialMessage, "text");
+      // Small delay to ensure session is ready before sending
+      const timer = setTimeout(() => sendMessage(initialMessage, "text"), 300);
+      return () => clearTimeout(timer);
     }
   }, [chatState, initialMessage, isLoading, sendMessage]);
 
