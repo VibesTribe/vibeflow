@@ -300,6 +300,18 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
   const approvedCount = items.filter((i) => i.human_decision === "approve").length;
 
   return (
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      background: "rgba(0,0,0,0.7)", zIndex: 10000,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "16px",
+    }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+     <div style={{
+      background: "#0d1117", borderRadius: "12px",
+      maxWidth: "800px", width: "100%", maxHeight: "90vh",
+      display: "flex", flexDirection: "column",
+      border: "1px solid #30363d", boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+    }}>
     <div style={{ padding: "20px 24px", flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -525,6 +537,8 @@ const ResearchReportPanel: React.FC<ResearchReportPanelProps> = ({ reportId, rev
           </span>
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 };
