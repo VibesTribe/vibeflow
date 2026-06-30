@@ -924,7 +924,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
           </div>
         </div>
       </div>
-      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => { setChatTrigger(false); setAskVibesMessage(undefined); }} initialMessage={askVibesMessage} />
+      <VibesChatPanel externalOpen={chatTrigger} onExternalClose={() => { setChatTrigger(false); }} initialMessage={askVibesMessage} />
     </header>
   );
 };
