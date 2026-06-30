@@ -368,6 +368,13 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
         </button>
       </div>
 
+      {/* Edit mode banner */}
+      {editMode && expandedSlug && (
+        <div className="hex-edit-banner">
+          EDIT MODE — Click <span className="hex-edit-banner__x">×</span> to hide a tile · Click <span className="hex-edit-banner__plus">+ Add</span> to add a new link · Click <span className="hex-edit-banner__done">✓ Done</span> when finished
+        </div>
+      )}
+
       {/* Project hexagon grid (overview) */}
       {!expandedSlug && (
         <div className={`hex-grid ${projects.length === 1 ? "hex-grid--single" : ""}`}>
