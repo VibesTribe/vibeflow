@@ -251,11 +251,11 @@
   background: #64748b;
 }
 
-/* ─── Placeholder tile ────────────────────────────────────────────────────── */
+/* ─── Placeholder tile (green for new project) ─────────────────────────────── */
 
 .hex-tile--placeholder {
-  opacity: 0.4;
-  border: 2px dashed rgba(100, 116, 139, 0.3);
+  opacity: 0.6;
+  border: 2px dashed rgba(52, 211, 153, 0.3);
 }
 
 .hex-tile--placeholder::before {
@@ -263,18 +263,34 @@
 }
 
 .hex-tile--placeholder::after {
-  display: none;
+  box-shadow:
+    inset 0 0 0 2px rgba(52, 211, 153, 0.15),
+    inset 0 0 20px rgba(52, 211, 153, 0.05);
 }
 
 .hex-tile--placeholder:hover {
-  opacity: 0.7;
+  opacity: 1;
+}
+
+.hex-tile--placeholder:hover::after {
+  box-shadow:
+    inset 0 0 0 2px rgba(52, 211, 153, 0.5),
+    inset 0 0 30px rgba(52, 211, 153, 0.1),
+    0 0 30px rgba(52, 211, 153, 0.2);
+}
+
+.hex-tile--placeholder .hex-tile__plus {
+  color: #34d399;
+}
+
+.hex-tile--placeholder .hex-tile__label {
+  color: #34d399;
 }
 
 .hex-tile__plus {
   position: relative;
   z-index: 2;
   font-size: 28px;
-  color: #64748b;
   font-weight: 300;
   line-height: 1;
 }
@@ -622,6 +638,20 @@
 .hex-add-modal__save:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.hex-add-modal--project {
+  width: 440px;
+}
+
+.hex-add-modal__error {
+  color: #f87171;
+  font-size: 12px;
+  padding: 8px 12px;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  margin-bottom: 12px;
 }
 
 /* ─── Hidden tiles restore bar ────────────────────────────────────────────── */

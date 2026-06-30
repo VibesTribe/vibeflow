@@ -72,6 +72,10 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
   const [hiddenServices, setHiddenServices] = useState<Record<string, string[]>>({});
   const [showAddForm, setShowAddForm] = useState(false);
   const [addForm, setAddForm] = useState({ label: "", url: "", type: "default" });
+  const [showProjectForm, setShowProjectForm] = useState(false);
+  const [projectForm, setProjectForm] = useState({ slug: "", display_name: "", description: "", github_owner: "VibesTribe", github_repo: "", deploy_target: "vercel" });
+  const [projectError, setProjectError] = useState("");
+  const [creating, setCreating] = useState(false);
 
   // ─── Fetch ───────────────────────────────────────────────────────────────
 
@@ -148,6 +152,42 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
     setAddForm({ label: "", url: "", type: "default" });
     setShowAddForm(false);
   }, [addForm]);
+
+  // ─── Create project ──────────────────────────────────────────────────────
+
+  const submitProjectForm = useCallback(async () => {
+    if (!projectForm.slug.trim()) return;
+    setCreating(true);
+    setProjectError("");
+    try {
+      const res = await fetch(`${GOV_API}/api/projects`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...projectForm,
+          theme: { primary_color: "#34d399" },
+        }),
+      });
+      if (res.status === 409) {
+        setProjectError("A project with this slug already exists. Choose a different name.");
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setProjectError(data.message || "Failed to create project");
+        return;
+      }
+      // Success — refresh projects, close form, expand the new project
+      await fetchProjects();
+      setShowProjectForm(false);
+      setProjectForm({ slug: "", display_name: "", description: "", github_owner: "VibesTribe", github_repo: "", deploy_target: "vercel" });
+      setExpandedSlug(projectForm.slug);
+    } catch {
+      setProjectError("Network error — is the governor running?");
+    } finally {
+      setCreating(false);
+    }
+  }, [projectForm, fetchProjects]);
 
   const handleServiceClick = useCallback((service: ConnectedService) => {
     if (editMode) return; // don't navigate when editing
@@ -254,12 +294,15 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
               </button>
             </div>
           ))}
-          {projects.length < 2 && (
+          {projects.length < 3 && (
             <div className="hex-project-cell hex-project-cell--placeholder">
-              <div className="hex-tile hex-tile--placeholder">
+              <button
+                className="hex-tile hex-tile--placeholder"
+                onClick={() => setShowProjectForm(true)}
+              >
                 <span className="hex-tile__plus">+</span>
                 <span className="hex-tile__label">New Project</span>
-              </div>
+              </button>
             </div>
           )}
         </div>
@@ -319,6 +362,42 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* New Project modal */}
+      {showProjectForm && (
+        <div className="hex-add-overlay" onClick={() => { setShowProjectForm(false); setProjectError(""); }}>
+          <div className="hex-add-modal hex-add-modal--project" onClick={e => e.stopPropagation()}>
+            <h3>Create New Project</h3>
+            <label>Project Name<input value={projectForm.display_name} onChange={e => {
+              const name = e.target.value;
+              setProjectForm(prev => ({
+                ...prev,
+                display_name: name,
+                slug: prev.slug || name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, ""),
+                github_repo: prev.github_repo || name.replace(/[^a-zA-Z0-9]/g, ""),
+              }));
+            }} placeholder="e.g. Sealed" /></label>
+            <label>Slug (URL identifier)<input value={projectForm.slug} onChange={e => setProjectForm({ ...projectForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })} placeholder="sealed" /></label>
+            <label>Description<input value={projectForm.description} onChange={e => setProjectForm({ ...projectForm, description: e.target.value })} placeholder="What does this project do?" /></label>
+            <label>GitHub Owner<input value={projectForm.github_owner} onChange={e => setProjectForm({ ...projectForm, github_owner: e.target.value })} placeholder="VibesTribe" /></label>
+            <label>GitHub Repo Name<input value={projectForm.github_repo} onChange={e => setProjectForm({ ...projectForm, github_repo: e.target.value })} placeholder="Sealed" /></label>
+            <label>Deploy Target
+              <select value={projectForm.deploy_target} onChange={e => setProjectForm({ ...projectForm, deploy_target: e.target.value })}>
+                <option value="vercel">Vercel</option>
+                <option value="cloudflare">Cloudflare Pages</option>
+                <option value="none">None (local only)</option>
+              </select>
+            </label>
+            {projectError && <div className="hex-add-modal__error">{projectError}</div>}
+            <div className="hex-add-modal__actions">
+              <button className="hex-add-modal__cancel" onClick={() => { setShowProjectForm(false); setProjectError(""); }}>Cancel</button>
+              <button className="hex-add-modal__save" onClick={submitProjectForm} disabled={!projectForm.slug.trim() || creating}>
+                {creating ? "Creating…" : "Create Project"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
