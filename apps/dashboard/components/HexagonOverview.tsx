@@ -114,6 +114,7 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
   const [loading, setLoading] = useState(true);
   const [draggedService, setDraggedService] = useState<{ projectSlug: string; index: number } | null>(null);
   const [customServices, setCustomServices] = useState<Record<string, ConnectedService[]>>({});
+  const [hiddenServices, setHiddenServices] = useState<Record<string, string[]>>({}); // key: slug -> array of URLs hidden
 
   // ─── Fetch projects ──────────────────────────────────────────────────────
 
@@ -159,11 +160,11 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
         })
       );
       setProjects(projectsWithServices);
-      // Load any locally saved custom services
-      const saved = localStorage.getItem("vp_custom_services");
-      if (saved) {
-        setCustomServices(JSON.parse(saved));
-      }
+      // Load any locally saved custom services and hidden services
+      const savedCustom = localStorage.getItem("vp_custom_services");
+      if (savedCustom) setCustomServices(JSON.parse(savedCustom));
+      const savedHidden = localStorage.getItem("vp_hidden_services");
+      if (savedHidden) setHiddenServices(JSON.parse(savedHidden));
     } catch {
       // offline — use cached data
     } finally {
@@ -173,29 +174,34 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
 
   useEffect(() => { fetchProjects(); }, [fetchProjects]);
 
-  // Persist custom services
+  // Persist custom and hidden services
   useEffect(() => {
-    if (Object.keys(customServices).length > 0) {
-      localStorage.setItem("vp_custom_services", JSON.stringify(customServices));
-    }
+    localStorage.setItem("vp_custom_services", JSON.stringify(customServices));
   }, [customServices]);
 
-  // ─── Get combined services for a project (DB + local custom) ─────────────
+  useEffect(() => {
+    localStorage.setItem("vp_hidden_services", JSON.stringify(hiddenServices));
+  }, [hiddenServices]);
+
+  // ─── Get visible services for a project (DB + custom, minus hidden) ───────
 
   const getServices = useCallback((slug: string): ConnectedService[] => {
     const project = projects.find(p => p.slug === slug);
     const dbServices = project?.connected_services || [];
     const local = customServices[slug] || [];
-    // Merge: DB services + local custom services, dedup by URL
+    const hidden = hiddenServices[slug] || [];
+    // Merge: DB services + local custom services, dedup by URL, filter out hidden
     const seen = new Set<string>();
-    const merged = [...dbServices, ...local].filter(s => {
-      const key = s.url || s.label;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const merged = [...dbServices, ...local]
+      .filter(s => !hidden.includes(s.url))
+      .filter(s => {
+        const key = s.url || s.label;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     return merged;
-  }, [projects, customServices]);
+  }, [projects, customServices, hiddenServices]);
 
   // ─── Edit mode handlers ──────────────────────────────────────────────────
 
@@ -210,33 +216,43 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
     }));
   }, []);
 
-  // ─── Remove a service (works for both DB and custom services) ─────────────
+  // ─── Hide/remove a service tile (localStorage-based, works for all tiles) ─
 
   const removeService = useCallback((slug: string, serviceIndex: number) => {
-    // serviceIndex is the index in the full merged list (excluding dashboard center)
-    // Rebuild the full list without this item, then save
+    // Get the full visible list and find the URL at this index
     const project = projects.find(p => p.slug === slug);
     const dbServices = project?.connected_services || [];
     const localServices = customServices[slug] || [];
-
-    // The index is relative to the combined list (db first, then local)
-    if (serviceIndex < dbServices.length) {
-      // Remove from DB services via API
-      const updated = dbServices.filter((_, i) => i !== serviceIndex);
-      fetch(`${GOV_API}/api/projects/${slug}/services`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ connected_services: updated }),
-      }).then(() => fetchProjects()).catch(() => {});
-    } else {
-      // Remove from local custom services
-      const localIndex = serviceIndex - dbServices.length;
-      setCustomServices(prev => {
-        const arr = (prev[slug] || []).filter((_, i) => i !== localIndex);
-        return { ...prev, [slug]: arr };
+    const hidden = hiddenServices[slug] || [];
+    // Rebuild visible list (same logic as getServices)
+    const seen = new Set<string>();
+    const visible = [...dbServices, ...localServices]
+      .filter(s => !hidden.includes(s.url))
+      .filter(s => {
+        const key = s.url || s.label;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
       });
-    }
-  }, [projects, fetchProjects, customServices]);
+
+    const target = visible[serviceIndex];
+    if (!target) return;
+
+    // Add URL to hidden list
+    setHiddenServices(prev => ({
+      ...prev,
+      [slug]: [...(prev[slug] || []), target.url],
+    }));
+  }, [projects, customServices, hiddenServices]);
+
+  // ─── Restore a hidden tile ─────────────────────────────────────────────────
+
+  const restoreService = useCallback((slug: string, url: string) => {
+    setHiddenServices(prev => ({
+      ...prev,
+      [slug]: (prev[slug] || []).filter(u => u !== url),
+    }));
+  }, []);
 
   const handleServiceDragStart = useCallback((projectSlug: string, index: number) => {
     setDraggedService({ projectSlug, index });
@@ -291,8 +307,9 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
 
   function getSatellitePositions(count: number) {
     // Spread satellites evenly around a circle.
-    // Radius scales with count so tiles don't overlap.
-    const radius = Math.max(200, 160 + count * 12);
+    // Tighter radius for a compact hex cluster.
+    const baseRadius = 160;
+    const radius = Math.max(baseRadius, 130 + count * 8);
     const positions = [];
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * 2 * Math.PI - Math.PI / 2; // start at top
@@ -443,25 +460,52 @@ const HexagonOverview: React.FC<HexagonOverviewProps> = ({ onSelectProject, sele
 
           {/* Add button in edit mode */}
           {editMode && (
-            <div
-              className="hex-satellite hex-satellite--add"
-              style={{
-                transform: `translate(${(() => {
-                  const addPos = getSatellitePositions(servicesWithDashboard.length)[servicesWithDashboard.length - 1];
-                  return addPos ? `${addPos.x}px, ${addPos.y}px` : "0, 0";
-                })()})`,
-              }}
-            >
-              <button
-                className="hex-tile hex-tile--add"
-                onClick={() => addService(expandedSlug)}
-                title="Add service link"
-              >
-                <span className="hex-tile__plus">+</span>
-                <span className="hex-tile__label hex-tile__label--small">Add</span>
-              </button>
-            </div>
+            (() => {
+              const addPos = getSatellitePositions(servicesWithDashboard.length)[servicesWithDashboard.length - 1];
+              return (
+                <div
+                  className="hex-satellite hex-satellite--add"
+                  style={{
+                    transform: `translate(${addPos ? `${addPos.x}px, ${addPos.y}px` : "0, 0"})`,
+                  }}
+                >
+                  <button
+                    className="hex-tile hex-tile--add"
+                    onClick={() => addService(expandedSlug)}
+                    title="Add service link"
+                  >
+                    <span className="hex-tile__plus">+</span>
+                    <span className="hex-tile__label hex-tile__label--small">Add</span>
+                  </button>
+                </div>
+              );
+            })()
           )}
+
+          {/* Hidden tiles restore bar (edit mode only) */}
+          {editMode && (() => {
+            const project = projects.find(p => p.slug === expandedSlug);
+            const dbServices = project?.connected_services || [];
+            const local = customServices[expandedSlug] || [];
+            const hidden = hiddenServices[expandedSlug] || [];
+            const hiddenTiles = [...dbServices, ...local].filter(s => hidden.includes(s.url));
+            if (hiddenTiles.length === 0) return null;
+            return (
+              <div className="hex-hidden-bar">
+                <span className="hex-hidden-bar__title">Hidden tiles — click to restore:</span>
+                {hiddenTiles.map(s => (
+                  <button
+                    key={s.url}
+                    className="hex-hidden-chip"
+                    onClick={() => restoreService(expandedSlug, s.url)}
+                    title={`Restore ${s.label}`}
+                  >
+                    {iconFor(s.type)} {s.label}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
