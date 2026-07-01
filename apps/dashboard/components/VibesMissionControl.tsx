@@ -11,6 +11,7 @@ import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
 import KanbanBoard from "./KanbanBoard";
+import ProjectIntake from "./ProjectIntake";
 
 interface VibesMissionControlProps {
   initialProjectSlug?: string;
@@ -181,6 +182,9 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
             Admin
           </button>
         </div>
+        {selectedProjectSlug !== "vibepilot" && (
+          <ProjectIntake projectSlug={selectedProjectSlug} onIntakeComplete={() => {}} />
+        )}
         <KanbanBoard todos={projectTodos || []} projectSlug={selectedProjectSlug} />
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>

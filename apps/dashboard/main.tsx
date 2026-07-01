@@ -18,6 +18,7 @@ import "./styles/mission-log.css";
 import "./styles/chat.css";
 import "./styles/hexagon-overview.css";
 import "./styles/kanban-board.css";
+import "./styles/project-intake.css";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import VibesMissionControl from "./components/VibesMissionControl";

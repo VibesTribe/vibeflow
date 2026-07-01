@@ -1,0 +1,140 @@
+/* ProjectIntake — PRD upload panel */
+.project-intake {
+  margin-bottom: 12px;
+}
+
+.project-intake__toggle {
+  width: 100%;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.project-intake__toggle:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.project-intake--expanded {
+  background: rgba(17, 24, 39, 0.6);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.project-intake__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.project-intake__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.project-intake__close {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.project-intake__field {
+  margin-bottom: 10px;
+}
+
+.project-intake__field label {
+  display: block;
+  font-size: 11px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.project-intake__field input,
+.project-intake__field textarea {
+  width: 100%;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #e5e7eb;
+  font-size: 13px;
+  font-family: monospace;
+  resize: vertical;
+}
+
+.project-intake__field input:focus,
+.project-intake__field textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.project-intake__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.project-intake__submit {
+  background: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.project-intake__submit:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.45);
+}
+
+.project-intake__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.project-intake__error {
+  color: #f87171;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.project-intake__result {
+  text-align: center;
+  padding: 8px;
+}
+
+.project-intake__success {
+  color: #34d399;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.project-intake__action {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 4px 0;
+}
+
+.project-intake__done {
+  margin-top: 12px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
