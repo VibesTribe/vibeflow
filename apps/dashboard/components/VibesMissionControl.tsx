@@ -10,6 +10,7 @@ import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
 import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
+import KanbanBoard from "./KanbanBoard";
 
 interface VibesMissionControlProps {
   initialProjectSlug?: string;
@@ -61,7 +62,7 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
     return "vibepilot";
   });
 
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData(selectedProjectSlug);
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, projectTodos, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData(selectedProjectSlug);
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
@@ -180,6 +181,7 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
             Admin
           </button>
         </div>
+        <KanbanBoard todos={projectTodos || []} projectSlug={selectedProjectSlug} />
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
       <MissionModals

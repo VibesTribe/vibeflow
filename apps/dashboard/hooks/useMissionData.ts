@@ -94,6 +94,7 @@ export interface MissionData {
   systemCounters: { id: string; total_tokens: number; total_cost_usd: number; total_runs: number; updated_at: string } | null;
   projectCosts: import("../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions: any[];
+  projectTodos: any[];
   loading: MissionLoadingState;
   refresh: () => void;
   updateTaskStatus: (taskId: string, newStatus: string) => void;
@@ -132,6 +133,12 @@ interface GovernorDashboardResponse {
   subscription_history?: any[];
   agent_sessions?: any[];
   model_health_snapshots?: any[];
+  // PIF Phase G: per-project data
+  project_todos?: any[];
+  code_graph_snapshots?: any[];
+  kb_knowledge_items?: any[];
+  kb_files?: any[];
+  kb_doc_sections?: any[];
 }
 
 async function fetchFromGovernor(projectSlug?: string): Promise<GovernorDashboardResponse | null> {
@@ -615,6 +622,7 @@ export function useMissionData(projectSlug?: string): MissionData {
     systemCounters: snapshot.systemCounters || null,
     projectCosts: snapshot.projectCosts || [],
     agent_sessions: snapshot.agent_sessions || [],
+    projectTodos: (cachedGovData?.project_todos || []) as any[],
     loading,
     refresh,
     updateTaskStatus,

@@ -17,6 +17,7 @@ import "./styles/roi-panel.css";
 import "./styles/mission-log.css";
 import "./styles/chat.css";
 import "./styles/hexagon-overview.css";
+import "./styles/kanban-board.css";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import VibesMissionControl from "./components/VibesMissionControl";
