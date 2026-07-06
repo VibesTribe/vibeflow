@@ -10,7 +10,6 @@ import { MissionAgent, MissionSlice, SliceAssignment } from "../utils/mission";
 import { useReviewData } from "../hooks/useReviewData";
 import { ReviewQueueItem } from "../types/review";
 import { useWorkflowDispatch } from "../utils/useWorkflowDispatch";
-import KanbanBoard from "./KanbanBoard";
 import ProjectIntake from "./ProjectIntake";
 
 interface VibesMissionControlProps {
@@ -185,22 +184,23 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
         {selectedProjectSlug !== "vibepilot" && (
           <ProjectIntake projectSlug={selectedProjectSlug} onIntakeComplete={() => {}} />
         )}
-        <KanbanBoard todos={projectTodos || []} projectSlug={selectedProjectSlug} />
         <SliceHub slices={slices} events={events} onSelectSlice={handleSelectSlice} onOpenAssignment={handleOpenAssignmentDetail} />
       </main>
       <MissionModals
-        modal={modal}
-        onClose={handleCloseModal}
-        events={events}
-        agents={agents}
-        slices={slices}
-          roi={roi}
-          models={models}
-          projectCosts={projectCosts}
-          agent_sessions={agent_sessions}
-        onOpenReview={openReviewByTask}
-        onSelectAgent={handleSelectAgent}
-        onShowModels={handleOpenModels}
+      modal={modal}
+      onClose={handleCloseModal}
+      events={events}
+      agents={agents}
+      slices={slices}
+        roi={roi}
+        models={models}
+        projectCosts={projectCosts}
+        agent_sessions={agent_sessions}
+        projectTodos={projectTodos || []}
+        projectSlug={selectedProjectSlug}
+      onOpenReview={openReviewByTask}
+      onSelectAgent={handleSelectAgent}
+      onShowModels={handleOpenModels}
       />
       {selectedReview && (
         <ReviewPanel review={selectedReview} task={selectedReview.task} dispatch={workflowDispatch} onClose={() => setActiveReviewId(null)} onAfterAction={handleReviewActionComplete} />

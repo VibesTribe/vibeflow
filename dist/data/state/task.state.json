@@ -1,0 +1,11 @@
+{
+  "updated_at": "2026-05-29T20:00:00Z",
+  "metrics": {
+    "tokens_used": 0,
+    "active_tasks": 0
+  },
+  "agents": [],
+  "tasks": [],
+  "failures": [],
+  "merge_candidates": []
+}

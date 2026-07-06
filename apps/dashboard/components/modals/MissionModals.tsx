@@ -20,6 +20,7 @@ import {
 } from "../../utils/mission";
 import { TaskSnapshot, TaskStatus } from "@core/types";
 import AdminControlCenter from "./AdminControlCenter";
+import KanbanBoard from "../KanbanBoard";
 import { ROITotals, SliceROI, SubscriptionROI, ModelROI, TaskRunROI } from "../../lib/vibepilotAdapter";
 
 export type MissionModalState =
@@ -49,6 +50,8 @@ interface MissionModalsProps {
   models?: any[];
   projectCosts?: import("../../lib/vibepilotAdapter").ProjectCost[];
   agent_sessions?: any[];
+  projectTodos?: any[];
+  projectSlug?: string;
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -106,9 +109,9 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, projectTodos, projectSlug, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [docsTab, setDocsTab] = React.useState<"kb" | "graph">("kb");
+  const [docsTab, setDocsTab] = React.useState<"kb" | "graph" | "kanban">("kb");
 
   useEffect(() => {
     modalRef.current?.scrollTo({ top: 0, behavior: "auto" });
@@ -155,7 +158,28 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
             >
               Code Graph
             </button>
+            <button
+              type="button"
+              onClick={() => setDocsTab("kanban")}
+              style={{
+                padding: "8px 18px",
+                background: docsTab === "kanban" ? "rgba(0,214,255,0.12)" : "transparent",
+                border: "none",
+                borderBottom: docsTab === "kanban" ? "2px solid #00d6ff" : "2px solid transparent",
+                color: docsTab === "kanban" ? "#00d6ff" : "#8b949e",
+                cursor: "pointer",
+                fontSize: "0.85rem",
+                fontWeight: 500,
+              }}
+            >
+              Kanban
+            </button>
           </div>
+          {docsTab === "kanban" ? (
+            <div style={{ flex: 1, overflow: "auto", padding: "12px", background: "#0d1117" }}>
+              <KanbanBoard todos={projectTodos || []} projectSlug={projectSlug || ""} />
+            </div>
+          ) : (
           <iframe
             key={docsTab}
             src={docsTab === "kb" ? "https://graphs.vibestribe.rocks/" : "https://graphs.vibestribe.rocks/graph/?token=vibepilot"}
@@ -163,6 +187,7 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
             style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
             loading="lazy"
           />
+          )}
         </div>
       );
       break;
