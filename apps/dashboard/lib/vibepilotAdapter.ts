@@ -281,6 +281,15 @@ export function transformAgents(
     // active=Ready/Active, paused=Credit/Cooldown/Issue, benched=Issue
     if (model.status === "deleted") continue;
 
+    // Skip models that TokenFinder has never probed (no data at all)
+    const hasProbeData = (model.tokens_used ?? 0) > 0
+      || model.success_rate != null
+      || (model.credit_remaining_usd ?? 0) > 0
+      || (model.consecutive_failures ?? 0) > 0
+      || model.cooldown_expires_at != null
+      || model.last_run_at != null;
+    if (!hasProbeData) continue;
+
     const stats = assignmentsByModel.get(model.id) || { active: 0, total: 0 };
     const tier =
       model.access_type === "web" ? "W" : model.access_type === "mcp" ? "M" : "Q";
