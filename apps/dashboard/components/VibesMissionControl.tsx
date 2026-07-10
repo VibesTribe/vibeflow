@@ -62,7 +62,7 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
     return "vibepilot";
   });
 
-  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, projectCosts, agent_sessions, projectTodos, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData(selectedProjectSlug);
+  const { snapshot, events, slices, agents, statusSummary, tokenUsage, agentTokens, roi, models, modelCatalog, projectCosts, agent_sessions, projectTodos, loading, updateTaskStatus, bulkUpdateTaskStatus } = useMissionData(selectedProjectSlug);
   const { reviews, restores, refresh: refreshReviews } = useReviewData();
   const workflowDispatch = useWorkflowDispatch();
   const [modal, setModal] = useState<MissionModalState>({ type: null });
@@ -198,6 +198,7 @@ const VibesMissionControl: React.FC<VibesMissionControlProps> = ({ initialProjec
         agent_sessions={agent_sessions}
         projectTodos={projectTodos || []}
         projectSlug={selectedProjectSlug}
+        modelCatalog={modelCatalog || []}
       onOpenReview={openReviewByTask}
       onSelectAgent={handleSelectAgent}
       onShowModels={handleOpenModels}

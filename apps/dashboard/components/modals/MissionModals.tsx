@@ -52,6 +52,7 @@ interface MissionModalsProps {
   agent_sessions?: any[];
   projectTodos?: any[];
   projectSlug?: string;
+  modelCatalog?: any[];
   onOpenReview?: (taskId: string) => void;
   onSelectAgent?: (agent: MissionAgent) => void;
   onShowModels?: () => void;
@@ -109,7 +110,7 @@ const SLICE_FILTER_META: Record<
 
 const ROUTING_EVENT_TYPES = new Set(["route", "routing_decision", "retry", "reroute", "validation"]);
 
-const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, projectTodos, projectSlug, onOpenReview, onSelectAgent, onShowModels }) => {
+const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, agents, slices, roi, models, projectCosts, agent_sessions, projectTodos, projectSlug, modelCatalog, onOpenReview, onSelectAgent, onShowModels }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [docsTab, setDocsTab] = React.useState<"kb" | "graph" | "kanban">("kb");
 
@@ -198,9 +199,53 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
     case "roi":
       content = <RoiPanel agents={agents} slices={slices} roi={roi} models={models || []} projectCosts={projectCosts || []} agent_sessions={agent_sessions || []} />;
       break;
-    case "models":
-      content = <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />;
+    case "models": {
+      const [modelsTab, setModelsTab] = React.useState<"agents" | "catalog">("agents");
+      content = (
+        <div className="mission-modal__section mission-modal__section--sticky model-panel">
+          <div style={{ display: "flex", gap: 0, borderBottom: "1px solid rgba(0,214,255,0.2)", background: "#0d1117", marginBottom: 8 }}>
+            <button
+              type="button"
+              onClick={() => setModelsTab("agents")}
+              style={{
+                padding: "8px 18px",
+                background: modelsTab === "agents" ? "rgba(0,214,255,0.12)" : "transparent",
+                border: "none",
+                borderBottom: modelsTab === "agents" ? "2px solid #00d6ff" : "2px solid transparent",
+                color: modelsTab === "agents" ? "#00d6ff" : "#8b949e",
+                cursor: "pointer",
+                fontSize: "0.85rem",
+                fontWeight: 500,
+              }}
+            >
+              Agents
+            </button>
+            <button
+              type="button"
+              onClick={() => setModelsTab("catalog")}
+              style={{
+                padding: "8px 18px",
+                background: modelsTab === "catalog" ? "rgba(0,214,255,0.12)" : "transparent",
+                border: "none",
+                borderBottom: modelsTab === "catalog" ? "2px solid #00d6ff" : "2px solid transparent",
+                color: modelsTab === "catalog" ? "#00d6ff" : "#8b949e",
+                cursor: "pointer",
+                fontSize: "0.85rem",
+                fontWeight: 500,
+              }}
+            >
+              Catalog
+            </button>
+          </div>
+          {modelsTab === "agents" ? (
+            <ModelOverview agents={agents} slices={slices} roi={roi} onSelectAgent={onSelectAgent} />
+          ) : (
+            <ModelCatalog models={modelCatalog || []} />
+          )}
+        </div>
+      );
       break;
+    }
     case "agent":
       content = <AgentDetails agent={modal.agent} events={events} slices={slices} roi={roi} onBackToModels={onShowModels} />;
       break;
@@ -3517,6 +3562,137 @@ function deriveAgentWarnings(agent: MissionAgent, records: AgentAssignmentRecord
     });
   return Array.from(warnings).slice(0, 4);
 }
+
+/* ── ModelCatalog: TokenFinder model inventory ── */
+const STATUS_COLORS: Record<string, string> = {
+  active: "#22c55e",
+  benched: "#f59e0b",
+  paused: "#ef4444",
+  offline: "#6b7280",
+};
+
+function formatTokenCount(n: number | null | undefined): string {
+  if (n == null || n === 0) return "0";
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
+  return String(n);
+}
+
+const ModelCatalog: React.FC<{ models: any[] }> = ({ models }) => {
+  const [sortKey, setSortKey] = useState<string>("status");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const sorted = useMemo(() => {
+    const list = [...models];
+    const statusOrder: Record<string, number> = { active: 0, benched: 1, paused: 2, offline: 3 };
+    list.sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "status") {
+        cmp = (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99);
+      } else if (sortKey === "name") {
+        cmp = (a.name || "").localeCompare(b.name || "");
+      } else if (sortKey === "tokens") {
+        cmp = (b.tokens_used || 0) - (a.tokens_used || 0);
+      } else if (sortKey === "success") {
+        const ar = a.success_rate ?? -1;
+        const br = b.success_rate ?? -1;
+        cmp = br - ar;
+      }
+      return sortDir === "desc" ? -cmp : cmp;
+    });
+    return list;
+  }, [models, sortKey, sortDir]);
+
+  const toggleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortDir(d => d === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const sortArrow = (key: string) => sortKey === key ? (sortDir === "asc" ? " ▲" : " ▼") : "";
+
+  return (
+    <div style={{ height: "calc(100vh - 180px)", overflow: "auto" }}>
+      {sorted.length === 0 && (
+        <p style={{ color: "#8b949e", padding: 24, textAlign: "center" }}>No models found. TokenFinder may not have run yet.</p>
+      )}
+      {sorted.length > 0 && (
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.78rem" }}>
+          <thead style={{ position: "sticky", top: 0, background: "#161b22", zIndex: 1 }}>
+            <tr>
+              <th onClick={() => toggleSort("name")} style={thStyle}>Model{sortArrow("name")}</th>
+              <th onClick={() => toggleSort("status")} style={thStyle}>Status{sortArrow("status")}</th>
+              <th onClick={() => toggleSort("success")} style={{ ...thStyle, textAlign: "right" }}>Success%{sortArrow("success")}</th>
+              <th onClick={() => toggleSort("tokens")} style={{ ...thStyle, textAlign: "right" }}>Tokens{sortArrow("tokens")}</th>
+              <th style={{ ...thStyle, textAlign: "right" }}>Credit</th>
+              <th style={thStyle}>Vendor</th>
+              <th style={thStyle}>Failures</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((m: any, i: number) => (
+              <tr key={m.id || i} style={{ borderBottom: "1px solid #1e2530" }}>
+                <td style={tdStyle}>
+                  <span style={{ fontWeight: 500 }}>{m.name || m.id}</span>
+                </td>
+                <td style={tdStyle}>
+                  <span style={{
+                    display: "inline-block",
+                    padding: "1px 8px",
+                    borderRadius: 4,
+                    fontSize: "0.7rem",
+                    fontWeight: 600,
+                    background: STATUS_COLORS[m.status] || "#6b7280",
+                    color: "#000",
+                    textTransform: "uppercase",
+                  }}>
+                    {m.status || "unknown"}
+                  </span>
+                </td>
+                <td style={{ ...tdStyle, textAlign: "right", color: (m.success_rate ?? -1) >= 0 ? "#22c55e" : "#6b7280" }}>
+                  {m.success_rate != null ? (m.success_rate * 100).toFixed(1) + "%" : "—"}
+                </td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>{formatTokenCount(m.tokens_used)}</td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>
+                  {m.credit_remaining_usd != null && m.credit_remaining_usd > 0
+                    ? "$" + m.credit_remaining_usd.toFixed(2)
+                    : "—"}
+                </td>
+                <td style={tdStyle}>{m.vendor || "—"}</td>
+                <td style={{ ...tdStyle, textAlign: "right", color: (m.consecutive_failures || 0) > 3 ? "#ef4444" : "#6b7280" }}>
+                  {m.consecutive_failures || 0}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+const thStyle: React.CSSProperties = {
+  padding: "6px 10px",
+  textAlign: "left",
+  fontSize: "0.7rem",
+  fontWeight: 600,
+  color: "#8b949e",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  cursor: "pointer",
+  borderBottom: "1px solid #30363d",
+  userSelect: "none",
+};
+
+const tdStyle: React.CSSProperties = {
+  padding: "5px 10px",
+  color: "#c9d1d9",
+  whiteSpace: "nowrap",
+};
 
 
 
