@@ -283,7 +283,7 @@ export function transformAgents(
 
     // Skip models that TokenFinder has never probed (no data at all)
     const hasProbeData = (model.tokens_used ?? 0) > 0
-      || model.success_rate != null
+      || (model.success_rate ?? 0) > 0
       || (model.credit_remaining_usd ?? 0) > 0
       || (model.consecutive_failures ?? 0) > 0
       || model.cooldown_expires_at != null
