@@ -878,6 +878,13 @@ export function adaptVibePilotToDashboard(
   const subActual = subscriptionROI.reduce((sum, s) => sum + (s.prorated_cost_usd || 0), 0);
   const subSavings = subApiEquiv - subActual;
 
+  // Add Hermes terminal/dashboard session token counts to ROI
+  // These capture work done outside the task pipeline (CLI, cron, dashboard chat)
+  const sessionTokens = (agentSessions || []).reduce(
+    (sum, s) => sum + (Number(s.total_tokens_in) || 0) + (Number(s.total_tokens_out) || 0),
+    0
+  );
+
   return {
     tasks: transformTasks(tasks, runs),
     agents: transformAgents(tasks, runs, models, platforms),
@@ -885,7 +892,7 @@ export function adaptVibePilotToDashboard(
     metrics: calculateMetrics(tasks, runs),
     roi: {
       totals: {
-        total_tokens: roi.total_tokens_in + roi.total_tokens_out,
+        total_tokens: (roi.total_tokens_in + roi.total_tokens_out) + sessionTokens,
         total_theoretical_usd: roi.total_theoretical_usd + subApiEquiv,
         total_actual_usd: roi.total_actual_usd + subActual,
         total_savings_usd: roi.total_savings_usd + subSavings,
