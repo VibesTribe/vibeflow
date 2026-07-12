@@ -1206,7 +1206,9 @@ const RoiPanel: React.FC<{
 /* ------------------------------------------------------------------ */
 /* ProjectTracker – persists cumulative totals + models/slices        */
 /* ------------------------------------------------------------------ */
-const LS_KEY_PROJECT = "vibepilot_project_roi";
+function getProjectRoiKey(slug?: string): string {
+  return slug ? `vibepilot_project_roi_${slug}` : "vibepilot_project_roi";
+}
 
 interface TrackerTotals {
   totalTokens: number;
@@ -1254,9 +1256,9 @@ const EMPTY_PROJECT: ProjectData = {
   slices: [],
 };
 
-function readProjectRoi(): ProjectData {
+function readProjectRoi(slug?: string): ProjectData {
   try {
-    const raw = localStorage.getItem(LS_KEY_PROJECT);
+    const raw = localStorage.getItem(getProjectRoiKey(slug));
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
   return { ...EMPTY_PROJECT, models: [], slices: [] };
