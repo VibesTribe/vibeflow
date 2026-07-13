@@ -645,7 +645,7 @@ const RoiPanel: React.FC<{
           models: mergeModels(prev.models, liveModels),
           slices: mergeSlices(prev.slices, liveSlices),
         };
-        localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(next));
+        localStorage.setItem(getProjectRoiKey(), JSON.stringify(next));
         return next;
       });
     }
@@ -653,7 +653,7 @@ const RoiPanel: React.FC<{
   }, [roi?.totals, liveModels, liveSlices]);
 
   const handleClearProject = () => {
-    localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(EMPTY_PROJECT));
+    localStorage.setItem(getProjectRoiKey(), JSON.stringify(EMPTY_PROJECT));
     setPersistedProject({ ...EMPTY_PROJECT, models: [], slices: [] });
     prevTokens.current = roi?.totals.total_tokens ?? 0;
   };
@@ -1358,7 +1358,7 @@ const ProjectTracker: React.FC<{
           models: mergeModels(prev.models, models),
           slices: mergeSlices(prev.slices, slices),
         };
-        localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(next));
+        localStorage.setItem(getProjectRoiKey(), JSON.stringify(next));
         return next;
       });
     }
@@ -1366,7 +1366,7 @@ const ProjectTracker: React.FC<{
   }, [totals, models, slices]);
 
   const handleClear = () => {
-    localStorage.setItem(LS_KEY_PROJECT, JSON.stringify(EMPTY_PROJECT));
+    localStorage.setItem(getProjectRoiKey(), JSON.stringify(EMPTY_PROJECT));
     setProject({ ...EMPTY_PROJECT, models: [], slices: [] });
     prevTokens.current = totals.totalTokens;
   };
