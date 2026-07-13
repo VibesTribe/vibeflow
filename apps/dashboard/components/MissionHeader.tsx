@@ -525,7 +525,11 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     const fetchReviewQueue = () => {
     const govAPI = typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
       ? "https://webhooks.vibestribe.rocks" : "http://localhost:8080";
-    fetch(`${govAPI}/api/review-items?status=pending`)
+    let url = `${govAPI}/api/review-items?status=pending`;
+    if (selectedProjectSlug && selectedProjectSlug !== "vibepilot") {
+      url += `&project_slug=${encodeURIComponent(selectedProjectSlug)}`;
+    }
+    fetch(url)
         .then(r => r.ok ? r.json() : [])
         .then(data => setReviewQueueItems(Array.isArray(data) ? data : []))
         .catch(() => {});

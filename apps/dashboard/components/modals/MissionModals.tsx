@@ -160,7 +160,10 @@ const MissionModals: React.FC<MissionModalsProps> = ({ modal, onClose, events, a
           </div>
           <iframe
             key={docsTab}
-            src={docsTab === "kb" ? "https://graphs.vibestribe.rocks/" : "https://graphs.vibestribe.rocks/graph/?token=vibepilot"}
+            src={docsTab === "kb" 
+              ? `https://graphs.vibestribe.rocks/${projectSlug ? `?project=${projectSlug}` : ''}`
+              : `https://graphs.vibestribe.rocks/graph/?token=${projectSlug || 'vibepilot'}`
+            }
             title={docsTab === "kb" ? "Knowledge Hub" : "Code Graph"}
             style={{ flex: 1, width: "100%", border: "none", borderRadius: "0 0 12px 12px", background: "#0d1117" }}
             loading="lazy"
