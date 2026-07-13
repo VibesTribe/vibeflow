@@ -493,7 +493,10 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   // Project totals from localStorage (same key as ProjectTracker in MissionModals)
   const projectTokens = useMemo(() => {
     try {
-      const raw = localStorage.getItem("vibepilot_project_roi");
+      const key = selectedProjectSlug 
+        ? `vibepilot_project_roi_${selectedProjectSlug}` 
+        : "vibepilot_project_roi";
+      const raw = localStorage.getItem(key);
       if (raw) {
         const data = JSON.parse(raw);
         return data?.totals?.totalTokens ?? 0;
@@ -503,7 +506,7 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
   }, [tokenUsage]); // re-read when live tokens change
 
   const displayTokens = headerMode === "project" 
-    ? Math.max(projectTokens, tokenUsage) + agentTokens
+    ? Math.max(projectTokens, tokenUsage)
     : tokenUsage;  // now = live pipeline tasks
   const formattedDisplayTokens = useMemo(() => formatTokenCount(displayTokens), [displayTokens]);
 
