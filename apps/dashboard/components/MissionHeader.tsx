@@ -227,6 +227,13 @@ const MissionHeader: React.FC<MissionHeaderProps> = ({
     }
   }, [selectedProjectSlug, onProjectChange]);
 
+  // Sync selected project to cookie so KB / code graph iframes can read it
+  useEffect(() => {
+    if (typeof window !== "undefined" && selectedProjectSlug) {
+      document.cookie = `current_project=${encodeURIComponent(selectedProjectSlug)}; path=/; max-age=86400`;
+    }
+  }, [selectedProjectSlug]);
+
   const currentProject = useMemo(() => {
     return projectList.find(p => p.slug === selectedProjectSlug) || null;
   }, [projectList, selectedProjectSlug]);
